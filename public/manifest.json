@@ -1,0 +1,38 @@
+{
+  "name": "TRACÉA — Régulation émotionnelle structurée",
+  "short_name": "TRACÉA",
+  "description": "Entraînement à la stabilité émotionnelle par la récupération physiologique",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#C4704A",
+  "icons": [
+    {
+      "src": "/images/tracea-icon-512-rouge.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/tracea-icon-512-noir.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/tracea-apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/tracea-favicon-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/tracea-favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ]
+}

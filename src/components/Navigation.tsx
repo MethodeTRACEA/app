@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 
@@ -26,8 +27,15 @@ export function Navigation() {
     <nav className="sticky top-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-beige-dark">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-14">
-          <Link href="/" className="font-serif text-xl text-terra tracking-tight">
-            TRACEA
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/tracea-logo-rouge.png"
+              alt="TRACÉA"
+              width={120}
+              height={36}
+              className="h-8 w-auto"
+              priority
+            />
           </Link>
           <div className="flex items-center gap-2">
             <ul className="flex gap-1">

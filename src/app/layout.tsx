@@ -17,15 +17,20 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
+      <head>
+        <link rel="icon" href="/images/tracea-favicon.ico" sizes="any" />
+        <link rel="icon" href="/images/tracea-favicon-32.png" sizes="32x32" type="image/png" />
+        <link rel="icon" href="/images/tracea-favicon-64.png" sizes="64x64" type="image/png" />
+        <link rel="apple-touch-icon" href="/images/tracea-apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className="min-h-screen flex flex-col">
         <AuthProvider>
           <Navigation />
           <OnboardingRedirect />
           <main className="flex-1">{children}</main>
           <footer className="bg-espresso text-beige-dark text-center py-8 text-sm tracking-wide">
-            <span className="text-terra font-serif text-xl block mb-2">
-              TRACEA
-            </span>
+            <img src="/images/tracea-logo-clair.png" alt="TRACÉA" className="h-8 mx-auto mb-2" />
             <p className="mb-4">
               Stabilité émotionnelle · Entraînement physiologique
             </p>
