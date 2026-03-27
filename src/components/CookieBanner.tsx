@@ -43,10 +43,10 @@ export function CookieBanner() {
               Respect de votre vie privée
             </h3>
             <p className="font-body text-sm text-espresso leading-relaxed">
-              TRACEA utilise le stockage local de votre navigateur (localStorage)
-              pour sauvegarder vos sessions et préférences. Aucun cookie
-              publicitaire ou de suivi tiers n&apos;est utilisé. Vos données
-              restent sur votre appareil.
+              TRACÉA conserve vos données de session dans une base de données
+              sécurisée hébergée en Union européenne (Francfort, Allemagne) via Supabase.
+              Aucun cookie publicitaire ou de suivi tiers n&apos;est utilisé.
+              Seules vos préférences de consentement sont stockées localement dans votre navigateur.
             </p>
           </div>
         </div>

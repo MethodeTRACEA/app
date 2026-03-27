@@ -122,11 +122,11 @@ function ConsentForm({ onConsent }: { onConsent: () => void }) {
           />
           <div>
             <span className="text-sm text-espresso font-medium">
-              J&apos;accepte le stockage local de mes données
+              J&apos;accepte le stockage sécurisé de mes données
             </span>
             <p className="text-xs text-warm-gray mt-0.5">
-              Mes données seront stockées uniquement sur mon appareil via
-              localStorage. Elles ne quittent jamais mon navigateur.
+              Mes données de session seront conservées dans une base de données
+              sécurisée hébergée en Union européenne (Francfort, Allemagne) via Supabase.
             </p>
           </div>
         </label>

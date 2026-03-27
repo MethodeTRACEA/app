@@ -221,7 +221,7 @@ export default function ConditionsUtilisation() {
           <p>
             L&apos;utilisateur peut cesser d&apos;utiliser l&apos;Application
             à tout moment et supprimer l&apos;ensemble de ses données depuis
-            la page Profil ou en effaçant les données de son navigateur.
+            la page Profil (suppression du compte et de toutes les données associées).
           </p>
           <p className="mt-2">
             L&apos;éditeur se réserve le droit de suspendre ou supprimer

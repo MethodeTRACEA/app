@@ -146,41 +146,50 @@ export default function PolitiqueConfidentialite() {
           </h2>
           <div className="card-base">
             <h3 className="font-sans text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
-              Stockage local (MVP)
+              Stockage sécurisé en Union européenne
             </h3>
             <p>
-              Dans la version actuelle (MVP), <strong>toutes les données
-              sont stockées exclusivement sur votre appareil</strong> via le
-              mécanisme localStorage de votre navigateur web. Aucune donnée
-              n&apos;est transmise, hébergée ou traitée sur un serveur distant.
+              <strong>Vos données de session sont conservées dans une base
+              de données PostgreSQL sécurisée</strong>, hébergée à Francfort
+              (Allemagne) via la plateforme Supabase. L&apos;accès à vos
+              données est protégé par des politiques de sécurité au niveau
+              des lignes (Row Level Security), garantissant que seul votre
+              compte peut consulter et modifier vos propres données.
             </p>
             <p className="mt-3">
-              <strong>Conséquences :</strong>
+              <strong>Mesures de sécurité :</strong>
             </p>
             <ul className="list-disc list-inside mt-1 space-y-1">
               <li>
-                Vos données ne quittent jamais votre appareil
+                Authentification par lien magique (pas de mot de passe stocké)
               </li>
               <li>
-                La suppression des données du navigateur entraîne la perte
-                définitive de vos sessions
+                Chiffrement des données en transit (TLS) et au repos
               </li>
               <li>
-                Aucun tiers (y compris l&apos;éditeur de TRACEA) n&apos;a
-                accès à vos données
+                Isolation des données par utilisateur via Row Level Security (RLS)
               </li>
               <li>
-                La sécurité des données dépend de la sécurité de votre appareil
-                et de votre navigateur
+                Sauvegardes automatiques quotidiennes de la base de données
+              </li>
+            </ul>
+            <p className="mt-3">
+              <strong>Sous-traitants :</strong>
+            </p>
+            <ul className="list-disc list-inside mt-1 space-y-1">
+              <li>
+                <strong>Supabase Inc.</strong> : hébergement de la base de données,
+                authentification et envoi des emails de connexion (serveurs à Francfort, UE)
+              </li>
+              <li>
+                <strong>Anthropic (Claude API)</strong> : analyse IA des sessions.
+                Les textes saisis sont envoyés aux serveurs d&apos;Anthropic aux États-Unis
+                pour générer un reflet miroir. Anthropic ne conserve pas les données
+                au-delà du traitement de la requête et ne les utilise pas pour
+                entraîner ses modèles.
               </li>
             </ul>
           </div>
-          <p className="text-sm text-warm-gray mt-2 italic">
-            Note : lors de l&apos;évolution vers une version avec
-            authentification et stockage serveur, cette section sera mise à jour
-            avec les mesures de sécurité techniques et organisationnelles
-            applicables (chiffrement, pseudonymisation, contrôle d&apos;accès).
-          </p>
         </section>
 
         <section>
@@ -188,19 +197,22 @@ export default function PolitiqueConfidentialite() {
             5. Durée de conservation
           </h2>
           <p>
-            Les données sont conservées dans le localStorage de votre navigateur
-            tant que vous ne les supprimez pas. Vous pouvez à tout moment :
+            Vos données sont conservées dans la base de données sécurisée
+            tant que votre compte existe. Vous pouvez à tout moment :
           </p>
           <ul className="list-disc list-inside mt-2 space-y-1">
             <li>
               Supprimer une session individuelle depuis la page Historique
             </li>
             <li>
+              Exporter l&apos;ensemble de vos données au format JSON depuis la page Profil (droit à la portabilité)
+            </li>
+            <li>
               Révoquer votre consentement et supprimer l&apos;ensemble de vos
               données depuis la page Profil
             </li>
             <li>
-              Effacer les données via les paramètres de votre navigateur
+              Supprimer définitivement votre compte et toutes les données associées (droit à l&apos;effacement)
             </li>
           </ul>
         </section>
@@ -314,9 +326,9 @@ export default function PolitiqueConfidentialite() {
               </tbody>
             </table>
             <p className="text-xs text-warm-gray mt-2 italic">
-              * Stockage localStorage\u00A0: les données persistent jusqu&apos;à
-              suppression manuelle par l&apos;utilisateur ou nettoyage du
-              navigateur.
+              * Préférences de consentement stockées localement dans le navigateur.
+              Les données de session sont conservées dans la base de données
+              Supabase (Francfort, UE).
             </p>
           </div>
         </section>
@@ -326,15 +338,21 @@ export default function PolitiqueConfidentialite() {
             8. Transferts de données hors UE
           </h2>
           <p>
-            Dans sa version actuelle, TRACEA ne transfère aucune donnée hors de
-            votre appareil. Aucun transfert de données vers un pays tiers
-            n&apos;est effectué.
+            Vos données de session sont hébergées en Union européenne
+            (Francfort, Allemagne) via Supabase. Cependant, l&apos;analyse IA
+            de vos sessions est réalisée par l&apos;API Claude d&apos;Anthropic,
+            dont les serveurs sont situés aux <strong>États-Unis</strong>.
           </p>
-          <p className="mt-2 text-sm text-warm-gray italic">
-            Note : Si une intégration future (ex : API d&apos;analyse IA)
-            implique un transfert hors UE, les garanties appropriées seront
-            mises en place (clauses contractuelles types, décisions
-            d&apos;adéquation) et cette section sera mise à jour.
+          <p className="mt-2">
+            Ce transfert est encadré par les clauses contractuelles types (SCC)
+            et le Data Processing Agreement d&apos;Anthropic, conformément aux
+            exigences du RGPD pour les transferts hors UE (chapitre V).
+          </p>
+          <p className="mt-2">
+            Les données envoyées à Anthropic comprennent uniquement le texte
+            saisi lors de la session en cours. Anthropic ne conserve pas ces
+            données au-delà du traitement de la requête et ne les utilise pas
+            pour l&apos;entraînement de ses modèles.
           </p>
         </section>
 

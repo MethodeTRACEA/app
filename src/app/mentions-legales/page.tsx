@@ -60,11 +60,12 @@ export default function MentionsLegales() {
               <strong>Adresse :</strong> [Adresse de l&apos;hébergeur]
             </p>
             <p>
-              <strong>Localisation des données :</strong> En l&apos;état actuel
-              (MVP), toutes les données sont stockées localement sur
-              l&apos;appareil de l&apos;utilisateur via le mécanisme
-              localStorage du navigateur. Aucune donnée n&apos;est transmise à
-              un serveur distant.
+              <strong>Localisation des données :</strong> Les données des
+              utilisateurs sont conservées dans une base de données PostgreSQL
+              sécurisée, hébergée à Francfort (Allemagne, UE) via la plateforme
+              Supabase. L&apos;analyse IA des sessions est réalisée par
+              l&apos;API Claude d&apos;Anthropic (serveurs aux États-Unis),
+              dans le cadre de clauses contractuelles types (SCC).
             </p>
           </div>
         </section>
