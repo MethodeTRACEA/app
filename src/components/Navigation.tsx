@@ -7,15 +7,15 @@ import { useAuth } from "@/lib/auth-context";
 import { NightMode } from "@/components/NightMode";
 
 const publicLinks = [
-  { href: "/", label: "Accueil", icon: "◈" },
+  { href: "/", label: "Accueil" },
 ];
 
 const authLinks = [
-  { href: "/", label: "Accueil", icon: "◈" },
-  { href: "/session", label: "Session", icon: "▸" },
-  { href: "/historique", label: "Historique", icon: "◰" },
-  { href: "/ressources", label: "Ressources", icon: "◇" },
-  { href: "/profil", label: "Profil", icon: "○" },
+  { href: "/", label: "Accueil" },
+  { href: "/session", label: "Session" },
+  { href: "/historique", label: "Historique" },
+  { href: "/ressources", label: "Ressources" },
+  { href: "/profil", label: "Profil" },
 ];
 
 export function Navigation() {
@@ -64,8 +64,8 @@ export function Navigation() {
                           : "text-warm-gray hover:text-terra hover:bg-beige"
                       }`}
                     >
-                      <span className="text-sm">{link.icon}</span>
-                      <span className="hidden sm:inline">{link.label}</span>
+                      
+                      <span>{link.label}</span>
                     </Link>
                   </li>
                 );
