@@ -45,7 +45,6 @@ export function Navigation() {
   className="h-8 w-auto hidden dark:block"
   priority
 />
-            />
           </Link>
           <div className="flex items-center gap-2">
             <ul className="flex gap-1">
