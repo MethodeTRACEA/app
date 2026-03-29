@@ -5,11 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
   body {
-    @apply bg-cream text-espresso font-sans;
+    @apply text-espresso font-sans;
+    background-color: #FAF7F2;
   }
 }
 
@@ -30,59 +29,148 @@
            transition-all duration-200 hover:bg-beige;
   }
   .card-base {
-    @apply bg-white rounded-card p-6 border border-beige-dark;
+    @apply rounded-card p-6 border border-beige-dark;
+    background: rgba(255, 255, 255, 0.85);
   }
   .card-accent {
     @apply bg-white border-l-4 border-l-terra rounded-r-[10px] p-5;
   }
-  .card-sage {
-    @apply bg-sage-light rounded-card p-5;
-  }
-  .card-terra {
-    @apply bg-terra-light rounded-card p-5;
-  }
+  .card-sage { @apply bg-sage-light rounded-card p-5; }
+  .card-terra { @apply bg-terra-light rounded-card p-5; }
   .section-label {
     @apply text-[0.7rem] font-medium tracking-[0.25em] uppercase text-terra mb-2;
   }
   .section-title {
     @apply font-serif text-3xl md:text-4xl text-espresso leading-tight mb-4;
   }
-
-  /* IRA bar */
-  .ira-bar {
-    @apply h-2 bg-beige-dark rounded-full overflow-hidden;
-  }
+  .ira-bar { @apply h-2 bg-beige-dark rounded-full overflow-hidden; }
   .ira-fill {
     @apply h-full rounded-full transition-all;
     transition-duration: 600ms;
     background: linear-gradient(90deg, #8A9E7A 0%, #C4704A 60%, #A03020 100%);
   }
-
-  /* Safety card */
-  .safety-card {
-    @apply bg-white rounded-card border-[1.5px] border-dusty p-6;
-  }
+  .safety-card { @apply bg-white rounded-card border-[1.5px] border-dusty p-6; }
 }
 
-/* Step indicator animations */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-up {
-  animation: fadeUp 0.6s ease both;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-
 @keyframes pulse-gentle {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
 }
-.animate-pulse-gentle {
-  animation: pulse-gentle 2s ease-in-out infinite;
+@keyframes breatheIn {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.18); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.6; }
+}
+@keyframes revealText {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Scrollbar styling */
+.animate-fade-up { animation: fadeUp 0.5s ease forwards; }
+.animate-fade-in { animation: fadeIn 0.4s ease forwards; }
+.animate-pulse-gentle { animation: pulse-gentle 2s ease-in-out infinite; }
+.animate-breathe { animation: breatheIn 4s ease-in-out infinite; }
+.animate-reveal { animation: revealText 0.6s ease forwards; opacity: 0; }
+.animate-reveal-delay-1 { animation-delay: 0.1s; }
+.animate-reveal-delay-2 { animation-delay: 0.2s; }
+.animate-reveal-delay-3 { animation-delay: 0.3s; }
+.animate-reveal-delay-4 { animation-delay: 0.4s; }
+.animate-reveal-delay-5 { animation-delay: 0.5s; }
+.animate-reveal-delay-6 { animation-delay: 0.6s; }
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #E8D8C6; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #C4998A; }
+
+/* ===== NIGHT MODE ===== */
+
+html.night body {
+  background-color: #1A1008;
+  color: #E8D8C6;
+}
+
+html.night main {
+  background-color: #1A1008;
+}
+
+html.night h1,
+html.night h2,
+html.night h3,
+html.night h4 {
+  color: #F0D5C4;
+}
+
+html.night p {
+  color: #E8D8C6;
+}
+
+html.night .card-base {
+  background: #2C1F14 !important;
+  border-color: rgba(196, 112, 74, 0.2) !important;
+}
+
+html.night .card-accent {
+  background: rgba(196, 112, 74, 0.08) !important;
+  border-color: rgba(196, 112, 74, 0.2) !important;
+}
+
+html.night .card-terra,
+html.night .card-sage {
+  background: #2C1F14 !important;
+}
+
+html.night .bg-cream { background-color: #1E1008 !important; }
+html.night .bg-beige { background-color: #2C1F14 !important; }
+html.night .bg-beige\/60 { background-color: #1E1008 !important; }
+html.night .bg-beige\/40 { background-color: #1E1008 !important; }
+html.night .bg-beige\/30 { background-color: #1E1008 !important; }
+html.night .bg-white { background-color: #2C1F14 !important; }
+html.night .bg-espresso { background-color: #2C1F14 !important; }
+
+html.night .text-espresso { color: #F0D5C4 !important; }
+html.night .text-warm-gray { color: #C4998A !important; }
+html.night .text-terra { color: #C4704A !important; }
+html.night .text-terra-dark { color: #C4704A !important; }
+html.night .text-cream { color: #FAF7F2 !important; }
+html.night .text-sage { color: #8A9E7A !important; }
+
+html.night .border-beige-dark { border-color: rgba(196, 112, 74, 0.2) !important; }
+html.night .border-beige-dark\/40 { border-color: rgba(196, 112, 74, 0.12) !important; }
+
+html.night .bg-terra { background-color: #C4704A !important; }
+html.night .bg-sage { background-color: #8A9E7A !important; }
+html.night .bg-dusty { background-color: #C4998A !important; }
+html.night .bg-warm-gray { background-color: #9E8E80 !important; }
+html.night .bg-terra-dark { background-color: #8A4A2F !important; }
+html.night .bg-terra-light { background-color: #3A2010 !important; }
+html.night .bg-terra-light\/5 { background-color: rgba(196, 112, 74, 0.06) !important; }
+html.night .bg-terra-light\/20 { background-color: rgba(196, 112, 74, 0.08) !important; }
+html.night .bg-sage-light { background-color: #1E2A1A !important; }
+html.night .bg-sage-light\/40 { background-color: rgba(138, 158, 122, 0.08) !important; }
+
+html.night textarea,
+html.night input {
+  background: #2C1F14 !important;
+  border-color: rgba(196, 112, 74, 0.2) !important;
+  color: #F0D5C4 !important;
+}
+
+html.night .btn-ghost {
+  border-color: rgba(196, 112, 74, 0.3) !important;
+  color: #C4998A !important;
+}
+
+html.night .italic { color: #C4998A; }
+
+html.night .bg-gradient-to-br {
+  background: linear-gradient(135deg, #2C1F14, #3A2818) !important;
+}

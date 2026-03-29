@@ -46,11 +46,11 @@ function ConsentForm({ onConsent }: { onConsent: () => void }) {
     <div className="max-w-2xl mx-auto px-4 py-12">
       <p className="section-label">Consentement requis</p>
       <h1 className="section-title">
-        Avant de commencer votre première session
+        Avant de commencer ta première session
       </h1>
       <p className="text-warm-gray mb-6 leading-relaxed">
         TRACEA traite des données personnelles et émotionnelles sensibles. Avant
-        d&apos;utiliser le protocole, nous avons besoin de votre consentement
+        d&apos;utiliser le protocole, nous avons besoin de ton consentement
         explicite, conformément à l&apos;article 9 du RGPD.
       </p>
 
@@ -62,18 +62,18 @@ function ConsentForm({ onConsent }: { onConsent: () => void }) {
           </span>
         </div>
         <p className="font-body text-sm text-espresso leading-relaxed">
-          Lors d&apos;une session TRACEA, vous serez invité(e) à décrire vos
+          Lors d&apos;une session TRACEA, tu seras invité(e) à décrire tes
           émotions, identifier des ressentis corporels et formuler des prises de
           conscience. Ces informations constituent des{" "}
-          <strong>données relatives à votre santé psychologique</strong> au sens
+          <strong>données relatives à ta santé psychologique</strong> au sens
           du RGPD. Elles méritent une protection particulière et un consentement
-          éclairé de votre part.
+          éclairé de ta part.
         </p>
       </div>
 
       <div className="card-base mb-6 space-y-4">
         <h3 className="font-sans text-xs font-medium tracking-widest uppercase text-warm-gray">
-          Votre consentement
+          Ton consentement
         </h3>
 
         <label className="flex items-start gap-3 cursor-pointer group">
@@ -134,8 +134,8 @@ function ConsentForm({ onConsent }: { onConsent: () => void }) {
 
       <div className="card-base mb-6">
         <p className="text-xs text-warm-gray leading-relaxed">
-          En cochant ces cases, vous donnez votre consentement libre, spécifique,
-          éclairé et univoque au traitement de vos données. Vous pouvez retirer
+          En cochant ces cases, tu donnes ton consentement libre, spécifique,
+          éclairé et univoque au traitement de tes données. Tu peux retirer
           ce consentement à tout moment depuis la page{" "}
           <Link href="/profil" className="text-terra hover:text-terra-dark underline">
             Profil
@@ -170,7 +170,7 @@ function ConsentForm({ onConsent }: { onConsent: () => void }) {
       </button>
 
       <p className="text-xs text-warm-gray text-center mt-4">
-        Vous devez cocher les trois cases pour continuer.
+        Tu dois cocher les trois cases pour continuer.
       </p>
     </div>
   );
@@ -201,12 +201,12 @@ export function RevokeConsentButton() {
           <div className="flex items-center gap-3 mb-2">
             <div className="w-2.5 h-2.5 rounded-full bg-terra flex-shrink-0" />
             <span className="font-medium text-sm text-terra-dark font-sans">
-              Êtes-vous sûr(e) ?
+              Es-tu sûr(e) ?
             </span>
           </div>
           <p className="font-body text-sm text-espresso leading-relaxed mb-4">
-            Cette action supprimera définitivement toutes vos sessions, votre
-            profil et votre consentement. Cette action est irréversible.
+            Cette action supprimera définitivement toutes tes sessions, ton
+            profil et ton consentement. Cette action est irréversible.
           </p>
           <div className="flex gap-3">
             <button onClick={handleRevoke} className="btn-primary !bg-terra-dark !text-sm">

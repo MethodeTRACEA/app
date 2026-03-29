@@ -42,3 +42,30 @@ export interface UserProfile {
   firstSessionDate: string | null;
   lastSessionDate: string | null;
 }
+
+// ===================================================================
+// TRACEA AI Response (Phase 1 — JSON structuré)
+// ===================================================================
+
+export interface TraceaAIResponse {
+  tone_level: "soft" | "moderate" | "deep";
+  risk_level: "low" | "medium" | "high";
+  module: string;
+  mirror: string;
+  hypothesis: string;
+  insight: string;
+  question: string;
+  micro_action: string;
+  pattern_observation: string;
+  progress_signal: string;
+  next_step_suggestion: string;
+  safety_message: string;
+  user_state_snapshot: {
+    dominant_emotion: string;
+    tension_level: number;
+    regulation_state: "stable" | "fluctuating" | "overloaded";
+    clarity_level: number;
+  };
+  do_not_store: boolean;
+  showSafetyResources: boolean;
+}

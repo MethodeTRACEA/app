@@ -35,39 +35,74 @@ export default function Accueil() {
     <div className="max-w-5xl mx-auto px-4 py-12">
       {/* Hero */}
       <section className="mb-16">
-        <div className="bg-espresso rounded-card p-10 md:p-16 relative overflow-hidden">
-          <div className="absolute top-[-60px] right-[-60px] w-[300px] h-[300px] rounded-full bg-terra/10 pointer-events-none" />
-          <div className="absolute bottom-[-40px] left-[-40px] w-[200px] h-[200px] rounded-full bg-sage/5 pointer-events-none" />
-          <div className="relative z-10 max-w-3xl mx-auto text-center">
-            <p className="section-label !text-terra mb-5">
-              Régulation émotionnelle structurée
+        <div className="rounded-card overflow-hidden border border-beige-dark flex flex-col md:flex-row min-h-[320px]">
+
+          {/* Gauche — espresso */}
+          <div className="bg-espresso px-10 py-16 flex flex-col justify-center md:w-1/2 relative overflow-hidden">
+            <div className="absolute top-[-60px] right-[-60px] w-[220px] h-[220px] rounded-full bg-terra/10 pointer-events-none" />
+            <div className="absolute bottom-[-40px] left-[-40px] w-[160px] h-[160px] rounded-full bg-sage/5 pointer-events-none" />
+            <div className="relative z-10">
+              <p className="text-xs font-medium tracking-widest uppercase text-terra mb-5">
+                Entraînement émotionnel · Protocole structuré
+              </p>
+              <h1 className="font-serif text-2xl md:text-3xl text-terra-light leading-tight mb-8">
+                Traverser. Reconnaître. Ancrer.
+                Conscientiser. Émerger. Aligner.
+              </h1>
+              <div className="flex gap-2 flex-wrap">
+                {[
+                  { letter: "T", bg: "#C4704A" },
+                  { letter: "R", bg: "rgba(196,112,74,0.8)" },
+                  { letter: "A", bg: "#8A9E7A" },
+                  { letter: "C", bg: "#C4998A" },
+                  { letter: "É", bg: "#9E8E80" },
+                  { letter: "A", bg: "#8A4A2F" },
+                ].map((s, i) => (
+                  <div
+                    key={i}
+                    style={{ backgroundColor: s.bg }}
+                    className="w-9 h-9 rounded-full flex items-center justify-center font-serif text-sm text-cream flex-shrink-0"
+                  >
+                    {s.letter}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Droite — crème */}
+          <div className="bg-cream px-10 py-16 flex flex-col justify-center md:w-1/2 border-t md:border-t-0 md:border-l border-beige-dark">
+            <p className="font-body text-base text-espresso/80 leading-relaxed mb-3">
+              Un entraînement structuré, fondé sur la neurophysiologie
+              du système nerveux — pour traverser ce que tu portes,
+              pas juste l&apos;observer.
             </p>
-            <h1 className="font-serif text-3xl md:text-5xl text-terra-light leading-tight mb-6">
-              Traverser. Reconnaître. Ancrer. Conscientiser. Émerger. Aligner.
-            </h1>
-            <p className="font-body text-lg text-beige-dark leading-relaxed mb-10 italic max-w-2xl mx-auto">
-              TRACÉA n&apos;est pas une méditation. C&apos;est un entraînement
-              structuré, fondé sur la neurophysiologie, avec des résultats
-              mesurables.
+            <p className="font-body text-sm text-warm-gray leading-relaxed italic mb-8">
+              Pas de jugement. Pas de diagnostic.
+              Un miroir bienveillant, disponible quand tu en as besoin.
             </p>
-            <div className="flex gap-3 flex-wrap justify-center">
+            <div className="flex gap-3 flex-wrap">
               <Link href="/session" className="btn-primary inline-block">
-                Commencer une session
+                Commencer ma traversée
               </Link>
               {stats.total > 0 && (
-                <Link href="/historique" className="btn-secondary inline-block !border-terra-light/30 !text-beige-dark hover:!bg-terra/10">
-                  Voir mon historique
+                <Link
+                  href="/historique"
+                  className="btn-secondary inline-block"
+                >
+                  Mon journal
                 </Link>
               )}
             </div>
           </div>
+
         </div>
       </section>
 
       {/* Stats */}
       {stats.total > 0 && (
         <section className="mb-16">
-          <p className="section-label">Votre parcours</p>
+          <p className="section-label">Ton parcours</p>
           <h2 className="section-title">Tableau de bord</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             <div className="card-base text-center">
@@ -160,17 +195,16 @@ export default function Accueil() {
         <p className="section-label">Le protocole</p>
         <h2 className="section-title">6 étapes, une traversée complète</h2>
         <p className="text-warm-gray max-w-xl mb-10 leading-relaxed">
-          Chaque session TRACÉA vous guide à travers un processus structuré,
-          du ressenti brut vers l&apos;action alignée.
+          Chaque traversée te guide du ressenti brut vers une vérité — et d&apos;une vérité vers un geste concret dans ta vie.
         </p>
         <div className="grid md:grid-cols-3 gap-4">
           {[
-            { n: "1", name: "Traverser", desc: "Accueillir l'émotion brute", color: "bg-terra" },
-            { n: "2", name: "Reconnaître", desc: "Nommer l'émotion primaire", color: "bg-terra" },
-            { n: "3", name: "Ancrer", desc: "Stabiliser le système nerveux", color: "bg-sage" },
-            { n: "4", name: "Conscientiser", desc: "Éclairer le message profond", color: "bg-dusty" },
-            { n: "5", name: "Émerger", desc: "Laisser apparaître la vérité", color: "bg-warm-gray" },
-            { n: "6", name: "Aligner", desc: "Poser une action concrète", color: "bg-espresso" },
+            { n: "1", name: "Traverser", desc: "Accueillir ce qui est là, sans le fuir", color: "bg-terra" },
+            { n: "2", name: "Reconnaître", desc: "Descendre vers l'émotion vraie", color: "bg-terra/80" },
+            { n: "3", name: "Ancrer", desc: "Revenir dans le corps par la respiration", color: "bg-sage" },
+            { n: "4", name: "Conscientiser", desc: "Comprendre ce que l'émotion porte", color: "bg-dusty" },
+            { n: "5", name: "Émerger", desc: "Laisser venir une vérité intérieure", color: "bg-warm-gray" },
+            { n: "6", name: "Aligner", desc: "Choisir un geste aligné avec toi", color: "bg-terra-dark" },
           ].map((step) => (
             <div key={step.n} className="flex items-stretch card-base !p-0 overflow-hidden">
               <div
@@ -195,20 +229,20 @@ export default function Accueil() {
       <section className="mt-20 mb-16">
         <p className="section-label">Ce qui nous distingue</p>
         <h2 className="font-serif text-2xl md:text-3xl text-espresso mb-6 leading-tight">
-          TRACÉA n&apos;est pas ce que vous connaissez déjà.
+          TRACÉA n&apos;est pas ce que tu connais déjà.
         </h2>
 
         <div className="space-y-5 mb-10">
           <p className="font-body text-base text-espresso/85 leading-relaxed">
-            Les applications de méditation vous apprennent à observer vos émotions sans vous y attacher.
+            Les applications de méditation t&apos;apprennent à observer tes émotions sans t&apos;y attacher.
             C&apos;est précieux. Mais quand une émotion intense surgit, observer ne suffit pas.
           </p>
           <p className="font-body text-base text-espresso/85 leading-relaxed">
-            Les trackers d&apos;humeur enregistrent ce que vous ressentez.
-            Ils ne vous aident pas à le traverser.
+            Les trackers d&apos;humeur enregistrent ce que tu ressens.
+            Ils ne t&apos;aident pas à le traverser.
           </p>
           <p className="font-body text-base text-espresso/85 leading-relaxed">
-            Les programmes de développement personnel visent vos objectifs, vos habitudes, votre performance.
+            Les programmes de développement personnel visent tes objectifs, tes habitudes, ta performance.
             Ils passent souvent à côté de ce qui bloque vraiment.
           </p>
           <p className="font-serif text-lg text-terra font-medium mt-6">
@@ -216,88 +250,51 @@ export default function Accueil() {
           </p>
           <p className="font-body text-base text-espresso/85 leading-relaxed">
             TRACÉA est un protocole neurophysiologique structuré en six étapes précises,
-            chacune avec une fonction spécifique dans votre système nerveux.
-            On ne vous demande pas d&apos;observer. On vous guide pour traverser, réguler, comprendre et agir.
+            chacune avec une fonction spécifique dans ton système nerveux.
+            On ne te demande pas d&apos;observer. On t&apos;accompagne pour traverser, stabiliser, comprendre et agir.
           </p>
           <p className="font-body text-base text-espresso/85 leading-relaxed">
             Ce n&apos;est pas de la méditation. Ce n&apos;est pas du coaching.
             C&apos;est un entraînement, comme on entraîne un muscle.
-            Et comme tout entraînement, ça se mesure, ça se pratique, et ça transforme.
+            Et comme tout entraînement, ça se pratique, ça s&apos;approfondit, et ça transforme.
           </p>
         </div>
 
-        {/* Tableau comparatif */}
-        <div className="rounded-[18px] border border-beige-dark overflow-hidden">
-          {/* En-tête */}
-          <div className="grid grid-cols-3 text-center">
-            <div className="bg-beige px-4 py-4 border-r border-beige-dark">
-              <span className="text-xs font-medium tracking-widest uppercase text-warm-gray">
-                Les autres
-              </span>
-            </div>
-            <div className="bg-terra px-4 py-4 border-r border-terra-dark/20">
-              <span className="text-xs font-medium tracking-widest uppercase text-cream">
-                TRACÉA
-              </span>
-            </div>
-            <div className="bg-sage/15 px-4 py-4">
-              <span className="text-xs font-medium tracking-widest uppercase text-sage-dark">
-                Ce que ça change
-              </span>
-            </div>
-          </div>
-
-          {/* Lignes */}
+        {/* Comparaison fluide */}
+        <div className="grid grid-cols-[1fr_auto_1fr] mb-2 px-1">
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray">
+            Les autres
+          </p>
+          <div className="w-13" />
+          <p className="text-xs font-medium tracking-widest uppercase text-terra px-5">
+            TRACÉA
+          </p>
+        </div>
+        <div className="space-y-3">
           {[
-            {
-              other: "Observer l'émotion à distance",
-              tracea: "Traverser l'émotion de l'intérieur",
-              change: "Vous n'évitez plus, vous intégrez",
-            },
-            {
-              other: "Enregistrer votre humeur du jour",
-              tracea: "Nommer l'émotion primaire cachée",
-              change: "Vous comprenez ce qui se passe vraiment",
-            },
-            {
-              other: "Respirer pour se calmer",
-              tracea: "Réguler le système nerveux (4/6s)",
-              change: "Votre corps retrouve sa sécurité",
-            },
-            {
-              other: "Analyser ses pensées",
-              tracea: "Conscientiser les schémas profonds",
-              change: "Vous voyez vos réflexes sans les juger",
-            },
-            {
-              other: "Fixer des objectifs de performance",
-              tracea: "Laisser émerger une vérité intérieure",
-              change: "Vous agissez depuis qui vous êtes",
-            },
-            {
-              other: "Suivre des habitudes",
-              tracea: "Poser une action alignée, maintenant",
-              change: "Chaque session transforme concrètement",
-            },
+            { other: "Observer l'émotion à distance", tracea: "Traverser l'émotion de l'intérieur", change: "Tu n'évites plus, tu intègres" },
+            { other: "Enregistrer ton humeur du jour", tracea: "Nommer l'émotion primaire cachée", change: "Tu comprends ce qui se passe vraiment" },
+            { other: "Respirer pour se calmer", tracea: "Ancrer le corps dans la sécurité", change: "Ton corps retrouve son calme" },
+            { other: "Analyser ses pensées", tracea: "Conscientiser les schémas profonds", change: "Tu vois tes réflexes sans les juger" },
+            { other: "Fixer des objectifs", tracea: "Laisser émerger une vérité intérieure", change: "Tu agis depuis qui tu es" },
+            { other: "Suivre des habitudes", tracea: "Poser un geste aligné, maintenant", change: "Chaque traversée transforme concrètement" },
           ].map((row, i) => (
-            <div
-              key={i}
-              className={`grid grid-cols-3 ${
-                i % 2 === 0 ? "bg-cream" : "bg-beige/30"
-              } ${i < 5 ? "border-b border-beige-dark/50" : ""}`}
-            >
-              <div className="px-4 py-4 border-r border-beige-dark/50 flex items-center">
-                <p className="font-body text-sm text-warm-gray leading-snug">
+            <div key={i} className="grid grid-cols-[1fr_auto_1fr] rounded-[14px] overflow-hidden border border-beige-dark">
+              <div className="px-5 py-5 bg-beige/40">
+                <p className="font-body text-sm text-warm-gray leading-relaxed">
                   {row.other}
                 </p>
               </div>
-              <div className="px-4 py-4 border-r border-beige-dark/50 flex items-center">
-                <p className="font-body text-sm text-espresso font-medium leading-snug">
+              <div className="flex items-center justify-center px-3 bg-cream">
+                <div className="w-7 h-7 rounded-full bg-terra flex items-center justify-center text-cream text-xs flex-shrink-0">
+                  →
+                </div>
+              </div>
+              <div className="px-5 py-5 bg-white border-l border-beige-dark">
+                <p className="font-body text-sm text-espresso font-medium leading-relaxed mb-1">
                   {row.tracea}
                 </p>
-              </div>
-              <div className="px-4 py-4 flex items-center">
-                <p className="font-body text-sm text-sage-dark italic leading-snug">
+                <p className="font-body text-xs text-sage italic mt-1">
                   {row.change}
                 </p>
               </div>
@@ -309,8 +306,8 @@ export default function Accueil() {
       {/* Quote */}
       <div className="mt-16 border-l-[3px] border-terra pl-8 py-4">
         <p className="font-body text-xl md:text-2xl italic text-espresso leading-relaxed">
-          &ldquo;Ce n&apos;est pas votre sensibilité qui vous épuise. C&apos;est
-          la lenteur de votre récupération.&rdquo;
+          &ldquo;Ce n&apos;est pas ta sensibilité qui te fragilise. C&apos;est
+          de ne jamais avoir appris à la traverser.&rdquo;
         </p>
       </div>
     </div>

@@ -5,21 +5,23 @@ import { STEPS } from "@/lib/steps";
 interface StepIndicatorProps {
   currentStep: number;
   completedSteps: number[];
+  activeSteps?: number[];
 }
 
 export function StepIndicator({
   currentStep,
   completedSteps,
+  activeSteps,
 }: StepIndicatorProps) {
   return (
     <div className="flex items-center justify-center gap-1 py-4">
       {STEPS.map((step, i) => {
         const isCompleted = completedSteps.includes(i);
         const isCurrent = i === currentStep;
-        const isFuture = !isCompleted && !isCurrent;
+        const isInactive = activeSteps !== undefined && !activeSteps.includes(i);
 
         return (
-          <div key={step.id} className="flex items-center">
+          <div key={step.id} className={`flex items-center ${isInactive ? "opacity-20" : ""}`}>
             <div className="flex flex-col items-center">
               <div
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-serif transition-all duration-300 ${

@@ -40,13 +40,13 @@ export function CookieBanner() {
           <div className="w-2.5 h-2.5 rounded-full bg-terra flex-shrink-0 mt-1.5" />
           <div>
             <h3 className="font-serif text-lg text-espresso mb-1">
-              Respect de votre vie privée
+              Respect de ta vie privée
             </h3>
             <p className="font-body text-sm text-espresso leading-relaxed">
-              TRACÉA conserve vos données de session dans une base de données
+              TRACÉA conserve tes données de session dans une base de données
               sécurisée hébergée en Union européenne (Francfort, Allemagne) via Supabase.
               Aucun cookie publicitaire ou de suivi tiers n&apos;est utilisé.
-              Seules vos préférences de consentement sont stockées localement dans votre navigateur.
+              Seules tes préférences de consentement sont stockées localement dans ton navigateur.
             </p>
           </div>
         </div>

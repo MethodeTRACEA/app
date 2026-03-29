@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { STEPS } from "@/lib/steps";
 import { useAuth } from "@/lib/auth-context";
@@ -8,16 +8,30 @@ import {
   createSessionDb,
   updateSessionDb,
 } from "@/lib/supabase-store";
-import type { SessionData, StepId } from "@/lib/types";
+import type { SessionData, StepId, TraceaAIResponse } from "@/lib/types";
 import { IntensitySlider } from "@/components/IntensitySlider";
 import { StepIndicator } from "@/components/StepIndicator";
 import { HelpPanel } from "@/components/HelpPanel";
 import { SafetyBanner } from "@/components/SafetyBanner";
+import { SafetyResources } from "@/components/SafetyResources";
+import { PatternObservation } from "@/components/PatternObservation";
 import { ConsentGate } from "@/components/ConsentGate";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import Link from "next/link";
 
-type Phase = "intro" | "session" | "mirror" | "intensity-after" | "analysis" | "complete";
+type Phase = "intro" | "welcome" | "entry-question" | "session" | "mirror" | "transitioning" | "integration" | "intensity-after" | "analysis" | "complete";
+
+// Messages de transition entre étapes (Section 4)
+const TRANSITION_MESSAGES: Record<string, string> = {
+  "traverser→reconnaitre": "Tu as posé ce qui était là. Maintenant, regardons de plus près.",
+  "reconnaitre→ancrer": "Tu as nommé ce que tu ressens. Maintenant, on va ralentir.",
+  "ancrer→conscientiser": "Ton corps a trouvé un appui. Maintenant, on peut regarder ce qui se joue.",
+  "conscientiser→emerger": "Tu as vu ce qui était en jeu. Voyons ce qui émerge.",
+  "emerger→aligner": "Quelque chose s'est clarifié. Maintenant, on le traduit en geste concret.",
+  // Transitions pour le mode court
+  "traverser→ancrer": "Tu as posé ce qui était là. Maintenant, on va ralentir.",
+  "ancrer→emerger": "Ton corps a trouvé un appui. Voyons ce qui émerge.",
+};
 
 export default function SessionPage() {
   const { user, loading } = useAuth();
@@ -39,7 +53,7 @@ export default function SessionPage() {
           Connexion requise
         </h1>
         <p className="text-warm-gray mb-6">
-          Connectez-vous pour commencer une session TRACEA et sauvegarder votre
+          Connecte-toi pour commencer une session TRACÉA et sauvegarder ta
           progression.
         </p>
         <Link href="/connexion" className="btn-primary inline-block">
@@ -76,19 +90,38 @@ function SessionContent({ userId }: { userId: string }) {
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysis, setAnalysis] = useState("");
   const [veriteInterieure, setVeriteInterieure] = useState("");
-  const [mirrorText, setMirrorText] = useState("");
+  const [mirrorData, setMirrorData] = useState<TraceaAIResponse | null>(null);
   const [mirrorLoading, setMirrorLoading] = useState(false);
   const [mirrorStepName, setMirrorStepName] = useState("");
   const [mirrorError, setMirrorError] = useState("");
+  const [lastStepSnapshot, setLastStepSnapshot] = useState<TraceaAIResponse["user_state_snapshot"] | null>(null);
+  const [modeTraversee, setModeTraversee] = useState<"complet" | "court">("complet");
+  const [depotText, setDepotText] = useState("");
+  const [showDepot, setShowDepot] = useState(true);
+  const [hadDoNotStore, setHadDoNotStore] = useState(false);
+  const [lastNextStepSuggestion, setLastNextStepSuggestion] = useState("");
+  const [lastMicroAction, setLastMicroAction] = useState("");
+  const [lastInsight, setLastInsight] = useState("");
+  const [entryQuestion, setEntryQuestion] = useState("");
+  const [transitionMessage, setTransitionMessage] = useState("");
+  const [integrationResponse, setIntegrationResponse] = useState<"yes" | "no" | "unsure" | null>(null);
+  const [integrationMessage, setIntegrationMessage] = useState("");
 
-  const step = STEPS[currentStep];
-  const completedSteps = Array.from({ length: currentStep }, (_, i) => i);
+  const STEPS_COURT = ["traverser", "ancrer", "emerger"];
+  const stepsActifs = modeTraversee === "court"
+    ? STEPS.filter(s => STEPS_COURT.includes(s.id))
+    : STEPS;
+  const step = stepsActifs[currentStep];
+  const stepActuel = stepsActifs[currentStep];
+  const activeStepsIndices = modeTraversee === "court" ? [0, 2, 4] : [0, 1, 2, 3, 4, 5];
+  const completedSteps = Array.from({ length: currentStep }, (_, i) => activeStepsIndices[i]);
+  const currentStepIndicateur = activeStepsIndices[currentStep];
 
   async function handleStartSession() {
     const s = await createSessionDb(userId, intensity, context);
     if (s) {
       setSessionId(s.id);
-      setPhase("session");
+      setPhase("welcome");
     }
   }
 
@@ -114,26 +147,33 @@ function SessionContent({ userId }: { userId: string }) {
 
     await updateSessionDb(sessionId, updates as Parameters<typeof updateSessionDb>[1]);
 
-    // Trigger mirror reflection via API Claude
+    // Trigger mirror reflection via API Claude (JSON structuré Phase 1)
     setMirrorStepName(step.name);
     setMirrorLoading(true);
-    setMirrorText("");
+    setMirrorData(null);
     setMirrorError("");
     setPhase("mirror");
 
     try {
+      const bodyPayload: Record<string, unknown> = {
+        type: "step-mirror",
+        stepId,
+        stepResponse: text,
+        previousSteps: updatedSteps,
+        context,
+        intensity,
+        userId,
+      };
+
+      // Injecter la question d'entrée comme contexte initial à l'étape Traverser
+      if (stepId === "traverser" && entryQuestion.trim()) {
+        bodyPayload.entryContext = entryQuestion;
+      }
+
       const res = await fetch("/api/tracea", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "step-mirror",
-          stepId,
-          stepResponse: text,
-          previousSteps: updatedSteps,
-          context,
-          intensity,
-          userId,
-        }),
+        body: JSON.stringify(bodyPayload),
       });
 
       if (!res.ok) {
@@ -143,25 +183,65 @@ function SessionContent({ userId }: { userId: string }) {
           errData.error || `Erreur API (${res.status}). Le reflet n'a pas pu être généré.`
         );
       } else {
-        const data = await res.json();
+        const data = await res.json() as TraceaAIResponse;
         if (data.mirror) {
-          setMirrorText(data.mirror);
+          setMirrorData(data);
+          setLastStepSnapshot(data.user_state_snapshot);
+          // Phase 2 : tracker le flag do_not_store
+          if (data.do_not_store) {
+            setHadDoNotStore(true);
+          }
+          // Phase 3 : stocker pour le résumé post-session
+          if (stepId === "aligner") {
+            if (data.next_step_suggestion) setLastNextStepSuggestion(data.next_step_suggestion);
+            if (data.micro_action) setLastMicroAction(data.micro_action);
+          }
+          if (stepId === "emerger" && data.insight) {
+            setLastInsight(data.insight);
+          }
         } else {
-          setMirrorError("La réponse de l'IA est vide. Vous pouvez continuer.");
+          setMirrorError("La réponse de l'IA est vide. Tu peux continuer.");
         }
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      setMirrorError("Impossible de contacter l'IA. Vérifiez votre connexion.");
+      setMirrorError("Impossible de contacter l'IA. Vérifie ta connexion.");
     }
     setMirrorLoading(false);
   }
 
   function handleContinueAfterMirror() {
     setText("");
-    if (currentStep < STEPS.length - 1) {
-      setCurrentStep(currentStep + 1);
-      setPhase("session");
+    if (currentStep < stepsActifs.length - 1) {
+      // Transition entre étapes (Section 4)
+      const currentStepId = stepsActifs[currentStep].id;
+      const nextStepId = stepsActifs[currentStep + 1].id;
+      const key = `${currentStepId}→${nextStepId}`;
+      const message = TRANSITION_MESSAGES[key] || "";
+      if (message) {
+        setTransitionMessage(message);
+        setPhase("transitioning");
+        setTimeout(() => {
+          setCurrentStep(currentStep + 1);
+          setPhase("session");
+        }, 2000);
+      } else {
+        setCurrentStep(currentStep + 1);
+        setPhase("session");
+      }
+    } else {
+      // Dernière étape → micro-intégration (Section 5)
+      setPhase("integration");
+    }
+  }
+
+  function handleIntegrationChoice(choice: "yes" | "no" | "unsure") {
+    setIntegrationResponse(choice);
+    if (choice === "no" || choice === "unsure") {
+      setIntegrationMessage("C'est normal. Parfois le changement se voit après.");
+      setTimeout(() => {
+        setPhase("intensity-after");
+      }, 1500);
     } else {
       setPhase("intensity-after");
     }
@@ -210,8 +290,48 @@ function SessionContent({ userId }: { userId: string }) {
       completed: true,
       intensity_after: intensityAfter,
     });
+
+    // IMPORTANT : afficher l'analyse AVANT de lancer le résumé mémoire
     setAnalysisLoading(false);
     setPhase("complete");
+
+    // Phase 2 : Générer le résumé mémoire en arrière-plan (fire-and-forget)
+    const summarizeWithTimeout = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+      try {
+        const res = await fetch("/api/tracea/summarize", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            userId,
+            sessionId,
+            steps,
+            context,
+            intensityBefore: intensity,
+            intensityAfter,
+            hadDoNotStore,
+          }),
+        });
+        clearTimeout(timeoutId);
+        const data = await res.json();
+        if (data.success) {
+          console.log("[Session] Memory summary generated successfully.");
+        } else {
+          console.warn("[Session] Memory summary failed:", data.error);
+        }
+      } catch (err) {
+        clearTimeout(timeoutId);
+        if (err instanceof DOMException && err.name === "AbortError") {
+          console.warn("[Session] Memory summary timed out after 15s.");
+        } else {
+          console.warn("[Session] Memory summary generation failed:", err);
+        }
+      }
+    };
+    summarizeWithTimeout(); // lancer sans await
   }
 
   function generateFallbackAnalysis(): string {
@@ -219,7 +339,7 @@ function SessionContent({ userId }: { userId: string }) {
     const parts: string[] = [];
 
     parts.push(
-      `Analyse de votre traversée · ${new Date().toLocaleDateString("fr-FR", {
+      `Analyse de ta traversée · ${new Date().toLocaleDateString("fr-FR", {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -232,7 +352,7 @@ function SessionContent({ userId }: { userId: string }) {
     parts.push("");
 
     if (steps.traverser) {
-      parts.push("TRAVERSER · Ce que vous avez vécu :");
+      parts.push("TRAVERSER · Ce que tu as vécu :");
       parts.push(`« ${steps.traverser.slice(0, 150)}${steps.traverser.length > 150 ? "..." : ""} »`);
       parts.push("");
     }
@@ -264,15 +384,15 @@ function SessionContent({ userId }: { userId: string }) {
 
     if (recovery > 0) {
       parts.push(
-        `Votre système nerveux a récupéré ${recovery} points d'intensité. Le protocole vous a permis de traverser cette émotion de manière structurée.`
+        `Ton système nerveux a récupéré ${recovery} points d'intensité. Le protocole t'a permis de traverser cette émotion de manière structurée.`
       );
     } else if (recovery === 0) {
       parts.push(
-        "Votre intensité est restée stable. Certaines émotions demandent plus d'une traversée."
+        "Ton intensité est restée stable. Certaines émotions demandent plus d'une traversée."
       );
     } else {
       parts.push(
-        "Votre intensité a augmenté. Cela peut arriver lors de prises de conscience profondes."
+        "Ton intensité a augmenté. Cela peut arriver lors de prises de conscience profondes."
       );
     }
 
@@ -284,9 +404,9 @@ function SessionContent({ userId }: { userId: string }) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12">
         <p className="section-label">Nouvelle session</p>
-        <h1 className="section-title">Préparer votre traversée</h1>
+        <h1 className="section-title">Préparer ta traversée</h1>
         <p className="text-warm-gray mb-8 leading-relaxed">
-          Avant de commencer, évaluez votre état actuel.
+          Avant de commencer, évalue ton état actuel.
         </p>
 
         <div className="card-base mb-6">
@@ -323,9 +443,72 @@ function SessionContent({ userId }: { userId: string }) {
           </div>
         </div>
 
-        <button onClick={handleStartSession} className="btn-primary w-full text-center">
-          Commencer la traversée
-        </button>
+        <div className="space-y-3">
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray text-center mb-4">
+            Choisir ton parcours
+          </p>
+          <button
+            onClick={() => { setModeTraversee("complet"); handleStartSession(); }}
+            className="btn-primary w-full text-center"
+          >
+            Traversée complète · 6 étapes
+          </button>
+          <button
+            onClick={() => { setModeTraversee("court"); handleStartSession(); }}
+            className="w-full py-4 px-6 rounded-2xl border-2 border-terra/30 text-terra font-medium text-base hover:border-terra hover:bg-terra-light/20 transition-all text-center"
+          >
+            Traversée courte · 3 étapes
+            <span className="block text-xs text-warm-gray font-normal mt-0.5">
+              Pour les moments d&apos;intensité élevée
+            </span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- WELCOME (Section 2) ---
+  if (phase === "welcome") {
+    return <WelcomeScreen onContinue={() => setPhase("entry-question")} />;
+  }
+
+  // --- ENTRY QUESTION (Section 3) ---
+  if (phase === "entry-question") {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 animate-fade-in">
+        <div className="text-center max-w-lg mx-auto">
+          <h2 className="font-serif text-2xl md:text-3xl text-espresso leading-relaxed mb-8">
+            Qu&apos;est-ce qui est le plus présent pour toi en ce moment ?
+          </h2>
+          <textarea
+            value={entryQuestion}
+            onChange={(e) => setEntryQuestion(e.target.value)}
+            placeholder="Décris ce que tu ressens, sans chercher les bons mots..."
+            className="w-full h-32 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 mb-6"
+          />
+          <button
+            onClick={() => {
+              setCurrentStep(0);
+              setPhase("session");
+            }}
+            className="btn-primary"
+          >
+            Continuer
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- TRANSITIONING (Section 4) ---
+  if (phase === "transitioning") {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 animate-fade-in">
+        <div className="text-center min-h-[40vh] flex items-center justify-center">
+          <p className="font-body text-lg text-cream italic leading-relaxed max-w-md">
+            {transitionMessage}
+          </p>
+        </div>
       </div>
     );
   }
@@ -334,7 +517,11 @@ function SessionContent({ userId }: { userId: string }) {
   if (phase === "session") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <StepIndicator currentStep={currentStep} completedSteps={completedSteps} />
+        <StepIndicator
+          currentStep={currentStepIndicateur}
+          completedSteps={completedSteps}
+          activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
+        />
         <div className="mt-8 animate-fade-up" key={currentStep}>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-terra rounded-full flex items-center justify-center font-serif text-lg text-cream">
@@ -356,19 +543,19 @@ function SessionContent({ userId }: { userId: string }) {
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Écrivez ici, à votre rythme..."
+              placeholder="Écris ici, à ton rythme..."
               className="w-full h-40 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
             />
             <div className="flex items-center justify-between mt-4">
               <span className="text-xs text-warm-gray">
-                Étape {currentStep + 1} sur {STEPS.length}
+                Étape {currentStep + 1} sur {stepsActifs.length}
               </span>
               <button
                 onClick={handleNextStep}
                 disabled={text.trim().length < 3}
                 className="btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {currentStep < STEPS.length - 1 ? "Étape suivante" : "Terminer"}
+                {currentStep < stepsActifs.length - 1 ? "Continuer" : "Terminer"}
               </button>
             </div>
           </div>
@@ -382,7 +569,11 @@ function SessionContent({ userId }: { userId: string }) {
   if (phase === "mirror") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <StepIndicator currentStep={currentStep} completedSteps={[...completedSteps, currentStep]} />
+        <StepIndicator
+          currentStep={currentStepIndicateur}
+          completedSteps={[...completedSteps, currentStepIndicateur]}
+          activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
+        />
         <div className="mt-8 animate-fade-up">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-sage rounded-full flex items-center justify-center font-serif text-lg text-cream">
@@ -397,7 +588,7 @@ function SessionContent({ userId }: { userId: string }) {
                 TRACEA
               </div>
               <p className="text-sm text-warm-gray italic">
-                Écoute en cours...
+                TRACÉA prend le temps de te lire...
               </p>
             </div>
           ) : mirrorError ? (
@@ -412,17 +603,108 @@ function SessionContent({ userId }: { userId: string }) {
                 {mirrorError}
               </p>
             </div>
-          ) : mirrorText ? (
-            <div className="border-l-[3px] border-sage pl-6 py-4 mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-sage" />
-                <p className="text-xs font-medium tracking-widest uppercase text-sage">
-                  Reflet
+          ) : mirrorData ? (
+            <div className="space-y-6 mb-6 animate-fade-up">
+              {/* Miroir — "Ce que tu vis" */}
+              <div className="border-l-[3px] border-sage pl-6 py-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-sage" />
+                  <p className="text-xs font-medium tracking-widest uppercase text-sage">
+                    Ce que tu vis
+                  </p>
+                </div>
+                <p className="font-body text-base text-espresso leading-relaxed">
+                  {mirrorData.mirror}
                 </p>
               </div>
-              <div className="font-body text-base text-espresso leading-relaxed whitespace-pre-wrap">
-                {mirrorText}
-              </div>
+
+              {/* Progress signal — "Ce qui évolue en toi" (Phase 3 — uniquement étapes C, É, A) */}
+              {mirrorData.progress_signal &&
+                ["conscientiser", "emerger", "aligner"].includes(step?.id || "") && (
+                <div className="flex items-start gap-2 pl-6 py-2">
+                  <span className="text-sage text-sm mt-0.5">↗</span>
+                  <div>
+                    <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-sage mb-1">
+                      Ce qui évolue en toi
+                    </p>
+                    <p className="font-body text-sm text-sage leading-relaxed">
+                      {mirrorData.progress_signal}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Hypothèse — "Ce que ça pourrait dire" */}
+              {mirrorData.hypothesis && (
+                <div className="pl-6">
+                  <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-sage/70 mb-2">
+                    Ce que ça pourrait dire
+                  </p>
+                  <p className="font-body text-base text-espresso/80 leading-relaxed italic">
+                    {mirrorData.hypothesis}
+                  </p>
+                </div>
+              )}
+
+              {/* Éclairage — pas de label */}
+              {mirrorData.insight && (
+                <p className="font-body text-base text-espresso leading-relaxed pl-6">
+                  {mirrorData.insight}
+                </p>
+              )}
+
+              {/* Question ouverte — "À explorer" */}
+              {mirrorData.question && (
+                <div className="pl-6">
+                  <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-terra/70 mb-2">
+                    À explorer
+                  </p>
+                  <p className="font-serif text-lg text-terra leading-relaxed">
+                    {mirrorData.question}
+                  </p>
+                </div>
+              )}
+
+              {/* Micro-action — "À essayer maintenant" */}
+              {mirrorData.micro_action && (
+                <div className="card-base !p-4 ml-6">
+                  <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-1">
+                    À essayer maintenant
+                  </p>
+                  <p className="font-body text-sm text-espresso leading-relaxed">
+                    {mirrorData.micro_action}
+                  </p>
+                </div>
+              )}
+
+              {/* Pattern observation — "Ce que TRACÉA remarque" (Phase 2) */}
+              {mirrorData.pattern_observation && (
+                <PatternObservation observation={mirrorData.pattern_observation} />
+              )}
+
+              {/* Next step suggestion — "Pour la prochaine fois" (Phase 3 — uniquement étape Aligner) */}
+              {mirrorData.next_step_suggestion && step?.id === "aligner" && (
+                <div className="border-l-[3px] border-sage/40 pl-5 py-3 ml-6 bg-sage/5 rounded-r-xl">
+                  <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-sage mb-1">
+                    Pour la prochaine fois
+                  </p>
+                  <p className="font-body text-sm text-espresso/80 leading-relaxed italic">
+                    {mirrorData.next_step_suggestion}
+                  </p>
+                </div>
+              )}
+
+              {/* Message de sécurité */}
+              {mirrorData.safety_message && (
+                <div className="card-base !border-l-4 !border-l-terra !p-4 ml-6 bg-terra-light/10">
+                  <p className="font-body text-sm text-espresso leading-relaxed">
+                    {mirrorData.safety_message}
+                  </p>
+                </div>
+              )}
+
+              {/* Ressources d'urgence si risk_level = high */}
+              {mirrorData.showSafetyResources && <SafetyResources />}
             </div>
           ) : null}
 
@@ -431,7 +713,7 @@ function SessionContent({ userId }: { userId: string }) {
             disabled={mirrorLoading}
             className="btn-primary w-full text-center disabled:opacity-40"
           >
-            {currentStep < STEPS.length - 1 ? "Passer à l'étape suivante" : "Évaluer mon intensité"}
+            {currentStep < stepsActifs.length - 1 ? "Continuer" : "Voir où j'en suis"}
           </button>
 
           {mirrorLoading && (
@@ -447,12 +729,56 @@ function SessionContent({ userId }: { userId: string }) {
     );
   }
 
+  // --- INTEGRATION (Section 5) ---
+  if (phase === "integration") {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 animate-fade-in">
+        <div className="text-center min-h-[40vh] flex flex-col items-center justify-center">
+          {integrationMessage ? (
+            <p className="font-body text-lg text-espresso/80 italic animate-fade-in">
+              {integrationMessage}
+            </p>
+          ) : (
+            <>
+              <p className="font-serif text-2xl text-espresso mb-6">
+                Prends 10 secondes.
+              </p>
+              <p className="font-body text-lg text-espresso/80 mb-10">
+                Est-ce que quelque chose a légèrement changé ?
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <button
+                  onClick={() => handleIntegrationChoice("yes")}
+                  className="px-6 py-3 rounded-2xl border-2 border-sage/30 text-espresso font-medium text-base hover:border-sage hover:bg-sage/10 transition-all"
+                >
+                  Oui
+                </button>
+                <button
+                  onClick={() => handleIntegrationChoice("no")}
+                  className="px-6 py-3 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-base hover:border-warm-gray hover:bg-beige transition-all"
+                >
+                  Non
+                </button>
+                <button
+                  onClick={() => handleIntegrationChoice("unsure")}
+                  className="px-6 py-3 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-base hover:border-warm-gray hover:bg-beige transition-all"
+                >
+                  Je ne sais pas
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // --- INTENSITY AFTER ---
   if (phase === "intensity-after") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12">
         <p className="section-label">Fin de traversée</p>
-        <h1 className="section-title">Réévaluez votre intensité</h1>
+        <h1 className="section-title">Où en es-tu maintenant ?</h1>
         <div className="card-base mb-6">
           <IntensitySlider
             value={intensityAfter}
@@ -472,7 +798,7 @@ function SessionContent({ userId }: { userId: string }) {
           </div>
         </div>
         <button onClick={handleIntensityAfterDone} className="btn-primary w-full text-center">
-          Voir mon analyse
+          Voir ma traversée
         </button>
       </div>
     );
@@ -480,26 +806,19 @@ function SessionContent({ userId }: { userId: string }) {
 
   // --- ANALYSIS / COMPLETE ---
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
-      <p className="section-label">Analyse de session</p>
-      <h1 className="section-title">Votre traversée</h1>
+    <div className="max-w-2xl mx-auto px-4 py-12 animate-fade-in">
+      <h1 className="section-title">Ta traversée</h1>
       {analysisLoading ? (
         <div className="card-base text-center py-16">
           <div className="font-serif text-3xl text-terra mb-4 animate-pulse-gentle">TRACEA</div>
-          <p className="text-warm-gray">Génération de votre analyse...</p>
+          <p className="text-warm-gray">TRACÉA prend le temps de te lire...</p>
           <p className="text-xs text-warm-gray/60 mt-2 italic">
-            L&apos;IA miroir analyse votre parcours...
+            Un instant de recul...
           </p>
         </div>
       ) : (
         <>
           <div className="card-base mb-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-2 h-2 rounded-full bg-sage" />
-              <span className="text-xs font-medium tracking-widest uppercase text-sage">
-                Analyse miroir · IA non projective
-              </span>
-            </div>
             <div className="font-body text-base text-espresso leading-relaxed whitespace-pre-wrap">
               {analysis}
             </div>
@@ -542,48 +861,202 @@ function SessionContent({ userId }: { userId: string }) {
             </div>
           </div>
 
+          {/* Résumé post-session enrichi (Phase 3) */}
+          {lastStepSnapshot && (
+            <div className="card-base mb-6">
+              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
+                Ce que TRACÉA a repéré
+              </p>
+              <div className="space-y-2">
+                <p className="font-body text-sm text-espresso">
+                  <span className="text-warm-gray">Émotion dominante :</span>{" "}
+                  {lastStepSnapshot.dominant_emotion}
+                </p>
+                <p className="font-body text-sm text-espresso">
+                  <span className="text-warm-gray">Niveau de tension :</span>{" "}
+                  {lastStepSnapshot.tension_level}/10
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Une chose à retenir */}
+          {lastInsight && (
+            <div className="card-base mb-6">
+              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
+                Une chose à retenir
+              </p>
+              <p className="font-body text-base text-espresso leading-relaxed">
+                {lastInsight}
+              </p>
+            </div>
+          )}
+
           {veriteInterieure && (
             <div className="border-l-[3px] border-terra pl-6 py-3 mb-6">
               <p className="text-xs font-medium tracking-widest uppercase text-terra mb-2">
-                Votre vérité intérieure
+                Ta vérité intérieure
               </p>
               <p className="font-body text-xl italic text-espresso">
                 &ldquo;{veriteInterieure}&rdquo;
               </p>
             </div>
           )}
-          <div className="flex gap-3 flex-wrap">
-            <button onClick={() => router.push("/historique")} className="btn-secondary">
-              Voir mon historique
-            </button>
-            <button
-              onClick={() => {
-                setPhase("intro");
-                setCurrentStep(0);
-                setText("");
-                setSessionId(null);
-                setSteps({
-                  traverser: "", reconnaitre: "", ancrer: "",
-                  conscientiser: "", emerger: "", aligner: "",
-                });
-                setIntensity(5);
-                setIntensityAfter(3);
-                setAnalysis("");
-                setVeriteInterieure("");
-                setMirrorText("");
-              }}
-              className="btn-primary"
-            >
-              Nouvelle session
-            </button>
-          </div>
+
+          {/* Micro-action + Next step suggestion (Phase 3) */}
+          {(lastMicroAction || lastNextStepSuggestion) && (
+            <div className="card-base mb-6 space-y-4">
+              {lastMicroAction && (
+                <div>
+                  <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
+                    À essayer maintenant
+                  </p>
+                  <p className="font-body text-sm text-espresso leading-relaxed">
+                    {lastMicroAction}
+                  </p>
+                </div>
+              )}
+              {lastNextStepSuggestion && (
+                <div className="border-l-[3px] border-sage/40 pl-4 py-2">
+                  <p className="text-xs font-medium tracking-widest uppercase text-sage mb-1">
+                    Pour la prochaine fois
+                  </p>
+                  <p className="font-body text-sm text-espresso/80 leading-relaxed italic">
+                    {lastNextStepSuggestion}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {showDepot ? (
+            <div className="card-base mb-6 p-6">
+              <p className="font-serif text-lg text-espresso mb-2">
+                Qu&apos;est-ce que tu veux porter avec toi en quittant cet espace ?
+              </p>
+              <p className="font-body text-sm text-warm-gray leading-relaxed mb-4">
+                Un mot, une image, une intention. Ou rien. Reste un instant avant de repartir.
+              </p>
+              <textarea
+                value={depotText}
+                onChange={(e) => setDepotText(e.target.value)}
+                placeholder="Ce que je veux garder avec moi..."
+                className="w-full px-4 py-3 bg-beige/50 rounded-xl text-espresso font-sans text-base border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 resize-none mb-4"
+                rows={3}
+              />
+              <button
+                onClick={() => setShowDepot(false)}
+                className="btn-primary w-full text-center"
+              >
+                Continuer
+              </button>
+            </div>
+          ) : (
+            /* Écran de fin (Section 6) */
+            <div className="text-center py-8 animate-fade-in">
+              <h2 className="font-serif text-2xl text-espresso mb-4">
+                Ta traversée est terminée.
+              </h2>
+              <p className="font-body text-base text-espresso/70 leading-relaxed mb-2">
+                Tu peux revenir quand tu veux.
+              </p>
+              <p className="font-body text-base text-espresso/70 leading-relaxed mb-8">
+                Plus tu pratiques, plus ça devient naturel.
+              </p>
+              <button
+                onClick={() => router.push("/")}
+                className="btn-primary mb-4"
+              >
+                Revenir plus tard
+              </button>
+              <div>
+                <Link
+                  href="/profil"
+                  className="text-sm text-warm-gray hover:text-terra transition-colors underline underline-offset-2"
+                >
+                  Voir mon profil
+                </Link>
+              </div>
+            </div>
+          )}
 
           <p className="text-xs text-warm-gray text-center mt-8 italic">
-            Cette analyse est un reflet structuré de ce que vous avez exprimé.
+            Cette analyse est un reflet structuré de ce que tu as exprimé.
             Elle ne constitue ni un diagnostic, ni un conseil thérapeutique.
           </p>
         </>
       )}
+    </div>
+  );
+}
+
+// ===================================================================
+// ÉCRAN D'ACCUEIL DE SESSION (Section 2)
+// ===================================================================
+
+function WelcomeScreen({ onContinue }: { onContinue: () => void }) {
+  const [visible, setVisible] = useState([false, false, false, false]);
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setVisible((v) => { const n = [...v]; n[0] = true; return n; }), 100),
+      setTimeout(() => setVisible((v) => { const n = [...v]; n[1] = true; return n; }), 400),
+      setTimeout(() => setVisible((v) => { const n = [...v]; n[2] = true; return n; }), 700),
+      setTimeout(() => setVisible((v) => { const n = [...v]; n[3] = true; return n; }), 1000),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-16">
+      <div className="text-center min-h-[50vh] flex flex-col items-center justify-center space-y-6">
+        <h1
+          className="font-serif text-3xl text-espresso transition-opacity duration-500"
+          style={{ opacity: visible[0] ? 1 : 0 }}
+        >
+          Bienvenue dans ta traversée
+        </h1>
+
+        <div
+          className="space-y-3 max-w-md transition-opacity duration-500"
+          style={{ opacity: visible[1] ? 1 : 0 }}
+        >
+          <p className="font-body text-base text-espresso/80 leading-relaxed">
+            Ici, tu n&apos;as rien à réussir.
+          </p>
+          <p className="font-body text-base text-espresso/80 leading-relaxed">
+            Juste à observer ce qui se passe en toi.
+          </p>
+        </div>
+
+        <div
+          className="space-y-3 max-w-md transition-opacity duration-500"
+          style={{ opacity: visible[2] ? 1 : 0 }}
+        >
+          <p className="font-body text-base text-espresso/80 leading-relaxed">
+            TRACÉA ne te donne pas des réponses.
+          </p>
+          <p className="font-body text-base text-espresso/80 leading-relaxed">
+            TRACÉA t&apos;aide à te comprendre.
+          </p>
+        </div>
+
+        <p
+          className="font-serif text-lg text-terra italic transition-opacity duration-500"
+          style={{ opacity: visible[2] ? 1 : 0 }}
+        >
+          Ce n&apos;est pas une thérapie. C&apos;est un entraînement.
+        </p>
+
+        <div
+          className="pt-4 transition-opacity duration-500"
+          style={{ opacity: visible[3] ? 1 : 0 }}
+        >
+          <button onClick={onContinue} className="btn-primary">
+            Commencer
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

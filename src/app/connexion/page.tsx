@@ -44,7 +44,7 @@ export default function ConnexionPage() {
           <span className="text-white text-2xl">✓</span>
         </div>
         <h1 className="font-serif text-2xl text-espresso mb-3">
-          Vérifiez votre email
+          Vérifie ton email
         </h1>
         <p className="font-body text-base text-warm-gray leading-relaxed mb-6">
           Un lien de connexion a été envoyé à{" "}
@@ -52,8 +52,8 @@ export default function ConnexionPage() {
           pour accéder à TRACEA.
         </p>
         <p className="text-xs text-warm-gray">
-          Le lien est valide pendant 1 heure. Vérifiez vos spams si vous ne le
-          trouvez pas.
+          Le lien est valide pendant 1 heure. Vérifie tes spams si tu ne le
+          trouves pas.
         </p>
         <button
           onClick={() => {
@@ -80,7 +80,7 @@ export default function ConnexionPage() {
       <div className="card-base">
         <h1 className="font-serif text-xl text-espresso mb-1">Connexion</h1>
         <p className="text-sm text-warm-gray mb-6">
-          Entrez votre email pour recevoir un lien de connexion sécurisé. Pas de
+          Entre ton email pour recevoir un lien de connexion sécurisé. Pas de
           mot de passe nécessaire.
         </p>
 
@@ -97,7 +97,7 @@ export default function ConnexionPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="vous@exemple.fr"
+              placeholder="ton@email.fr"
               required
               className="w-full px-4 py-3 bg-beige/50 rounded-xl text-espresso font-sans text-sm border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
             />
@@ -120,7 +120,7 @@ export default function ConnexionPage() {
       </div>
 
       <p className="text-xs text-warm-gray text-center mt-6 leading-relaxed">
-        En vous connectant, vous acceptez nos{" "}
+        En te connectant, tu acceptes nos{" "}
         <Link
           href="/conditions-utilisation"
           className="text-terra hover:text-terra-dark underline"

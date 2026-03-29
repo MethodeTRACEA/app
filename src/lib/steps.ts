@@ -9,23 +9,26 @@ export const STEPS: StepDefinition[] = [
     description:
       "Entrer en contact direct avec ce qui se vit intérieurement, sans fuir, sans analyser, sans chercher à apaiser immédiatement.",
     question:
-      "Que se passe-t-il en vous, là, maintenant ? Décrivez ce que vous ressentez sans chercher à l'expliquer.",
+      "Que se passe-t-il en toi, là, maintenant ? Décris ce que tu ressens sans chercher à l'expliquer.",
     help: {
       comprendre:
-        "La traversée est la première étape obligatoire. Aucune clarification ni régulation n'est possible tant que l'émotion n'a pas été rencontrée telle qu'elle se présente. Il s'agit d'accueillir l'émotion brute au moment où elle surgit.",
+        "Traverser ne veut pas dire comprendre, ni résoudre. Ça veut dire rester là, avec ce qui est présent, sans le fuir et sans le forcer à partir. L'émotion que tu portes en ce moment a quelque chose à te dire — mais elle ne peut le dire que si tu acceptes de la regarder en face, même une seconde. C'est ça, traverser.",
       sousQuestions: [
-        "Où sentez-vous cette émotion dans votre corps ?",
-        "Si cette sensation avait une couleur, laquelle serait-ce ?",
-        "À quelle intensité évaluez-vous ce que vous ressentez ?",
-        "Depuis combien de temps portez-vous cela ?",
+        "Où est-ce que tu sens quelque chose dans ton corps en ce moment — ventre, poitrine, gorge, épaules ?",
+        "Si tu devais donner une forme ou une couleur à ce que tu ressens, ce serait quoi ?",
+        "Est-ce que c'est lourd, serré, vide, agité, engourdi ?",
+        "Depuis combien de temps tu portes ça ?",
+        "Est-ce qu'il y a quelque chose que tu évites de regarder là-dedans ?",
       ],
       exemples: [
-        "J'ai une boule au ventre, je ne sais pas trop pourquoi.",
-        "Je sens une pression dans la poitrine, comme un poids.",
-        "Je suis agité, mes pensées tournent en boucle.",
+        "J'ai une boule au ventre depuis ce matin, je sais pas vraiment pourquoi.",
+        "Je sens une pression dans la poitrine, comme si quelque chose pesait.",
+        "Je suis agitée, mes pensées tournent en boucle et je n'arrive pas à me poser.",
+        "Il y a comme un vide. Pas de larmes, pas de mots. Juste un vide.",
+        "Je me sens à fleur de peau. La moindre chose me touche trop fort.",
       ],
       bloque:
-        "Si vous ne trouvez pas les mots, commencez simplement par décrire une sensation physique. Même 'je ne sais pas ce que je ressens' est une réponse valide. L'important est de se tourner vers l'intérieur.",
+        "Si les mots ne viennent pas, commence par le corps. Pose une main sur ton ventre ou ta poitrine. Sens ce qui se passe là, maintenant. Même 'je ne sais pas ce que je ressens' est une vraie réponse — écris-le. Le simple fait de se tourner vers l'intérieur, c'est déjà traverser.",
     },
   },
   {
@@ -36,23 +39,26 @@ export const STEPS: StepDefinition[] = [
     description:
       "Identifier l'émotion réelle, la nommer. Distinguer l'émotion primaire de l'émotion secondaire ou des réactions défensives.",
     question:
-      "Sous la surface de ce que vous ressentez, quelle est l'émotion véritable ? Quelle est l'émotion primaire ?",
+      "Sous la surface de ce que tu ressens, quelle est l'émotion véritable ? Quelle est l'émotion primaire ?",
     help: {
       comprendre:
-        "Une émotion secondaire (colère, agacement) cache souvent une émotion primaire (peur, tristesse, honte). Reconnaître l'émotion primaire permet de retrouver la lucidité intérieure et d'accéder à la compréhension authentique.",
+        "Ce qu'on ressent en premier — la colère, l'agitation, le contrôle, l'irritation — est souvent une couche de protection. En dessous, il y a quelque chose de plus tendre, de plus vulnérable : une peur, une tristesse, une honte, un besoin d'amour. Reconnaître, c'est descendre sous la première couche pour toucher ce qui est vraiment là. Ce n'est pas toujours confortable — mais c'est là que se trouve la vérité.",
       sousQuestions: [
-        "Est-ce que ce que vous ressentez cache autre chose en dessous ?",
-        "Si vous enlevez la première couche, que reste-t-il ?",
-        "Est-ce de la colère, de la tristesse, de la peur, ou de la honte ?",
-        "À quel moment avez-vous déjà ressenti quelque chose de semblable ?",
+        "Est-ce que ce que tu ressens en surface cache autre chose en dessous ?",
+        "Si tu enlèves la colère ou l'agitation, qu'est-ce qui reste ?",
+        "Est-ce que tu as peur de quelque chose ? Peur de quoi exactement ?",
+        "Est-ce qu'il y a de la tristesse là-dedans, même cachée ?",
+        "Est-ce qu'une partie de toi se sent seule, incomprise, ou indigne ?",
       ],
       exemples: [
-        "Je croyais être en colère mais en fait j'ai peur d'être abandonné.",
+        "Je croyais être en colère mais en fait j'ai peur d'être abandonné·e.",
         "Sous mon irritation, il y a de la tristesse. Je me sens invisible.",
-        "L'émotion primaire c'est la honte. Je me sens inadéquat.",
+        "Je contrôle tout parce que j'ai peur que si je lâche, tout s'effondre.",
+        "L'émotion primaire c'est la honte. Je me sens de trop.",
+        "En dessous de la fatigue, il y a un chagrin que je n'ai jamais vraiment accueilli.",
       ],
       bloque:
-        "Les quatre émotions primaires principales sont : la peur, la colère, la tristesse et la joie. Parfois, la honte ou la culpabilité sont aussi présentes. Demandez-vous : si j'enlevais toutes les défenses, que resterait-il ?",
+        "Les émotions primaires les plus courantes sont : la peur, la tristesse, la colère profonde, la honte, et le besoin d'amour ou de connexion. Pose-toi cette question simple : si j'enlevais toutes mes défenses, si je n'avais plus besoin de me protéger, qu'est-ce que je ressentirais vraiment ?",
     },
   },
   {
@@ -63,23 +69,26 @@ export const STEPS: StepDefinition[] = [
     description:
       "Stabiliser le système nerveux, revenir dans le corps, réduire la charge émotionnelle. L'ancrage est une étape somatique essentielle.",
     question:
-      "Prenez un instant pour respirer. Sentez vos pieds au sol, vos mains sur vos genoux. Décrivez votre état corporel maintenant.",
+      "Prends un instant pour respirer. Sens tes pieds au sol, tes mains sur tes genoux. Décris ton état corporel maintenant.",
     help: {
       comprendre:
-        "Sans ancrage, l'étape suivante (conscientiser) devient confuse ou impossible. L'apaisement somatique permet de rendre l'émotion travaillable et compréhensible. Le corps est un vecteur d'apaisement et un repère de sécurité interne.",
+        "Quand une émotion forte est présente, le corps entre dans un état d'alerte — le souffle se raccourcit, les muscles se contractent, la pensée s'emballe. Ancrer, c'est revenir dans le corps pour lui dire : tu es en sécurité maintenant. Pas en niant ce qui se passe — en créant assez de stabilité pour que la suite soit possible. Le guide de respiration est là pour t'aider. Utilise-le.",
       sousQuestions: [
-        "Pouvez-vous sentir vos pieds au sol ?",
-        "En respirant lentement (4s inspiré, 6s expiré), que remarquez-vous ?",
-        "Y a-t-il un endroit de votre corps qui est calme et stable ?",
-        "Que se passe-t-il dans votre corps quand vous ralentissez ?",
+        "Est-ce que tu sens tes pieds au sol en ce moment ?",
+        "Pose les deux mains à plat sur tes cuisses — qu'est-ce que tu sens sous tes paumes ?",
+        "Après quelques respirations lentes, qu'est-ce qui a changé dans ton corps ?",
+        "Y a-t-il un endroit dans ton corps qui se sent calme ou stable, même légèrement ?",
+        "Qu'est-ce que tu entends autour de toi là, maintenant ?",
       ],
       exemples: [
         "En respirant, la pression dans ma poitrine diminue un peu.",
         "Je sens mes pieds, le sol est solide. Ça m'aide à me recentrer.",
-        "Mon ventre se détend légèrement. L'agitation baisse.",
+        "Mon ventre se détend légèrement. L'agitation baisse d'un cran.",
+        "Je remarque la chaleur de mes mains. Ça m'ancre dans mon corps.",
+        "En comptant mes souffles, les pensées ralentissent un peu.",
       ],
       bloque:
-        "Essayez la respiration 4/6 : inspirez par le nez pendant 4 secondes, expirez par la bouche pendant 6 secondes. Répétez 3 fois. Puis décrivez simplement ce qui a changé dans votre corps.",
+        "Essaie la respiration guidée : inspire 4 secondes, expire 6 secondes. Répète trois fois. Si même ça c'est trop, pose juste une main sur ton cœur et reste là une minute. Sens le mouvement de ta respiration sous ta main. C'est suffisant.",
     },
   },
   {
@@ -90,23 +99,27 @@ export const STEPS: StepDefinition[] = [
     description:
       "Éclairer le message profond de l'émotion, relier l'expérience du moment à ce qu'elle révèle. Comprendre ce qui se joue réellement.",
     question:
-      "Maintenant que vous êtes plus stable, que comprenez-vous de cette émotion ? Que révèle-t-elle sur ce qui est important pour vous ?",
+      "Maintenant que tu es plus stable, que comprends-tu de cette émotion ? Que révèle-t-elle sur ce qui est important pour toi ?",
     help: {
       comprendre:
-        "La conscientisation transforme l'émotion en information intérieure. Elle permet de voir ce qui a été touché, qu'il s'agisse d'un besoin, d'une valeur ou d'une blessure, et de distinguer la réaction du besoin véritable.",
+        "L'émotion que tu as traversée n'est pas un accident. Elle porte un message — sur un besoin non satisfait, sur une blessure ancienne, sur quelque chose qui compte profondément pour toi. Conscientiser, c'est écouter ce message. C'est aussi l'étape où tu peux commencer à regarder tes réactions non pas comme des défauts, mais comme des mécanismes de survie qui ont eu une raison d'être. Ce que tu portes avait du sens. Il protège quelque chose.",
       sousQuestions: [
-        "Quel besoin non satisfait cette émotion révèle-t-elle ?",
-        "Quelle valeur profonde a été touchée ?",
-        "Que vous dit cette émotion sur ce qui compte vraiment pour vous ?",
-        "Y a-t-il un schéma qui se répète dans votre vie ?",
+        "Quel besoin cette émotion révèle-t-elle — besoin de sécurité, d'amour, de reconnaissance, de liberté ?",
+        "Est-ce que tu as déjà ressenti quelque chose de semblable, plus tôt dans ta vie ?",
+        "Y a-t-il une partie de toi qui a l'habitude de réagir comme ça pour se protéger ?",
+        "Si cette émotion pouvait parler, que dirait-elle ?",
+        "Où dans ton corps est-ce que cette histoire vit depuis longtemps ?",
+        "Y a-t-il un lien avec ta foi, avec le sens, avec quelque chose de plus grand que toi ?",
       ],
       exemples: [
-        "Cette peur d'abandon révèle mon besoin de sécurité affective.",
-        "Ma colère me dit que ma valeur de respect a été franchie.",
-        "Je comprends que je porte le poids d'une attente qui n'est pas la mienne.",
+        "Cette peur d'abandon révèle mon besoin de sécurité affective — j'ai appris très tôt que les gens partent.",
+        "Ma colère me dit que quelque chose d'important pour moi n'a pas été respecté.",
+        "Je comprends que je porte le poids d'une attente qui n'est pas la mienne — j'ai appris à disparaître pour survivre.",
+        "Il y a une partie de moi qui fait tout pour être aimée, même au prix de se perdre.",
+        "Quelque chose en moi cherche la paix — pas juste l'absence de conflit, mais une paix vraie.",
       ],
       bloque:
-        "Demandez-vous simplement : si cette émotion pouvait parler, que dirait-elle ? Quel message essaie-t-elle de me transmettre ? Qu'est-ce qui est vraiment important ici ?",
+        "Demande-toi simplement : si cette émotion était une enfant en moi, que vivrait-elle ? De quoi aurait-elle besoin ? Parfois, nommer la partie blessée suffit à commencer à comprendre. Tu n'as pas besoin de tout expliquer — une seule phrase juste vaut mieux qu'un long raisonnement.",
     },
   },
   {
@@ -117,23 +130,26 @@ export const STEPS: StepDefinition[] = [
     description:
       "Laisser apparaître une nouvelle vérité intérieure issue du processus. Ce qui est juste, clair et aligné après le travail émotionnel.",
     question:
-      "Après ce parcours intérieur, quelle vérité émerge ? Que savez-vous maintenant que vous ne voyiez pas clairement avant ?",
+      "Après ce parcours intérieur, quelle vérité émerge ? Que sais-tu maintenant que tu ne voyais pas clairement avant ?",
     help: {
       comprendre:
-        "L'émergence n'est pas une fabrication mentale\u00A0: elle se produit lorsque l'émotion a été traversée, reconnue, ancrée et conscientisée. C'est un changement intérieur réel, une nouvelle compréhension de soi.",
+        "L'émergence n'est pas quelque chose que tu fabriques — c'est quelque chose que tu laisses venir. Après avoir traversé, reconnu, ancré et conscientisé, quelque chose se dépose. Une évidence, un soulagement, un regard différent sur toi-même ou sur la situation. Ce n'est pas toujours spectaculaire. Parfois c'est juste une phrase simple qui sonne juste. Parfois c'est un silence qui dit tout. Les deux sont valides.",
       sousQuestions: [
-        "Qu'est-ce qui est devenu plus clair ?",
-        "Quelle phrase résume ce que vous comprenez maintenant ?",
-        "Si vous deviez retenir une seule chose de cette session, ce serait quoi ?",
-        "Que diriez-vous à quelqu'un qui vit la même chose ?",
+        "Qu'est-ce qui est devenu plus clair après cette traversée ?",
+        "Est-ce qu'il y a une phrase qui résume ce que tu comprends maintenant ?",
+        "Est-ce que quelque chose s'est allégé, même légèrement ?",
+        "Qu'est-ce que tu voudrais te dire à toi-même après ce parcours ?",
+        "Si tu regardes la situation depuis maintenant, qu'est-ce que tu vois différemment ?",
       ],
       exemples: [
         "Je n'ai pas besoin de l'approbation des autres pour me sentir valable.",
-        "Ma fatigue n'est pas de la faiblesse, c'est un signal que je m'oublie.",
+        "Ma fatigue n'est pas de la faiblesse — c'est un signal que je m'oublie depuis trop longtemps.",
         "J'ai le droit de poser des limites, même avec les gens que j'aime.",
+        "Ce que je prenais pour de l'échec était en fait de la survie.",
+        "Je commence à comprendre que je mérite d'être vu·e — pas seulement utile.",
       ],
       bloque:
-        "Ne cherchez pas une vérité parfaite. C'est souvent une phrase simple, évidente, qui vous touche quand vous la formulez. Si rien ne vient, écrivez : 'Ce que je sais maintenant, c'est que...' et laissez la suite venir.",
+        "Ne cherche pas une vérité parfaite ou profonde. C'est souvent une phrase simple, qui te touche quand tu la formules. Si rien ne vient, essaie cette amorce : 'Ce que je sais maintenant, c'est que...' et laisse venir ce qui vient, sans le juger. Le vide aussi peut être une émergence — il dit que quelque chose s'est posé.",
     },
   },
   {
@@ -144,23 +160,26 @@ export const STEPS: StepDefinition[] = [
     description:
       "Mettre en actes concrets la vérité intérieure émergée. L'alignement est l'intégration dans la matière, la cohérence retrouvée.",
     question:
-      "Quelle action concrète, même petite, allez-vous poser pour honorer cette vérité ? Que changez-vous dès aujourd'hui ?",
+      "Quelle action concrète, même petite, vas-tu poser pour honorer cette vérité ? Que changes-tu dès aujourd'hui ?",
     help: {
       comprendre:
-        "Sans alignement, le processus reste théorique. L'action finalise la transformation et permet l'évolution durable. Il ne s'agit pas d'un grand bouleversement, mais d'un geste cohérent avec ce qui a émergé.",
+        "Aligner, c'est choisir un geste — même minuscule — qui honore ce qui vient d'émerger. Pas une transformation héroïque. Pas une résolution de tout changer. Juste un geste cohérent avec ta vérité. Ça peut être une conversation, une limite, un temps pour toi, ou même un acte symbolique — allumer une bougie, écrire une lettre que tu n'envoies pas, marcher en portant consciemment ce que tu viens de traverser. Ces gestes ancrent la transformation dans le corps et dans le temps.",
       sousQuestions: [
-        "Quel est le plus petit pas que vous pouvez faire dès maintenant ?",
-        "Y a-t-il une conversation à avoir, une décision à prendre ?",
-        "Qu'allez-vous arrêter de faire ? Commencer à faire ?",
-        "Comment allez-vous vous rappeler cette vérité demain ?",
+        "Quel est le plus petit geste que tu peux poser dès aujourd'hui ?",
+        "Y a-t-il quelque chose que tu dois arrêter de faire pour honorer cette vérité ?",
+        "Y a-t-il quelque chose que tu dois commencer à faire, même tout doucement ?",
+        "Est-ce qu'il y a une conversation à avoir, une limite à poser, une décision à honorer ?",
+        "Est-ce qu'un geste symbolique te parle — quelque chose qui ancre ça dans ton corps ?",
       ],
       exemples: [
         "Je vais dire à mon collègue que j'ai besoin de plus de clarté dans nos échanges.",
-        "Je m'accorde 15 minutes de silence chaque matin, sans écran.",
-        "Je vais écrire cette lettre que je repousse depuis des semaines.",
+        "Ce soir, je m'accorde 20 minutes sans écran, juste pour être avec moi.",
+        "J'écris cette lettre que je repousse depuis des semaines — même si je ne l'envoie pas.",
+        "Je dis non à cette invitation qui ne me ressemble pas.",
+        "J'allume une bougie et je pose consciemment ce que j'ai traversé aujourd'hui.",
       ],
       bloque:
-        "L'action n'a pas besoin d'être spectaculaire. 'Je vais prendre 5 minutes pour moi ce soir' est un alignement valide. L'important est que l'action soit en lien avec la vérité qui a émergé.",
+        "L'action n'a pas besoin d'être visible ou spectaculaire. 'Je vais prendre 5 minutes pour moi ce soir' est un alignement valide. 'Je vais remarquer quand je m'oublie' aussi. L'important, c'est que le geste soit en lien avec ce qui a émergé — pas avec ce que tu penses devoir faire.",
     },
   },
 ];

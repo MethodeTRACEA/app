@@ -53,6 +53,7 @@ create table public.sessions (
   action_alignee text,
   analysis text,
   completed boolean default false,
+  note_entre_sessions text,
   created_at timestamptz default now()
 );
 

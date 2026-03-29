@@ -79,6 +79,7 @@ export async function updateSessionDb(
     action_alignee: string;
     analysis: string;
     completed: boolean;
+    note_entre_sessions: string;
   }>
 ): Promise<void> {
   await supabase.from("sessions").update(updates).eq("id", sessionId);

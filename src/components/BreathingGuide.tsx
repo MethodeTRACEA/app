@@ -117,9 +117,9 @@ export function BreathingGuide() {
       </div>
 
       <p className="text-sm text-espresso/70 mb-6 leading-relaxed">
-        Si vous le souhaitez, prenez un moment pour respirer avec ce guide.
+        Si tu le souhaites, prends un moment pour respirer avec ce guide.
         4 secondes d&apos;inspiration, 6 secondes d&apos;expiration.
-        Laissez votre corps trouver son rythme.
+        Laisse ton corps trouver son rythme.
       </p>
 
       {/* Breathing circle */}
@@ -135,7 +135,7 @@ export function BreathingGuide() {
           {/* Animated circle */}
           <div
             className={`w-32 h-32 rounded-full flex items-center justify-center transition-transform ${
-              active ? "bg-sage/30" : "bg-sage/15"
+              active ? "bg-sage/30 animate-breathe" : "bg-sage/15"
             } ${circleSize}`}
             style={{
               transitionDuration: active

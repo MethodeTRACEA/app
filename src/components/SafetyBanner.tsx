@@ -12,12 +12,12 @@ export function SafetyBanner({ intensity }: SafetyBannerProps) {
       <div className="flex items-center gap-3 mb-2">
         <div className="w-2.5 h-2.5 rounded-full bg-terra animate-pulse-gentle flex-shrink-0" />
         <span className="font-medium text-sm text-terra-dark">
-          Votre intensité est élevée
+          Ton intensité est élevée
         </span>
       </div>
       <p className="text-sm text-espresso leading-relaxed font-body">
-        Si vous traversez une période difficile ou ressentez une détresse
-        importante, nous vous encourageons à consulter un professionnel de santé
+        Si tu traverses une période difficile ou ressens une détresse
+        importante, nous t&apos;encourageons à consulter un professionnel de santé
         mentale. TRACÉA travaille avec ce qui est stable, jamais contre ce qui
         est encore fragile.
       </p>
