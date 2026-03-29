@@ -30,14 +30,7 @@ export default function RootLayout({
           <OnboardingRedirect />
           <main className="flex-1">{children}</main>
           <footer className="bg-espresso text-beige-dark text-center py-8 text-sm tracking-wide">
-            <div className="flex flex-col items-center mb-2">
-              <svg width="32" height="32" viewBox="0 0 100 100" fill="none" aria-hidden="true" className="text-terra-light mb-1">
-                <path d="M 38 12 C 60 6, 85 18, 90 45 C 95 72, 78 92, 50 94 C 22 96, 6 78, 8 52 C 10 30, 25 16, 38 12" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none" />
-                <path d="M 42 28 C 58 24, 72 34, 74 50 C 76 66, 64 78, 48 78 C 32 78, 22 66, 24 50" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none" />
-                <circle cx="50" cy="44" r="4" fill="currentColor" />
-              </svg>
-              <span className="font-serif text-sm tracking-[0.2em] text-terra-light">TRACÉA</span>
-            </div>
+            <img src="/images/tracea-logo-terra-hd.png" alt="TRACÉA" className="h-14 mx-auto mb-2 object-contain" />
             <p className="mb-4">
               Stabilité émotionnelle · Entraînement physiologique
             </p>

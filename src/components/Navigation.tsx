@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { NightMode } from "@/components/NightMode";
-import { TraceaSymbol } from "@/components/TraceaSymbol";
 
 const publicLinks = [
   { href: "/", label: "Accueil" },
@@ -28,11 +28,23 @@ export function Navigation() {
     <nav className="sticky top-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-beige-dark">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-14">
-          <Link href="/" className="flex flex-col items-center flex-shrink-0 -my-1">
-            <TraceaSymbol size={28} className="text-espresso dark:text-terra" />
-            <span className="font-serif text-[10px] tracking-[0.2em] text-espresso dark:text-terra-light leading-none">
-              TRACÉA
-            </span>
+          <Link href="/" className="flex-shrink-0">
+            <Image
+              src="/images/tracea-logo-espresso-hd.png"
+              alt="TRACÉA"
+              width={512}
+              height={377}
+              className="h-12 w-auto object-contain dark:hidden"
+              priority
+            />
+            <Image
+              src="/images/tracea-logo-terra-hd.png"
+              alt="TRACÉA"
+              width={512}
+              height={369}
+              className="h-12 w-auto object-contain hidden dark:block"
+              priority
+            />
           </Link>
           <div className="flex items-center gap-2">
             <ul className="flex gap-1">
@@ -51,7 +63,6 @@ export function Navigation() {
                           : "text-warm-gray hover:text-terra hover:bg-beige"
                       }`}
                     >
-                      
                       <span>{link.label}</span>
                     </Link>
                   </li>
