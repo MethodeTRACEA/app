@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { NightMode } from "@/components/NightMode";
 
 const publicLinks = [
   { href: "/", label: "Accueil", icon: "◈" },
@@ -29,12 +30,21 @@ export function Navigation() {
         <div className="flex items-center justify-between h-14">
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/tracea-logo-rouge.png"
-              alt="TRACÉA"
-              width={120}
-              height={36}
-              className="h-8 w-auto"
-              priority
+  src="/images/tracea-logo-espresso-hd.png"
+  alt="TRACÉA"
+  width={120}
+  height={36}
+  className="h-8 w-auto dark:hidden"
+  priority
+/>
+<Image
+  src="/images/tracea-logo-terra-hd.png"
+  alt="TRACÉA"
+  width={120}
+  height={36}
+  className="h-8 w-auto hidden dark:block"
+  priority
+/>
             />
           </Link>
           <div className="flex items-center gap-2">
@@ -81,6 +91,7 @@ export function Navigation() {
                 Connexion
               </Link>
             )}
+            <NightMode />
           </div>
         </div>
       </div>
