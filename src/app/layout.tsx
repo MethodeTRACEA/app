@@ -30,7 +30,7 @@ export default function RootLayout({
           <OnboardingRedirect />
           <main className="flex-1">{children}</main>
           <footer className="bg-espresso text-beige-dark text-center py-8 text-sm tracking-wide">
-            <img src="/images/tracea-logo-terra-hd.png" alt="TRACÉA" className="h-7 mx-auto mb-2 object-contain" />
+            <img src="/images/tracea-logo-terra-hd.png" alt="TRACÉA" className="h-10 w-10 mx-auto mb-2 object-contain" />
             <p className="mb-4">
               Stabilité émotionnelle · Entraînement physiologique
             </p>

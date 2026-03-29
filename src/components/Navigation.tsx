@@ -32,17 +32,17 @@ export function Navigation() {
             <Image
               src="/images/tracea-logo-espresso-hd.png"
               alt="TRACÉA"
-              width={120}
-              height={36}
-              className="h-7 w-auto object-contain dark:hidden"
+              width={512}
+              height={512}
+              className="h-10 w-10 object-contain dark:hidden"
               priority
             />
             <Image
               src="/images/tracea-logo-terra-hd.png"
               alt="TRACÉA"
-              width={120}
-              height={36}
-              className="h-7 w-auto object-contain hidden dark:block"
+              width={512}
+              height={512}
+              className="h-10 w-10 object-contain hidden dark:block"
               priority
             />
           </Link>
