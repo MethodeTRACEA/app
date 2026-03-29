@@ -49,7 +49,7 @@ export default function Accueil() {
                 Traverser. Reconnaître. Ancrer.
                 Conscientiser. Émerger. Aligner.
               </h1>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex gap-2 flex-nowrap">
                 {[
                   { letter: "T", bg: "#C4704A" },
                   { letter: "R", bg: "rgba(196,112,74,0.8)" },
@@ -200,10 +200,10 @@ export default function Accueil() {
         <div className="grid md:grid-cols-3 gap-4">
           {[
             { n: "1", name: "Traverser", desc: "Accueillir ce qui est là, sans le fuir", color: "bg-terra" },
-            { n: "2", name: "Reconnaître", desc: "Descendre vers l'émotion vraie", color: "bg-terra/80" },
+            { n: "2", name: "Reconnaître", desc: "Descendre vers l'émotion vraie", color: "bg-dusty" },
             { n: "3", name: "Ancrer", desc: "Revenir dans le corps par la respiration", color: "bg-sage" },
-            { n: "4", name: "Conscientiser", desc: "Comprendre ce que l'émotion porte", color: "bg-dusty" },
-            { n: "5", name: "Émerger", desc: "Laisser venir une vérité intérieure", color: "bg-warm-gray" },
+            { n: "4", name: "Conscientiser", desc: "Comprendre ce que l'émotion porte", color: "bg-warm-gray" },
+            { n: "5", name: "Émerger", desc: "Laisser venir une vérité intérieure", color: "bg-espresso" },
             { n: "6", name: "Aligner", desc: "Choisir un geste aligné avec toi", color: "bg-terra-dark" },
           ].map((step) => (
             <div key={step.n} className="flex items-stretch card-base !p-0 overflow-hidden">
