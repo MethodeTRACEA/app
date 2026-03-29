@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { NightMode } from "@/components/NightMode";
+import { TraceaSymbol } from "@/components/TraceaSymbol";
 
 const publicLinks = [
   { href: "/", label: "Accueil" },
@@ -28,27 +28,9 @@ export function Navigation() {
     <nav className="sticky top-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-beige-dark">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-14">
-          <Link href="/" className="flex items-center flex-shrink-0 gap-1.5">
-            {/* Symbole circulaire seul (crop du bas pour masquer icône + texte) */}
-            <div className="w-8 h-8 overflow-hidden rounded-full flex-shrink-0">
-              <Image
-                src="/images/tracea-logo-espresso-hd.png"
-                alt=""
-                width={512}
-                height={512}
-                className="w-8 h-auto object-cover object-top scale-[1.7] origin-top dark:hidden"
-                priority
-              />
-              <Image
-                src="/images/tracea-logo-terra-hd.png"
-                alt=""
-                width={512}
-                height={512}
-                className="w-8 h-auto object-cover object-top scale-[1.7] origin-top hidden dark:block"
-                priority
-              />
-            </div>
-            <span className="font-serif text-base tracking-[0.15em] text-espresso dark:text-terra-light">
+          <Link href="/" className="flex flex-col items-center flex-shrink-0 -my-1">
+            <TraceaSymbol size={28} className="text-espresso dark:text-terra" />
+            <span className="font-serif text-[10px] tracking-[0.2em] text-espresso dark:text-terra-light leading-none">
               TRACÉA
             </span>
           </Link>
