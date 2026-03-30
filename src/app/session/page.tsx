@@ -70,6 +70,15 @@ export default function SessionPage() {
   );
 }
 
+// Cache par étape : texte saisi + réponse IA associée
+interface StepCacheEntry {
+  text: string;
+  validatedText: string; // texte au moment où l'IA a été appelée
+  aiResponse: TraceaAIResponse | null;
+  aiError: string;
+  stepName: string;
+}
+
 function SessionContent({ userId }: { userId: string }) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("intro");
@@ -107,6 +116,9 @@ function SessionContent({ userId }: { userId: string }) {
   const [integrationResponse, setIntegrationResponse] = useState<"yes" | "no" | "unsure" | null>(null);
   const [integrationMessage, setIntegrationMessage] = useState("");
 
+  // ── Cache des réponses par étape (navigation sans perte) ──
+  const [stepCache, setStepCache] = useState<Record<string, StepCacheEntry>>({});
+
   const STEPS_COURT = ["traverser", "ancrer", "emerger"];
   const stepsActifs = modeTraversee === "court"
     ? STEPS.filter(s => STEPS_COURT.includes(s.id))
@@ -116,6 +128,30 @@ function SessionContent({ userId }: { userId: string }) {
   const activeStepsIndices = modeTraversee === "court" ? [0, 2, 4] : [0, 1, 2, 3, 4, 5];
   const completedSteps = Array.from({ length: currentStep }, (_, i) => activeStepsIndices[i]);
   const currentStepIndicateur = activeStepsIndices[currentStep];
+
+  // Sauvegarde le texte courant dans le cache (sans écraser l'IA)
+  function cacheCurrentText() {
+    if (!step) return;
+    setStepCache(prev => ({
+      ...prev,
+      [step.id]: {
+        ...prev[step.id],
+        text: text,
+        validatedText: prev[step.id]?.validatedText || "",
+        aiResponse: prev[step.id]?.aiResponse || null,
+        aiError: prev[step.id]?.aiError || "",
+        stepName: step.name,
+      },
+    }));
+  }
+
+  // Restaure le texte depuis le cache quand on navigue vers une étape
+  function restoreFromCache(stepIndex: number) {
+    const targetStep = stepsActifs[stepIndex];
+    if (!targetStep) return;
+    const cached = stepCache[targetStep.id];
+    setText(cached?.text || steps[targetStep.id as StepId] || "");
+  }
 
   async function handleStartSession() {
     const s = await createSessionDb(userId, intensity, context);
@@ -147,7 +183,27 @@ function SessionContent({ userId }: { userId: string }) {
 
     await updateSessionDb(sessionId, updates as Parameters<typeof updateSessionDb>[1]);
 
-    // Trigger mirror reflection via API Claude (JSON structuré Phase 1)
+    // ── Vérifier si le cache contient déjà une réponse IA pour ce texte ──
+    const cached = stepCache[stepId];
+    const textUnchanged = cached?.validatedText === text.trim() && cached.aiResponse;
+
+    if (textUnchanged && cached.aiResponse) {
+      // Réponse IA déjà générée pour ce texte exact → afficher sans rappeler l'API
+      setMirrorStepName(step.name);
+      setMirrorData(cached.aiResponse);
+      setMirrorError("");
+      setMirrorLoading(false);
+      setPhase("mirror");
+
+      // Mettre à jour le cache avec le texte courant
+      setStepCache(prev => ({
+        ...prev,
+        [stepId]: { ...prev[stepId], text },
+      }));
+      return;
+    }
+
+    // ── Pas de cache ou texte modifié → appeler l'API Claude ──
     setMirrorStepName(step.name);
     setMirrorLoading(true);
     setMirrorData(null);
@@ -184,14 +240,23 @@ function SessionContent({ userId }: { userId: string }) {
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
         console.error("API TRACEA error:", res.status, errData);
-        setMirrorError(
-          errData.error || `Erreur API (${res.status}). Le reflet n'a pas pu être généré.`
-        );
+        const errorMsg = errData.error || `Erreur API (${res.status}). Le reflet n'a pas pu être généré.`;
+        setMirrorError(errorMsg);
+        // Sauvegarder l'erreur dans le cache
+        setStepCache(prev => ({
+          ...prev,
+          [stepId]: { text, validatedText: text.trim(), aiResponse: null, aiError: errorMsg, stepName: step.name },
+        }));
       } else {
         const data = await res.json() as TraceaAIResponse;
         if (data.mirror) {
           setMirrorData(data);
           setLastStepSnapshot(data.user_state_snapshot);
+          // Sauvegarder la réponse IA dans le cache
+          setStepCache(prev => ({
+            ...prev,
+            [stepId]: { text, validatedText: text.trim(), aiResponse: data, aiError: "", stepName: step.name },
+          }));
           // Phase 2 : tracker le flag do_not_store
           if (data.do_not_store) {
             setHadDoNotStore(true);
@@ -220,28 +285,54 @@ function SessionContent({ userId }: { userId: string }) {
   }
 
   function handleContinueAfterMirror() {
-    setText("");
-    if (currentStep < stepsActifs.length - 1) {
+    const nextIndex = currentStep + 1;
+    if (nextIndex < stepsActifs.length) {
+      // Restaurer le texte de l'étape suivante depuis le cache (ou vide)
+      const nextStepId = stepsActifs[nextIndex].id;
+      const cachedNext = stepCache[nextStepId];
+      const restoredText = cachedNext?.text || steps[nextStepId as StepId] || "";
+
       // Transition entre étapes (Section 4)
       const currentStepId = stepsActifs[currentStep].id;
-      const nextStepId = stepsActifs[currentStep + 1].id;
       const key = `${currentStepId}→${nextStepId}`;
       const message = TRANSITION_MESSAGES[key] || "";
       if (message) {
         setTransitionMessage(message);
         setPhase("transitioning");
         setTimeout(() => {
-          setCurrentStep(currentStep + 1);
+          setCurrentStep(nextIndex);
+          setText(restoredText);
           setPhase("session");
         }, 2000);
       } else {
-        setCurrentStep(currentStep + 1);
+        setCurrentStep(nextIndex);
+        setText(restoredText);
         setPhase("session");
       }
     } else {
       // Dernière étape → micro-intégration (Section 5)
       setPhase("integration");
     }
+  }
+
+  // ── Navigation arrière ──
+  function handleGoBack() {
+    // Sauvegarder le texte courant dans le cache avant de reculer
+    cacheCurrentText();
+
+    const prevIndex = currentStep - 1;
+    if (prevIndex >= 0) {
+      setCurrentStep(prevIndex);
+      restoreFromCache(prevIndex);
+      setPhase("session");
+    }
+  }
+
+  // Retour depuis le mirror vers l'édition de l'étape courante
+  function handleBackToEdit() {
+    const cached = stepCache[step?.id];
+    setText(cached?.text || steps[step?.id as StepId] || "");
+    setPhase("session");
   }
 
   function handleIntegrationChoice(choice: "yes" | "no" | "unsure") {
@@ -524,6 +615,8 @@ function SessionContent({ userId }: { userId: string }) {
 
   // --- SESSION ---
   if (phase === "session") {
+    const hasCachedAI = !!(stepCache[step.id]?.aiResponse && stepCache[step.id]?.validatedText === text.trim());
+
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
         <StepIndicator
@@ -531,7 +624,20 @@ function SessionContent({ userId }: { userId: string }) {
           completedSteps={completedSteps}
           activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
         />
-        <div className="mt-8 animate-fade-up" key={currentStep}>
+
+        {/* Indicateur d'étape visible en haut */}
+        <div className="flex items-center justify-between mt-4 mb-2 px-1">
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray">
+            Étape {currentStep + 1} sur {stepsActifs.length}
+          </p>
+          {hasCachedAI && (
+            <span className="text-[10px] tracking-wider uppercase text-sage bg-sage/10 px-2 py-0.5 rounded-full">
+              Reflet disponible
+            </span>
+          )}
+        </div>
+
+        <div className="mt-4 animate-fade-up" key={currentStep}>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-terra rounded-full flex items-center justify-center font-serif text-lg text-cream">
               {step.number}
@@ -556,9 +662,18 @@ function SessionContent({ userId }: { userId: string }) {
               className="w-full h-40 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
             />
             <div className="flex items-center justify-between mt-4">
-              <span className="text-xs text-warm-gray">
-                Étape {currentStep + 1} sur {stepsActifs.length}
-              </span>
+              {/* Bouton Retour (visible sauf à la première étape) */}
+              {currentStep > 0 ? (
+                <button
+                  onClick={handleGoBack}
+                  className="flex items-center gap-1.5 text-sm text-warm-gray hover:text-terra transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                  Retour
+                </button>
+              ) : (
+                <span />
+              )}
               <button
                 onClick={handleNextStep}
                 disabled={text.trim().length < 3}
@@ -717,13 +832,23 @@ function SessionContent({ userId }: { userId: string }) {
             </div>
           ) : null}
 
-          <button
-            onClick={handleContinueAfterMirror}
-            disabled={mirrorLoading}
-            className="btn-primary w-full text-center disabled:opacity-40"
-          >
-            {currentStep < stepsActifs.length - 1 ? "Continuer" : "Voir où j'en suis"}
-          </button>
+          <div className="flex items-center gap-3 mt-2">
+            {/* Retour : revenir modifier le texte de l'étape */}
+            <button
+              onClick={handleBackToEdit}
+              className="flex items-center gap-1.5 px-4 py-3 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-sm hover:border-warm-gray hover:bg-beige transition-all"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              Modifier
+            </button>
+            <button
+              onClick={handleContinueAfterMirror}
+              disabled={mirrorLoading}
+              className="btn-primary flex-1 text-center disabled:opacity-40"
+            >
+              {currentStep < stepsActifs.length - 1 ? "Continuer" : "Voir où j'en suis"}
+            </button>
+          </div>
 
           {mirrorLoading && (
             <button
