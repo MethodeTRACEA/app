@@ -170,11 +170,16 @@ function SessionContent({ userId }: { userId: string }) {
         bodyPayload.entryContext = entryQuestion;
       }
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
+
       const res = await fetch("/api/tracea", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bodyPayload),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -205,7 +210,11 @@ function SessionContent({ userId }: { userId: string }) {
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      setMirrorError("Impossible de contacter l'IA. Vérifie ta connexion.");
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setMirrorError("Le temps de réponse a été dépassé. Tu peux continuer ta session.");
+      } else {
+        setMirrorError("Impossible de contacter l'IA. Vérifie ta connexion.");
+      }
     }
     setMirrorLoading(false);
   }

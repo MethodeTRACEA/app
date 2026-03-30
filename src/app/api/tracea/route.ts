@@ -697,6 +697,10 @@ const STEP_LABELS: Record<string, string> = {
 // ROUTES
 // ===================================================================
 
+// Étendre le timeout Vercel (60s Pro, 10s Hobby)
+// L'appel Claude + mémoire prend 8-15s — le timeout Hobby (10s) est insuffisant
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
