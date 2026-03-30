@@ -17,6 +17,10 @@ interface AuthState {
   loading: boolean;
   isAdmin: boolean;
   signInWithMagicLink: (email: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation: boolean }>;
+  signInWithPassword: (email: string, password: string) => Promise<{ error: string | null }>;
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -27,6 +31,10 @@ const AuthContext = createContext<AuthState>({
   loading: true,
   isAdmin: false,
   signInWithMagicLink: async () => ({ error: null }),
+  signUp: async () => ({ error: null, needsConfirmation: false }),
+  signInWithPassword: async () => ({ error: null }),
+  resetPassword: async () => ({ error: null }),
+  updatePassword: async () => ({ error: null }),
   signOut: async () => {},
   refreshProfile: async () => {},
 });
@@ -55,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    // Listen for auth changes
+    // Listen for auth changes (login, logout, token refresh, password recovery)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, s) => {
@@ -72,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, [checkAdmin]);
 
+  // ── Magic Link (existant) ──
   async function signInWithMagicLink(email: string) {
     const { error } = await supabase.auth.signInWithOtp({
       email,
@@ -82,6 +91,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message ?? null };
   }
 
+  // ── Inscription email + mot de passe ──
+  async function signUp(email: string, password: string) {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+      },
+    });
+
+    if (error) {
+      return { error: mapAuthError(error.message), needsConfirmation: false };
+    }
+
+    // Supabase renvoie un user sans session si la confirmation email est activée
+    const needsConfirmation = !data.session;
+    return { error: null, needsConfirmation };
+  }
+
+  // ── Connexion email + mot de passe ──
+  async function signInWithPassword(email: string, password: string) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      return { error: mapAuthError(error.message) };
+    }
+    return { error: null };
+  }
+
+  // ── Réinitialisation du mot de passe ──
+  async function resetPassword(email: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error: error?.message ?? null };
+  }
+
+  // ── Mise à jour du mot de passe (après clic sur le lien reset) ──
+  async function updatePassword(newPassword: string) {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+    return { error: error?.message ?? null };
+  }
+
+  // ── Déconnexion ──
   async function signOut() {
     await supabase.auth.signOut();
     setUser(null);
@@ -101,6 +159,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         isAdmin,
         signInWithMagicLink,
+        signUp,
+        signInWithPassword,
+        resetPassword,
+        updatePassword,
         signOut,
         refreshProfile,
       }}
@@ -112,4 +174,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   return useContext(AuthContext);
+}
+
+// ── Traduction des erreurs Supabase Auth ──
+function mapAuthError(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("invalid login credentials")) {
+    return "Email ou mot de passe incorrect.";
+  }
+  if (lower.includes("email not confirmed")) {
+    return "Ton email n'a pas encore été confirmé. Vérifie ta boîte de réception.";
+  }
+  if (lower.includes("user already registered")) {
+    return "Un compte existe déjà avec cet email. Essaie de te connecter.";
+  }
+  if (lower.includes("password should be at least")) {
+    return "Le mot de passe doit contenir au moins 6 caractères.";
+  }
+  if (lower.includes("email rate limit exceeded") || lower.includes("rate limit")) {
+    return "Trop de tentatives. Réessaie dans quelques minutes.";
+  }
+  if (lower.includes("signups not allowed")) {
+    return "Les inscriptions sont temporairement désactivées.";
+  }
+  return message;
 }
