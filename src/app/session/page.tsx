@@ -502,10 +502,10 @@ function SessionContent({ userId }: { userId: string }) {
   // --- INTRO ---
   if (phase === "intro") {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12">
+      <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         <p className="section-label">Nouvelle session</p>
-        <h1 className="section-title">Préparer ta traversée</h1>
-        <p className="text-warm-gray mb-8 leading-relaxed">
+        <h1 className="section-title !text-2xl md:!text-4xl">Préparer ta traversée</h1>
+        <p className="text-warm-gray mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
           Avant de commencer, évalue ton état actuel.
         </p>
 
@@ -515,7 +515,7 @@ function SessionContent({ userId }: { userId: string }) {
 
         <SafetyBanner intensity={intensity} />
 
-        <div className="card-base mb-8">
+        <div className="card-base mb-6 md:mb-8">
           <label className="text-xs font-medium tracking-widest uppercase text-warm-gray block mb-3">
             Contexte de la traversée
           </label>
@@ -531,7 +531,7 @@ function SessionContent({ userId }: { userId: string }) {
               <button
                 key={c.value}
                 onClick={() => setContext(c.value)}
-                className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${
+                className={`py-3.5 md:py-3 px-4 rounded-xl text-sm font-medium transition-all ${
                   context === c.value
                     ? "bg-terra text-cream"
                     : "bg-beige text-warm-gray hover:bg-beige-dark"
@@ -549,13 +549,13 @@ function SessionContent({ userId }: { userId: string }) {
           </p>
           <button
             onClick={() => { setModeTraversee("complet"); handleStartSession(); }}
-            className="btn-primary w-full text-center"
+            className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
           >
             Traversée complète · 6 étapes
           </button>
           <button
             onClick={() => { setModeTraversee("court"); handleStartSession(); }}
-            className="w-full py-4 px-6 rounded-2xl border-2 border-terra/30 text-terra font-medium text-base hover:border-terra hover:bg-terra-light/20 transition-all text-center"
+            className="w-full py-4 md:py-3.5 px-6 rounded-2xl border-2 border-terra/30 text-terra font-medium text-base md:text-sm hover:border-terra hover:bg-terra-light/20 transition-all text-center"
           >
             Traversée courte · 3 étapes
             <span className="block text-xs text-warm-gray font-normal mt-0.5">
@@ -575,9 +575,9 @@ function SessionContent({ userId }: { userId: string }) {
   // --- ENTRY QUESTION (Section 3) ---
   if (phase === "entry-question") {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-16 animate-fade-in">
+      <div className="max-w-2xl mx-auto px-4 py-10 md:py-16 animate-fade-in">
         <div className="text-center max-w-lg mx-auto">
-          <h2 className="font-serif text-2xl md:text-3xl text-espresso leading-relaxed mb-8">
+          <h2 className="font-serif text-xl md:text-3xl text-espresso leading-relaxed mb-6 md:mb-8">
             Qu&apos;est-ce qui est le plus présent pour toi en ce moment ?
           </h2>
           <textarea
@@ -591,7 +591,7 @@ function SessionContent({ userId }: { userId: string }) {
               setCurrentStep(0);
               setPhase("session");
             }}
-            className="btn-primary"
+            className="btn-primary w-full md:w-auto !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
           >
             Continuer
           </button>
@@ -618,66 +618,67 @@ function SessionContent({ userId }: { userId: string }) {
     const hasCachedAI = !!(stepCache[step.id]?.aiResponse && stepCache[step.id]?.validatedText === text.trim());
 
     return (
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">
         <StepIndicator
           currentStep={currentStepIndicateur}
           completedSteps={completedSteps}
           activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
         />
 
-        {/* Indicateur d'étape visible en haut */}
-        <div className="flex items-center justify-between mt-4 mb-2 px-1">
-          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray">
-            Étape {currentStep + 1} sur {stepsActifs.length}
-          </p>
-          {hasCachedAI && (
-            <span className="text-[10px] tracking-wider uppercase text-sage bg-sage/10 px-2 py-0.5 rounded-full">
-              Reflet disponible
-            </span>
-          )}
-        </div>
-
-        <div className="mt-4 animate-fade-up" key={currentStep}>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-terra rounded-full flex items-center justify-center font-serif text-lg text-cream">
-              {step.number}
+        <div className="mt-3 md:mt-4 animate-fade-up" key={currentStep}>
+          <div className="card-base !p-5 md:!p-6">
+            {/* En-tête d'étape intégré dans la carte */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 md:w-10 md:h-10 bg-terra rounded-full flex items-center justify-center font-serif text-base md:text-lg text-cream flex-shrink-0">
+                  {step.number}
+                </div>
+                <div>
+                  <h2 className="font-serif text-xl md:text-2xl text-espresso leading-tight">{step.name}</h2>
+                  <p className="text-xs text-warm-gray mt-0.5">
+                    Étape {currentStep + 1} sur {stepsActifs.length}
+                  </p>
+                </div>
+              </div>
+              {hasCachedAI && (
+                <span className="text-[10px] tracking-wider uppercase text-sage bg-sage/10 px-2 py-0.5 rounded-full flex-shrink-0">
+                  Reflet disponible
+                </span>
+              )}
             </div>
-            <h2 className="font-serif text-2xl text-espresso">{step.name}</h2>
-          </div>
-          <p className="text-sm text-warm-gray italic mb-6 ml-[52px]">
-            {step.description}
-          </p>
 
-          {/* Guide de respiration pour l'etape Ancrer */}
-          {step.id === "ancrer" && <BreathingGuide />}
+            <p className="text-sm text-warm-gray italic mb-4">
+              {step.description}
+            </p>
 
-          <div className="card-base">
-            <p className="font-body text-lg text-espresso leading-relaxed mb-4">
+            {/* Guide de respiration pour l'etape Ancrer */}
+            {step.id === "ancrer" && <BreathingGuide />}
+
+            <p className="font-body text-base md:text-lg text-espresso leading-relaxed mb-4">
               {step.question}
             </p>
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Écris ici, à ton rythme..."
-              className="w-full h-40 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
+              className="w-full h-36 md:h-40 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
             />
-            <div className="flex items-center justify-between mt-4">
-              {/* Bouton Retour (visible sauf à la première étape) */}
-              {currentStep > 0 ? (
+
+            {/* Boutons */}
+            <div className="flex items-center gap-3 mt-5">
+              {currentStep > 0 && (
                 <button
                   onClick={handleGoBack}
-                  className="flex items-center gap-1.5 text-sm text-warm-gray hover:text-terra transition-colors"
+                  className="flex items-center justify-center gap-1.5 px-5 py-3.5 md:py-3 rounded-2xl border-2 border-beige-dark text-warm-gray text-sm font-medium hover:border-warm-gray hover:bg-beige transition-all"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                  Retour
+                  <span className="hidden sm:inline">Retour</span>
                 </button>
-              ) : (
-                <span />
               )}
               <button
                 onClick={handleNextStep}
                 disabled={text.trim().length < 3}
-                className="btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
+                className="btn-primary flex-1 text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {currentStep < stepsActifs.length - 1 ? "Continuer" : "Terminer"}
               </button>
@@ -692,18 +693,18 @@ function SessionContent({ userId }: { userId: string }) {
   // --- MIRROR (retour après chaque étape) ---
   if (phase === "mirror") {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">
         <StepIndicator
           currentStep={currentStepIndicateur}
           completedSteps={[...completedSteps, currentStepIndicateur]}
           activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
         />
-        <div className="mt-8 animate-fade-up">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-sage rounded-full flex items-center justify-center font-serif text-lg text-cream">
+        <div className="mt-4 md:mt-8 animate-fade-up">
+          <div className="flex items-center gap-3 mb-5 md:mb-6">
+            <div className="w-9 h-9 md:w-10 md:h-10 bg-sage rounded-full flex items-center justify-center font-serif text-base md:text-lg text-cream flex-shrink-0">
               ✓
             </div>
-            <h2 className="font-serif text-2xl text-espresso">{mirrorStepName}</h2>
+            <h2 className="font-serif text-xl md:text-2xl text-espresso">{mirrorStepName}</h2>
           </div>
 
           {mirrorLoading ? (
@@ -832,19 +833,19 @@ function SessionContent({ userId }: { userId: string }) {
             </div>
           ) : null}
 
-          <div className="flex items-center gap-3 mt-2">
+          <div className="flex items-center gap-3 mt-4">
             {/* Retour : revenir modifier le texte de l'étape */}
             <button
               onClick={handleBackToEdit}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-sm hover:border-warm-gray hover:bg-beige transition-all"
+              className="flex items-center justify-center gap-1.5 px-5 py-3.5 md:py-3 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-sm hover:border-warm-gray hover:bg-beige transition-all"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-              Modifier
+              <span className="hidden sm:inline">Modifier</span>
             </button>
             <button
               onClick={handleContinueAfterMirror}
               disabled={mirrorLoading}
-              className="btn-primary flex-1 text-center disabled:opacity-40"
+              className="btn-primary flex-1 text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40"
             >
               {currentStep < stepsActifs.length - 1 ? "Continuer" : "Voir où j'en suis"}
             </button>
@@ -853,7 +854,7 @@ function SessionContent({ userId }: { userId: string }) {
           {mirrorLoading && (
             <button
               onClick={handleContinueAfterMirror}
-              className="btn-ghost w-full text-center mt-2 text-sm"
+              className="btn-ghost w-full text-center mt-2 !py-3.5 !rounded-2xl text-sm"
             >
               Passer le reflet
             </button>
@@ -880,22 +881,22 @@ function SessionContent({ userId }: { userId: string }) {
               <p className="font-body text-lg text-espresso/80 mb-10">
                 Est-ce que quelque chose a légèrement changé ?
               </p>
-              <div className="flex flex-wrap gap-3 justify-center">
+              <div className="flex flex-wrap gap-3 justify-center w-full max-w-sm">
                 <button
                   onClick={() => handleIntegrationChoice("yes")}
-                  className="px-6 py-3 rounded-2xl border-2 border-sage/30 text-espresso font-medium text-base hover:border-sage hover:bg-sage/10 transition-all"
+                  className="flex-1 min-w-[80px] px-6 py-3.5 rounded-2xl border-2 border-sage/30 text-espresso font-medium text-base hover:border-sage hover:bg-sage/10 transition-all"
                 >
                   Oui
                 </button>
                 <button
                   onClick={() => handleIntegrationChoice("no")}
-                  className="px-6 py-3 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-base hover:border-warm-gray hover:bg-beige transition-all"
+                  className="flex-1 min-w-[80px] px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-base hover:border-warm-gray hover:bg-beige transition-all"
                 >
                   Non
                 </button>
                 <button
                   onClick={() => handleIntegrationChoice("unsure")}
-                  className="px-6 py-3 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-base hover:border-warm-gray hover:bg-beige transition-all"
+                  className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-base hover:border-warm-gray hover:bg-beige transition-all"
                 >
                   Je ne sais pas
                 </button>
@@ -910,9 +911,9 @@ function SessionContent({ userId }: { userId: string }) {
   // --- INTENSITY AFTER ---
   if (phase === "intensity-after") {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12">
+      <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         <p className="section-label">Fin de traversée</p>
-        <h1 className="section-title">Où en es-tu maintenant ?</h1>
+        <h1 className="section-title !text-2xl md:!text-4xl">Où en es-tu maintenant ?</h1>
         <div className="card-base mb-6">
           <IntensitySlider
             value={intensityAfter}
@@ -920,18 +921,18 @@ function SessionContent({ userId }: { userId: string }) {
             label="Intensité après la traversée"
           />
         </div>
-        <div className="flex items-center gap-4 mb-8">
-          <div className="card-terra flex-1 text-center">
-            <div className="text-xs text-terra-dark tracking-widest uppercase mb-1">Avant</div>
-            <div className="font-serif text-2xl text-espresso">{intensity}/10</div>
+        <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+          <div className="card-terra flex-1 text-center !p-3 md:!p-5">
+            <div className="text-[10px] md:text-xs text-terra-dark tracking-widest uppercase mb-1">Avant</div>
+            <div className="font-serif text-xl md:text-2xl text-espresso">{intensity}/10</div>
           </div>
-          <div className="font-serif text-xl text-warm-gray">→</div>
-          <div className="card-sage flex-1 text-center">
-            <div className="text-xs text-[#4A6B3A] tracking-widest uppercase mb-1">Après</div>
-            <div className="font-serif text-2xl text-espresso">{intensityAfter}/10</div>
+          <div className="font-serif text-lg md:text-xl text-warm-gray">→</div>
+          <div className="card-sage flex-1 text-center !p-3 md:!p-5">
+            <div className="text-[10px] md:text-xs text-[#4A6B3A] tracking-widest uppercase mb-1">Après</div>
+            <div className="font-serif text-xl md:text-2xl text-espresso">{intensityAfter}/10</div>
           </div>
         </div>
-        <button onClick={handleIntensityAfterDone} className="btn-primary w-full text-center">
+        <button onClick={handleIntensityAfterDone} className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl">
           Voir ma traversée
         </button>
       </div>
@@ -940,12 +941,12 @@ function SessionContent({ userId }: { userId: string }) {
 
   // --- ANALYSIS / COMPLETE ---
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 animate-fade-in">
-      <h1 className="section-title">Ta traversée</h1>
+    <div className="max-w-2xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
+      <h1 className="section-title !text-2xl md:!text-4xl">Ta traversée</h1>
       {analysisLoading ? (
-        <div className="card-base text-center py-16">
-          <div className="font-serif text-3xl text-terra mb-4 animate-pulse-gentle">TRACEA</div>
-          <p className="text-warm-gray">TRACÉA prend le temps de te lire...</p>
+        <div className="card-base text-center py-12 md:py-16">
+          <div className="font-serif text-2xl md:text-3xl text-terra mb-4 animate-pulse-gentle">TRACEA</div>
+          <p className="text-warm-gray text-sm md:text-base">TRACÉA prend le temps de te lire...</p>
           <p className="text-xs text-warm-gray/60 mt-2 italic">
             Un instant de recul...
           </p>
@@ -953,42 +954,41 @@ function SessionContent({ userId }: { userId: string }) {
       ) : (
         <>
           <div className="card-base mb-6">
-            <div className="font-body text-base text-espresso leading-relaxed whitespace-pre-wrap">
+            <div className="font-body text-sm md:text-base text-espresso leading-relaxed whitespace-pre-wrap">
               {analysis}
             </div>
           </div>
 
-          {/* Intensity summary */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="card-terra flex-1 text-center">
-              <div className="text-xs text-terra-dark tracking-widest uppercase mb-1">Avant</div>
-              <div className="font-serif text-2xl text-espresso">{intensity}/10</div>
+          {/* Intensity summary — empilé sur mobile, horizontal sur desktop */}
+          <div className="grid grid-cols-3 gap-2 md:flex md:items-center md:gap-4 mb-6">
+            <div className="card-terra text-center !p-3 md:!p-5 md:flex-1">
+              <div className="text-[10px] md:text-xs text-terra-dark tracking-widest uppercase mb-1">Avant</div>
+              <div className="font-serif text-lg md:text-2xl text-espresso">{intensity}/10</div>
             </div>
-            <div className="font-serif text-xl text-warm-gray">→</div>
-            <div className="card-sage flex-1 text-center">
-              <div className="text-xs text-[#4A6B3A] tracking-widest uppercase mb-1">Après</div>
-              <div className="font-serif text-2xl text-espresso">{intensityAfter}/10</div>
+            <div className="card-sage text-center !p-3 md:!p-5 md:flex-1">
+              <div className="text-[10px] md:text-xs text-[#4A6B3A] tracking-widest uppercase mb-1">Après</div>
+              <div className="font-serif text-lg md:text-2xl text-espresso">{intensityAfter}/10</div>
             </div>
-            <div className="flex-1 text-center">
+            <div className="text-center flex flex-col items-center justify-center md:flex-1">
               {intensity - intensityAfter > 0 ? (
                 <>
-                  <div className="text-xs text-sage tracking-widest uppercase mb-1">Régulation</div>
-                  <div className="font-serif text-2xl text-sage">
-                    {intensity - intensityAfter} <span className="text-base">pts gagnés</span>
+                  <div className="text-[10px] md:text-xs text-sage tracking-widest uppercase mb-1">Régulation</div>
+                  <div className="font-serif text-lg md:text-2xl text-sage">
+                    -{intensity - intensityAfter} <span className="text-xs md:text-base">pts</span>
                   </div>
                 </>
               ) : intensity - intensityAfter === 0 ? (
                 <>
-                  <div className="text-xs text-warm-gray tracking-widest uppercase mb-1">Évolution</div>
-                  <div className="font-serif text-2xl text-warm-gray">
-                    Stabilité maintenue
+                  <div className="text-[10px] md:text-xs text-warm-gray tracking-widest uppercase mb-1">Évolution</div>
+                  <div className="font-serif text-sm md:text-2xl text-warm-gray">
+                    Stable
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="text-xs text-terra tracking-widest uppercase mb-1">Évolution</div>
-                  <div className="font-serif text-2xl text-terra">
-                    Traversée en cours
+                  <div className="text-[10px] md:text-xs text-terra tracking-widest uppercase mb-1">Évolution</div>
+                  <div className="font-serif text-sm md:text-2xl text-terra">
+                    En cours
                   </div>
                 </>
               )}
@@ -1064,8 +1064,8 @@ function SessionContent({ userId }: { userId: string }) {
           )}
 
           {showDepot ? (
-            <div className="card-base mb-6 p-6">
-              <p className="font-serif text-lg text-espresso mb-2">
+            <div className="card-base mb-6 !p-5 md:!p-6">
+              <p className="font-serif text-base md:text-lg text-espresso mb-2">
                 Qu&apos;est-ce que tu veux porter avec toi en quittant cet espace ?
               </p>
               <p className="font-body text-sm text-warm-gray leading-relaxed mb-4">
@@ -1080,26 +1080,26 @@ function SessionContent({ userId }: { userId: string }) {
               />
               <button
                 onClick={() => setShowDepot(false)}
-                className="btn-primary w-full text-center"
+                className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
               >
                 Continuer
               </button>
             </div>
           ) : (
             /* Écran de fin (Section 6) */
-            <div className="text-center py-8 animate-fade-in">
-              <h2 className="font-serif text-2xl text-espresso mb-4">
+            <div className="text-center py-6 md:py-8 animate-fade-in">
+              <h2 className="font-serif text-xl md:text-2xl text-espresso mb-4">
                 Ta traversée est terminée.
               </h2>
-              <p className="font-body text-base text-espresso/70 leading-relaxed mb-2">
+              <p className="font-body text-sm md:text-base text-espresso/70 leading-relaxed mb-2">
                 Tu peux revenir quand tu veux.
               </p>
-              <p className="font-body text-base text-espresso/70 leading-relaxed mb-8">
+              <p className="font-body text-sm md:text-base text-espresso/70 leading-relaxed mb-6 md:mb-8">
                 Plus tu pratiques, plus ça devient naturel.
               </p>
               <button
                 onClick={() => router.push("/")}
-                className="btn-primary mb-4"
+                className="btn-primary w-full md:w-auto mb-4 !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
               >
                 Revenir plus tard
               </button>
