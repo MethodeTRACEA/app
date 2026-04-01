@@ -32,20 +32,21 @@ export default function LandingPage() {
 
           <div className="space-y-6 mb-12 animate-reveal animate-reveal-delay-2">
             <p className="font-body text-xl md:text-2xl text-beige-dark leading-relaxed">
-              Tu envoies un message… et tu le regrettes aussitôt.
+              Tu envoies un message… et tu le regrettes avant même qu&apos;il soit lu.
             </p>
             <p className="font-body text-xl md:text-2xl text-beige-dark leading-relaxed">
-              Tu analyses tout après coup. Tu rejoues la scène en boucle.
+              Tu rejoues la scène. Tu prépares ta défense. Tu t&apos;épuises.
             </p>
             <p className="font-body text-xl md:text-2xl text-beige-dark leading-relaxed">
-              Tu voudrais juste te calmer.
-              <br />
-              <span className="text-warm-gray">Mais ton corps ne te laisse pas.</span>
+              Tu voudrais juste que ça s&apos;arrête.
+            </p>
+            <p className="font-body text-xl md:text-2xl text-warm-gray leading-relaxed">
+              Mais ton corps ne te laisse pas.
             </p>
           </div>
 
-          <p className="font-body text-lg text-warm-gray/70 mb-14 animate-reveal animate-reveal-delay-3">
-            Ce n&apos;est pas un problème de volonté. C&apos;est physiologique.
+          <p className="font-body text-lg text-warm-gray/50 mb-14 animate-reveal animate-reveal-delay-3">
+            Ce n&apos;est pas toi le problème. C&apos;est ton système nerveux.
           </p>
 
           <div className="animate-reveal animate-reveal-delay-4">
@@ -76,10 +77,10 @@ export default function LandingPage() {
 
           <div className="space-y-7 mb-12">
             {[
-              "Tu relis des conversations 10 fois. Tu cherches ce que tu aurais dû dire.",
-              "Tu anticipes le pire. Tu prépares des réponses à des conflits qui n'existent pas encore.",
-              "Tu sur-réagis… puis tu culpabilises. Et la honte prend le relais.",
-              "Tu veux te calmer. Tu respires. Mais ton corps reste bloqué.",
+              "Tu relis la conversation. Tu cherches ce que tu aurais dû dire. Tu ne trouves pas.",
+              "Tu anticipes le pire. Tu prépares ta réponse à un conflit qui n'existe pas encore.",
+              "Tu sur-réagis. Tu le sais. Et la honte arrive derrière.",
+              "Tu respires un grand coup. Ça ne change rien. Le corps reste verrouillé.",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="w-2 h-2 rounded-full bg-terra mt-3 flex-shrink-0" />
@@ -90,8 +91,8 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <p className="font-body text-lg text-warm-gray/60 text-center mb-10">
-            Et ça recommence. Encore.
+          <p className="font-body text-lg text-warm-gray/50 text-center mb-10">
+            Et ça continue. Tous les jours. Tant que rien ne change.
           </p>
 
           <div className="border-l-2 border-terra/40 pl-6 py-2">
@@ -116,9 +117,9 @@ export default function LandingPage() {
 
           <div className="space-y-7 mb-12">
             {[
-              "Tu réagis avant de réfléchir — et tu le sais, mais tu ne peux pas t'arrêter.",
-              "Ton corps reste tendu. La mâchoire serrée. Le ventre noué. Même au repos.",
-              "Tu essaies de redescendre. Mais l'agitation revient, comme une vague.",
+              "Tu réagis avant de réfléchir. Tu le sais. Mais tu ne peux pas t'arrêter.",
+              "La mâchoire serrée. Le ventre noué. Même au repos, ton corps reste en guerre.",
+              "Tu essaies de redescendre. Ça revient. Toujours.",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="w-2 h-2 rounded-full bg-dusty mt-3 flex-shrink-0" />
@@ -183,7 +184,14 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <div className="text-center py-6">
+          {/* Projection */}
+          <div className="text-center py-10 space-y-3">
+            <p className="font-body text-lg md:text-xl text-beige-dark">Tu respires.</p>
+            <p className="font-body text-lg md:text-xl text-beige-dark">Ton corps redescend.</p>
+            <p className="font-body text-lg md:text-xl text-cream">Tu reprends le contrôle.</p>
+          </div>
+
+          <div className="text-center border-t border-terra/15 pt-8">
             <p className="font-serif text-xl md:text-2xl text-cream leading-snug">
               Tu ne changes pas qui tu es.
               <br />
@@ -235,41 +243,31 @@ export default function LandingPage() {
       {/* ── SECTION : CTA ── */}
       <section id="offre" className="px-6 py-24 md:py-32 bg-[#231710]">
         <div className="max-w-xl mx-auto text-center">
-          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-6">
-            Tu n&apos;as pas besoin de comprendre.
-          </h2>
-          <p className="font-serif text-2xl md:text-3xl text-terra leading-snug mb-14">
-            Juste de commencer.
+          <p className="font-body text-lg text-warm-gray mb-8">
+            Tu as lu jusqu&apos;ici parce que tu te reconnais.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-6 mb-12">
-            {[
-              "Gratuit",
-              "Sans inscription",
-              "10 minutes",
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2.5"
-              >
-                <div className="w-1.5 h-1.5 rounded-full bg-sage" />
-                <span className="font-sans text-sm text-beige-dark tracking-wide">
-                  {item}
-                </span>
-              </div>
-            ))}
-          </div>
+          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-4">
+            Tu n&apos;as pas besoin de tout comprendre.
+          </h2>
+          <p className="font-serif text-2xl md:text-3xl text-terra leading-snug mb-6">
+            Tu as juste besoin de commencer.
+          </p>
+
+          <p className="font-body text-base text-warm-gray/60 mb-14">
+            10 minutes. Gratuit. Sans inscription.
+          </p>
 
           {/* CTA Button */}
           <Link
             href="/app"
             className="inline-block w-full sm:w-auto bg-terra hover:bg-terra-dark text-cream font-sans font-medium text-lg tracking-wide px-14 py-5 rounded-full transition-all duration-300 hover:shadow-[0_0_40px_rgba(196,112,74,0.3)] active:scale-[0.98]"
           >
-            Je me stabilise maintenant
+            Je veux sortir de cet état
           </Link>
 
-          <p className="font-body text-sm text-warm-gray/60 mt-6">
-            Rien à payer. Rien à prouver. Tu arrives comme tu es.
+          <p className="font-body text-sm text-warm-gray/50 mt-6">
+            Tu peux arrêter à tout moment. Aucun engagement.
           </p>
         </div>
       </section>
