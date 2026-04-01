@@ -241,33 +241,36 @@ export default function LandingPage() {
       </section>
 
       {/* ── SECTION : CTA ── */}
-      <section id="offre" className="px-6 py-24 md:py-32 bg-[#231710]">
+      <section id="offre" className="px-6 py-28 md:py-40 bg-[#231710]">
         <div className="max-w-xl mx-auto text-center">
-          <p className="font-body text-lg text-warm-gray mb-8">
+          <p className="font-body text-lg text-warm-gray/70 mb-10">
             Tu as lu jusqu&apos;ici parce que tu te reconnais.
           </p>
 
           <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-4">
-            Tu n&apos;as pas besoin de tout comprendre.
+            Tu n&apos;as rien à comprendre de plus.
           </h2>
-          <p className="font-serif text-2xl md:text-3xl text-terra leading-snug mb-6">
-            Tu as juste besoin de commencer.
+          <p className="font-serif text-2xl md:text-3xl text-terra leading-snug mb-16">
+            Ton corps sait déjà quoi faire. Laisse-le commencer.
           </p>
 
-          <p className="font-body text-base text-warm-gray/60 mb-14">
-            10 minutes. Gratuit. Sans inscription.
-          </p>
+          {/* Micro-projection */}
+          <div className="space-y-2 mb-16">
+            <p className="font-body text-lg md:text-xl text-warm-gray/50">Tu respires.</p>
+            <p className="font-body text-lg md:text-xl text-beige-dark/70">Ton corps ralentit.</p>
+            <p className="font-body text-lg md:text-xl text-cream">Ça redescend.</p>
+          </div>
 
           {/* CTA Button */}
           <Link
             href="/app"
             className="inline-block w-full sm:w-auto bg-terra hover:bg-terra-dark text-cream font-sans font-medium text-lg tracking-wide px-14 py-5 rounded-full transition-all duration-300 hover:shadow-[0_0_40px_rgba(196,112,74,0.3)] active:scale-[0.98]"
           >
-            Je veux sortir de cet état
+            Je veux que ça redescende
           </Link>
 
-          <p className="font-body text-sm text-warm-gray/50 mt-6">
-            Tu peux arrêter à tout moment. Aucun engagement.
+          <p className="font-body text-sm text-warm-gray/40 mt-8">
+            10 minutes. Sans forcer. Tu peux arrêter à tout moment.
           </p>
         </div>
       </section>
