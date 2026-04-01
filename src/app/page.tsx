@@ -43,12 +43,14 @@ export default function Accueil() {
             <div className="absolute bottom-[-40px] left-[-40px] w-[160px] h-[160px] rounded-full bg-sage/5 pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-medium tracking-widest uppercase text-terra mb-5">
-                Entraînement émotionnel · Protocole structuré
+                Protocole de régulation émotionnelle
               </p>
-              <h1 className="font-serif text-2xl md:text-3xl text-terra-light leading-tight mb-8">
-                Traverser. Reconnaître. Ancrer.
-                Conscientiser. Émerger. Aligner.
+              <h1 className="font-serif text-xl md:text-3xl text-terra-light leading-tight mb-4">
+                Quand une émotion te déborde, ne reste pas seul·e avec.
               </h1>
+              <p className="font-body text-xs md:text-sm text-terra-light/60 tracking-wider mb-8">
+                Traverser · Reconnaître · Ancrer · Conscientiser · Émerger · Aligner
+              </p>
               <div className="flex gap-2 flex-nowrap">
                 {[
                   { letter: "T", bg: "#C4704A" },
@@ -73,17 +75,17 @@ export default function Accueil() {
           {/* Droite — crème */}
           <div className="bg-cream px-10 py-16 flex flex-col justify-center md:w-1/2 border-t md:border-t-0 md:border-l border-beige-dark">
             <p className="font-body text-base text-espresso/80 leading-relaxed mb-3">
-              Un entraînement structuré, fondé sur la neurophysiologie
-              du système nerveux — pour traverser ce que tu portes,
-              pas juste l&apos;observer.
+              Un protocole guidé pour t&apos;aider à te stabiliser, comprendre ce qui se passe en toi, et retrouver ton calme.
             </p>
-            <p className="font-body text-sm text-warm-gray leading-relaxed italic mb-8">
-              Pas de jugement. Pas de diagnostic.
-              Un miroir bienveillant, disponible quand tu en as besoin.
+            <p className="font-body text-sm text-warm-gray leading-relaxed italic mb-4">
+              En 5 à 10 minutes. Sans analyser. Sans forcer.
+            </p>
+            <p className="font-body text-xs text-espresso/50 leading-relaxed mb-8">
+              Tu n&apos;as rien à comprendre. Juste à te laisser guider.
             </p>
             <div className="flex gap-3 flex-wrap">
               <Link href="/session" className="btn-primary inline-block">
-                Commencer ma traversée
+                Je me pose maintenant
               </Link>
               {stats.total > 0 && (
                 <Link
@@ -195,16 +197,16 @@ export default function Accueil() {
         <p className="section-label">Le protocole</p>
         <h2 className="section-title">6 étapes, une traversée complète</h2>
         <p className="text-warm-gray max-w-xl mb-10 leading-relaxed">
-          Chaque traversée te guide du ressenti brut vers une vérité — et d&apos;une vérité vers un geste concret dans ta vie.
+          Chaque traversée t&apos;accompagne du ressenti brut vers un apaisement concret, étape par étape.
         </p>
         <div className="grid md:grid-cols-3 gap-4">
           {[
-            { n: "1", name: "Traverser", desc: "Accueillir ce qui est là, sans le fuir", color: "bg-terra" },
-            { n: "2", name: "Reconnaître", desc: "Descendre vers l'émotion vraie", color: "bg-dusty" },
-            { n: "3", name: "Ancrer", desc: "Revenir dans le corps par la respiration", color: "bg-sage" },
-            { n: "4", name: "Conscientiser", desc: "Comprendre ce que l'émotion porte", color: "bg-warm-gray" },
-            { n: "5", name: "Émerger", desc: "Laisser venir une vérité intérieure", color: "bg-espresso" },
-            { n: "6", name: "Aligner", desc: "Choisir un geste aligné avec toi", color: "bg-terra-dark" },
+            { n: "1", name: "Traverser", desc: "Accueillir ce qui est là, sans fuir", color: "bg-terra" },
+            { n: "2", name: "Reconnaître", desc: "Identifier l'émotion réelle sous la surface", color: "bg-dusty" },
+            { n: "3", name: "Ancrer", desc: "Ramener ton corps dans un état de sécurité", color: "bg-sage" },
+            { n: "4", name: "Conscientiser", desc: "Voir ce qui se joue, sans te juger", color: "bg-warm-gray" },
+            { n: "5", name: "Émerger", desc: "Laisser apparaître ce qui est vrai pour toi", color: "bg-espresso" },
+            { n: "6", name: "Aligner", desc: "Poser un geste simple, maintenant", color: "bg-terra-dark" },
           ].map((step) => (
             <div key={step.n} className="flex items-stretch card-base !p-0 overflow-hidden">
               <div
@@ -232,31 +234,15 @@ export default function Accueil() {
           TRACÉA n&apos;est pas ce que tu connais déjà.
         </h2>
 
-        <div className="space-y-5 mb-10">
+        <div className="space-y-4 mb-10">
           <p className="font-body text-base text-espresso/85 leading-relaxed">
-            Les applications de méditation t&apos;apprennent à observer tes émotions sans t&apos;y attacher.
-            C&apos;est précieux. Mais quand une émotion intense surgit, observer ne suffit pas.
+            Observer ne suffit pas quand une émotion déborde.
           </p>
           <p className="font-body text-base text-espresso/85 leading-relaxed">
-            Les trackers d&apos;humeur enregistrent ce que tu ressens.
-            Ils ne t&apos;aident pas à le traverser.
+            Analyser ne calme pas ton système nerveux.
           </p>
           <p className="font-body text-base text-espresso/85 leading-relaxed">
-            Les programmes de développement personnel visent tes objectifs, tes habitudes, ta performance.
-            Ils passent souvent à côté de ce qui bloque vraiment.
-          </p>
-          <p className="font-serif text-lg text-terra font-medium mt-6">
-            TRACÉA fait autre chose.
-          </p>
-          <p className="font-body text-base text-espresso/85 leading-relaxed">
-            TRACÉA est un protocole neurophysiologique structuré en six étapes précises,
-            chacune avec une fonction spécifique dans ton système nerveux.
-            On ne te demande pas d&apos;observer. On t&apos;accompagne pour traverser, stabiliser, comprendre et agir.
-          </p>
-          <p className="font-body text-base text-espresso/85 leading-relaxed">
-            Ce n&apos;est pas de la méditation. Ce n&apos;est pas du coaching.
-            C&apos;est un entraînement, comme on entraîne un muscle.
-            Et comme tout entraînement, ça se pratique, ça s&apos;approfondit, et ça transforme.
+            TRACÉA est un protocole guidé qui t&apos;aide à traverser, stabiliser et agir concrètement.
           </p>
         </div>
 
@@ -272,12 +258,12 @@ export default function Accueil() {
         </div>
         <div className="space-y-3">
           {[
-            { other: "Observer l'émotion à distance", tracea: "Traverser l'émotion de l'intérieur", change: "Tu n'évites plus, tu intègres" },
-            { other: "Enregistrer ton humeur du jour", tracea: "Nommer l'émotion primaire cachée", change: "Tu comprends ce qui se passe vraiment" },
-            { other: "Respirer pour se calmer", tracea: "Ancrer le corps dans la sécurité", change: "Ton corps retrouve son calme" },
-            { other: "Analyser ses pensées", tracea: "Conscientiser les schémas profonds", change: "Tu vois tes réflexes sans les juger" },
-            { other: "Fixer des objectifs", tracea: "Laisser émerger une vérité intérieure", change: "Tu agis depuis qui tu es" },
-            { other: "Suivre des habitudes", tracea: "Poser un geste aligné, maintenant", change: "Chaque traversée transforme concrètement" },
+            { other: "Observer", tracea: "Traverser", change: "Tu n'évites plus, tu intègres" },
+            { other: "Enregistrer", tracea: "Reconnaître", change: "Tu nommes ce qui se passe vraiment" },
+            { other: "Respirer", tracea: "Ancrer", change: "Ton corps retrouve sa sécurité" },
+            { other: "Analyser", tracea: "Conscientiser", change: "Tu vois sans juger" },
+            { other: "Réfléchir", tracea: "Émerger", change: "Tu laisses venir ce qui est vrai" },
+            { other: "Décider", tracea: "Aligner", change: "Tu poses un geste, maintenant" },
           ].map((row, i) => (
             <div key={i} className="grid grid-cols-[1fr_auto_1fr] rounded-[14px] overflow-hidden border border-beige-dark">
               <div className="px-5 py-5 bg-beige/40">
