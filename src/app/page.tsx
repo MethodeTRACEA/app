@@ -24,22 +24,28 @@ export default function LandingPage() {
             />
           </div>
 
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-cream leading-[1.15] mb-8 animate-reveal animate-reveal-delay-1">
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-cream leading-[1.15] mb-10 animate-reveal animate-reveal-delay-1">
             Tu n&apos;es pas instable.
             <br />
             <span className="text-terra">Tu es en état d&apos;alerte permanent.</span>
           </h1>
 
-          <p className="font-body text-xl md:text-2xl text-beige-dark leading-relaxed mb-4 animate-reveal animate-reveal-delay-2">
-            Tu réagis trop vite, trop fort…
-            <br />
-            et tu t&apos;en veux après ?
-          </p>
+          <div className="space-y-6 mb-12 animate-reveal animate-reveal-delay-2">
+            <p className="font-body text-xl md:text-2xl text-beige-dark leading-relaxed">
+              Tu envoies un message… et tu le regrettes aussitôt.
+            </p>
+            <p className="font-body text-xl md:text-2xl text-beige-dark leading-relaxed">
+              Tu analyses tout après coup. Tu rejoues la scène en boucle.
+            </p>
+            <p className="font-body text-xl md:text-2xl text-beige-dark leading-relaxed">
+              Tu voudrais juste te calmer.
+              <br />
+              <span className="text-warm-gray">Mais ton corps ne te laisse pas.</span>
+            </p>
+          </div>
 
-          <p className="font-body text-lg md:text-xl text-warm-gray leading-relaxed mb-12 animate-reveal animate-reveal-delay-3">
-            Ce n&apos;est pas un problème de volonté.
-            <br />
-            C&apos;est ton système nerveux qui n&apos;arrive plus à redescendre.
+          <p className="font-body text-lg text-warm-gray/70 mb-14 animate-reveal animate-reveal-delay-3">
+            Ce n&apos;est pas un problème de volonté. C&apos;est physiologique.
           </p>
 
           <div className="animate-reveal animate-reveal-delay-4">
@@ -64,25 +70,29 @@ export default function LandingPage() {
           <p className="text-[0.7rem] font-sans font-medium tracking-[0.3em] uppercase text-terra mb-4">
             Ce que tu vis
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-10">
+          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-12">
             Ce n&apos;est pas &laquo;&thinsp;dans ta tête&thinsp;&raquo;
           </h2>
 
-          <div className="space-y-5 mb-10">
+          <div className="space-y-7 mb-12">
             {[
-              "Tu relis des conversations encore et encore",
-              "Tu anticipes des scénarios catastrophe",
-              "Tu sur-réagis… puis tu culpabilises",
-              "Tu veux te calmer… mais ton corps ne suit pas",
+              "Tu relis des conversations 10 fois. Tu cherches ce que tu aurais dû dire.",
+              "Tu anticipes le pire. Tu prépares des réponses à des conflits qui n'existent pas encore.",
+              "Tu sur-réagis… puis tu culpabilises. Et la honte prend le relais.",
+              "Tu veux te calmer. Tu respires. Mais ton corps reste bloqué.",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
-                <div className="w-2 h-2 rounded-full bg-terra mt-2.5 flex-shrink-0" />
+                <div className="w-2 h-2 rounded-full bg-terra mt-3 flex-shrink-0" />
                 <p className="font-body text-lg md:text-xl text-beige-dark leading-relaxed">
                   {item}
                 </p>
               </div>
             ))}
           </div>
+
+          <p className="font-body text-lg text-warm-gray/60 text-center mb-10">
+            Et ça recommence. Encore.
+          </p>
 
           <div className="border-l-2 border-terra/40 pl-6 py-2">
             <p className="font-serif text-xl md:text-2xl text-cream leading-snug">
@@ -100,18 +110,18 @@ export default function LandingPage() {
           <p className="text-[0.7rem] font-sans font-medium tracking-[0.3em] uppercase text-terra mb-4">
             Le vrai problème
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-10">
+          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-12">
             Ton système nerveux est bloqué en mode alerte
           </h2>
 
-          <div className="space-y-5 mb-10">
+          <div className="space-y-7 mb-12">
             {[
-              "Tu réagis avant de réfléchir",
-              "Ton corps reste sous tension",
-              "Tu n'arrives pas à redescendre",
+              "Tu réagis avant de réfléchir — et tu le sais, mais tu ne peux pas t'arrêter.",
+              "Ton corps reste tendu. La mâchoire serrée. Le ventre noué. Même au repos.",
+              "Tu essaies de redescendre. Mais l'agitation revient, comme une vague.",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
-                <div className="w-2 h-2 rounded-full bg-dusty mt-2.5 flex-shrink-0" />
+                <div className="w-2 h-2 rounded-full bg-dusty mt-3 flex-shrink-0" />
                 <p className="font-body text-lg md:text-xl text-beige-dark leading-relaxed">
                   {item}
                 </p>
@@ -121,56 +131,64 @@ export default function LandingPage() {
 
           <div className="border-l-2 border-dusty/40 pl-6 py-2">
             <p className="font-serif text-xl md:text-2xl text-cream leading-snug">
-              On t&apos;a appris à gérer tes émotions
+              On t&apos;a appris à gérer tes émotions.
               <br />
-              <span className="text-dusty">mais pas à réguler ton corps.</span>
+              <span className="text-dusty">Personne ne t&apos;a appris à réguler ton corps.</span>
             </p>
           </div>
         </div>
       </section>
 
+      {/* ── TRANSITION ── */}
+      <section className="px-6 py-16 md:py-20">
+        <div className="max-w-xl mx-auto text-center">
+          <p className="font-serif text-2xl md:text-3xl text-cream leading-snug">
+            Le problème, ce n&apos;est pas ce que tu ressens.
+          </p>
+          <p className="font-serif text-2xl md:text-3xl text-terra leading-snug mt-4">
+            C&apos;est ce qui se passe dans ton corps.
+          </p>
+        </div>
+      </section>
+
       {/* ── SECTION : TRACÉA ── */}
-      <section className="px-6 py-20 md:py-28">
+      <section className="px-6 py-20 md:py-28 bg-[#231710]">
         <div className="max-w-2xl mx-auto">
           <p className="text-[0.7rem] font-sans font-medium tracking-[0.3em] uppercase text-terra mb-4">
             La solution
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-6">
-            TRACÉA : entraîner ton système nerveux
+          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-8">
+            TRACÉA entraîne ton système nerveux à redescendre.
           </h2>
 
-          <p className="font-body text-lg md:text-xl text-warm-gray leading-relaxed mb-3">
-            TRACÉA n&apos;est pas une thérapie.
-          </p>
-          <p className="font-body text-lg md:text-xl text-warm-gray leading-relaxed mb-10">
-            C&apos;est un entraînement structuré pour :
+          <p className="font-body text-lg md:text-xl text-warm-gray leading-relaxed mb-12">
+            Pas une thérapie. Pas du développement personnel.
+            <br />
+            Un entraînement. Court. Structuré. Concret.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
             {[
-              { text: "Ralentir tes réactions", icon: "01" },
-              { text: "Revenir dans ton corps", icon: "02" },
-              { text: "Récupérer plus vite", icon: "03" },
-              { text: "Agir depuis un état stable", icon: "04" },
-            ].map((item, i) => (
+              "Ralentir la réaction",
+              "Revenir dans le corps",
+              "Récupérer plus vite",
+              "Agir depuis un état stable",
+            ].map((text, i) => (
               <div
                 key={i}
-                className="rounded-card border border-terra/15 bg-terra/5 p-5"
+                className="rounded-card border border-terra/15 bg-terra/5 px-5 py-6"
               >
-                <span className="text-[0.65rem] font-sans font-medium tracking-widest text-terra/60 uppercase">
-                  {item.icon}
-                </span>
-                <p className="font-serif text-lg text-cream mt-2">{item.text}</p>
+                <p className="font-serif text-lg text-cream">{text}</p>
               </div>
             ))}
           </div>
 
-          <div className="text-center border-t border-b border-terra/15 py-8">
+          <div className="text-center py-6">
             <p className="font-serif text-xl md:text-2xl text-cream leading-snug">
               Tu ne changes pas qui tu es.
               <br />
               <span className="text-terra">
-                Tu changes l&apos;état depuis lequel tu réagis.
+                Tu changes l&apos;état depuis lequel tu vis.
               </span>
             </p>
           </div>
@@ -178,16 +196,19 @@ export default function LandingPage() {
       </section>
 
       {/* ── SECTION : 6 ÉTAPES ── */}
-      <section className="px-6 py-20 md:py-28 bg-[#231710]">
+      <section className="px-6 py-20 md:py-28">
         <div className="max-w-2xl mx-auto">
           <p className="text-[0.7rem] font-sans font-medium tracking-[0.3em] uppercase text-terra mb-4 text-center">
             Le protocole
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-12 text-center">
-            Une méthode en 6 étapes
+          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-6 text-center">
+            6 étapes. 10 minutes. Un chemin clair.
           </h2>
+          <p className="font-body text-lg text-warm-gray text-center mb-14">
+            Tu te laisses guider. C&apos;est tout.
+          </p>
 
-          <div className="space-y-4">
+          <div className="space-y-5">
             {[
               { letter: "T", name: "Traverser", color: "bg-terra" },
               { letter: "R", name: "Reconnaître", color: "bg-terra/80" },
@@ -212,19 +233,19 @@ export default function LandingPage() {
       </section>
 
       {/* ── SECTION : CTA ── */}
-      <section id="offre" className="px-6 py-24 md:py-32">
+      <section id="offre" className="px-6 py-24 md:py-32 bg-[#231710]">
         <div className="max-w-xl mx-auto text-center">
-          <p className="text-[0.7rem] font-sans font-medium tracking-[0.3em] uppercase text-terra mb-4">
-            Commencer
-          </p>
-          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-10">
-            Commencer sans pression
+          <h2 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-6">
+            Tu n&apos;as pas besoin de comprendre.
           </h2>
+          <p className="font-serif text-2xl md:text-3xl text-terra leading-snug mb-14">
+            Juste de commencer.
+          </p>
 
           <div className="flex flex-wrap justify-center gap-6 mb-12">
             {[
-              "1 traversée gratuite",
-              "Accès immédiat",
+              "Gratuit",
+              "Sans inscription",
               "10 minutes",
             ].map((item, i) => (
               <div
@@ -242,13 +263,13 @@ export default function LandingPage() {
           {/* CTA Button */}
           <Link
             href="/app"
-            className="inline-block w-full sm:w-auto bg-terra hover:bg-terra-dark text-cream font-sans font-medium text-lg tracking-wide px-12 py-5 rounded-full transition-all duration-300 hover:shadow-[0_0_40px_rgba(196,112,74,0.3)] active:scale-[0.98]"
+            className="inline-block w-full sm:w-auto bg-terra hover:bg-terra-dark text-cream font-sans font-medium text-lg tracking-wide px-14 py-5 rounded-full transition-all duration-300 hover:shadow-[0_0_40px_rgba(196,112,74,0.3)] active:scale-[0.98]"
           >
-            Faire ma première traversée
+            Je me stabilise maintenant
           </Link>
 
-          <p className="font-body text-sm text-warm-gray mt-6">
-            Aucun paiement requis. Aucune inscription obligatoire.
+          <p className="font-body text-sm text-warm-gray/60 mt-6">
+            Rien à payer. Rien à prouver. Tu arrives comme tu es.
           </p>
         </div>
       </section>
@@ -256,19 +277,19 @@ export default function LandingPage() {
       {/* ── SECTION : DISCLAIMER ── */}
       <section className="px-6 py-16 border-t border-terra/10">
         <div className="max-w-xl mx-auto text-center">
-          <p className="text-[0.7rem] font-sans font-medium tracking-[0.3em] uppercase text-warm-gray/60 mb-6">
+          <p className="text-[0.7rem] font-sans font-medium tracking-[0.3em] uppercase text-warm-gray/60 mb-8">
             Avant de commencer
           </p>
-          <div className="space-y-3">
-            {[
-              "Ce n'est pas une thérapie",
-              "Ce n'est pas magique",
-              "Mais c'est accessible, structuré, et ça commence maintenant",
-            ].map((item, i) => (
-              <p key={i} className="font-body text-base md:text-lg text-warm-gray leading-relaxed">
-                {item}
-              </p>
-            ))}
+          <div className="space-y-4">
+            <p className="font-body text-base md:text-lg text-warm-gray leading-relaxed">
+              Ce n&apos;est pas une thérapie.
+            </p>
+            <p className="font-body text-base md:text-lg text-warm-gray leading-relaxed">
+              Ce n&apos;est pas magique.
+            </p>
+            <p className="font-body text-base md:text-lg text-beige-dark leading-relaxed">
+              Mais c&apos;est accessible, structuré, et ça commence maintenant.
+            </p>
           </div>
         </div>
       </section>
