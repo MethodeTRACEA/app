@@ -56,7 +56,7 @@ export default function SessionPage() {
           Connecte-toi pour commencer une session TRACÉA et sauvegarder ta
           progression.
         </p>
-        <Link href="/connexion" className="btn-primary inline-block">
+        <Link href="/app/connexion" className="btn-primary inline-block">
           Se connecter
         </Link>
       </div>
@@ -1098,14 +1098,14 @@ function SessionContent({ userId }: { userId: string }) {
                 Plus tu pratiques, plus ça devient naturel.
               </p>
               <button
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/app")}
                 className="btn-primary w-full md:w-auto mb-4 !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
               >
                 Revenir plus tard
               </button>
               <div>
                 <Link
-                  href="/profil"
+                  href="/app/profil"
                   className="text-sm text-warm-gray hover:text-terra transition-colors underline underline-offset-2"
                 >
                   Voir mon profil

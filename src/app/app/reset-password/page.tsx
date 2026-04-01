@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
           Ton nouveau mot de passe est actif. Tu peux maintenant utiliser TRACÉA.
         </p>
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/app")}
           className="btn-primary !py-4 md:!py-3 !rounded-2xl"
         >
           Accéder à TRACÉA

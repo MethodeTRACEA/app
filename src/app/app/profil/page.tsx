@@ -63,7 +63,7 @@ export default function ProfilPage() {
         <h1 className="font-serif text-2xl text-espresso mb-4">
           Connexion requise
         </h1>
-        <Link href="/connexion" className="btn-primary inline-block">
+        <Link href="/app/connexion" className="btn-primary inline-block">
           Se connecter
         </Link>
       </div>

@@ -9,9 +9,14 @@ export function middleware(request: NextRequest) {
   if (cookie?.value === 'true') return NextResponse.next()
 
   const url = request.nextUrl.pathname
-  if (url === '/maintenance') return NextResponse.next()
+  if (url === '/app/maintenance') return NextResponse.next()
 
-  return NextResponse.redirect(new URL('/maintenance', request.url))
+  // Ne pas bloquer la landing page ni les pages légales
+  if (url === '/' || url === '/mentions-legales' || url === '/politique-confidentialite' || url === '/conditions-utilisation') {
+    return NextResponse.next()
+  }
+
+  return NextResponse.redirect(new URL('/app/maintenance', request.url))
 }
 
 export const config = {

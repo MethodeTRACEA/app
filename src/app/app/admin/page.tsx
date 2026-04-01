@@ -39,7 +39,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (loading) return;
     if (!user || !isAdmin) {
-      router.push("/");
+      router.push("/app");
       return;
     }
     Promise.all([getAdminStats(), getAdminWeeklyStats()]).then(

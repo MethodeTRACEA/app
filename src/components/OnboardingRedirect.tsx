@@ -20,7 +20,7 @@ export function OnboardingRedirect() {
     if (loading || !user) return;
 
     // Ne jamais interférer sur ces pages
-    if (pathname === "/bienvenue" || pathname === "/connexion") return;
+    if (pathname === "/app/bienvenue" || pathname === "/app/connexion") return;
 
     // Ne vérifier qu'une seule fois par session de navigation
     if (checked.current) return;
@@ -38,7 +38,7 @@ export function OnboardingRedirect() {
     getCompletedSessionsDb(user.id)
       .then((sessions) => {
         if (sessions.length === 0) {
-          router.push("/bienvenue");
+          router.push("/app/bienvenue");
         } else {
           // Utilisateur existant avec des sessions → marquer comme vu
           localStorage.setItem("tracea_onboarding_done", "true");

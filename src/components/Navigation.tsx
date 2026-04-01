@@ -7,14 +7,14 @@ import { useAuth } from "@/lib/auth-context";
 import { NightMode } from "@/components/NightMode";
 import { useState, useEffect, useRef } from "react";
 
-const publicLinks = [{ href: "/", label: "Accueil" }];
+const publicLinks = [{ href: "/app", label: "Accueil" }];
 
 const authLinks = [
-  { href: "/", label: "Accueil" },
-  { href: "/session", label: "Session" },
-  { href: "/historique", label: "Historique" },
-  { href: "/ressources", label: "Ressources" },
-  { href: "/profil", label: "Profil" },
+  { href: "/app", label: "Accueil" },
+  { href: "/app/session", label: "Session" },
+  { href: "/app/historique", label: "Historique" },
+  { href: "/app/ressources", label: "Ressources" },
+  { href: "/app/profil", label: "Profil" },
 ];
 
 export function Navigation() {
@@ -60,7 +60,7 @@ export function Navigation() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="flex items-center justify-between h-14">
             {/* Gauche : Logo */}
-            <Link href="/" className="flex-shrink-0">
+            <Link href="/app" className="flex-shrink-0">
               <Image
                 src="/images/tracea-logo-terra-hd.png"
                 alt="TRACÉA"
@@ -81,8 +81,8 @@ export function Navigation() {
               <ul className="flex gap-1">
                 {links.map((link) => {
                   const isActive =
-                    link.href === "/"
-                      ? pathname === "/"
+                    link.href === "/app"
+                      ? pathname === "/app"
                       : pathname.startsWith(link.href);
                   return (
                     <li key={link.href}>
@@ -102,9 +102,9 @@ export function Navigation() {
                 {user && isAdmin && (
                   <li>
                     <Link
-                      href="/admin"
+                      href="/app/admin"
                       className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-200 ${
-                        pathname === "/admin"
+                        pathname === "/app/admin"
                           ? "bg-terra text-cream"
                           : "text-beige-dark hover:text-terra-light hover:bg-white/10"
                       }`}
@@ -117,7 +117,7 @@ export function Navigation() {
               </ul>
               {!loading && !user && (
                 <Link
-                  href="/connexion"
+                  href="/app/connexion"
                   className="btn-primary !px-4 !py-1.5 !text-xs"
                 >
                   Connexion
@@ -203,8 +203,8 @@ export function Navigation() {
         <nav className="px-3 py-4 space-y-1">
           {links.map((link) => {
             const isActive =
-              link.href === "/"
-                ? pathname === "/"
+              link.href === "/app"
+                ? pathname === "/app"
                 : pathname.startsWith(link.href);
             return (
               <Link
@@ -223,9 +223,9 @@ export function Navigation() {
 
           {user && isAdmin && (
             <Link
-              href="/admin"
+              href="/app/admin"
               className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 ${
-                pathname === "/admin"
+                pathname === "/app/admin"
                   ? "bg-terra text-cream"
                   : "text-beige-dark hover:bg-white/8 hover:text-cream"
               }`}
@@ -239,7 +239,7 @@ export function Navigation() {
         <div className="absolute bottom-0 left-0 right-0 border-t border-white/10 px-3 py-4 space-y-1">
           {!loading && !user && (
             <Link
-              href="/connexion"
+              href="/app/connexion"
               className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium tracking-wide text-terra hover:bg-terra/10 transition-all"
             >
               Connexion

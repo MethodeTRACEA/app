@@ -24,7 +24,7 @@ export default function BienvenuePage() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
-      router.replace("/connexion");
+      router.replace("/app/connexion");
       return;
     }
     setReady(true);
@@ -43,7 +43,7 @@ export default function BienvenuePage() {
     }
 
     localStorage.setItem("tracea_onboarding_done", "true");
-    router.push("/session");
+    router.push("/app/session");
   }
 
   if (authLoading || !ready) {

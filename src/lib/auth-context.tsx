@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/app`,
       },
     });
     return { error: error?.message ?? null };
@@ -97,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/app`,
       },
     });
 
@@ -126,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // ── Réinitialisation du mot de passe ──
   async function resetPassword(email: string) {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.origin}/app/reset-password`,
     });
     return { error: error?.message ?? null };
   }

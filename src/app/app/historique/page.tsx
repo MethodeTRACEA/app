@@ -42,7 +42,7 @@ export default function HistoriquePage() {
         <p className="text-warm-gray mb-6">
           Connecte-toi pour retrouver ton historique de sessions.
         </p>
-        <Link href="/connexion" className="btn-primary inline-block">
+        <Link href="/app/connexion" className="btn-primary inline-block">
           Se connecter
         </Link>
       </div>

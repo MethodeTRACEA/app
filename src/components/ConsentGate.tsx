@@ -137,7 +137,7 @@ function ConsentForm({ onConsent }: { onConsent: () => void }) {
           En cochant ces cases, tu donnes ton consentement libre, spécifique,
           éclairé et univoque au traitement de tes données. Tu peux retirer
           ce consentement à tout moment depuis la page{" "}
-          <Link href="/profil" className="text-terra hover:text-terra-dark underline">
+          <Link href="/app/profil" className="text-terra hover:text-terra-dark underline">
             Profil
           </Link>
           . Le retrait du consentement n&apos;affecte pas la licéité du

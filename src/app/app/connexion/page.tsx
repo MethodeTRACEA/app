@@ -25,7 +25,7 @@ export default function ConnexionPage() {
 
   // Déjà connecté → rediriger
   if (user) {
-    router.push("/");
+    router.push("/app");
     return null;
   }
 
