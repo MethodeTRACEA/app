@@ -48,17 +48,22 @@ export default function SessionPage() {
 
   if (!user) {
     return (
-      <div className="max-w-md mx-auto px-4 py-16 text-center">
-        <h1 className="font-serif text-2xl text-espresso mb-4">
-          Connexion requise
-        </h1>
-        <p className="text-warm-gray mb-6">
-          Connecte-toi pour commencer une session TRACÉA et sauvegarder ta
-          progression.
+      <div className="max-w-md mx-auto px-4 py-20 text-center">
+        <p className="font-body text-sm text-warm-gray/60 mb-3">
+          Tu es &agrave; un pas de commencer.
         </p>
-        <Link href="/app/connexion" className="btn-primary inline-block">
-          Se connecter
+        <h1 className="font-serif text-2xl md:text-3xl text-espresso mb-4">
+          On y est presque.
+        </h1>
+        <p className="font-body text-base text-espresso/70 leading-relaxed mb-8">
+          On cr&eacute;e ton espace pour garder ta progression.
+        </p>
+        <Link href="/app/connexion" className="btn-primary inline-block !py-4 !text-base !rounded-2xl w-full sm:w-auto">
+          Continuer
         </Link>
+        <p className="font-body text-xs text-warm-gray/50 mt-4">
+          Gratuit. Sans engagement.
+        </p>
       </div>
     );
   }
