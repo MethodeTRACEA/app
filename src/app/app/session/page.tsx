@@ -695,9 +695,14 @@ function SessionContent({ userId }: { userId: string }) {
               </div>
             )}
 
-            <p className={`font-body text-base md:text-lg text-espresso leading-relaxed whitespace-pre-wrap ${step.id === "traverser" ? "mb-2" : "mb-4"}`}>
+            <p className={`font-body text-base md:text-lg text-espresso leading-relaxed whitespace-pre-wrap ${(step.id === "traverser" || step.id === "reconnaitre") ? "mb-2" : "mb-4"}`}>
               {step.question}
             </p>
+            {step.id === "reconnaitre" && (
+              <p className="font-body text-sm text-warm-gray/70 mb-4">
+                Tu peux rester simple. Même vague.
+              </p>
+            )}
             {step.id === "traverser" && (
               <>
                 <p className="font-body text-sm text-warm-gray/70 mb-3">

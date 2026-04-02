@@ -34,28 +34,27 @@ export const STEPS: StepDefinition[] = [
     name: "Reconnaître",
     verb: "R",
     description:
-      "Identifier l'émotion réelle, la nommer. Distinguer l'émotion primaire de l'émotion secondaire ou des réactions défensives.",
+      "Approche doucement ce qu'il y a dessous.",
     question:
-      "Sous ce que tu ressens là… est-ce qu'il y a autre chose aussi :\n– de la tristesse\n– de la peur\n– de la fatigue\n– ou autre chose ?",
+      "Sous ce que tu ressens…\n\nest-ce qu'il y a quelque chose de plus sensible ?",
     help: {
       comprendre:
-        "Ce qu'on ressent en premier — la colère, l'agitation, le contrôle, l'irritation — est souvent une couche de protection. En dessous, il y a quelque chose de plus tendre, de plus vulnérable : une peur, une tristesse, une honte, un besoin d'amour. Reconnaître, c'est descendre sous la première couche pour toucher ce qui est vraiment là. Ce n'est pas toujours confortable — mais c'est là que se trouve la vérité.",
+        "Ce qu'on ressent en premier n'est pas toujours le plus profond.\n\nParfois, en dessous, il y a quelque chose de plus fragile ou de plus sensible.\n\nReconnaître, ici, c'est juste l'approcher.",
       sousQuestions: [
-        "Est-ce que ce que tu ressens en surface cache autre chose en dessous ?",
-        "Si tu enlèves la colère ou l'agitation, qu'est-ce qui reste ?",
-        "Est-ce que tu as peur de quelque chose ? Peur de quoi exactement ?",
-        "Est-ce qu'il y a de la tristesse là-dedans, même cachée ?",
-        "Est-ce qu'une partie de toi se sent seule, incomprise, ou indigne ?",
+        "Si tu restes un instant dessous, qu'est-ce que tu trouves ?",
+        "Est-ce qu'il y a de la tristesse, de la peur, de la fatigue… ou autre chose ?",
+        "Qu'est-ce qui semble le plus sensible là, maintenant ?",
+        "Même si ce n'est pas clair, qu'est-ce qui se laisse juste deviner ?",
       ],
       exemples: [
-        "Je croyais être en colère mais en fait j'ai peur d'être abandonné·e.",
-        "Sous mon irritation, il y a de la tristesse. Je me sens invisible.",
-        "Je contrôle tout parce que j'ai peur que si je lâche, tout s'effondre.",
-        "L'émotion primaire c'est la honte. Je me sens de trop.",
-        "En dessous de la fatigue, il y a un chagrin que je n'ai jamais vraiment accueilli.",
+        "Sous mon agitation, il y a surtout de la tristesse.",
+        "Je croyais être tendue, mais en dessous je me sens fatiguée.",
+        "Il y a quelque chose de plus fragile que ce que je montre.",
+        "Je sens surtout de la peur.",
+        "Je ne sais pas exactement, mais je sens que ce n'est pas seulement de la colère.",
       ],
       bloque:
-        "Les émotions primaires les plus courantes sont : la peur, la tristesse, la colère profonde, la honte, et le besoin d'amour ou de connexion. Pose-toi cette question simple : si j'enlevais toutes mes défenses, si je n'avais plus besoin de me protéger, qu'est-ce que je ressentirais vraiment ?",
+        "Si rien ne vient, ne force pas.\n\nDemande-toi juste :\nest-ce qu'en dessous, c'est plutôt triste, inquiet, fatigué… ou autre chose ?\n\nMême \"je ne sais pas encore\" est déjà une vraie réponse.",
     },
   },
   {
