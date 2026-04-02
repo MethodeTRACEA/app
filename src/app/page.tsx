@@ -54,22 +54,16 @@ export default function LandingPage() {
         <div className="max-w-xl mx-auto">
           <div className="space-y-6 mb-12">
             <p className="font-body text-lg md:text-xl text-beige-dark leading-relaxed">
-              Tu envoies un message&hellip;
-              <br />
-              et tu le regrettes avant m&ecirc;me qu&apos;il soit lu.
+              Tu envoies un message. Tu le regrettes.
             </p>
             <p className="font-body text-lg md:text-xl text-beige-dark leading-relaxed">
-              Tu rejoues la sc&egrave;ne.
-              <br />
-              Tu anticipes.
-              <br />
-              Tu t&apos;&eacute;puises.
+              Tu rejoues. Tu anticipes. Tu t&apos;&eacute;puises.
             </p>
             <p className="font-body text-lg md:text-xl text-cream leading-relaxed">
-              Tu voudrais juste que &ccedil;a s&apos;arr&ecirc;te.
+              Tu voudrais que &ccedil;a s&apos;arr&ecirc;te.
             </p>
             <p className="font-body text-lg md:text-xl text-warm-gray/50 leading-relaxed">
-              Mais ton corps ne te laisse pas.
+              Ton corps ne te laisse pas.
             </p>
           </div>
 
@@ -78,7 +72,7 @@ export default function LandingPage() {
               href="/start"
               className="inline-block w-full sm:w-auto bg-terra hover:bg-terra-dark text-cream font-medium text-base px-10 py-4 rounded-full transition-all duration-300 active:scale-[0.98]"
             >
-              Essayer maintenant
+              Essayer maintenant (gratuit)
             </Link>
           </div>
         </div>
@@ -94,12 +88,10 @@ export default function LandingPage() {
             C&apos;est ton syst&egrave;me nerveux.
           </p>
           <p className="font-body text-lg text-beige-dark/70 leading-relaxed mb-3">
-            Quand il est en alerte,
-            <br />
-            tout s&apos;emballe.
+            Quand il s&apos;emballe, tout s&apos;emballe.
           </p>
           <p className="font-body text-lg text-warm-gray/50 leading-relaxed">
-            Et tu ne peux pas juste &laquo;&thinsp;te calmer&thinsp;&raquo;.
+            Tu ne peux pas juste &laquo;&thinsp;te calmer&thinsp;&raquo;.
           </p>
         </div>
       </section>
@@ -108,7 +100,7 @@ export default function LandingPage() {
       <section className="px-6 py-20 md:py-28">
         <div className="max-w-xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl text-cream leading-tight mb-10 text-center">
-            Ton corps est bloqu&eacute; en mode alerte.
+            Ton corps est bloqu&eacute;.
           </h2>
 
           <div className="space-y-5 mb-12">
@@ -255,7 +247,7 @@ export default function LandingPage() {
       <section className="px-6 py-24 md:py-36">
         <div className="max-w-xl mx-auto text-center">
           <h2 className="font-serif text-2xl md:text-4xl text-cream leading-tight mb-4">
-            Tu n&apos;as rien &agrave; comprendre de plus.
+            Tu n&apos;as rien &agrave; comprendre de plus. Juste &agrave; commencer.
           </h2>
           <p className="font-serif text-xl md:text-3xl text-terra leading-snug mb-14">
             Ton corps sait d&eacute;j&agrave; quoi faire.
