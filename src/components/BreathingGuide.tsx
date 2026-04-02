@@ -117,7 +117,7 @@ export function BreathingGuide() {
       </div>
 
       <p className="text-sm text-espresso/70 mb-6 leading-relaxed">
-        Si tu le souhaites, prends un moment pour respirer avec ce guide.
+        Prends un moment pour respirer avec ce guide.
         4 secondes d&apos;inspiration, 6 secondes d&apos;expiration.
         Laisse ton corps trouver son rythme.
       </p>

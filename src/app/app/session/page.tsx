@@ -24,12 +24,12 @@ type Phase = "intro" | "welcome" | "entry-question" | "session" | "mirror" | "tr
 // Messages de transition entre étapes (Section 4)
 const TRANSITION_MESSAGES: Record<string, string> = {
   "traverser→reconnaitre": "Tu as posé ce qui était là. Maintenant, regardons de plus près.",
-  "reconnaitre→ancrer": "Tu as nommé ce que tu ressens. Maintenant, on va ralentir.",
+  "reconnaitre→ancrer": "Tu as nommé ce que tu ressens. Maintenant, ralentis.",
   "ancrer→conscientiser": "Ton corps a trouvé un appui. Maintenant, on peut regarder ce qui se joue.",
   "conscientiser→emerger": "Tu as vu ce qui était en jeu. Voyons ce qui émerge.",
   "emerger→aligner": "Quelque chose s'est clarifié. Maintenant, on le traduit en geste concret.",
   // Transitions pour le mode court
-  "traverser→ancrer": "Tu as posé ce qui était là. Maintenant, on va ralentir.",
+  "traverser→ancrer": "Tu as posé ce qui était là. Maintenant, ralentis.",
   "ancrer→emerger": "Ton corps a trouvé un appui. Voyons ce qui émerge.",
 };
 

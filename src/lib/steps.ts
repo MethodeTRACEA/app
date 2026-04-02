@@ -68,7 +68,7 @@ export const STEPS: StepDefinition[] = [
       "Et maintenant dans ton corps…\nest-ce que c'est :\n– un peu plus calme\n– toujours pareil\n– ou différent autrement ?",
     help: {
       comprendre:
-        "Quand une émotion forte est présente, le corps entre dans un état d'alerte — le souffle se raccourcit, les muscles se contractent, la pensée s'emballe. Ancrer, c'est revenir dans le corps pour lui dire : tu es en sécurité maintenant. Pas en niant ce qui se passe — en créant assez de stabilité pour que la suite soit possible. Le guide de respiration est là pour t'aider. Utilise-le.",
+        "Quand une émotion forte est présente, le corps entre dans un état d'alerte — le souffle se raccourcit, les muscles se contractent, la pensée s'emballe. Ancrer, c'est revenir dans le corps pour lui dire : tu peux relâcher un peu. Pas en niant ce qui se passe — en créant assez de stabilité pour que la suite soit possible. Le guide de respiration est là pour t'aider. Utilise-le.",
       sousQuestions: [
         "Est-ce que tu sens tes pieds au sol en ce moment ?",
         "Pose les deux mains à plat sur tes cuisses — qu'est-ce que tu sens sous tes paumes ?",
@@ -84,7 +84,7 @@ export const STEPS: StepDefinition[] = [
         "En comptant mes souffles, les pensées ralentissent un peu.",
       ],
       bloque:
-        "Essaie la respiration guidée : inspire 4 secondes, expire 6 secondes. Répète trois fois. Si même ça c'est trop, pose juste une main sur ton cœur et reste là une minute. Sens le mouvement de ta respiration sous ta main. C'est suffisant.",
+        "Essaie la respiration guidée : inspire 4 secondes, expire 6 secondes. Répète doucement. Si même ça c'est trop, pose juste une main sur ton cœur et reste là une minute. Sens le mouvement de ta respiration sous ta main. C'est suffisant.",
     },
   },
   {
