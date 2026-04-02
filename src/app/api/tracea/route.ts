@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { getMemoryContext, formatMemoryContext } from "@/lib/memory";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 // ===================================================================
 // API KEY & CLIENTS
@@ -841,6 +842,21 @@ export async function POST(request: NextRequest) {
     const { type } = body;
 
     console.log("[TRACEA API] Request type:", type, "| stepId:", body.stepId || "n/a");
+
+    // --- Rate Limiting : vérifier AVANT tout appel IA ---
+    const clientIp = getClientIp(request.headers);
+    const rateLimitResult = await checkRateLimit({
+      userId: body.userId || undefined,
+      ip: clientIp,
+    });
+
+    if (!rateLimitResult.allowed) {
+      console.warn(`[TRACEA API] Rate limited: ${rateLimitResult.reason} | user: ${body.userId || "anon"} | ip: ${clientIp || "unknown"}`);
+      return NextResponse.json(
+        { error: rateLimitResult.message },
+        { status: 429 }
+      );
+    }
 
     if (type === "step-mirror") {
       return await handleStepMirror(body);
