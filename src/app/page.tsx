@@ -2,11 +2,24 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-espresso text-beige">
+    <div className="min-h-screen text-beige relative overflow-hidden" style={{ background: "linear-gradient(180deg, #2C1E14 0%, #261810 15%, #231710 35%, #2C1E14 55%, #231710 75%, #2A1C13 90%, #231710 100%)" }}>
+      {/* Halos organiques de fond — profondeur et chaleur */}
+      <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
+        {/* Halo hero — terracotta chaud */}
+        <div className="absolute top-[-10%] left-[50%] -translate-x-1/2 w-[140vw] h-[80vh] rounded-full opacity-[0.07]" style={{ background: "radial-gradient(ellipse, rgba(196,112,74,1) 0%, transparent 70%)" }} />
+        {/* Halo milieu — sage subtil */}
+        <div className="absolute top-[40%] right-[-20%] w-[80vw] h-[60vh] rounded-full opacity-[0.04]" style={{ background: "radial-gradient(ellipse, rgba(138,158,122,1) 0%, transparent 70%)" }} />
+        {/* Halo bas — terracotta profond */}
+        <div className="absolute top-[70%] left-[-15%] w-[70vw] h-[50vh] rounded-full opacity-[0.05]" style={{ background: "radial-gradient(ellipse, rgba(196,112,74,1) 0%, transparent 70%)" }} />
+        {/* Signature circulaire — inspirée du logo, très subtile */}
+        <div className="absolute top-[25%] left-[50%] -translate-x-1/2 w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] rounded-full opacity-[0.025] border-[1.5px] border-terra" />
+        <div className="absolute top-[60%] left-[50%] -translate-x-1/2 w-[45vw] h-[45vw] max-w-[450px] max-h-[450px] rounded-full opacity-[0.02] border-[1px] border-cream" />
+      </div>
+
       {/* ── HERO ── */}
       <section className="relative min-h-[95vh] flex items-center justify-center px-6 py-20 overflow-hidden">
         <div
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-40"
           style={{
             background:
               "radial-gradient(ellipse at 50% 30%, rgba(196,112,74,0.25) 0%, transparent 60%)",
@@ -18,7 +31,7 @@ export default function LandingPage() {
             <img
               src="/images/tracea-logo-terra-hd.png"
               alt="TRACEA"
-              className="h-12 md:h-16 mx-auto object-contain"
+              className="h-16 md:h-24 mx-auto object-contain"
             />
           </div>
 
@@ -50,7 +63,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── IDENTIFICATION ── */}
-      <section className="px-6 py-20 md:py-28">
+      <section className="relative px-6 py-20 md:py-28">
         <div className="max-w-xl mx-auto">
           <div className="space-y-6 mb-12">
             <p className="font-body text-lg md:text-xl text-beige-dark leading-relaxed">
@@ -79,7 +92,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── RECADRAGE ── */}
-      <section className="px-6 py-20 md:py-28 bg-[#231710]">
+      <section className="relative px-6 py-20 md:py-28">
         <div className="max-w-xl mx-auto text-center">
           <h2 className="font-serif text-2xl md:text-4xl text-cream leading-tight mb-8">
             Ce n&apos;est pas dans ta t&ecirc;te.
@@ -97,7 +110,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── PROBLÈME ── */}
-      <section className="px-6 py-20 md:py-28">
+      <section className="relative px-6 py-20 md:py-28">
         <div className="max-w-xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl text-cream leading-tight mb-10 text-center">
             Ton corps est bloqu&eacute;.
@@ -130,7 +143,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── BASCULE ── */}
-      <section className="px-6 py-16 md:py-24 bg-[#231710]">
+      <section className="relative px-6 py-16 md:py-24">
         <div className="max-w-xl mx-auto text-center">
           <p className="font-serif text-2xl md:text-3xl text-cream leading-snug mb-4">
             Le probl&egrave;me, ce n&apos;est pas ce que tu ressens.
@@ -142,7 +155,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── SOLUTION ── */}
-      <section className="px-6 py-20 md:py-28">
+      <section className="relative px-6 py-20 md:py-28">
         <div className="max-w-xl mx-auto">
           <h2 className="font-serif text-2xl md:text-4xl text-cream leading-tight mb-10 text-center">
             TRAC&Eacute;A est un entra&icirc;nement guid&eacute;.
@@ -176,7 +189,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── BÉNÉFICES ── */}
-      <section className="px-6 py-20 md:py-28 bg-[#231710]">
+      <section className="relative px-6 py-20 md:py-28">
         <div className="max-w-xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl text-cream leading-tight mb-10 text-center">
             En quelques minutes, tu peux :
@@ -191,7 +204,7 @@ export default function LandingPage() {
             ].map((text, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-terra/15 bg-terra/5 px-5 py-5 text-center"
+                className="rounded-2xl border border-cream/[0.06] bg-cream/[0.03] px-5 py-5 text-center"
               >
                 <p className="font-serif text-lg text-cream">{text}</p>
               </div>
@@ -201,7 +214,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── MÉTHODE ── */}
-      <section className="px-6 py-20 md:py-28">
+      <section className="relative px-6 py-20 md:py-28">
         <div className="max-w-xl mx-auto">
           <h2 className="font-serif text-2xl md:text-4xl text-cream leading-tight mb-4 text-center">
             6 &eacute;tapes. 10 minutes.
@@ -235,7 +248,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── EXPÉRIENCE ── */}
-      <section className="px-6 py-20 md:py-28 bg-[#231710]">
+      <section className="relative px-6 py-20 md:py-28">
         <div className="max-w-xl mx-auto text-center space-y-5">
           <p className="font-body text-xl md:text-2xl text-warm-gray/50">Tu respires.</p>
           <p className="font-body text-xl md:text-2xl text-beige-dark/70">Ton corps ralentit.</p>
@@ -244,8 +257,12 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA FINAL ── */}
-      <section className="px-6 py-24 md:py-36">
-        <div className="max-w-xl mx-auto text-center">
+      <section className="relative px-6 py-24 md:py-36">
+        {/* Halo local pour renforcer le CTA */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[60vh] rounded-full opacity-[0.06]" style={{ background: "radial-gradient(ellipse, rgba(196,112,74,1) 0%, transparent 60%)" }} />
+        </div>
+        <div className="relative z-10 max-w-xl mx-auto text-center">
           <h2 className="font-serif text-2xl md:text-4xl text-cream leading-tight mb-4">
             Tu n&apos;as rien &agrave; comprendre de plus. Juste &agrave; commencer.
           </h2>
@@ -267,7 +284,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── RASSURANCE ── */}
-      <section className="px-6 py-16 md:py-20 bg-[#231710]">
+      <section className="relative px-6 py-16 md:py-20">
         <div className="max-w-xl mx-auto text-center space-y-4">
           <p className="font-body text-base md:text-lg text-warm-gray leading-relaxed">
             Ce n&apos;est pas une th&eacute;rapie.
@@ -284,7 +301,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="px-6 py-10 border-t border-terra/10">
+      <footer className="relative px-6 py-10">
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-4">
           <img
             src="/images/tracea-logo-terra-hd.png"
