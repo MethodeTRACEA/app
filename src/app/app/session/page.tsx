@@ -1066,7 +1066,7 @@ function SessionContent({ userId }: { userId: string }) {
           {showDepot ? (
             <div className="card-base mb-6 !p-5 md:!p-6">
               <p className="font-serif text-base md:text-lg text-espresso mb-2">
-                Qu&apos;est-ce que tu veux porter avec toi en quittant cet espace ?
+                Qu&apos;est-ce que tu veux garder avec toi maintenant ?
               </p>
               <p className="font-body text-sm text-warm-gray leading-relaxed mb-4">
                 Un mot, une image, une intention. Ou rien. Reste un instant avant de repartir.
@@ -1074,7 +1074,7 @@ function SessionContent({ userId }: { userId: string }) {
               <textarea
                 value={depotText}
                 onChange={(e) => setDepotText(e.target.value)}
-                placeholder="Ce que je veux garder avec moi..."
+                placeholder="Ce que je garde avec moi..."
                 className="w-full px-4 py-3 bg-beige/50 rounded-xl text-espresso font-sans text-base border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 resize-none mb-4"
                 rows={3}
               />

@@ -9,7 +9,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "Entrer en contact direct avec ce qui se vit intérieurement, sans fuir, sans analyser, sans chercher à apaiser immédiatement.",
     question:
-      "Que se passe-t-il en toi, là, maintenant ? Décris ce que tu ressens sans chercher à l'expliquer.",
+      "Qu'est-ce qui est là, maintenant ?",
     help: {
       comprendre:
         "Traverser ne veut pas dire comprendre, ni résoudre. Ça veut dire rester là, avec ce qui est présent, sans le fuir et sans le forcer à partir. L'émotion que tu portes en ce moment a quelque chose à te dire — mais elle ne peut le dire que si tu acceptes de la regarder en face, même une seconde. C'est ça, traverser.",
@@ -39,7 +39,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "Identifier l'émotion réelle, la nommer. Distinguer l'émotion primaire de l'émotion secondaire ou des réactions défensives.",
     question:
-      "Sous la surface de ce que tu ressens, quelle est l'émotion véritable ? Quelle est l'émotion primaire ?",
+      "Sous ce que tu ressens d'abord, qu'est-ce qu'il y a aussi ?",
     help: {
       comprendre:
         "Ce qu'on ressent en premier — la colère, l'agitation, le contrôle, l'irritation — est souvent une couche de protection. En dessous, il y a quelque chose de plus tendre, de plus vulnérable : une peur, une tristesse, une honte, un besoin d'amour. Reconnaître, c'est descendre sous la première couche pour toucher ce qui est vraiment là. Ce n'est pas toujours confortable — mais c'est là que se trouve la vérité.",
@@ -69,7 +69,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "Stabiliser le système nerveux, revenir dans le corps, réduire la charge émotionnelle. L'ancrage est une étape somatique essentielle.",
     question:
-      "Prends un instant pour respirer. Sens tes pieds au sol, tes mains sur tes genoux. Décris ton état corporel maintenant.",
+      "Qu'est-ce qui a changé dans ton corps ?",
     help: {
       comprendre:
         "Quand une émotion forte est présente, le corps entre dans un état d'alerte — le souffle se raccourcit, les muscles se contractent, la pensée s'emballe. Ancrer, c'est revenir dans le corps pour lui dire : tu es en sécurité maintenant. Pas en niant ce qui se passe — en créant assez de stabilité pour que la suite soit possible. Le guide de respiration est là pour t'aider. Utilise-le.",
@@ -99,7 +99,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "Éclairer le message profond de l'émotion, relier l'expérience du moment à ce qu'elle révèle. Comprendre ce qui se joue réellement.",
     question:
-      "Maintenant que tu es plus stable, que comprends-tu de cette émotion ? Que révèle-t-elle sur ce qui est important pour toi ?",
+      "Avec ce que tu ressens, de quoi aurais-tu besoin, là maintenant ?",
     help: {
       comprendre:
         "L'émotion que tu as traversée n'est pas un accident. Elle porte un message — sur un besoin non satisfait, sur une blessure ancienne, sur quelque chose qui compte profondément pour toi. Conscientiser, c'est écouter ce message. C'est aussi l'étape où tu peux commencer à regarder tes réactions non pas comme des défauts, mais comme des mécanismes de survie qui ont eu une raison d'être. Ce que tu portes avait du sens. Il protège quelque chose.",
@@ -130,7 +130,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "Laisser apparaître une nouvelle vérité intérieure issue du processus. Ce qui est juste, clair et aligné après le travail émotionnel.",
     question:
-      "Après ce parcours intérieur, quelle vérité émerge ? Que sais-tu maintenant que tu ne voyais pas clairement avant ?",
+      "Qu'est-ce qui devient plus clair pour toi maintenant ?",
     help: {
       comprendre:
         "L'émergence n'est pas quelque chose que tu fabriques — c'est quelque chose que tu laisses venir. Après avoir traversé, reconnu, ancré et conscientisé, quelque chose se dépose. Une évidence, un soulagement, un regard différent sur toi-même ou sur la situation. Ce n'est pas toujours spectaculaire. Parfois c'est juste une phrase simple qui sonne juste. Parfois c'est un silence qui dit tout. Les deux sont valides.",
@@ -160,7 +160,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "Mettre en actes concrets la vérité intérieure émergée. L'alignement est l'intégration dans la matière, la cohérence retrouvée.",
     question:
-      "Quelle action concrète, même petite, vas-tu poser pour honorer cette vérité ? Que changes-tu dès aujourd'hui ?",
+      "Quelle action simple peux-tu poser maintenant ?",
     help: {
       comprendre:
         "Aligner, c'est choisir un geste — même minuscule — qui honore ce qui vient d'émerger. Pas une transformation héroïque. Pas une résolution de tout changer. Juste un geste cohérent avec ta vérité. Ça peut être une conversation, une limite, un temps pour toi, ou même un acte symbolique — allumer une bougie, écrire une lettre que tu n'envoies pas, marcher en portant consciemment ce que tu viens de traverser. Ces gestes ancrent la transformation dans le corps et dans le temps.",
