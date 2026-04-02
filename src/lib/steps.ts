@@ -95,12 +95,12 @@ export const STEPS: StepDefinition[] = [
     description:
       "Éclairer le message profond de l'émotion, relier l'expérience du moment à ce qu'elle révèle. Comprendre ce qui se joue réellement.",
     question:
-      "Avec ce que tu ressens là… ton corps aurait plutôt besoin de ralentir, d'être soutenu, de se relâcher… ou d'autre chose ?",
+      "Avec ce que tu ressens là…\nde quoi ton corps aurait besoin, maintenant ?",
     help: {
       comprendre:
-        "L'émotion que tu as traversée n'est pas un accident. Elle porte un message — sur un besoin non satisfait, sur une blessure ancienne, sur quelque chose qui compte profondément pour toi. Conscientiser, c'est écouter ce message. C'est aussi l'étape où tu peux commencer à regarder tes réactions non pas comme des défauts, mais comme des mécanismes de survie qui ont eu une raison d'être. Ce que tu portes avait du sens. Il protège quelque chose.",
+        "L'émotion que tu as traversée n'est pas un accident. Elle porte un message — sur un besoin non satisfait, sur une blessure ancienne, sur quelque chose qui compte profondément pour toi. Conscientiser, c'est écouter ce message. C'est aussi l'étape où tu peux commencer à regarder tes réactions non pas comme des défauts, mais comme des mécanismes de survie qui ont eu une raison d'être. Ce que tu ressens a du sens.\nÇa protège quelque chose en toi.",
       sousQuestions: [
-        "Quel besoin cette émotion révèle-t-elle — besoin de sécurité, d'amour, de reconnaissance, de liberté ?",
+        "Qu'est-ce que cette émotion essaie de protéger ou d'obtenir ?",
         "Est-ce que tu as déjà ressenti quelque chose de semblable, plus tôt dans ta vie ?",
         "Y a-t-il une partie de toi qui a l'habitude de réagir comme ça pour se protéger ?",
         "Si cette émotion pouvait parler, que dirait-elle ?",
@@ -115,7 +115,7 @@ export const STEPS: StepDefinition[] = [
         "Quelque chose en moi cherche la paix — pas juste l'absence de conflit, mais une paix vraie.",
       ],
       bloque:
-        "Demande-toi simplement : si cette émotion était une enfant en moi, que vivrait-elle ? De quoi aurait-elle besoin ? Parfois, nommer la partie blessée suffit à commencer à comprendre. Tu n'as pas besoin de tout expliquer — une seule phrase juste vaut mieux qu'un long raisonnement.",
+        "Si c'est flou, reste simple.\n\nDemande-toi juste :\nqu'est-ce qui est le plus important pour moi, là, maintenant ?\n\nMême une réponse incomplète suffit.",
     },
   },
   {
