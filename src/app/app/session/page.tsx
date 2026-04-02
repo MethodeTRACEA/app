@@ -703,8 +703,11 @@ function SessionContent({ userId }: { userId: string }) {
                 <p className="font-body text-sm text-warm-gray/70 mb-3">
                   Pas besoin de bien répondre. Juste ce qui est là.
                 </p>
-                <p className="font-body text-xs text-warm-gray/50 italic mb-2">
+                <p className="font-body text-xs text-warm-gray/50 italic mb-1">
                   Tu peux partir du corps si c&apos;est plus simple.
+                </p>
+                <p className="font-body text-xs text-warm-gray/50 italic mb-2">
+                  Prends une seconde. Sens ton corps là, maintenant.
                 </p>
               </>
             )}

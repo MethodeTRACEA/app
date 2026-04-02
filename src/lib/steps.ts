@@ -14,8 +14,8 @@ export const STEPS: StepDefinition[] = [
       comprendre:
         "Tu n'as pas besoin de comprendre.\n\nJuste sentir ce qui est là,\nmême un tout petit peu.",
       sousQuestions: [
-        "Où tu sens ça dans ton corps ?",
-        "C'est plutôt : serré, lourd, vide ou agité ?",
+        "Où tu sens ça ?",
+        "Plutôt : serré, lourd, vide ou agité ?",
         "Même flou, ça suffit.",
       ],
       exemples: [
