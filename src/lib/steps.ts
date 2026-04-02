@@ -126,16 +126,15 @@ export const STEPS: StepDefinition[] = [
     description:
       "Laisser apparaître une nouvelle vérité intérieure issue du processus. Ce qui est juste, clair et aligné après le travail émotionnel.",
     question:
-      "Avec ce que tu ressens maintenant… Qu'est-ce que tu sens émerger maintenant, même si c'est encore léger ou fragile ?",
+      "Avec ce que tu ressens maintenant…\nquelle phrase ou évidence devient plus claire ?",
     help: {
       comprendre:
-        "L'émergence n'est pas quelque chose que tu fabriques — c'est quelque chose que tu laisses venir. Après avoir traversé, reconnu, ancré et conscientisé, quelque chose se dépose. Une évidence, un soulagement, un regard différent sur toi-même ou sur la situation. Ce n'est pas toujours spectaculaire. Parfois c'est juste une phrase simple qui sonne juste. Parfois c'est un silence qui dit tout. Les deux sont valides.",
+        "L'émergence, ce n'est pas quelque chose que tu forces — c'est quelque chose qui apparaît. Après avoir traversé, reconnu, ancré et conscientisé, quelque chose se dépose. Une évidence, un soulagement, un regard différent sur toi-même ou sur la situation. Ce n'est pas toujours spectaculaire. Parfois c'est juste une phrase simple qui sonne juste. Parfois c'est un silence qui dit tout. Les deux sont valides.",
       sousQuestions: [
-        "Qu'est-ce qui est devenu plus clair après cette traversée ?",
-        "Est-ce qu'il y a une phrase qui résume ce que tu comprends maintenant ?",
-        "Est-ce que quelque chose s'est allégé, même légèrement ?",
-        "Qu'est-ce que tu voudrais te dire à toi-même après ce parcours ?",
-        "Si tu regardes la situation depuis maintenant, qu'est-ce que tu vois différemment ?",
+        "Qu'est-ce qui est plus clair qu'au début ?",
+        "Est-ce qu'une phrase simple résume ce que tu comprends ?",
+        "Est-ce que quelque chose s'est apaisé ou déplacé ?",
+        "Qu'est-ce que tu vois différemment maintenant ?",
       ],
       exemples: [
         "Je n'ai pas besoin de l'approbation des autres pour me sentir valable.",
@@ -145,7 +144,7 @@ export const STEPS: StepDefinition[] = [
         "Je commence à comprendre que je mérite d'être vu·e — pas seulement utile.",
       ],
       bloque:
-        "Ne cherche pas une vérité parfaite ou profonde. C'est souvent une phrase simple, qui te touche quand tu la formules. Si rien ne vient, essaie cette amorce : 'Ce que je sais maintenant, c'est que...' et laisse venir ce qui vient, sans le juger. Le vide aussi peut être une émergence — il dit que quelque chose s'est posé.",
+        "Si rien ne vient, reste simple.\n\nCommence par :\n'Ce que je vois plus clairement, c'est que…'\n\nMême une phrase incomplète suffit.",
     },
   },
   {
