@@ -924,7 +924,7 @@ function SessionContent({ userId }: { userId: string }) {
               disabled={mirrorLoading}
               className="btn-primary flex-1 text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40"
             >
-              {currentStep < stepsActifs.length - 1 ? "Continuer" : "Voir où j'en suis"}
+              {currentStep < stepsActifs.length - 1 ? "Continuer" : "Je continue à m\u2019écouter"}
             </button>
           </div>
 
@@ -992,13 +992,23 @@ function SessionContent({ userId }: { userId: string }) {
         <p className="section-label">Fin de traversée</p>
         <h1 className="section-title !text-2xl md:!text-4xl">Où en es-tu maintenant ?</h1>
         {intensity > intensityAfter ? (
-          <p className="font-body text-sm text-sage text-center mb-4 italic">
-            Tu viens de faire redescendre ton corps.
-          </p>
+          <div className="text-center mb-4">
+            <p className="font-body text-sm text-sage italic">
+              Tu viens de faire redescendre ton corps.
+            </p>
+            <p className="font-body text-sm text-sage italic">
+              Ce mouvement compte.
+            </p>
+          </div>
         ) : (
-          <p className="font-body text-sm text-warm-gray text-center mb-4 italic">
-            Ton corps a commencé à relâcher.
-          </p>
+          <div className="text-center mb-4">
+            <p className="font-body text-sm text-warm-gray italic">
+              Ton corps a commencé à relâcher.
+            </p>
+            <p className="font-body text-sm text-warm-gray italic">
+              Ce mouvement compte.
+            </p>
+          </div>
         )}
         <div className="card-base mb-6">
           <IntensitySlider
@@ -1032,10 +1042,7 @@ function SessionContent({ userId }: { userId: string }) {
       {analysisLoading ? (
         <div className="card-base text-center py-12 md:py-16">
           <div className="font-serif text-2xl md:text-3xl text-terra mb-4 animate-pulse-gentle">TRACEA</div>
-          <p className="text-warm-gray text-sm md:text-base">TRACÉA prend le temps de te lire...</p>
-          <p className="text-xs text-warm-gray/60 mt-2 italic">
-            Un instant de recul...
-          </p>
+          <p className="text-warm-gray text-sm md:text-base">Un instant de recul...</p>
         </div>
       ) : (
         <>
@@ -1112,11 +1119,10 @@ function SessionContent({ userId }: { userId: string }) {
 
           {veriteInterieure && (
             <div className="border-l-[3px] border-terra pl-6 py-3 mb-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-terra mb-2">
-                Ta vérité intérieure
-              </p>
               <p className="font-body text-xl italic text-espresso">
-                &ldquo;{veriteInterieure}&rdquo;
+                {veriteInterieure.toLowerCase().includes("je ne sais pas") || veriteInterieure.toLowerCase().includes("sais pas") || veriteInterieure.trim().length < 10
+                  ? "Quelque chose est encore en train de se déposer."
+                  : <>&ldquo;{veriteInterieure}&rdquo;</>}
               </p>
             </div>
           )}
@@ -1152,11 +1158,8 @@ function SessionContent({ userId }: { userId: string }) {
               <p className="font-body text-xs text-warm-gray/60 tracking-wider uppercase mb-3">
                 Avant de repartir&hellip;
               </p>
-              <p className="font-serif text-base md:text-lg text-espresso mb-2">
-                Qu&apos;est-ce que tu veux garder avec toi maintenant ? Un mot. Une sensation. Ou juste ce calme.
-              </p>
-              <p className="font-body text-sm text-warm-gray leading-relaxed mb-4">
-                Un mot, une image, une intention. Ou rien.
+              <p className="font-serif text-base md:text-lg text-espresso mb-4">
+                Qu&apos;est-ce que tu gardes avec toi ?
               </p>
               <textarea
                 value={depotText}
@@ -1169,7 +1172,7 @@ function SessionContent({ userId }: { userId: string }) {
                 onClick={() => setShowDepot(false)}
                 className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
               >
-                Continuer
+                Terminer la traversée
               </button>
             </div>
           ) : (
@@ -1178,18 +1181,18 @@ function SessionContent({ userId }: { userId: string }) {
               <h2 className="font-serif text-xl md:text-2xl text-espresso mb-4">
                 Ta traversée est terminée.
               </h2>
-              <p className="font-body text-sm md:text-base text-espresso/70 leading-relaxed mb-2">
-                Tu peux revenir quand tu veux.
-              </p>
               <p className="font-body text-sm md:text-base text-espresso/70 leading-relaxed mb-6 md:mb-8">
                 Plus tu pratiques, plus ça devient naturel.
               </p>
               <button
                 onClick={() => router.push("/app")}
-                className="btn-primary w-full md:w-auto mb-4 !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
+                className="btn-primary w-full md:w-auto mb-3 !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
               >
-                Revenir plus tard
+                Je continue à m&apos;écouter
               </button>
+              <p className="font-body text-sm text-warm-gray/60 italic mb-4">
+                Reviens quand quelque chose bouge en toi.
+              </p>
               <div>
                 <Link
                   href="/app/profil"
@@ -1201,9 +1204,7 @@ function SessionContent({ userId }: { userId: string }) {
             </div>
           )}
 
-          <p className="text-[10px] text-warm-gray/40 text-center mt-10">
-            Reflet structuré — ni diagnostic, ni conseil thérapeutique.
-          </p>
+          <div className="mt-10" />
         </>
       )}
     </div>
