@@ -9,11 +9,18 @@ interface HelpPanelProps {
 
 type Tab = "comprendre" | "sousQuestions" | "exemples" | "bloque";
 
-const tabs: { id: Tab; label: string }[] = [
+const defaultTabs: { id: Tab; label: string }[] = [
   { id: "comprendre", label: "Comprendre" },
   { id: "sousQuestions", label: "Sous-questions" },
   { id: "exemples", label: "Exemples" },
   { id: "bloque", label: "Bloqué ?" },
+];
+
+const traverserTabs: { id: Tab; label: string }[] = [
+  { id: "comprendre", label: "Ressentir" },
+  { id: "sousQuestions", label: "Explorer" },
+  { id: "exemples", label: "Exemples" },
+  { id: "bloque", label: "Si c'est difficile" },
 ];
 
 export function HelpPanel({ step }: HelpPanelProps) {
@@ -39,7 +46,7 @@ export function HelpPanel({ step }: HelpPanelProps) {
       {isOpen && (
         <div className="mt-3 card-base animate-fade-up">
           <div className="flex gap-1 mb-4 overflow-x-auto pb-1">
-            {tabs.map((tab) => (
+            {(step.id === "traverser" ? traverserTabs : defaultTabs).map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -56,7 +63,7 @@ export function HelpPanel({ step }: HelpPanelProps) {
 
           <div className="text-sm leading-relaxed">
             {activeTab === "comprendre" && (
-              <p className="font-body text-base text-espresso leading-relaxed">
+              <p className="font-body text-base text-espresso leading-relaxed whitespace-pre-wrap">
                 {step.help.comprendre}
               </p>
             )}
@@ -84,7 +91,7 @@ export function HelpPanel({ step }: HelpPanelProps) {
             )}
             {activeTab === "bloque" && (
               <div className="card-sage">
-                <p className="font-body text-base text-espresso leading-relaxed">
+                <p className="font-body text-base text-espresso leading-relaxed whitespace-pre-wrap">
                   {step.help.bloque}
                 </p>
               </div>

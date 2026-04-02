@@ -7,28 +7,25 @@ export const STEPS: StepDefinition[] = [
     name: "Traverser",
     verb: "T",
     description:
-      "Entrer en contact direct avec ce qui se vit intérieurement, sans fuir, sans analyser, sans chercher à apaiser immédiatement.",
+      "Reste juste avec ce qui est là, sans chercher à changer quoi que ce soit.",
     question:
-      "Qu'est-ce qui est là, maintenant ?",
+      "Qu'est-ce qui est le plus présent en toi, là, maintenant ?",
     help: {
       comprendre:
-        "Traverser ne veut pas dire comprendre, ni résoudre. Ça veut dire rester là, avec ce qui est présent, sans le fuir et sans le forcer à partir. L'émotion que tu portes en ce moment a quelque chose à te dire — mais elle ne peut le dire que si tu acceptes de la regarder en face, même une seconde. C'est ça, traverser.",
+        "Tu n'as pas besoin de comprendre.\n\nJuste sentir ce qui est là,\nmême un tout petit peu.",
       sousQuestions: [
-        "Où est-ce que tu sens quelque chose dans ton corps en ce moment — ventre, poitrine, gorge, épaules ?",
-        "Si tu devais donner une forme ou une couleur à ce que tu ressens, ce serait quoi ?",
-        "Est-ce que c'est lourd, serré, vide, agité, engourdi ?",
-        "Depuis combien de temps tu portes ça ?",
-        "Est-ce qu'il y a quelque chose que tu évites de regarder là-dedans ?",
+        "Où tu sens ça dans ton corps ?",
+        "C'est plutôt : serré, lourd, vide ou agité ?",
+        "Même flou, ça suffit.",
       ],
       exemples: [
-        "J'ai une boule au ventre depuis ce matin, je sais pas vraiment pourquoi.",
-        "Je sens une pression dans la poitrine, comme si quelque chose pesait.",
-        "Je suis agitée, mes pensées tournent en boucle et je n'arrive pas à me poser.",
-        "Il y a comme un vide. Pas de larmes, pas de mots. Juste un vide.",
-        "Je me sens à fleur de peau. La moindre chose me touche trop fort.",
+        "Ça serre dans ma poitrine.",
+        "J'ai une boule au ventre.",
+        "Je me sens agitée.",
+        "Il y a comme un vide.",
       ],
       bloque:
-        "Si les mots ne viennent pas, commence par le corps. Pose une main sur ton ventre ou ta poitrine. Sens ce qui se passe là, maintenant. Même 'je ne sais pas ce que je ressens' est une vraie réponse — écris-le. Le simple fait de se tourner vers l'intérieur, c'est déjà traverser.",
+        "Si rien ne vient :\n\npose une main sur ton corps,\net sens juste ce qui est là.\n\n\"Je ne sais pas\" est déjà une réponse.",
     },
   },
   {

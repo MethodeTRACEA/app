@@ -695,9 +695,19 @@ function SessionContent({ userId }: { userId: string }) {
               </div>
             )}
 
-            <p className="font-body text-base md:text-lg text-espresso leading-relaxed mb-4">
+            <p className={`font-body text-base md:text-lg text-espresso leading-relaxed whitespace-pre-wrap ${step.id === "traverser" ? "mb-2" : "mb-4"}`}>
               {step.question}
             </p>
+            {step.id === "traverser" && (
+              <>
+                <p className="font-body text-sm text-warm-gray/70 mb-3">
+                  Pas besoin de bien répondre. Juste ce qui est là.
+                </p>
+                <p className="font-body text-xs text-warm-gray/50 italic mb-2">
+                  Tu peux partir du corps si c&apos;est plus simple.
+                </p>
+              </>
+            )}
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
