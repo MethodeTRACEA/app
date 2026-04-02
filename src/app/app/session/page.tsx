@@ -690,7 +690,7 @@ function SessionContent({ userId }: { userId: string }) {
                 <p className="font-body text-sm text-espresso/70 leading-relaxed">
                   Prends ce moment.
                   <br />
-                  Laisse ton corps aller au bout de ce que tu viens de choisir.
+                  Laisse ton corps faire ce qui lui ferait du bien maintenant.
                 </p>
               </div>
             )}
@@ -970,7 +970,7 @@ function SessionContent({ userId }: { userId: string }) {
         <h1 className="section-title !text-2xl md:!text-4xl">Où en es-tu maintenant ?</h1>
         {intensity > intensityAfter ? (
           <p className="font-body text-sm text-sage text-center mb-4 italic">
-            Tu viens de faire redescendre l&apos;intensité.
+            Tu viens de faire redescendre ton corps.
           </p>
         ) : (
           <p className="font-body text-sm text-warm-gray text-center mb-4 italic">
@@ -996,7 +996,7 @@ function SessionContent({ userId }: { userId: string }) {
           </div>
         </div>
         <button onClick={handleIntensityAfterDone} className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl">
-          Voir ma traversée
+          Revoir ma traversée
         </button>
       </div>
     );
@@ -1130,7 +1130,7 @@ function SessionContent({ userId }: { userId: string }) {
                 Avant de repartir&hellip;
               </p>
               <p className="font-serif text-base md:text-lg text-espresso mb-2">
-                Qu&apos;est-ce que tu veux garder avec toi maintenant ?
+                Qu&apos;est-ce que tu veux garder avec toi maintenant ? Un mot. Une sensation. Ou juste ce calme.
               </p>
               <p className="font-body text-sm text-warm-gray leading-relaxed mb-4">
                 Un mot, une image, une intention. Ou rien.

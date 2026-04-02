@@ -187,7 +187,7 @@ Le JSON doit respecter exactement ce schéma :
   "next_step_suggestion": "vide sauf au module aligner",
   "safety_message": "message de sécurité — obligatoire si risk_level est high, sinon vide",
   "user_state_snapshot": {
-    "dominant_emotion": "formulation incarnée de l'état émotionnel — ton humain, pas clinique. Ex: 'Tu es en train de t'apaiser' au lieu de 'apaisement'. Ex: 'La colère est encore là' au lieu de 'colère'.",
+    "dominant_emotion": "formulation incarnée de l'état émotionnel — ton humain, pas clinique. Ex: 'Tu viens de faire redescendre ton corps' au lieu de 'apaisement'. Ex: 'La colère est encore là' au lieu de 'colère'.",
     "tension_level": 0-10,
     "regulation_state": "stable" ou "fluctuating" ou "overloaded",
     "clarity_level": 0-10
@@ -209,7 +209,7 @@ Le JSON doit respecter exactement ce schéma :
 - OBLIGATOIRE : reprendre au moins 1 mot ou expression exacte de l'utilisateur dans mirror ou hypothesis. Si des notes libres sont présentes dans le contexte, les utiliser en priorité. Ne jamais répondre de manière générique.
 - Écrire en français. Tutoyer la personne.
 - Phrases courtes (max 12-15 mots).
-- dominant_emotion : TOUJOURS une phrase incarnée, jamais un mot seul. ❌ "apaisement" ✅ "Tu es en train de t'apaiser". ❌ "colère" ✅ "La colère est encore là". ❌ "tristesse" ✅ "Il y a de la tristesse."
+- dominant_emotion : TOUJOURS une phrase incarnée, jamais un mot seul. ❌ "apaisement" ✅ "Tu viens de faire redescendre ton corps". ❌ "colère" ✅ "La colère est encore là". ❌ "tristesse" ✅ "Il y a de la tristesse."
 - Ancrage neuro subtil AUTORISÉ dans hypothesis ou mirror (avec parcimonie) : "Ton corps commence à redescendre", "La tension diminue", "Tu reviens vers quelque chose de plus stable". Ne pas utiliser systématiquement.
 - Ne jamais utiliser : "poitrinaire", "souvent", "en général", "beaucoup de gens", "une partie de toi", "tu évites", "tu cherches à", "lâche prise", "accueille", "prends soin de toi", "cela signifie que", "il est possible que", "on dirait que", "il y a déjà", "je remarque que", "quelque chose en toi".`;
 
@@ -257,7 +257,7 @@ Ancrage neuro subtil autorisé si pertinent : "Quelque chose se pose.", "Tu revi
   aligner: `Module actif : ALIGNER.
 Orienter vers une action concrète.
 mirror : format "Tu choisis de …" — reformuler ce que la personne a nommé comme geste ou intention.
-hypothesis : format "Tu sais maintenant ce dont tu as besoin." ou équivalent incarné. Ce qui évolue en elle.
+hypothesis : format "Tu viens d'écouter quelque chose d'important en toi." ou équivalent incarné. Ce qui évolue en elle.
 micro_action OBLIGATOIRE. Simple. Immédiate. Un geste.`,
 };
 
@@ -867,7 +867,7 @@ Génère un résumé COURT de cette traversée. Format obligatoire en 3 parties 
 
 1. LE MOUVEMENT — 1 phrase. Ce qui a changé dans le corps. Ton incarné : "La tension est descendue à ${intensityAfter}/10" pas "Niveau de tension : ${intensityAfter}/10". Utilise les mots de la personne.
 
-2. LA VÉRITÉ — 1 phrase. Ce qui est présent. Ce que la personne a nommé ou touché. Ses mots, pas les tiens. Ton incarné : "Tu es en train de t'apaiser" pas "Émotion dominante : apaisement".
+2. LA VÉRITÉ — 1 phrase. Ce qui est présent. Ce que la personne a nommé ou touché. Ses mots, pas les tiens. Ton incarné : "Tu viens de faire redescendre ton corps" pas "Émotion dominante : apaisement".
 
 3. LE GESTE — 1 phrase. L'action choisie. Simple et concrète.
 
