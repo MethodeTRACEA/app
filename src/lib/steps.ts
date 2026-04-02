@@ -34,12 +34,12 @@ export const STEPS: StepDefinition[] = [
     name: "Reconnaître",
     verb: "R",
     description:
-      "Approche doucement ce qu'il y a dessous.",
+      "",
     question:
       "Sous ce que tu ressens…\n\nest-ce qu'il y a quelque chose de plus sensible ?",
     help: {
       comprendre:
-        "Ce qu'on ressent en premier n'est pas toujours le plus profond.\n\nParfois, en dessous, il y a quelque chose de plus fragile ou de plus sensible.\n\nReconnaître, ici, c'est juste l'approcher.",
+        "Ce que tu ressens en premier n'est pas toujours le plus profond.\nParfois, il y a quelque chose de plus sensible dessous.",
       sousQuestions: [
         "Si tu restes un instant dessous, qu'est-ce que tu trouves ?",
         "Est-ce qu'il y a de la tristesse, de la peur, de la fatigue… ou autre chose ?",
@@ -54,7 +54,7 @@ export const STEPS: StepDefinition[] = [
         "Je ne sais pas exactement, mais je sens que ce n'est pas seulement de la colère.",
       ],
       bloque:
-        "Si rien ne vient, ne force pas.\n\nDemande-toi juste :\nest-ce qu'en dessous, c'est plutôt triste, inquiet, fatigué… ou autre chose ?\n\nMême \"je ne sais pas encore\" est déjà une vraie réponse.",
+        "Si rien ne vient, ne force pas.\nMême \"je ne sais pas\" est déjà une réponse.",
     },
   },
   {
