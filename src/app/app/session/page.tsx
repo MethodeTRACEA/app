@@ -116,6 +116,7 @@ function SessionContent({ userId }: { userId: string }) {
   const [integrationResponse, setIntegrationResponse] = useState<"yes" | "no" | "unsure" | null>(null);
   const [integrationMessage, setIntegrationMessage] = useState("");
   const [mirrorNote, setMirrorNote] = useState("");
+  const [mirrorNotes, setMirrorNotes] = useState<Record<string, string>>({});
 
   // ── Cache des réponses par étape (navigation sans perte) ──
   const [stepCache, setStepCache] = useState<Record<string, StepCacheEntry>>({});
@@ -227,6 +228,12 @@ function SessionContent({ userId }: { userId: string }) {
         bodyPayload.entryContext = entryQuestion;
       }
 
+      // Injecter les notes intermédiaires (réponses libres des champs "Note-le")
+      const notesWithContent = Object.entries(mirrorNotes).filter(([, v]) => v.trim());
+      if (notesWithContent.length > 0) {
+        bodyPayload.mirrorNotes = Object.fromEntries(notesWithContent);
+      }
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 25000);
 
@@ -293,8 +300,13 @@ function SessionContent({ userId }: { userId: string }) {
       const cachedNext = stepCache[nextStepId];
       const restoredText = cachedNext?.text || steps[nextStepId as StepId] || "";
 
-      // Transition entre étapes (Section 4)
+      // Sauvegarder la note intermédiaire si non vide
       const currentStepId = stepsActifs[currentStep].id;
+      if (mirrorNote.trim()) {
+        setMirrorNotes(prev => ({ ...prev, [currentStepId]: mirrorNote.trim() }));
+      }
+
+      // Transition entre étapes (Section 4)
       const key = `${currentStepId}→${nextStepId}`;
       const message = TRANSITION_MESSAGES[key] || "";
       setMirrorNote("");
@@ -312,6 +324,11 @@ function SessionContent({ userId }: { userId: string }) {
         setPhase("session");
       }
     } else {
+      // Sauvegarder la dernière note si non vide
+      const lastStepId = stepsActifs[currentStep].id;
+      if (mirrorNote.trim()) {
+        setMirrorNotes(prev => ({ ...prev, [lastStepId]: mirrorNote.trim() }));
+      }
       // Dernière étape → micro-intégration (Section 5)
       setPhase("integration");
     }
@@ -814,16 +831,18 @@ function SessionContent({ userId }: { userId: string }) {
                 </div>
               )}
 
-              {/* Champ de dépôt — toujours visible quand le mirror est affiché */}
-              <div className="pl-6 pt-1">
-                <textarea
-                  value={mirrorNote}
-                  onChange={(e) => setMirrorNote(e.target.value)}
-                  placeholder="Note-le en quelques mots…"
-                  className="w-full px-4 py-3 bg-beige/30 rounded-xl text-espresso font-body text-sm leading-relaxed border border-beige-dark/50 focus:border-terra/40 focus:outline-none focus:ring-1 focus:ring-terra/10 transition-all placeholder:text-warm-gray/40 resize-none"
-                  rows={2}
-                />
-              </div>
+              {/* Champ de dépôt — visible sauf étape Aligner */}
+              {step?.id !== "aligner" && (
+                <div className="pl-6 pt-1">
+                  <textarea
+                    value={mirrorNote}
+                    onChange={(e) => setMirrorNote(e.target.value)}
+                    placeholder="Note-le en quelques mots…"
+                    className="w-full px-4 py-3 bg-beige/30 rounded-xl text-espresso font-body text-sm leading-relaxed border border-beige-dark/50 focus:border-terra/40 focus:outline-none focus:ring-1 focus:ring-terra/10 transition-all placeholder:text-warm-gray/40 resize-none"
+                    rows={2}
+                  />
+                </div>
+              )}
 
               {/* Micro-action — "À essayer maintenant" */}
               {mirrorData.micro_action && (

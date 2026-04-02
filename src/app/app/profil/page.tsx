@@ -198,7 +198,7 @@ export default function ProfilPage() {
               {stats.topEmotions[0] || "..."}
             </div>
             <div className="text-xs text-warm-gray tracking-wide uppercase">
-              Émotion principale
+              {stats.topEmotions.length > 1 ? "Émotions dominantes" : "Émotion dominante"}
             </div>
           </div>
         </div>
