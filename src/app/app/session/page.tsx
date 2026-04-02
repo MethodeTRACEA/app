@@ -722,6 +722,11 @@ function SessionContent({ userId }: { userId: string }) {
               placeholder="Écris ici, à ton rythme..."
               className="w-full h-36 md:h-40 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
             />
+            {step.id === "aligner" && (
+              <p className="font-body text-sm text-terra/70 italic mt-2">
+                Fais-le maintenant, même quelques secondes.
+              </p>
+            )}
 
             {/* Boutons */}
             <div className="flex items-center gap-3 mt-5">
@@ -739,7 +744,7 @@ function SessionContent({ userId }: { userId: string }) {
                 disabled={text.trim().length < 3}
                 className="btn-primary flex-1 text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {currentStep < stepsActifs.length - 1 ? "Continuer" : "Terminer"}
+                {currentStep < stepsActifs.length - 1 ? "Continuer" : "J\u2019ai fait mon geste"}
               </button>
             </div>
           </div>

@@ -155,16 +155,15 @@ export const STEPS: StepDefinition[] = [
     description:
       "Mettre en actes concrets la vérité intérieure émergée. L'alignement est l'intégration dans la matière, la cohérence retrouvée.",
     question:
-      "Avec ce que tu ressens maintenant…\nquel est le plus petit geste que tu peux faire tout de suite ?",
+      "Avec ce que tu ressens maintenant…\nquel est un petit geste que tu peux faire maintenant ?",
     help: {
       comprendre:
-        "Aligner, c'est choisir un geste — même minuscule — qui honore ce qui vient d'émerger. Pas une transformation héroïque. Pas une résolution de tout changer. Juste un geste cohérent avec ta vérité. Ça peut être une conversation, une limite, un temps pour toi, ou même un acte symbolique — allumer une bougie, écrire une lettre que tu n'envoies pas, marcher en portant consciemment ce que tu viens de traverser. Ces gestes ancrent la transformation dans le corps et dans le temps.",
+        "Aligner, c'est choisir un geste — même minuscule — qui honore ce qui vient d'émerger. Juste un geste cohérent avec ta vérité. Ça peut être une conversation, une limite, un temps pour toi, ou même un acte symbolique — allumer une bougie, écrire une lettre que tu n'envoies pas, marcher en portant consciemment ce que tu viens de traverser. Ces gestes ancrent la transformation dans le corps et dans le temps.",
       sousQuestions: [
-        "Quel est le plus petit geste que tu peux poser dès aujourd'hui ?",
-        "Y a-t-il quelque chose que tu dois arrêter de faire pour honorer cette vérité ?",
-        "Y a-t-il quelque chose que tu dois commencer à faire, même tout doucement ?",
-        "Est-ce qu'il y a une conversation à avoir, une limite à poser, une décision à honorer ?",
-        "Est-ce qu'un geste symbolique te parle — quelque chose qui ancre ça dans ton corps ?",
+        "Quel geste simple te ferait du bien maintenant ?",
+        "Est-ce que tu peux le faire tout de suite ?",
+        "Qu'est-ce que tu peux commencer maintenant, même très légèrement ?",
+        "Est-ce qu'un geste symbolique t'appelle ?",
       ],
       exemples: [
         "Je vais dire à mon collègue que j'ai besoin de plus de clarté dans nos échanges.",
@@ -174,7 +173,7 @@ export const STEPS: StepDefinition[] = [
         "J'allume une bougie et je pose consciemment ce que j'ai traversé aujourd'hui.",
       ],
       bloque:
-        "L'action n'a pas besoin d'être visible ou spectaculaire. 'Je vais prendre 5 minutes pour moi ce soir' est un alignement valide. 'Je vais remarquer quand je m'oublie' aussi. L'important, c'est que le geste soit en lien avec ce qui a émergé — pas avec ce que tu penses devoir faire.",
+        "Si tu hésites, choisis le plus simple.\n\nMême respirer consciemment 3 fois suffit.\nMême poser une main sur toi suffit.\n\nFais quelque chose, maintenant.",
     },
   },
 ];
