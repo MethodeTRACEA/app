@@ -62,7 +62,7 @@ export function Navigation() {
             {/* Gauche : Logo */}
             <Link href="/app" className="flex-shrink-0">
               <Image
-                src="/images/tracea-logo-terra-hd.png"
+                src="/images/tracea-logo-terra-v2.png"
                 alt="TRACÉA"
                 width={512}
                 height={369}

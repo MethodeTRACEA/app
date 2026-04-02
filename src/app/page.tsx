@@ -32,7 +32,7 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-xl mx-auto text-center">
           <div className="mb-12">
             <img
-              src="/images/tracea-logo-terra-hd.png"
+              src="/images/tracea-logo-terra-v2.png"
               alt="TRACEA"
               className="h-16 md:h-24 mx-auto object-contain"
             />
@@ -307,7 +307,7 @@ export default function LandingPage() {
       <footer className="relative px-6 py-10">
         <div className="max-w-2xl mx-auto flex flex-col items-center gap-4">
           <img
-            src="/images/tracea-logo-terra-hd.png"
+            src="/images/tracea-logo-terra-v2.png"
             alt="TRACEA"
             className="h-8 object-contain opacity-60"
           />
