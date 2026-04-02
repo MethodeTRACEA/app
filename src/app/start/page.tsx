@@ -18,15 +18,12 @@ export default function StartPage() {
 
         {/* Titre */}
         <h1 className="font-serif text-3xl md:text-4xl text-cream leading-tight mb-6">
-          Tu es au bon endroit.
+          &Ccedil;a peut redescendre. Maintenant.
         </h1>
 
         {/* Texte principal */}
-        <p className="font-body text-base md:text-lg text-cream/70 leading-relaxed mb-2">
-          Tu n&apos;as rien &agrave; comprendre de plus.
-        </p>
         <p className="font-body text-base md:text-lg text-cream/70 leading-relaxed mb-8">
-          Ton corps sait d&eacute;j&agrave; quoi faire.
+          Ton corps sait d&eacute;j&agrave;.
         </p>
 
         {/* Sous-texte */}
@@ -54,19 +51,22 @@ export default function StartPage() {
           ))}
         </div>
 
+        {/* Accroche pré-CTA */}
+        <p className="font-serif text-lg text-cream/60 mb-6">
+          On commence ?
+        </p>
+
         {/* CTA principal */}
         <Link
           href="/app"
           className="inline-block w-full sm:w-auto bg-terra text-cream font-medium text-base px-10 py-4 rounded-2xl hover:bg-terra/90 transition-all"
         >
-          Commencer la travers&eacute;e
+          Commencer maintenant
         </Link>
 
         {/* Micro texte */}
         <p className="font-body text-xs text-cream/30 mt-6 leading-relaxed">
-          Aucune inscription compliqu&eacute;e.
-          <br />
-          Tu peux commencer maintenant.
+          Acc&egrave;s imm&eacute;diat. Sans engagement.
         </p>
       </div>
     </div>
