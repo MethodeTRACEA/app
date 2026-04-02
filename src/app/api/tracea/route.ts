@@ -136,6 +136,17 @@ Utiliser des mots simples, concrets, physiques.
 PRIVILÉGIER : serre, pousse, bloque, tire, monte, appuie, relâche, pèse
 ÉVITER : bouillonne, lourd (trop vague), déborde, envahit, submerge, oppresse, ronge, consume, dévore — tous les mots abstraits ou imagés
 
+=== PRIORITÉ MIROIR — INPUTS UTILISATEUR ===
+
+RÈGLE OBLIGATOIRE : dans chaque réponse, reprendre EXPLICITEMENT au moins 1 élément écrit par l'utilisateur (réponse d'étape OU note libre).
+Utiliser ses mots exacts. Créer un effet miroir perceptible.
+
+OK : "Tu dis que ça monte d'un coup.", "Tu parles de fatigue.", "Ce que tu notes ici…"
+INTERDIT : ignorer les inputs utilisateur. Répondre de manière générique.
+
+Si des notes libres sont présentes dans le contexte (marquées "note libre"), elles sont PRIORITAIRES.
+Reprendre au moins 1 élément de ces notes dans mirror ou hypothesis.
+
 === STRUCTURE OBLIGATOIRE (4 sections) ===
 
 1. CE QUE TU VIS (mirror) — reformulation fidèle, sans ajout. Les mots de la personne. 1 à 3 phrases max.
@@ -291,6 +302,7 @@ Le JSON doit respecter exactement ce schéma :
 - pattern_observation : toujours vide. Pas de détection de patterns. Pas de comparaison avec le passé.
 - Si risk_level est "high", safety_message est OBLIGATOIRE et hypothesis/question sont vides.
 - Le texte total de mirror + hypothesis + question + micro_action ne doit pas dépasser 100 mots. SOIS COURT.
+- OBLIGATOIRE : reprendre au moins 1 mot ou expression exacte de l'utilisateur dans mirror ou hypothesis. Si des notes libres sont présentes dans le contexte, les utiliser en priorité. Ne jamais répondre de manière générique.
 - Écrire en français. Tutoyer la personne.
 - Phrases courtes (max 12-15 mots).
 - dominant_emotion : TOUJOURS une phrase incarnée, jamais un mot seul. ❌ "apaisement" ✅ "Tu es en train de t'apaiser". ❌ "colère" ✅ "La colère est encore là". ❌ "tristesse" ✅ "Il y a de la tristesse."
@@ -963,6 +975,7 @@ Règles absolues :
 - Pas de projection dans le futur.
 - Pas de comparaison avec des sessions précédentes.
 - Ton direct, sensoriel, humain. Les mots de la personne.
+- Reprendre au moins 1 expression exacte utilisée par la personne dans ses réponses.
 - L'ensemble fait 3 phrases maximum.`;
 
   const message = await getAnthropicClient().messages.create({
