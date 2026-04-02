@@ -115,6 +115,7 @@ function SessionContent({ userId }: { userId: string }) {
   const [transitionMessage, setTransitionMessage] = useState("");
   const [integrationResponse, setIntegrationResponse] = useState<"yes" | "no" | "unsure" | null>(null);
   const [integrationMessage, setIntegrationMessage] = useState("");
+  const [mirrorNote, setMirrorNote] = useState("");
 
   // ── Cache des réponses par étape (navigation sans perte) ──
   const [stepCache, setStepCache] = useState<Record<string, StepCacheEntry>>({});
@@ -296,6 +297,7 @@ function SessionContent({ userId }: { userId: string }) {
       const currentStepId = stepsActifs[currentStep].id;
       const key = `${currentStepId}→${nextStepId}`;
       const message = TRANSITION_MESSAGES[key] || "";
+      setMirrorNote("");
       if (message) {
         setTransitionMessage(message);
         setPhase("transitioning");
@@ -654,6 +656,28 @@ function SessionContent({ userId }: { userId: string }) {
             {/* Guide de respiration pour l'etape Ancrer */}
             {step.id === "ancrer" && <BreathingGuide />}
 
+            {/* Instruction corporelle avant Conscientiser */}
+            {step.id === "conscientiser" && (
+              <div className="bg-sage/5 border border-sage/15 rounded-xl px-4 py-3 mb-4">
+                <p className="font-body text-sm text-espresso/70 leading-relaxed">
+                  Laisse l&apos;attention descendre dans ton corps.
+                  <br />
+                  Pose tes mains sur tes cuisses.
+                </p>
+              </div>
+            )}
+
+            {/* Instruction corporelle avant Aligner */}
+            {step.id === "aligner" && (
+              <div className="bg-sage/5 border border-sage/15 rounded-xl px-4 py-3 mb-4">
+                <p className="font-body text-sm text-espresso/70 leading-relaxed">
+                  Prends ce moment.
+                  <br />
+                  Laisse ton corps aller au bout de ce que tu viens de choisir.
+                </p>
+              </div>
+            )}
+
             <p className="font-body text-base md:text-lg text-espresso leading-relaxed mb-4">
               {step.question}
             </p>
@@ -790,6 +814,17 @@ function SessionContent({ userId }: { userId: string }) {
                 </div>
               )}
 
+              {/* Champ de dépôt — toujours visible quand le mirror est affiché */}
+              <div className="pl-6 pt-1">
+                <textarea
+                  value={mirrorNote}
+                  onChange={(e) => setMirrorNote(e.target.value)}
+                  placeholder="Note-le en quelques mots…"
+                  className="w-full px-4 py-3 bg-beige/30 rounded-xl text-espresso font-body text-sm leading-relaxed border border-beige-dark/50 focus:border-terra/40 focus:outline-none focus:ring-1 focus:ring-terra/10 transition-all placeholder:text-warm-gray/40 resize-none"
+                  rows={2}
+                />
+              </div>
+
               {/* Micro-action — "À essayer maintenant" */}
               {mirrorData.micro_action && (
                 <div className="card-base !p-4 ml-6">
@@ -914,6 +949,15 @@ function SessionContent({ userId }: { userId: string }) {
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         <p className="section-label">Fin de traversée</p>
         <h1 className="section-title !text-2xl md:!text-4xl">Où en es-tu maintenant ?</h1>
+        {intensity > intensityAfter ? (
+          <p className="font-body text-sm text-sage text-center mb-4 italic">
+            Tu viens de faire redescendre l&apos;intensité.
+          </p>
+        ) : (
+          <p className="font-body text-sm text-warm-gray text-center mb-4 italic">
+            Ton corps a commencé à relâcher.
+          </p>
+        )}
         <div className="card-base mb-6">
           <IntensitySlider
             value={intensityAfter}
@@ -995,7 +1039,7 @@ function SessionContent({ userId }: { userId: string }) {
             </div>
           </div>
 
-          {/* Résumé post-session enrichi (Phase 3) */}
+          {/* Résumé post-session enrichi (Phase 3) — ton incarné */}
           {lastStepSnapshot && (
             <div className="card-base mb-6">
               <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
@@ -1003,12 +1047,10 @@ function SessionContent({ userId }: { userId: string }) {
               </p>
               <div className="space-y-2">
                 <p className="font-body text-sm text-espresso">
-                  <span className="text-warm-gray">Émotion dominante :</span>{" "}
                   {lastStepSnapshot.dominant_emotion}
                 </p>
                 <p className="font-body text-sm text-espresso">
-                  <span className="text-warm-gray">Niveau de tension :</span>{" "}
-                  {lastStepSnapshot.tension_level}/10
+                  La tension est descendue à {lastStepSnapshot.tension_level}/10.
                 </p>
               </div>
             </div>
@@ -1065,11 +1107,14 @@ function SessionContent({ userId }: { userId: string }) {
 
           {showDepot ? (
             <div className="card-base mb-6 !p-5 md:!p-6">
+              <p className="font-body text-xs text-warm-gray/60 tracking-wider uppercase mb-3">
+                Avant de repartir&hellip;
+              </p>
               <p className="font-serif text-base md:text-lg text-espresso mb-2">
                 Qu&apos;est-ce que tu veux garder avec toi maintenant ?
               </p>
               <p className="font-body text-sm text-warm-gray leading-relaxed mb-4">
-                Un mot, une image, une intention. Ou rien. Reste un instant avant de repartir.
+                Un mot, une image, une intention. Ou rien.
               </p>
               <textarea
                 value={depotText}
@@ -1114,9 +1159,8 @@ function SessionContent({ userId }: { userId: string }) {
             </div>
           )}
 
-          <p className="text-xs text-warm-gray text-center mt-8 italic">
-            Cette analyse est un reflet structuré de ce que tu as exprimé.
-            Elle ne constitue ni un diagnostic, ni un conseil thérapeutique.
+          <p className="text-[10px] text-warm-gray/40 text-center mt-10">
+            Reflet structuré — ni diagnostic, ni conseil thérapeutique.
           </p>
         </>
       )}

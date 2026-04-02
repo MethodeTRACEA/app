@@ -160,7 +160,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "Mettre en actes concrets la vérité intérieure émergée. L'alignement est l'intégration dans la matière, la cohérence retrouvée.",
     question:
-      "Quelle action simple peux-tu poser maintenant ?",
+      "Quel geste simple peux-tu poser maintenant dans ton corps ou autour de toi ?",
     help: {
       comprendre:
         "Aligner, c'est choisir un geste — même minuscule — qui honore ce qui vient d'émerger. Pas une transformation héroïque. Pas une résolution de tout changer. Juste un geste cohérent avec ta vérité. Ça peut être une conversation, une limite, un temps pour toi, ou même un acte symbolique — allumer une bougie, écrire une lettre que tu n'envoies pas, marcher en portant consciemment ce que tu viens de traverser. Ces gestes ancrent la transformation dans le corps et dans le temps.",
