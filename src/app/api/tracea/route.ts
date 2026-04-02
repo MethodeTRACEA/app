@@ -156,7 +156,7 @@ Le JSON doit respecter exactement ce schéma :
   "insight": "toujours vide",
   "question": "À EXPLORER — 1 question simple orientée corps ou ressenti. Vide si risk_level high.",
   "micro_action": "À ESSAYER MAINTENANT — 1 action courte, physique, immédiate. Faisable en 30 secondes.",
-  "pattern_observation": "toujours vide sauf en fin de parcours (module aligner). Si rempli : descriptif, basé sur répétition, terminé par 'Ceci est une observation, pas une vérité.'",
+  "pattern_observation": "toujours vide — pas de détection de patterns ni de comparaison avec le passé",
   "progress_signal": "toujours vide",
   "next_step_suggestion": "vide sauf au module aligner",
   "safety_message": "message de sécurité — obligatoire si risk_level est high, sinon vide",
@@ -177,7 +177,7 @@ Le JSON doit respecter exactement ce schéma :
 - micro_action : corporelle, faisable en 30 secondes. Pas une liste. Pas un conseil.
 - insight : toujours vide.
 - progress_signal : toujours vide.
-- pattern_observation : vide sauf au module aligner. Si rempli : descriptif, basé sur répétition, JAMAIS interprétatif. Terminé par "Ceci est une observation, pas une vérité."
+- pattern_observation : toujours vide. Pas de détection de patterns. Pas de comparaison avec le passé.
 - Si risk_level est "high", safety_message est OBLIGATOIRE et hypothesis/question sont vides.
 - Le texte total de mirror + hypothesis + question + micro_action ne doit pas dépasser 100 mots. SOIS COURT.
 - Écrire en français. Tutoyer la personne.
@@ -223,8 +223,7 @@ mirror : ce qui est là maintenant, pas ce que tu voudrais.`,
 
   aligner: `Module actif : ALIGNER.
 Orienter vers une action concrète.
-micro_action OBLIGATOIRE. Simple. Immédiate. Un geste.
-pattern_observation : si un fil rouge est visible sur plusieurs sessions, le nommer. Descriptif uniquement. Basé sur répétition. JAMAIS interpréter.`,
+micro_action OBLIGATOIRE. Simple. Immédiate. Un geste.`,
 };
 
 // ===================================================================
@@ -739,14 +738,12 @@ async function handleStepMirror(body: {
     }
   }
 
-  // Fetch history for pattern detection
-  const history = await fetchSessionHistory(userId);
-
   // Utiliser le flux complet (section 7) — Phase 2 : userId pour la mémoire
+  // Pas d'historique de sessions précédentes : l'IA répond uniquement à l'input actuel
   const result = await generateTraceaResponse(
     stepId,
     stepResponse,
-    history,
+    "",
     previousContext,
     intensity,
     context,
@@ -777,8 +774,6 @@ async function handleFinalAnalysis(body: {
     }
   }
 
-  const history = await fetchSessionHistory(userId);
-
   const userMessage = `Voici la traversée complète de cette personne.
 
 Contexte : ${context}
@@ -788,7 +783,6 @@ Mouvement d'intensité : ${recovery > 0 ? `baisse de ${recovery} points` : recov
 
 --- Les étapes de cette traversée ---
 ${stepsContent}
-${history}
 Génère un résumé COURT de cette traversée. Format obligatoire en 3 parties :
 
 1. LE MOUVEMENT — 1 phrase. Ce qui a bougé entre le début et la fin. Utilise les mots de la personne.
@@ -802,9 +796,9 @@ Règles absolues :
 - Pas d'analyse psychologique. Pas d'explication du pourquoi.
 - Pas de "bravo", pas de jugement, pas de chiffres sur la récupération.
 - Pas de projection dans le futur.
-- Si un écho avec les sessions précédentes est visible, tu peux ajouter 1 phrase supplémentaire pour le nommer — sinon rien.
+- Pas de comparaison avec des sessions précédentes.
 - Ton calme, sobre, humain. Les mots de la personne.
-- L'ensemble fait 3 à 5 phrases maximum.`;
+- L'ensemble fait 3 phrases maximum.`;
 
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-20250514",
