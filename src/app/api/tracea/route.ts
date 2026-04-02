@@ -44,6 +44,55 @@ function getSupabase() {
 }
 
 // ===================================================================
+// AI USAGE LOGGING
+// ===================================================================
+
+// Tarifs Claude Sonnet (claude-sonnet-4-20250514) — mai 2025
+const COST_PER_INPUT_TOKEN = 3.0 / 1_000_000;   // $3 / 1M tokens
+const COST_PER_OUTPUT_TOKEN = 15.0 / 1_000_000;  // $15 / 1M tokens
+
+async function logAiUsage(params: {
+  userId: string;
+  callType: string;
+  stepId?: string;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  isRetry?: boolean;
+}) {
+  const cost =
+    params.inputTokens * COST_PER_INPUT_TOKEN +
+    params.outputTokens * COST_PER_OUTPUT_TOKEN;
+
+  // Console log (toujours visible dans Vercel logs)
+  console.log(
+    `[AI COST] ${params.callType}${params.stepId ? ` (${params.stepId})` : ""}` +
+    `${params.isRetry ? " [RETRY]" : ""}` +
+    ` | in: ${params.inputTokens} out: ${params.outputTokens}` +
+    ` | $${cost.toFixed(6)}` +
+    ` | user: ${params.userId.slice(0, 8)}...`
+  );
+
+  // Persist to Supabase (fire-and-forget, don't block the response)
+  try {
+    const supabase = getSupabase();
+    await supabase.from("ai_usage_logs").insert({
+      user_id: params.userId,
+      call_type: params.callType,
+      step_id: params.stepId || null,
+      model: params.model,
+      input_tokens: params.inputTokens,
+      output_tokens: params.outputTokens,
+      estimated_cost_usd: cost,
+      is_retry: params.isRetry || false,
+    });
+  } catch (err) {
+    // Ne jamais bloquer la réponse pour un problème de logging
+    console.warn("[AI COST] Failed to persist usage log:", err);
+  }
+}
+
+// ===================================================================
 // SECTION 1 — SYSTEM PROMPT MAÎTRE (remplace V2)
 // ===================================================================
 
@@ -654,6 +703,16 @@ ${sessionHistory}`;
 
   const rawText = message.content[0].type === "text" ? message.content[0].text : "";
 
+  // 3b. Logger l'usage
+  logAiUsage({
+    userId,
+    callType: "step-mirror",
+    stepId: module,
+    model: "claude-sonnet-4-20250514",
+    inputTokens: message.usage.input_tokens,
+    outputTokens: message.usage.output_tokens,
+  });
+
   // 4. Parser le JSON
   let parsed = parseJsonResponse(rawText);
 
@@ -691,6 +750,16 @@ ${sessionHistory}`;
         }],
       });
       const retryRaw = retryMessage.content[0].type === "text" ? retryMessage.content[0].text : "";
+      // Logger le retry
+      logAiUsage({
+        userId,
+        callType: "step-mirror",
+        stepId: module,
+        model: "claude-sonnet-4-20250514",
+        inputTokens: retryMessage.usage.input_tokens,
+        outputTokens: retryMessage.usage.output_tokens,
+        isRetry: true,
+      });
       const retryParsed = parseJsonResponse(retryRaw);
       if (retryParsed) {
         const retryValidation = validateResponse(retryParsed);
@@ -918,6 +987,15 @@ Règles absolues :
 
   const text =
     message.content[0].type === "text" ? message.content[0].text : "";
+
+  // Logger l'usage
+  logAiUsage({
+    userId,
+    callType: "final-analysis",
+    model: "claude-sonnet-4-20250514",
+    inputTokens: message.usage.input_tokens,
+    outputTokens: message.usage.output_tokens,
+  });
 
   return NextResponse.json({ analysis: text });
 }
