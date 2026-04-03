@@ -18,30 +18,31 @@ export default function LandingPage() {
       <div className="fixed inset-0 pointer-events-none opacity-[0.03]" aria-hidden="true" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundRepeat: "repeat", backgroundSize: "256px 256px" }} />
 
       {/* ── HERO ── */}
-      <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden" style={{ padding: "100px 20px" }}>
+      <section className="relative min-h-[85vh] md:min-h-[95vh] flex items-center justify-center overflow-hidden" style={{ padding: "clamp(60px, 10vw, 100px) 20px" }}>
         {/* Halo hero */}
         <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle, rgba(201,144,124,0.08), transparent 65%)", filter: "blur(80px)" }} />
 
         <div className="relative z-10 w-full text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
-          <div className="mb-12">
+          <div className="mb-8 md:mb-12">
             <img
-              src="/images/tracea-logo-terra-v2.png"
+              src="/images/tracea-logo-blanc-hd.png"
               alt="TRACEA"
               className="h-16 md:h-24 mx-auto object-contain"
+              style={{ mixBlendMode: "screen" }}
             />
           </div>
 
           <h1 className="font-body" style={{ fontSize: 38, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 24 }}>
             Tu n&apos;es pas instable.
           </h1>
-          <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "20px 0 40px" }}>
+          <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "16px 0 clamp(24px, 4vw, 40px)" }}>
             Tu es en &eacute;tat d&apos;alerte permanent.
           </p>
 
           <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6", opacity: 0.9, marginBottom: 12 }}>
             Et &ccedil;a peut redescendre.
           </p>
-          <p className="font-sans" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "20px 0 56px" }}>
+          <p className="font-sans" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "16px 0 clamp(32px, 6vw, 56px)" }}>
             En quelques minutes.
           </p>
 
@@ -68,7 +69,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── IDENTIFICATION — gauche soft ── */}
-      <section className="relative" style={{ padding: "80px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
           <div style={{ maxWidth: 480 }}>
             <div className="space-y-6 mb-12">
@@ -108,7 +109,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── RECADRAGE — centré avec halo ── */}
-      <section className="relative" style={{ padding: "120px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle, rgba(201,144,124,0.07), transparent 65%)", filter: "blur(80px)" }} />
 
         <div className="relative z-10 text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
@@ -128,7 +129,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── PROBLÈME — gauche soft ── */}
-      <section className="relative" style={{ padding: "80px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
           <h2 className="font-body text-center" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 40 }}>
             Ton corps est bloqu&eacute;.
@@ -163,7 +164,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── BASCULE — section importante ── */}
-      <section className="relative" style={{ padding: "120px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle, rgba(201,144,124,0.07), transparent 65%)", filter: "blur(80px)" }} />
 
         <div className="relative z-10 text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
@@ -177,7 +178,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── SOLUTION ── */}
-      <section className="relative" style={{ padding: "80px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
         <div className="text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
           <h2 className="font-body" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 40 }}>
             TRAC&Eacute;A est un entra&icirc;nement guid&eacute;.
@@ -218,7 +219,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── BÉNÉFICES — cartes ── */}
-      <section className="relative" style={{ padding: "120px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
           <h2 className="font-body text-center" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 40 }}>
             En quelques minutes, tu peux :
@@ -250,12 +251,12 @@ export default function LandingPage() {
       </section>
 
       {/* ── MÉTHODE — gauche soft ── */}
-      <section className="relative" style={{ padding: "80px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
           <h2 className="font-body text-center" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 16 }}>
             6 &eacute;tapes. 10 minutes.
           </h2>
-          <p className="font-body text-center" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "20px 0 56px" }}>
+          <p className="font-body text-center" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "16px 0 clamp(32px, 6vw, 56px)" }}>
             Un chemin clair.
           </p>
 
@@ -287,7 +288,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── EXPÉRIENCE — section importante ── */}
-      <section className="relative" style={{ padding: "120px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
         <div className="text-center space-y-5" style={{ maxWidth: 580, margin: "0 auto" }}>
           <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>Tu respires.</p>
           <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6", opacity: 0.7 }}>Ton corps ralentit.</p>
@@ -296,14 +297,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA FINAL ── */}
-      <section className="relative" style={{ padding: "120px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle, rgba(201,144,124,0.08), transparent 65%)", filter: "blur(80px)" }} />
 
         <div className="relative z-10 text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
           <h2 className="font-body" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 16 }}>
             Tu n&apos;as rien &agrave; comprendre de plus. Juste &agrave; commencer.
           </h2>
-          <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "20px 0 56px" }}>
+          <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "16px 0 clamp(32px, 6vw, 56px)" }}>
             Ton corps sait d&eacute;j&agrave; quoi faire.
           </p>
 
@@ -330,7 +331,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── RASSURANCE ── */}
-      <section className="relative" style={{ padding: "80px 20px" }}>
+      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
         <div className="text-center space-y-4" style={{ maxWidth: 580, margin: "0 auto" }}>
           <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>
             Ce n&apos;est pas une th&eacute;rapie.
@@ -353,6 +354,7 @@ export default function LandingPage() {
             src="/images/tracea-logo-terra-v2.png"
             alt="TRACEA"
             className="h-8 object-contain opacity-50"
+              style={{ mixBlendMode: "screen" }}
           />
           <div className="flex flex-wrap justify-center gap-4" style={{ fontSize: 12, color: "#A89080" }}>
             <Link href="/mentions-legales" className="hover:opacity-70 transition-opacity">

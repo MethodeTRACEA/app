@@ -74,10 +74,10 @@ async function logAiUsage(params: {
     ` | user: ${params.userId.slice(0, 8)}...`
   );
 
-  // Persist to Supabase (fire-and-forget, don't block the response)
+  // Persist to Supabase (don't block the response if it fails)
   try {
     const supabase = getSupabase();
-    await supabase.from("ai_usage_logs").insert({
+    const { error: insertError } = await supabase.from("ai_usage_logs").insert({
       user_id: params.userId,
       call_type: params.callType,
       step_id: params.stepId || null,
@@ -87,9 +87,15 @@ async function logAiUsage(params: {
       estimated_cost_usd: cost,
       is_retry: params.isRetry || false,
     });
+
+    if (insertError) {
+      console.error("[AI LOG ERROR] Supabase insert failed:", insertError.message, insertError.details, insertError.hint);
+    } else {
+      console.log(`[AI LOG SAVED] ${params.userId.slice(0, 8)}... | $${cost.toFixed(6)}`);
+    }
   } catch (err) {
     // Ne jamais bloquer la réponse pour un problème de logging
-    console.warn("[AI COST] Failed to persist usage log:", err);
+    console.error("[AI LOG ERROR] Exception:", err);
   }
 }
 
@@ -704,7 +710,7 @@ ${sessionHistory}`;
 
   const rawText = message.content[0].type === "text" ? message.content[0].text : "";
 
-  // 3b. Logger l'usage
+  // 3b. Logger l'usage (fire-and-forget, ne bloque pas la réponse)
   logAiUsage({
     userId,
     callType: "step-mirror",
@@ -712,7 +718,7 @@ ${sessionHistory}`;
     model: "claude-sonnet-4-20250514",
     inputTokens: message.usage.input_tokens,
     outputTokens: message.usage.output_tokens,
-  });
+  }).catch(() => {});
 
   // 4. Parser le JSON
   let parsed = parseJsonResponse(rawText);
@@ -751,7 +757,7 @@ ${sessionHistory}`;
         }],
       });
       const retryRaw = retryMessage.content[0].type === "text" ? retryMessage.content[0].text : "";
-      // Logger le retry
+      // Logger le retry (fire-and-forget)
       logAiUsage({
         userId,
         callType: "step-mirror",
@@ -760,7 +766,7 @@ ${sessionHistory}`;
         inputTokens: retryMessage.usage.input_tokens,
         outputTokens: retryMessage.usage.output_tokens,
         isRetry: true,
-      });
+      }).catch(() => {});
       const retryParsed = parseJsonResponse(retryRaw);
       if (retryParsed) {
         const retryValidation = validateResponse(retryParsed);
@@ -1004,14 +1010,14 @@ Règles absolues :
   const text =
     message.content[0].type === "text" ? message.content[0].text : "";
 
-  // Logger l'usage
+  // Logger l'usage (fire-and-forget)
   logAiUsage({
     userId,
     callType: "final-analysis",
     model: "claude-sonnet-4-20250514",
     inputTokens: message.usage.input_tokens,
     outputTokens: message.usage.output_tokens,
-  });
+  }).catch(() => {});
 
   return NextResponse.json({ analysis: text });
 }
