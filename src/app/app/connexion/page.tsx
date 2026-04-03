@@ -8,6 +8,65 @@ import Link from "next/link";
 type AuthTab = "login" | "signup";
 type SuccessView = "check-email-magic" | "check-email-confirm" | "reset-sent" | null;
 
+/* ═══ Design tokens ═══ */
+const DS = {
+  fond: "#1C1410",
+  fondSecondaire: "#251A14",
+  surface: "#2E1F17",
+  cuivre: "#C9907C",
+  terracotta: "#835E54",
+  texte: "#F5EFE6",
+  texteMuted: "#A89080",
+  bordure: "#3D2A22",
+  inputBg: "#251A14",
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "14px 16px",
+  background: DS.inputBg,
+  borderRadius: 12,
+  color: DS.texte,
+  fontSize: 14,
+  border: `1px solid ${DS.bordure}`,
+  outline: "none",
+  transition: "border-color 0.2s",
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: 11,
+  fontWeight: 500,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: DS.texteMuted,
+  marginBottom: 8,
+};
+
+const btnPrimary: React.CSSProperties = {
+  width: "100%",
+  padding: "18px",
+  background: DS.cuivre,
+  color: DS.fond,
+  fontWeight: 600,
+  fontSize: 15,
+  borderRadius: 40,
+  border: "none",
+  cursor: "pointer",
+  boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15)",
+  transition: "transform 0.2s, box-shadow 0.2s",
+};
+
+const linkBtn: React.CSSProperties = {
+  background: "none",
+  border: "none",
+  fontSize: 12,
+  color: DS.texteMuted,
+  cursor: "pointer",
+  transition: "color 0.2s",
+  padding: 0,
+};
+
 export default function ConnexionPage() {
   const { user, signInWithPassword, signUp, signInWithMagicLink, resetPassword } = useAuth();
   const router = useRouter();
@@ -23,7 +82,6 @@ export default function ConnexionPage() {
   const [showResetForm, setShowResetForm] = useState(false);
   const [showMagicLink, setShowMagicLink] = useState(false);
 
-  // Déjà connecté → rediriger
   if (user) {
     router.push("/app");
     return null;
@@ -34,79 +92,46 @@ export default function ConnexionPage() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim() || !password) return;
-
     setSubmitting(true);
     setError(null);
-
     const { error: err } = await signInWithPassword(email.trim(), password);
     setSubmitting(false);
-
-    if (err) {
-      setError(err);
-    }
-    // Si pas d'erreur, onAuthStateChange redirigera via le contexte
+    if (err) setError(err);
   }
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim() || !password) return;
-
-    if (password.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères.");
-      return;
-    }
-
-    if (password !== passwordConfirm) {
-      setError("Les mots de passe ne correspondent pas.");
-      return;
-    }
-
+    if (password.length < 6) { setError("Le mot de passe doit contenir au moins 6 caractères."); return; }
+    if (password !== passwordConfirm) { setError("Les mots de passe ne correspondent pas."); return; }
     setSubmitting(true);
     setError(null);
-
     const { error: err, needsConfirmation } = await signUp(email.trim(), password);
     setSubmitting(false);
-
-    if (err) {
-      setError(err);
-    } else if (needsConfirmation) {
-      setSuccessView("check-email-confirm");
-    }
-    // Si pas de confirmation requise, connecté directement
+    if (err) setError(err);
+    else if (needsConfirmation) setSuccessView("check-email-confirm");
   }
 
   async function handleResetPassword(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
-
     setSubmitting(true);
     setError(null);
-
     const { error: err } = await resetPassword(email.trim());
     setSubmitting(false);
-
-    if (err) {
-      setError(err);
-    } else {
-      setSuccessView("reset-sent");
-    }
+    if (err) setError(err);
+    else setSuccessView("reset-sent");
   }
 
   async function handleMagicLink(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
-
     setSubmitting(true);
     setError(null);
-
     const { error: err } = await signInWithMagicLink(email.trim());
     setSubmitting(false);
-
-    if (err) {
-      setError(err);
-    } else {
-      setSuccessView("check-email-magic");
-    }
+    if (err) setError(err);
+    else setSuccessView("check-email-magic");
   }
 
   function resetToLogin() {
@@ -125,7 +150,7 @@ export default function ConnexionPage() {
     return (
       <SuccessScreen
         title="Vérifie ton email"
-        message={<>Un lien de connexion a été envoyé à <strong className="text-espresso">{email}</strong>. Clique dessus pour accéder à TRACÉA.</>}
+        message={<>Un lien de connexion a été envoyé à <strong style={{ color: DS.cuivre }}>{email}</strong>. Clique dessus pour accéder à TRACÉA.</>}
         hint="Le lien est valide pendant 1 heure. Vérifie tes spams si tu ne le trouves pas."
         onBack={resetToLogin}
       />
@@ -136,7 +161,7 @@ export default function ConnexionPage() {
     return (
       <SuccessScreen
         title="Confirme ton inscription"
-        message={<>Un email de confirmation a été envoyé à <strong className="text-espresso">{email}</strong>. Clique sur le lien pour activer ton compte.</>}
+        message={<>Un email de confirmation a été envoyé à <strong style={{ color: DS.cuivre }}>{email}</strong>. Clique sur le lien pour activer ton compte.</>}
         hint="Vérifie tes spams si tu ne trouves pas l'email."
         onBack={resetToLogin}
       />
@@ -147,48 +172,38 @@ export default function ConnexionPage() {
     return (
       <SuccessScreen
         title="Email envoyé"
-        message={<>Un lien de réinitialisation a été envoyé à <strong className="text-espresso">{email}</strong>.</>}
+        message={<>Un lien de réinitialisation a été envoyé à <strong style={{ color: DS.cuivre }}>{email}</strong>.</>}
         hint="Clique dessus pour choisir un nouveau mot de passe."
         onBack={resetToLogin}
       />
     );
   }
 
-  // ── Formulaire de réinitialisation de mot de passe ──
+  // ── Formulaire réinitialisation ──
 
   if (showResetForm) {
     return (
-      <div className="max-w-md mx-auto px-4 py-10 md:py-16">
+      <PageWrapper>
         <AuthHeader />
-
-        <div className="card-base">
-          <h1 className="font-serif text-xl text-espresso mb-1">Mot de passe oublié</h1>
-          <p className="text-sm text-warm-gray mb-6">
+        <Card>
+          <h1 className="font-body" style={{ fontSize: 20, fontWeight: 500, color: DS.texte, marginBottom: 4 }}>
+            Mot de passe oublié
+          </h1>
+          <p className="font-sans" style={{ fontSize: 13, color: DS.texteMuted, marginBottom: 24 }}>
             Entre ton email pour recevoir un lien de réinitialisation.
           </p>
-
-          <form onSubmit={handleResetPassword} className="space-y-4">
+          <form onSubmit={handleResetPassword} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <EmailField email={email} setEmail={setEmail} />
-
             {error && <ErrorBox message={error} />}
-
-            <button
-              type="submit"
-              disabled={submitting || !email.trim()}
-              className="btn-primary w-full text-center !py-4 md:!py-3 !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
-            >
+            <button type="submit" disabled={submitting || !email.trim()} className="font-sans" style={{ ...btnPrimary, opacity: submitting || !email.trim() ? 0.4 : 1 }}>
               {submitting ? "Envoi..." : "Envoyer le lien"}
             </button>
           </form>
-
-          <button
-            onClick={resetToLogin}
-            className="w-full text-sm text-warm-gray hover:text-terra transition-colors mt-4 text-center"
-          >
+          <button onClick={resetToLogin} style={{ ...linkBtn, width: "100%", textAlign: "center", marginTop: 16 }}>
             Retour à la connexion
           </button>
-        </div>
-      </div>
+        </Card>
+      </PageWrapper>
     );
   }
 
@@ -196,66 +211,76 @@ export default function ConnexionPage() {
 
   if (showMagicLink) {
     return (
-      <div className="max-w-md mx-auto px-4 py-10 md:py-16">
+      <PageWrapper>
         <AuthHeader />
-
-        <div className="card-base">
-          <h1 className="font-serif text-xl text-espresso mb-1">Connexion par lien magique</h1>
-          <p className="text-sm text-warm-gray mb-6">
+        <Card>
+          <h1 className="font-body" style={{ fontSize: 20, fontWeight: 500, color: DS.texte, marginBottom: 4 }}>
+            Connexion par lien magique
+          </h1>
+          <p className="font-sans" style={{ fontSize: 13, color: DS.texteMuted, marginBottom: 24 }}>
             Reçois un lien de connexion sécurisé par email. Pas de mot de passe nécessaire.
           </p>
-
-          <form onSubmit={handleMagicLink} className="space-y-4">
+          <form onSubmit={handleMagicLink} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <EmailField email={email} setEmail={setEmail} />
-
             {error && <ErrorBox message={error} />}
-
-            <button
-              type="submit"
-              disabled={submitting || !email.trim()}
-              className="btn-primary w-full text-center !py-4 md:!py-3 !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
-            >
+            <button type="submit" disabled={submitting || !email.trim()} className="font-sans" style={{ ...btnPrimary, opacity: submitting || !email.trim() ? 0.4 : 1 }}>
               {submitting ? "Envoi..." : "Recevoir le lien de connexion"}
             </button>
           </form>
-
-          <button
-            onClick={resetToLogin}
-            className="w-full text-sm text-warm-gray hover:text-terra transition-colors mt-4 text-center"
-          >
+          <button onClick={resetToLogin} style={{ ...linkBtn, width: "100%", textAlign: "center", marginTop: 16 }}>
             Retour à la connexion
           </button>
-        </div>
-      </div>
+        </Card>
+      </PageWrapper>
     );
   }
 
-  // ── Formulaire principal : onglets Connexion / Inscription ──
+  // ── Formulaire principal ──
 
   return (
-    <div className="max-w-md mx-auto px-4 py-10 md:py-16">
+    <PageWrapper>
       <AuthHeader />
 
-      <div className="card-base">
+      <Card>
         {/* Onglets */}
-        <div className="flex rounded-xl bg-beige/60 p-1 mb-6">
+        <div style={{ display: "flex", borderRadius: 12, background: DS.fondSecondaire, padding: 4, marginBottom: 24 }}>
           <button
             onClick={() => { setTab("login"); setError(null); }}
-            className={`flex-1 py-2.5 rounded-lg text-sm font-medium tracking-wide transition-all ${
-              tab === "login"
-                ? "bg-white text-espresso shadow-sm"
-                : "text-warm-gray hover:text-espresso"
-            }`}
+            className="font-sans"
+            style={{
+              flex: 1,
+              padding: "10px 0",
+              borderRadius: 10,
+              fontSize: 13,
+              fontWeight: 500,
+              letterSpacing: "0.03em",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              background: tab === "login" ? DS.surface : "transparent",
+              color: tab === "login" ? DS.texte : DS.texteMuted,
+              boxShadow: tab === "login" ? "0 2px 8px rgba(0,0,0,0.2)" : "none",
+            }}
           >
             Connexion
           </button>
           <button
             onClick={() => { setTab("signup"); setError(null); }}
-            className={`flex-1 py-2.5 rounded-lg text-sm font-medium tracking-wide transition-all ${
-              tab === "signup"
-                ? "bg-white text-espresso shadow-sm"
-                : "text-warm-gray hover:text-espresso"
-            }`}
+            className="font-sans"
+            style={{
+              flex: 1,
+              padding: "10px 0",
+              borderRadius: 10,
+              fontSize: 13,
+              fontWeight: 500,
+              letterSpacing: "0.03em",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              background: tab === "signup" ? DS.surface : "transparent",
+              color: tab === "signup" ? DS.texte : DS.texteMuted,
+              boxShadow: tab === "signup" ? "0 2px 8px rgba(0,0,0,0.2)" : "none",
+            }}
           >
             Inscription
           </button>
@@ -263,17 +288,12 @@ export default function ConnexionPage() {
 
         {/* ── Connexion ── */}
         {tab === "login" && (
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <EmailField email={email} setEmail={setEmail} />
 
             <div>
-              <label
-                htmlFor="password"
-                className="text-xs font-medium tracking-widest uppercase text-warm-gray block mb-2"
-              >
-                Mot de passe
-              </label>
-              <div className="relative">
+              <label htmlFor="password" className="font-sans" style={labelStyle}>Mot de passe</label>
+              <div style={{ position: "relative" }}>
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -281,13 +301,14 @@ export default function ConnexionPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Ton mot de passe"
                   required
-                  className="w-full px-4 py-3.5 md:py-3 bg-beige/50 rounded-xl text-espresso font-sans text-sm border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 pr-12"
+                  className="font-sans"
+                  style={{ ...inputStyle, paddingRight: 56 }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-warm-gray hover:text-terra transition-colors text-xs"
                   tabIndex={-1}
+                  style={{ ...linkBtn, position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)" }}
                 >
                   {showPassword ? "Masquer" : "Voir"}
                 </button>
@@ -299,24 +320,17 @@ export default function ConnexionPage() {
             <button
               type="submit"
               disabled={submitting || !email.trim() || !password}
-              className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
+              className="font-sans"
+              style={{ ...btnPrimary, opacity: submitting || !email.trim() || !password ? 0.4 : 1 }}
             >
               {submitting ? "Connexion..." : "Se connecter"}
             </button>
 
-            <div className="flex items-center justify-between pt-1">
-              <button
-                type="button"
-                onClick={() => { setShowResetForm(true); setError(null); }}
-                className="text-xs text-warm-gray hover:text-terra transition-colors"
-              >
+            <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 4 }}>
+              <button type="button" onClick={() => { setShowResetForm(true); setError(null); }} style={linkBtn}>
                 Mot de passe oublié ?
               </button>
-              <button
-                type="button"
-                onClick={() => { setShowMagicLink(true); setError(null); }}
-                className="text-xs text-warm-gray hover:text-terra transition-colors"
-              >
+              <button type="button" onClick={() => { setShowMagicLink(true); setError(null); }} style={linkBtn}>
                 Connexion par lien magique
               </button>
             </div>
@@ -325,17 +339,12 @@ export default function ConnexionPage() {
 
         {/* ── Inscription ── */}
         {tab === "signup" && (
-          <form onSubmit={handleSignup} className="space-y-4">
+          <form onSubmit={handleSignup} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <EmailField email={email} setEmail={setEmail} />
 
             <div>
-              <label
-                htmlFor="signup-password"
-                className="text-xs font-medium tracking-widest uppercase text-warm-gray block mb-2"
-              >
-                Mot de passe
-              </label>
-              <div className="relative">
+              <label htmlFor="signup-password" className="font-sans" style={labelStyle}>Mot de passe</label>
+              <div style={{ position: "relative" }}>
                 <input
                   id="signup-password"
                   type={showPassword ? "text" : "password"}
@@ -344,13 +353,14 @@ export default function ConnexionPage() {
                   placeholder="6 caractères minimum"
                   required
                   minLength={6}
-                  className="w-full px-4 py-3.5 md:py-3 bg-beige/50 rounded-xl text-espresso font-sans text-sm border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 pr-12"
+                  className="font-sans"
+                  style={{ ...inputStyle, paddingRight: 56 }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-warm-gray hover:text-terra transition-colors text-xs"
                   tabIndex={-1}
+                  style={{ ...linkBtn, position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)" }}
                 >
                   {showPassword ? "Masquer" : "Voir"}
                 </button>
@@ -358,12 +368,7 @@ export default function ConnexionPage() {
             </div>
 
             <div>
-              <label
-                htmlFor="signup-password-confirm"
-                className="text-xs font-medium tracking-widest uppercase text-warm-gray block mb-2"
-              >
-                Confirmer le mot de passe
-              </label>
+              <label htmlFor="signup-password-confirm" className="font-sans" style={labelStyle}>Confirmer le mot de passe</label>
               <input
                 id="signup-password-confirm"
                 type={showPassword ? "text" : "password"}
@@ -372,7 +377,8 @@ export default function ConnexionPage() {
                 placeholder="Répète ton mot de passe"
                 required
                 minLength={6}
-                className="w-full px-4 py-3.5 md:py-3 bg-beige/50 rounded-xl text-espresso font-sans text-sm border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
+                className="font-sans"
+                style={inputStyle}
               />
             </div>
 
@@ -381,55 +387,85 @@ export default function ConnexionPage() {
             <button
               type="submit"
               disabled={submitting || !email.trim() || !password || !passwordConfirm}
-              className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
+              className="font-sans"
+              style={{ ...btnPrimary, opacity: submitting || !email.trim() || !password || !passwordConfirm ? 0.4 : 1 }}
             >
               {submitting ? "Inscription..." : "Créer mon compte"}
             </button>
 
-            <p className="text-xs text-warm-gray text-center pt-1">
+            <p className="font-sans" style={{ fontSize: 12, color: DS.texteMuted, textAlign: "center", paddingTop: 4 }}>
               Tu as déjà un compte ?{" "}
               <button
                 type="button"
                 onClick={() => { setTab("login"); setError(null); }}
-                className="text-terra hover:text-terra-dark underline"
+                style={{ ...linkBtn, color: DS.cuivre, textDecoration: "underline" }}
               >
                 Connecte-toi
               </button>
             </p>
           </form>
         )}
-      </div>
+      </Card>
 
-      <p className="text-xs text-warm-gray text-center mt-6 leading-relaxed">
+      <p className="font-sans" style={{ fontSize: 12, color: DS.texteMuted, textAlign: "center", marginTop: 24, lineHeight: 1.6 }}>
         En te connectant, tu acceptes nos{" "}
-        <Link
-          href="/conditions-utilisation"
-          className="text-terra hover:text-terra-dark underline"
-        >
-          CGU
-        </Link>{" "}
-        et notre{" "}
-        <Link
-          href="/politique-confidentialite"
-          className="text-terra hover:text-terra-dark underline"
-        >
-          Politique de confidentialité
-        </Link>
-        .
+        <Link href="/conditions-utilisation" style={{ color: DS.cuivre, textDecoration: "underline" }}>CGU</Link>
+        {" "}et notre{" "}
+        <Link href="/politique-confidentialite" style={{ color: DS.cuivre, textDecoration: "underline" }}>Politique de confidentialité</Link>.
       </p>
-    </div>
+    </PageWrapper>
   );
 }
 
 // ═══════════════════════════════════════════════════
-// Composants réutilisables
+// Composants
 // ═══════════════════════════════════════════════════
+
+function PageWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        minHeight: "100%",
+        background: `
+          radial-gradient(ellipse 70% 50% at 30% 30%, rgba(201,144,124,0.06) 0%, transparent 65%),
+          radial-gradient(ellipse 60% 40% at 70% 70%, rgba(131,94,84,0.04) 0%, transparent 60%),
+          ${DS.fond}
+        `,
+        padding: "48px 16px 64px",
+      }}
+    >
+      <div style={{ maxWidth: 440, margin: "0 auto" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        background: DS.surface,
+        border: "1px solid rgba(61,42,34,0.6)",
+        borderRadius: 20,
+        padding: "32px 24px",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.08)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 function AuthHeader() {
   return (
-    <div className="text-center mb-8">
-      <div className="font-serif text-3xl md:text-4xl text-terra mb-2">TRACÉA</div>
-      <p className="font-body text-sm md:text-base text-warm-gray italic">
+    <div style={{ textAlign: "center", marginBottom: 36 }}>
+      <img
+        src="/images/tracea-logo-terra-v2.png"
+        alt="TRACEA"
+        style={{ height: 48, margin: "0 auto 14px", objectFit: "contain" }}
+      />
+      <p className="font-sans" style={{ fontSize: 13, color: DS.texteMuted, fontStyle: "italic" }}>
         Stabilité émotionnelle · Entraînement physiologique
       </p>
     </div>
@@ -439,12 +475,7 @@ function AuthHeader() {
 function EmailField({ email, setEmail }: { email: string; setEmail: (v: string) => void }) {
   return (
     <div>
-      <label
-        htmlFor="email"
-        className="text-xs font-medium tracking-widest uppercase text-warm-gray block mb-2"
-      >
-        Adresse email
-      </label>
+      <label htmlFor="email" className="font-sans" style={labelStyle}>Adresse email</label>
       <input
         id="email"
         type="email"
@@ -453,7 +484,8 @@ function EmailField({ email, setEmail }: { email: string; setEmail: (v: string) 
         placeholder="ton@email.fr"
         required
         autoComplete="email"
-        className="w-full px-4 py-3.5 md:py-3 bg-beige/50 rounded-xl text-espresso font-sans text-sm border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
+        className="font-sans"
+        style={inputStyle}
       />
     </div>
   );
@@ -461,7 +493,17 @@ function EmailField({ email, setEmail }: { email: string; setEmail: (v: string) 
 
 function ErrorBox({ message }: { message: string }) {
   return (
-    <div className="text-sm text-terra-dark bg-terra-light/50 rounded-xl p-3">
+    <div
+      className="font-sans"
+      style={{
+        fontSize: 13,
+        color: "#e8a090",
+        background: "rgba(201,144,124,0.1)",
+        border: `1px solid rgba(201,144,124,0.2)`,
+        borderRadius: 12,
+        padding: 12,
+      }}
+    >
       {message}
     </div>
   );
@@ -479,20 +521,49 @@ function SuccessScreen({
   onBack: () => void;
 }) {
   return (
-    <div className="max-w-md mx-auto px-4 py-10 md:py-16 text-center">
-      <div className="w-16 h-16 bg-sage rounded-full flex items-center justify-center mx-auto mb-6">
-        <span className="text-white text-2xl">✓</span>
+    <PageWrapper>
+      <div style={{ textAlign: "center" }}>
+        <div
+          style={{
+            width: 64,
+            height: 64,
+            background: "rgba(201,144,124,0.15)",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto 24px",
+          }}
+        >
+          <span style={{ color: DS.cuivre, fontSize: 28 }}>&#10003;</span>
+        </div>
+        <h1 className="font-body" style={{ fontSize: 22, color: DS.texte, marginBottom: 12 }}>
+          {title}
+        </h1>
+        <p className="font-sans" style={{ fontSize: 14, color: DS.texteMuted, lineHeight: 1.6, marginBottom: 24 }}>
+          {message}
+        </p>
+        <p className="font-sans" style={{ fontSize: 12, color: DS.texteMuted }}>
+          {hint}
+        </p>
+        <button
+          onClick={onBack}
+          className="font-sans"
+          style={{
+            marginTop: 24,
+            padding: "12px 32px",
+            background: "transparent",
+            border: `1px solid ${DS.bordure}`,
+            borderRadius: 40,
+            color: DS.texteMuted,
+            fontSize: 13,
+            cursor: "pointer",
+            transition: "all 0.2s",
+          }}
+        >
+          Retour à la connexion
+        </button>
       </div>
-      <h1 className="font-serif text-xl md:text-2xl text-espresso mb-3">
-        {title}
-      </h1>
-      <p className="font-body text-sm md:text-base text-warm-gray leading-relaxed mb-6">
-        {message}
-      </p>
-      <p className="text-xs text-warm-gray">{hint}</p>
-      <button onClick={onBack} className="btn-ghost mt-6 !rounded-2xl">
-        Retour à la connexion
-      </button>
-    </div>
+    </PageWrapper>
   );
 }

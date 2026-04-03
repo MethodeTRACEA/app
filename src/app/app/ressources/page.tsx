@@ -7,10 +7,7 @@ interface StepResource {
   letter: string;
   name: string;
   subtitle: string;
-  accentColor: string;
-  bgGradient: string;
   dotColor: string;
-  headerBg: string;
   content: string[];
 }
 
@@ -20,10 +17,7 @@ const steps: StepResource[] = [
     letter: "T",
     name: "Traverser",
     subtitle: "Ce qui se passe dans ton corps",
-    accentColor: "text-terra-dark",
-    bgGradient: "from-terra-light/40 to-terra-light/10",
-    dotColor: "#C4704A",
-    headerBg: "rgba(196,112,74,0.08)",
+    dotColor: "#C9907C",
     content: [
       "Quand une émotion surgit, ton cerveau déclenche une réaction en chaîne\u00A0: l'amygdale, ce petit noyau au centre du cerveau, envoie un signal d'alarme. Le cortisol et l'adrénaline inondent le corps. Le cœur s'accélère, les muscles se contractent, la respiration se raccourcit. Tout ça en moins d'une seconde.",
       "La tentation naturelle est de fuir cette vague, de penser à autre chose, de s'occuper, de minimiser. Mais fuir une émotion ne la dissout pas. Elle s'enkystera, trouvera d'autres chemins.",
@@ -35,10 +29,7 @@ const steps: StepResource[] = [
     letter: "R",
     name: "Reconnaître",
     subtitle: "Ce qui se passe dans ton corps",
-    accentColor: "text-terra-dark",
-    bgGradient: "from-terra-light/30 to-beige/20",
-    dotColor: "rgba(196,112,74,0.7)",
-    headerBg: "rgba(196,112,74,0.05)",
+    dotColor: "#835E54",
     content: [
       "Le cerveau possède deux voies de traitement émotionnel. La voie rapide, instinctive et automatique, réagit avant même que tu aies le temps de penser. La voie lente, portée par le cortex préfrontal, analyse, nuance, donne du sens.",
       "Reconnaître une émotion, c'est activer cette deuxième voie. Des recherches ont montré que nommer une émotion, simplement lui donner un mot, réduit son intensité dans le corps. C'est ce qu'on appelle l'affect labeling. Dire « j'ai peur » diminue l'activation de l'amygdale. Pas parce que la peur disparaît, mais parce que le cerveau passe du mode survie au mode compréhension.",
@@ -50,10 +41,7 @@ const steps: StepResource[] = [
     letter: "A",
     name: "Ancrer",
     subtitle: "Ce qui se passe dans ton corps",
-    accentColor: "text-sage-dark",
-    bgGradient: "from-sage/15 to-sage/5",
     dotColor: "#8A9E7A",
-    headerBg: "rgba(138,158,122,0.08)",
     content: [
       "Le système nerveux autonome régule tout ce que tu ne contrôles pas consciemment\u00A0: ton rythme cardiaque, ta digestion, ta respiration. Il fonctionne en deux modes\u00A0: le système sympathique (activation, stress, survie) et le système parasympathique (repos, récupération, sécurité).",
       "Quand une émotion intense surgit, le sympathique prend le dessus. Ancrer le corps, c'est réactiver le parasympathique. La respiration est le seul pont conscient entre ces deux systèmes.",
@@ -65,10 +53,7 @@ const steps: StepResource[] = [
     letter: "C",
     name: "Conscientiser",
     subtitle: "Ce qui se passe dans ton esprit",
-    accentColor: "text-espresso",
-    bgGradient: "from-beige/80 to-beige/30",
-    dotColor: "rgba(44,31,20,0.6)",
-    headerBg: "rgba(44,31,20,0.04)",
+    dotColor: "#A89080",
     content: [
       "Le cortex préfrontal, la partie la plus évoluée du cerveau, est le siège de la compréhension, du sens, de la mise en perspective. Mais il ne fonctionne bien que quand le système nerveux est suffisamment régulé. C'est pourquoi Conscientiser vient après Ancrer, pas avant.",
       "Une fois le corps stabilisé, tu peux remonter le fil\u00A0: pourquoi cette émotion\u00A0? Que te raconte-t-elle de tes besoins profonds\u00A0?",
@@ -80,10 +65,7 @@ const steps: StepResource[] = [
     letter: "É",
     name: "Émerger",
     subtitle: "Ce qui se transforme en toi",
-    accentColor: "text-dusty-dark",
-    bgGradient: "from-dusty/15 to-dusty/5",
     dotColor: "#C4998A",
-    headerBg: "rgba(196,153,138,0.08)",
     content: [
       "L'intégration émotionnelle est un processus neurologique réel. Quand une expérience difficile est traversée, nommée, régulée et mise en sens, le cerveau crée de nouvelles connexions, ce qu'on appelle la plasticité neuronale.",
       "Une nouvelle compréhension émerge. Ce n'est pas une conclusion intellectuelle. C'est souvent une sensation physique d'abord, un souffle qui se libère, une légèreté dans les épaules, une évidence qui arrive sans forcer.",
@@ -95,10 +77,7 @@ const steps: StepResource[] = [
     letter: "A",
     name: "Aligner",
     subtitle: "Ce qui change dans ta vie",
-    accentColor: "text-terra-dark",
-    bgGradient: "from-terra-light/30 to-terra-light/10",
-    dotColor: "#8A4A2F",
-    headerBg: "rgba(138,74,47,0.06)",
+    dotColor: "#6B3D2E",
     content: [
       "La compréhension seule ne suffit pas à transformer. Le cerveau apprend par l'action répétée. Chaque micro-décision alignée avec ta vérité intérieure crée une nouvelle voie neuronale. Au fil du temps, ces nouvelles voies deviennent des réflexes, des façons d'être plutôt que des efforts conscients.",
       "Aligner, c'est donc choisir un geste concret, aussi petit soit-il, qui honore ce que tu viens de traverser. Pas une résolution héroïque. Juste une direction.",
@@ -111,143 +90,293 @@ export default function RessourcesPage() {
   const [activeStep, setActiveStep] = useState<number | null>(null);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-14">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <p className="section-label">Comprendre le protocole</p>
-        <h1 className="font-serif text-3xl md:text-4xl text-espresso mb-4">
-          Ressources TRACÉA
-        </h1>
-        <p className="font-body text-warm-gray text-base leading-relaxed max-w-2xl mx-auto">
-          Chaque étape du protocole TRACÉA s&apos;appuie sur des mécanismes
-          neurophysiologiques réels. Voici, en langage accessible, ce qui se passe
-          dans ton corps et ton cerveau à chaque étape, pour que tu comprennes
-          non seulement <em className="text-espresso">quoi</em> faire, mais <em className="text-espresso">pourquoi</em>.
-        </p>
-      </div>
+    <div
+      style={{
+        minHeight: "100%",
+        background: `
+          radial-gradient(ellipse 70% 50% at 25% 15%, rgba(201,144,124,0.06) 0%, transparent 65%),
+          radial-gradient(ellipse 60% 40% at 75% 70%, rgba(131,94,84,0.04) 0%, transparent 60%),
+          #1C1410
+        `,
+      }}
+    >
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "56px 16px 80px" }}>
 
-      {/* Step navigation pills */}
-      <div className="flex flex-wrap justify-center gap-2 mb-12">
-        {steps.map((step) => (
-          <button
-            key={step.number}
-            onClick={() =>
-              setActiveStep(activeStep === step.number ? null : step.number)
-            }
-            className={`flex items-center gap-2.5 px-5 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
-              activeStep === step.number
-                ? "bg-terra text-cream shadow-lg scale-105"
-                : "bg-beige/80 text-espresso hover:bg-terra-light hover:text-terra-dark hover:shadow-md"
-            }`}
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <p
+            className="font-sans"
+            style={{
+              fontSize: 11,
+              fontWeight: 500,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "#C9907C",
+              marginBottom: 12,
+            }}
           >
-            <span
-              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                activeStep === step.number
-                  ? "bg-cream/30 text-cream"
-                  : "bg-white text-terra"
-              }`}
-            >
-              {step.letter}
-            </span>
-            {step.name}
-          </button>
-        ))}
-      </div>
+            Comprendre le protocole
+          </p>
+          <h1
+            className="font-body"
+            style={{
+              fontSize: "clamp(1.75rem, 5vw, 2.25rem)",
+              fontWeight: 500,
+              color: "#F5EFE6",
+              lineHeight: 1.2,
+              marginBottom: 20,
+            }}
+          >
+            Ressources TRAC&Eacute;A
+          </h1>
+          <p
+            className="font-sans"
+            style={{
+              fontSize: 15,
+              lineHeight: 1.7,
+              color: "#A89080",
+              maxWidth: 560,
+              margin: "0 auto",
+            }}
+          >
+            Chaque &eacute;tape du protocole TRAC&Eacute;A s&apos;appuie sur des m&eacute;canismes
+            neurophysiologiques r&eacute;els. Voici, en langage accessible, ce qui se passe
+            dans ton corps et ton cerveau &agrave; chaque &eacute;tape, pour que tu comprennes
+            non seulement <em style={{ color: "#F5EFE6", fontStyle: "italic" }}>quoi</em> faire, mais <em style={{ color: "#F5EFE6", fontStyle: "italic" }}>pourquoi</em>.
+          </p>
+        </div>
 
-      {/* Step cards */}
-      <div className="space-y-8">
-        {steps.map((step) => {
-          const isOpen = activeStep === null || activeStep === step.number;
-          return (
-            <div
-              key={step.number}
-              id={`step-${step.number}`}
-              className={`rounded-[22px] overflow-hidden transition-all duration-500 shadow-sm hover:shadow-md ${
-                isOpen
-                  ? "opacity-100"
-                  : "opacity-30 scale-[0.97] pointer-events-none"
-              }`}
-            >
-              {/* Card with gradient background */}
-              <div className={`bg-gradient-to-br ${step.bgGradient} border border-white/60`}
-                style={{ borderRadius: "22px" }}
+        {/* Step navigation pills */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 8,
+            marginBottom: 48,
+          }}
+        >
+          {steps.map((step) => {
+            const isActive = activeStep === step.number;
+            return (
+              <button
+                key={step.number}
+                onClick={() =>
+                  setActiveStep(activeStep === step.number ? null : step.number)
+                }
+                className="font-sans"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 18px",
+                  borderRadius: 40,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "all 0.3s",
+                  background: isActive ? step.dotColor : "#251A14",
+                  color: isActive ? "#1C1410" : "#A89080",
+                  boxShadow: isActive
+                    ? "0 4px 16px rgba(0,0,0,0.25)"
+                    : "none",
+                  transform: isActive ? "scale(1.05)" : "scale(1)",
+                }}
+              >
+                <span
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    background: isActive
+                      ? "rgba(28,20,16,0.25)"
+                      : "rgba(201,144,124,0.15)",
+                    color: isActive ? "#1C1410" : "#C9907C",
+                    transition: "all 0.3s",
+                  }}
+                >
+                  {step.letter}
+                </span>
+                {step.name}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Step cards */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {steps.map((step) => {
+            const isOpen = activeStep === null || activeStep === step.number;
+            const isExpanded = activeStep === step.number || activeStep === null;
+            return (
+              <div
+                key={step.number}
+                id={`step-${step.number}`}
+                style={{
+                  borderRadius: 20,
+                  transition: "all 0.5s",
+                  opacity: isOpen ? 1 : 0.25,
+                  transform: isOpen ? "scale(1)" : "scale(0.97)",
+                  pointerEvents: isOpen ? "auto" : "none",
+                  background: "#2E1F17",
+                  border: "1px solid rgba(61,42,34,0.6)",
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.12)",
+                }}
               >
                 {/* Card header */}
                 <button
                   onClick={() =>
                     setActiveStep(activeStep === step.number ? null : step.number)
                   }
-                  className="w-full px-8 md:px-10 py-7 flex items-center gap-6 text-left group"
-                  style={{ backgroundColor: step.headerBg }}
+                  style={{
+                    width: "100%",
+                    padding: "20px 20px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 16,
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
                 >
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center font-serif text-xl flex-shrink-0 transition-all duration-300 text-cream"
-                    style={{ backgroundColor: step.dotColor }}
+                    className="font-body"
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 12,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 20,
+                      fontWeight: 500,
+                      flexShrink: 0,
+                      background: step.dotColor,
+                      color: "#1C1410",
+                      transition: "all 0.3s",
+                    }}
                   >
                     {step.number}
                   </div>
-                  <div className="flex-1">
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <h2
-                      className={`font-serif text-2xl md:text-[1.65rem] ${step.accentColor} transition-colors`}
+                      className="font-body"
+                      style={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: "#F5EFE6",
+                        lineHeight: 1.3,
+                        margin: 0,
+                      }}
                     >
                       {step.name}
                     </h2>
-                    <p className="text-sm text-warm-gray mt-1 font-body">
+                    <p
+                      className="font-sans"
+                      style={{
+                        fontSize: 13,
+                        color: "#A89080",
+                        opacity: 0.7,
+                        marginTop: 3,
+                        lineHeight: 1.4,
+                      }}
+                    >
                       {step.subtitle}
                     </p>
                   </div>
                   <div
-                    className={`text-warm-gray/60 transition-transform duration-300 text-lg ${
-                      activeStep === step.number ? "rotate-180" : ""
-                    }`}
+                    style={{
+                      color: "rgba(168,144,128,0.5)",
+                      fontSize: 16,
+                      transition: "transform 0.3s",
+                      transform: activeStep === step.number ? "rotate(180deg)" : "rotate(0deg)",
+                      flexShrink: 0,
+                    }}
                   >
-                    ▾
+                    &#9662;
                   </div>
                 </button>
 
-                {/* Card content */}
-                <div
-                  className={`overflow-hidden transition-all duration-500 ${
-                    activeStep === step.number || activeStep === null
-                      ? "max-h-[800px] opacity-100"
-                      : "max-h-0 opacity-0"
-                  }`}
-                >
-                  <div className="px-8 md:px-10 pb-9 pt-0">
-                    <div className="ml-[88px] space-y-5">
-                      {step.content.map((paragraph, i) => (
-                        <p
-                          key={i}
-                          className={`font-body text-[15px] leading-[1.8] ${
-                            i === step.content.length - 1
-                              ? `${step.accentColor} font-medium italic text-base`
-                              : "text-espresso/80"
-                          }`}
-                        >
-                          {paragraph}
-                        </p>
-                      ))}
+                {/* Card content — NO max-height, NO overflow-hidden that clips */}
+                {isExpanded && (
+                  <div
+                    style={{
+                      padding: "0 20px 24px",
+                    }}
+                  >
+                    {/* Separator */}
+                    <div
+                      style={{
+                        height: 1,
+                        background: "rgba(61,42,34,0.5)",
+                        marginBottom: 20,
+                      }}
+                    />
+
+                    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                      {step.content.map((paragraph, i) => {
+                        const isLast = i === step.content.length - 1;
+                        return (
+                          <p
+                            key={i}
+                            className="font-sans"
+                            style={{
+                              fontSize: 15,
+                              lineHeight: 1.8,
+                              margin: 0,
+                              color: isLast ? "#C9907C" : "rgba(245,239,230,0.75)",
+                              fontStyle: isLast ? "italic" : "normal",
+                              fontWeight: isLast ? 500 : 400,
+                            }}
+                          >
+                            {paragraph}
+                          </p>
+                        );
+                      })}
                     </div>
                   </div>
-                </div>
+                )}
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
 
-      {/* Footer note */}
-      <div className="mt-14 text-center">
-        <div className="inline-block px-8 py-5 rounded-[22px] bg-beige/40 border border-beige-dark/50">
-          <p className="font-body text-sm text-warm-gray leading-relaxed">
-            Ces contenus s&apos;appuient sur les neurosciences affectives et la
-            recherche en régulation émotionnelle.
-            <br />
-            <span className="italic mt-1 inline-block">
-              TRACÉA n&apos;est pas un outil thérapeutique, c&apos;est un
-              entraînement à la stabilité intérieure.
-            </span>
-          </p>
+        {/* Footer note */}
+        <div style={{ marginTop: 56, textAlign: "center" }}>
+          <div
+            style={{
+              display: "inline-block",
+              padding: "20px 28px",
+              borderRadius: 20,
+              background: "#251A14",
+              border: "1px solid rgba(61,42,34,0.5)",
+            }}
+          >
+            <p
+              className="font-sans"
+              style={{
+                fontSize: 13,
+                color: "#A89080",
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              Ces contenus s&apos;appuient sur les neurosciences affectives et la
+              recherche en r&eacute;gulation &eacute;motionnelle.
+              <br />
+              <span style={{ fontStyle: "italic", marginTop: 4, display: "inline-block" }}>
+                TRAC&Eacute;A n&apos;est pas un outil th&eacute;rapeutique, c&apos;est un
+                entra&icirc;nement &agrave; la stabilit&eacute; int&eacute;rieure.
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
