@@ -6,23 +6,49 @@ interface StepIndicatorProps {
   currentStep: number;
   completedSteps: number[];
   activeSteps?: number[];
+  /** Mode immersif TRACÉA : dots translucides dorés */
+  immersive?: boolean;
 }
 
 export function StepIndicator({
   currentStep,
   completedSteps,
   activeSteps,
+  immersive,
 }: StepIndicatorProps) {
   const filteredSteps = activeSteps
     ? STEPS.filter((_, i) => activeSteps.includes(i))
     : STEPS;
 
-  const currentIndex = activeSteps
-    ? activeSteps.indexOf(currentStep)
-    : currentStep;
-
   const totalSteps = filteredSteps.length;
 
+  // ── Mode immersif (étape 1 TRACÉA) ──
+  if (immersive) {
+    return (
+      <div className="flex items-center justify-center gap-3 py-3">
+        {filteredSteps.map((step, i) => {
+          const originalIndex = activeSteps ? activeSteps[i] : i;
+          const isCompleted = completedSteps.includes(originalIndex);
+          const isCurrent = originalIndex === currentStep;
+
+          return (
+            <div
+              key={step.id}
+              className={`rounded-full transition-all duration-300 ${
+                isCurrent
+                  ? "w-10 h-3 bg-t-dore shadow-[0_0_10px_rgba(214,165,106,0.35)]"
+                  : isCompleted
+                  ? "w-3 h-3 bg-t-dore/70"
+                  : "w-3 h-3 bg-t-creme/30"
+              }`}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  // ── Mode standard (étapes 2–6) ──
   return (
     <>
       {/* ── MOBILE : dots compacts + label ── */}

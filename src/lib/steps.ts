@@ -9,7 +9,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "Reste juste avec ce qui est là, sans chercher à changer quoi que ce soit.",
     question:
-      "Qu'est-ce qui est le plus présent en toi, là, maintenant ?",
+      "Prends juste un instant. Qu'est-ce qui est le plus présent en toi, là ?",
     help: {
       comprendre:
         "Tu n'as pas besoin de comprendre.\n\nJuste sentir ce qui est là,\nmême un tout petit peu.",
@@ -36,7 +36,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "",
     question:
-      "Sous ce que tu ressens…\n\nest-ce qu'il y a quelque chose de plus sensible ?",
+      "Si tu devais approcher ça avec un mot simple, ce serait plutôt…",
     help: {
       comprendre:
         "Ce que tu ressens en premier n'est pas toujours le plus profond.\nParfois, il y a quelque chose de plus sensible dessous.",
@@ -63,9 +63,9 @@ export const STEPS: StepDefinition[] = [
     name: "Ancrer",
     verb: "A",
     description:
-      "Stabiliser le système nerveux, revenir dans le corps, réduire la charge émotionnelle. L'ancrage est une étape somatique essentielle.",
+      "On va juste ralentir ici.",
     question:
-      "Et maintenant dans ton corps…\nest-ce que c'est :\n– un peu plus calme\n– toujours pareil\n– ou différent autrement ?",
+      "Là, c'est comment ?",
     help: {
       comprendre:
         "Quand une émotion forte est présente, le corps entre dans un état d'alerte — le souffle se raccourcit, les muscles se contractent, la pensée s'emballe. Ancrer, c'est revenir dans le corps pour lui dire : tu peux relâcher un peu. Pas en niant ce qui se passe — en créant assez de stabilité pour que la suite soit possible. Le guide de respiration est là pour t'aider. Utilise-le.",
@@ -93,9 +93,9 @@ export const STEPS: StepDefinition[] = [
     name: "Conscientiser",
     verb: "C",
     description:
-      "Éclairer le message profond de l'émotion, relier l'expérience du moment à ce qu'elle révèle. Comprendre ce qui se joue réellement.",
+      "",
     question:
-      "Avec ce que tu ressens là…\nde quoi ton corps aurait besoin, maintenant ?",
+      "Sous ce que tu ressens, qu'est-ce qui aiderait un peu ?",
     help: {
       comprendre:
         "L'émotion que tu as traversée n'est pas un accident. Elle porte un message — sur un besoin non satisfait, sur une blessure ancienne, sur quelque chose qui compte profondément pour toi. Conscientiser, c'est écouter ce message. C'est aussi l'étape où tu peux commencer à regarder tes réactions non pas comme des défauts, mais comme des mécanismes de survie qui ont eu une raison d'être. Ce que tu ressens a du sens.\nÇa protège quelque chose en toi.",
@@ -124,9 +124,9 @@ export const STEPS: StepDefinition[] = [
     name: "Émerger",
     verb: "E",
     description:
-      "Laisser apparaître une nouvelle vérité intérieure issue du processus. Ce qui est juste, clair et aligné après le travail émotionnel.",
+      "",
     question:
-      "Avec ce que tu ressens maintenant…\nquelle phrase ou évidence devient plus claire ?",
+      "À partir de là, qu'est-ce qui semble le plus juste maintenant ?",
     help: {
       comprendre:
         "L'émergence, ce n'est pas quelque chose que tu forces — c'est quelque chose qui apparaît. Après avoir traversé, reconnu, ancré et conscientisé, quelque chose se dépose. Une évidence, un soulagement, un regard différent sur toi-même ou sur la situation. Ce n'est pas toujours spectaculaire. Parfois c'est juste une phrase simple qui sonne juste. Parfois c'est un silence qui dit tout. Les deux sont valides.",
@@ -153,9 +153,9 @@ export const STEPS: StepDefinition[] = [
     name: "Aligner",
     verb: "A",
     description:
-      "Mettre en actes concrets la vérité intérieure émergée. L'alignement est l'intégration dans la matière, la cohérence retrouvée.",
+      "",
     question:
-      "Avec ce que tu ressens maintenant…\nquel est un petit geste que tu peux faire maintenant ?",
+      "Maintenant, choisis le plus petit geste possible.",
     help: {
       comprendre:
         "Aligner, c'est choisir un geste — même minuscule — qui honore ce qui vient d'émerger. Juste un geste cohérent avec ta vérité. Ça peut être une conversation, une limite, un temps pour toi, ou même un acte symbolique — allumer une bougie, écrire une lettre que tu n'envoies pas, marcher en portant consciemment ce que tu viens de traverser. Ces gestes ancrent la transformation dans le corps et dans le temps.",

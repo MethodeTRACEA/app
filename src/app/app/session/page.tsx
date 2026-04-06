@@ -18,6 +18,15 @@ import { PatternObservation } from "@/components/PatternObservation";
 import { ConsentGate } from "@/components/ConsentGate";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import Link from "next/link";
+import {
+  ScreenContainer,
+  StepCard,
+  StepHeader,
+  PrimaryButton,
+  ChoiceChip,
+  TextCapsuleField,
+  SoftHelpText,
+} from "@/components/ui";
 
 type Phase = "intro" | "welcome" | "entry-question" | "session" | "mirror" | "transitioning" | "integration" | "intensity-after" | "analysis" | "complete";
 
@@ -123,6 +132,40 @@ function SessionContent({ userId }: { userId: string }) {
   const [mirrorNote, setMirrorNote] = useState("");
   const [mirrorNotes, setMirrorNotes] = useState<Record<string, string>>({});
 
+  // ── Étape 1 — Traverser : zone du corps ──
+  const [bodyZone, setBodyZone] = useState("");
+  const [bodyZoneOther, setBodyZoneOther] = useState("");
+  const [showTraverserHelp, setShowTraverserHelp] = useState(false);
+
+  // ── Étape 2 — Reconnaître : choix émotion ──
+  const [emotionChoice, setEmotionChoice] = useState("");
+  const [emotionOther, setEmotionOther] = useState("");
+  const [emotionConfirm, setEmotionConfirm] = useState<"oui" | "proche" | "">("");
+  const [showReconnaitreHelp, setShowReconnaitreHelp] = useState(false);
+
+  // ── Étape 3 — Ancrer : respiration + feedback ──
+  const [ancrerDone, setAncrerDone] = useState(false);
+  const [ancrerFeedback, setAncrerFeedback] = useState<"calme" | "pareil" | "agite" | "">("");
+  const [showAncrerHelp, setShowAncrerHelp] = useState(false);
+  const [ancrerAlt, setAncrerAlt] = useState(false);
+
+  // ── Étape 4 — Conscientiser : besoin immédiat ──
+  const [ecouterChoice, setEcouterChoice] = useState("");
+  const [ecouterOther, setEcouterOther] = useState("");
+  const [ecouterConfirm, setEcouterConfirm] = useState<"oui" | "appelle" | "">("");
+  const [showEcouterHelp, setShowEcouterHelp] = useState(false);
+
+  // ── Étape 5 — Émerger : micro-action ──
+  const [emergerChoice, setEmergerChoice] = useState("");
+  const [emergerOther, setEmergerOther] = useState("");
+  const [showEmergerHelp, setShowEmergerHelp] = useState(false);
+
+  // ── Étape 6 — Aligner : geste + feedback ──
+  const [alignerPhase, setAlignerPhase] = useState<"choix" | "reduction" | "fait" | "feedback">("choix");
+  const [alignerReduction, setAlignerReduction] = useState("");
+  const [alignerReductionOther, setAlignerReductionOther] = useState("");
+  const [alignerFeedback, setAlignerFeedback] = useState<"mieux" | "clair" | "difficile" | "">("");
+
   // ── Cache des réponses par étape (navigation sans perte) ──
   const [stepCache, setStepCache] = useState<Record<string, StepCacheEntry>>({});
 
@@ -172,7 +215,48 @@ function SessionContent({ userId }: { userId: string }) {
     if (!sessionId) return;
 
     const stepId = step.id as StepId;
-    const updatedSteps = { ...steps, [stepId]: text };
+
+    // Étape 1 — concaténer la zone du corps au texte si renseignée
+    let stepText = text;
+    if (stepId === "traverser" && bodyZone) {
+      const zone = bodyZone === "autre" && bodyZoneOther.trim() ? bodyZoneOther.trim() : bodyZone;
+      stepText = `${text.trim()} [corps: ${zone}]`;
+    }
+
+    // Étape 2 — construire le texte depuis le choix émotion
+    if (stepId === "reconnaitre" && emotionChoice) {
+      const label = emotionChoice === "autre" && emotionOther.trim() ? `autre: ${emotionOther.trim()}` : emotionChoice;
+      stepText = emotionConfirm === "proche" ? `${label} (proche)` : label;
+    }
+
+    // Étape 3 — construire le texte depuis le feedback
+    if (stepId === "ancrer" && ancrerFeedback) {
+      const feedbackLabels = { calme: "un peu plus calme", pareil: "pareil", agite: "plus agité" };
+      stepText = feedbackLabels[ancrerFeedback];
+    }
+
+    // Étape 4 — construire le texte depuis le choix besoin
+    if (stepId === "conscientiser" && ecouterChoice) {
+      const label = ecouterChoice === "autre" && ecouterOther.trim() ? `autre: ${ecouterOther.trim()}` : ecouterChoice;
+      stepText = ecouterConfirm === "appelle" ? `${label} (appelle)` : label;
+    }
+
+    // Étape 5 — construire le texte depuis le choix micro-action
+    if (stepId === "emerger" && emergerChoice) {
+      stepText = emergerChoice === "autre" && emergerOther.trim() ? `autre: ${emergerOther.trim()}` : emergerChoice;
+    }
+
+    // Étape 6 — construire le texte depuis le geste final
+    if (stepId === "aligner") {
+      if (alignerReduction) {
+        stepText = alignerReduction === "autre" && alignerReductionOther.trim() ? `autre: ${alignerReductionOther.trim()}` : alignerReduction;
+      } else {
+        // Geste repris de l'étape 5
+        stepText = emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice;
+      }
+    }
+
+    const updatedSteps = { ...steps, [stepId]: stepText };
     setSteps(updatedSteps);
 
     const updates: Record<string, unknown> = { steps: updatedSteps };
@@ -641,121 +725,766 @@ function SessionContent({ userId }: { userId: string }) {
   if (phase === "session") {
     const hasCachedAI = !!(stepCache[step.id]?.aiResponse && stepCache[step.id]?.validatedText === text.trim());
 
+    // ╔═══════════════════════════════════════════════════════════╗
+    // ║  ÉTAPE 1 — TRAVERSER (immersif paysage intérieur)        ║
+    // ╚═══════════════════════════════════════════════════════════╝
+    if (step.id === "traverser") {
+      return (
+        <ScreenContainer className="py-8 md:py-12">
+          <StepIndicator
+            currentStep={currentStepIndicateur}
+            completedSteps={completedSteps}
+            activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
+            immersive
+          />
+
+          <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
+            <StepCard>
+              <StepHeader
+                stepNumber={step.number}
+                stepName={step.name}
+                totalSteps={stepsActifs.length}
+                currentIndex={currentStep}
+                hasCachedAI={hasCachedAI}
+              />
+
+              {/* Description — espacée */}
+              {step.description && (
+                <p className="font-inter text-sm text-t-creme/50 italic mb-8">
+                  {step.description}
+                </p>
+              )}
+
+              {/* Question principale — grande, aérée */}
+              <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
+                {step.question}
+              </p>
+              <p className="font-inter text-[13px] text-t-creme/40 mb-6">
+                Pas besoin de bien répondre. Juste ce qui est là.
+              </p>
+
+              {/* Textarea capsule */}
+              <TextCapsuleField
+                value={text}
+                onChange={setText}
+                placeholder="boule au ventre, tension, agitation…"
+                multiline
+                rows={2}
+                className="h-20 md:h-24"
+              />
+
+              {/* Zone du corps — chips — bloc bien séparé */}
+              <div className="mt-8">
+                <p className="font-inter text-base text-t-beige/90 mb-3.5">
+                  Où c&apos;est le plus marqué ?
+                </p>
+                <div className="flex flex-wrap gap-2.5">
+                  {["poitrine", "ventre", "gorge", "tête", "épaules", "autre"].map((zone) => (
+                    <ChoiceChip
+                      key={zone}
+                      label={zone.charAt(0).toUpperCase() + zone.slice(1)}
+                      selected={bodyZone === zone}
+                      onClick={() => { setBodyZone(zone); if (zone !== "autre") setBodyZoneOther(""); }}
+                    />
+                  ))}
+                </div>
+                {bodyZone === "autre" && (
+                  <TextCapsuleField
+                    value={bodyZoneOther}
+                    onChange={setBodyZoneOther}
+                    placeholder="Où exactement ?"
+                    className="mt-3.5"
+                  />
+                )}
+              </div>
+
+              {/* Bouton principal — bien espacé */}
+              <div className="flex items-center gap-3 mt-10">
+                {currentStep > 0 && (
+                  <button
+                    onClick={handleGoBack}
+                    className="t-btn-secondary"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    <span className="hidden sm:inline">Retour</span>
+                  </button>
+                )}
+                <PrimaryButton
+                  onClick={handleNextStep}
+                  disabled={text.trim().length < 3}
+                  className="flex-1"
+                >
+                  Continuer
+                </PrimaryButton>
+              </div>
+
+              {/* Aide secondaire */}
+              <SoftHelpText trigger="Je ne sais pas trop">
+                Tu peux juste choisir la zone du corps la plus marquée.
+              </SoftHelpText>
+            </StepCard>
+            <HelpPanel step={step} />
+          </div>
+        </ScreenContainer>
+      );
+    }
+
+    // ╔═══════════════════════════════════════════════════════════╗
+    // ║  ÉTAPE 2 — Reconnaître (immersif, overlay allégé)        ║
+    // ╚═══════════════════════════════════════════════════════════╝
+    if (step.id === "reconnaitre") {
+      return (
+        <ScreenContainer className="py-8 md:py-12" overlayOpacity={22}>
+          <StepIndicator
+            currentStep={currentStepIndicateur}
+            completedSteps={completedSteps}
+            activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
+            immersive
+          />
+
+          <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
+            <StepCard>
+              <StepHeader
+                stepNumber={step.number}
+                stepName={step.name}
+                totalSteps={stepsActifs.length}
+                currentIndex={currentStep}
+                hasCachedAI={hasCachedAI}
+              />
+
+              {/* Description */}
+              {step.description && (
+                <p className="font-inter text-sm text-t-creme/55 italic mb-8">
+                  {step.description}
+                </p>
+              )}
+
+              {/* Question principale */}
+              <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
+                {step.question}
+              </p>
+
+              {/* Chips émotion — contraste légèrement renforcé */}
+              <div className="mt-6">
+                <div className="flex flex-wrap gap-2.5">
+                  {["tension", "peur", "tristesse", "colère", "fatigue", "confusion", "trop-plein", "vide", "autre"].map((emo) => (
+                    <ChoiceChip
+                      key={emo}
+                      label={emo.charAt(0).toUpperCase() + emo.slice(1)}
+                      selected={emotionChoice === emo}
+                      onClick={() => { setEmotionChoice(emo); setEmotionConfirm(""); if (emo !== "autre") setEmotionOther(""); }}
+                      className="border-t-creme/25 text-t-creme/90"
+                    />
+                  ))}
+                </div>
+                {emotionChoice === "autre" && (
+                  <TextCapsuleField
+                    value={emotionOther}
+                    onChange={setEmotionOther}
+                    placeholder="Un mot simple…"
+                    className="mt-3.5"
+                  />
+                )}
+              </div>
+
+              {/* Confirmation — apparaît quand un choix est fait */}
+              {emotionChoice && (emotionChoice !== "autre" || emotionOther.trim()) && (
+                <div className="mt-6">
+                  <div className="flex flex-col gap-2.5">
+                    <button
+                      onClick={() => setEmotionConfirm("oui")}
+                      className={`t-chip text-left transition-all border-t-creme/25 text-t-creme/90 ${
+                        emotionConfirm === "oui" ? "t-chip-active" : ""
+                      }`}
+                    >
+                      Oui, c&apos;est plutôt ça
+                    </button>
+                    <button
+                      onClick={() => setEmotionConfirm("proche")}
+                      className={`t-chip text-left transition-all border-t-creme/25 text-t-creme/90 ${
+                        emotionConfirm === "proche" ? "t-chip-active" : ""
+                      }`}
+                    >
+                      C&apos;est proche, sans être exactement ça
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Bouton principal */}
+              <div className="flex items-center gap-3 mt-10">
+                {currentStep > 0 && (
+                  <button
+                    onClick={handleGoBack}
+                    className="t-btn-secondary"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    <span className="hidden sm:inline">Retour</span>
+                  </button>
+                )}
+                <PrimaryButton
+                  onClick={handleNextStep}
+                  disabled={!emotionChoice || (emotionChoice === "autre" && !emotionOther.trim())}
+                  className="flex-1"
+                >
+                  Continuer
+                </PrimaryButton>
+              </div>
+
+              {/* Aide secondaire */}
+              <SoftHelpText trigger="Aucun mot ne colle vraiment">
+                Ce n&apos;est pas grave. Choisis juste ce qui s&apos;en approche le plus.
+              </SoftHelpText>
+            </StepCard>
+            <HelpPanel step={step} />
+          </div>
+        </ScreenContainer>
+      );
+    }
+
+    // ╔═══════════════════════════════════════════════════════════╗
+    // ║  ÉTAPE 3 — Ancrer (immersif, ralenti, respirant)         ║
+    // ╚═══════════════════════════════════════════════════════════╝
+    if (step.id === "ancrer") {
+      return (
+        <ScreenContainer className="py-10 md:py-16" overlayOpacity={18}>
+          <StepIndicator
+            currentStep={currentStepIndicateur}
+            completedSteps={completedSteps}
+            activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
+            immersive
+          />
+
+          <div className="mt-6 md:mt-8 animate-fade-up" key={currentStep}>
+            <StepCard className={`transition-all duration-1000 ease-in-out ${!ancrerDone ? "!bg-[rgba(50,35,28,0.08)] !border-[rgba(232,216,199,0.03)] !shadow-none !backdrop-blur-[40px]" : ""}`}>
+              {/* En-tête — très effacé pendant la respiration */}
+              <div className={`transition-opacity duration-1000 ${!ancrerDone ? "opacity-[0.3]" : "opacity-100"}`}>
+                <StepHeader
+                  stepNumber={step.number}
+                  stepName={step.name}
+                  totalSteps={stepsActifs.length}
+                  currentIndex={currentStep}
+                  hasCachedAI={hasCachedAI}
+                />
+              </div>
+
+              {/* Description courte — s'efface pendant la respiration */}
+              <p className={`font-inter text-sm text-t-creme/45 italic transition-all duration-1000 ${!ancrerDone ? "mb-2 opacity-[0.2]" : "mb-10 opacity-100"}`}>
+                Juste ralentir.
+              </p>
+
+              {/* Phase 1 — Respiration guidée */}
+              {!ancrerDone && !ancrerAlt && (
+                <div>
+                  <BreathingGuide onComplete={() => setAncrerDone(true)} immersive />
+                  <div className="text-center mt-4 opacity-[0.35]">
+                    <button
+                      onClick={() => setAncrerAlt(true)}
+                      className="font-inter text-[11px] text-t-creme/30 underline underline-offset-2 hover:text-t-creme/50 transition-colors"
+                    >
+                      Je préfère juste sentir mon corps
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Phase 1 alt — Sentir sans respirer */}
+              {ancrerAlt && !ancrerDone && (
+                <div className="py-12 text-center">
+                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-8">
+                    Sens le point le plus tendu. Reste là.
+                  </p>
+                  <button
+                    onClick={() => setAncrerDone(true)}
+                    className="t-btn-secondary"
+                  >
+                    J&apos;ai pris le temps
+                  </button>
+                </div>
+              )}
+
+              {/* Phase 2 — Feedback post-respiration */}
+              {ancrerDone && (
+                <>
+                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-4">
+                    {step.question}
+                  </p>
+                  <div className="flex flex-wrap gap-2.5 mt-2">
+                    {([["calme", "Un peu plus calme"], ["pareil", "Pareil"], ["agite", "Plus agité"]] as const).map(([key, label]) => (
+                      <ChoiceChip
+                        key={key}
+                        label={label}
+                        selected={ancrerFeedback === key}
+                        onClick={() => setAncrerFeedback(key)}
+                      />
+                    ))}
+                  </div>
+                  {ancrerFeedback === "agite" && (
+                    <p className="font-inter text-sm text-t-creme/50 mt-4 italic">
+                      Ok. On ne force pas. On continue doucement.
+                    </p>
+                  )}
+                </>
+              )}
+
+              {/* Bouton — secondaire par rapport à l'expérience */}
+              {ancrerDone && (
+                <div className="flex items-center gap-3 mt-12">
+                  <button
+                    onClick={handleGoBack}
+                    className="t-btn-secondary"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    <span className="hidden sm:inline">Retour</span>
+                  </button>
+                  <PrimaryButton
+                    onClick={handleNextStep}
+                    disabled={!ancrerFeedback}
+                    className="flex-1"
+                  >
+                    Continuer
+                  </PrimaryButton>
+                </div>
+              )}
+
+              {/* Aide — visible après feedback */}
+              {ancrerDone && (
+                <SoftHelpText trigger="Je ne sais pas trop">
+                  Choisis juste ce qui se rapproche le plus de ce que tu ressens.
+                </SoftHelpText>
+              )}
+            </StepCard>
+            <HelpPanel step={step} />
+          </div>
+        </ScreenContainer>
+      );
+    }
+
+    // ╔═══════════════════════════════════════════════════════════╗
+    // ║  ÉTAPE 4 — Conscientiser (immersif, remontée douce)      ║
+    // ╚═══════════════════════════════════════════════════════════╝
+    if (step.id === "conscientiser") {
+      return (
+        <ScreenContainer className="py-8 md:py-12" overlayOpacity={4}>
+          {/* Couche lumière étape 4 : halo central, horizon, bas allégé */}
+          <div
+            className="fixed inset-0 pointer-events-none z-[1]"
+            style={{
+              background: [
+                /* halo doré derrière la carte — plus diffus */
+                "radial-gradient(ellipse 90% 65% at 50% 45%, rgba(214,165,106,0.04) 0%, transparent 65%)",
+                /* ligne d'horizon lumineuse */
+                "radial-gradient(ellipse 120% 8% at 50% 38%, rgba(214,165,106,0.05) 0%, transparent 80%)",
+                /* vignette latérale — contraste fond renforcé */
+                "radial-gradient(ellipse 55% 65% at 50% 50%, transparent 0%, rgba(35,25,22,0.28) 100%)",
+                /* bas allégé */
+                "linear-gradient(to top, rgba(35,25,22,0.06) 0%, transparent 35%)",
+              ].join(", "),
+            }}
+          />
+
+          <StepIndicator
+            currentStep={currentStepIndicateur}
+            completedSteps={completedSteps}
+            activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
+            immersive
+          />
+
+          <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
+            <StepCard className="!bg-[rgba(50,35,28,0.32)] !backdrop-blur-[18px] !border-[rgba(232,216,199,0.11)] !shadow-[0_8px_40px_rgba(0,0,0,0.15),0_0_0_1px_rgba(232,216,199,0.05)_inset,0_0_50px_rgba(214,165,106,0.03)]">
+              <StepHeader
+                stepNumber={step.number}
+                stepName={step.name}
+                totalSteps={stepsActifs.length}
+                currentIndex={currentStep}
+                hasCachedAI={hasCachedAI}
+              />
+
+              {/* Description */}
+              {step.description && (
+                <p className="font-inter text-sm text-t-creme/60 italic mb-8">
+                  {step.description}
+                </p>
+              )}
+
+              {/* Question principale */}
+              <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
+                {step.question}
+              </p>
+
+              {/* Chips besoin */}
+              <div className="mt-6">
+                <div className="flex flex-wrap gap-2.5">
+                  {["ralentir", "souffler", "relâcher", "être rassuré", "espace", "soutien", "pause", "autre"].map((need) => (
+                    <ChoiceChip
+                      key={need}
+                      label={need.charAt(0).toUpperCase() + need.slice(1)}
+                      selected={ecouterChoice === need}
+                      onClick={() => { setEcouterChoice(need); setEcouterConfirm(""); if (need !== "autre") setEcouterOther(""); }}
+                      className="border-t-creme/30 text-t-creme"
+                    />
+                  ))}
+                </div>
+                {ecouterChoice === "autre" && (
+                  <TextCapsuleField
+                    value={ecouterOther}
+                    onChange={setEcouterOther}
+                    placeholder="Ce qui aiderait…"
+                    className="mt-3.5"
+                  />
+                )}
+              </div>
+
+              {/* Confirmation */}
+              {ecouterChoice && (ecouterChoice !== "autre" || ecouterOther.trim()) && (
+                <div className="mt-6">
+                  <div className="flex flex-col gap-2.5">
+                    <button
+                      onClick={() => setEcouterConfirm("oui")}
+                      className={`t-chip text-left transition-all border-t-creme/30 text-t-creme ${
+                        ecouterConfirm === "oui" ? "t-chip-active" : ""
+                      }`}
+                    >
+                      Oui, ça ferait du bien
+                    </button>
+                    <button
+                      onClick={() => setEcouterConfirm("appelle")}
+                      className={`t-chip text-left transition-all border-t-creme/30 text-t-creme ${
+                        ecouterConfirm === "appelle" ? "t-chip-active" : ""
+                      }`}
+                    >
+                      C&apos;est ce qui appelle le plus
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Bouton principal */}
+              <div className="flex items-center gap-3 mt-10">
+                {currentStep > 0 && (
+                  <button
+                    onClick={handleGoBack}
+                    className="t-btn-secondary"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    <span className="hidden sm:inline">Retour</span>
+                  </button>
+                )}
+                <PrimaryButton
+                  onClick={handleNextStep}
+                  disabled={!ecouterChoice || (ecouterChoice === "autre" && !ecouterOther.trim())}
+                  className="flex-1"
+                >
+                  Continuer
+                </PrimaryButton>
+              </div>
+
+              {/* Aide secondaire */}
+              <SoftHelpText trigger="Je ne sais pas">
+                Choisis ce qui soulagerait un tout petit peu, même si ce n&apos;est pas parfait.
+              </SoftHelpText>
+            </StepCard>
+            <HelpPanel step={step} />
+          </div>
+        </ScreenContainer>
+      );
+    }
+
+    // ╔═══════════════════════════════════════════════════════════╗
+    // ║  ÉTAPE 5 — Émerger (immersif, mouvement, action)         ║
+    // ╚═══════════════════════════════════════════════════════════╝
+    if (step.id === "emerger") {
+      return (
+        <ScreenContainer
+          className="py-8 md:py-12"
+          overlayOpacity={3}
+          /* backgroundImage="/images/tracea-bg-step5.png" — à activer quand l'image sera prête */
+        >
+          {/* Couche lumière étape 5 : direction vers l'avant, guidage chemin */}
+          <div
+            className="fixed inset-0 pointer-events-none z-[1]"
+            style={{
+              background: [
+                /* 1. Point d'appel lumineux — orangé chaud au-dessus du chemin */
+                "radial-gradient(ellipse 40% 30% at 50% 42%, rgba(220,170,100,0.13) 0%, transparent 70%)",
+                /* 2. Trace lumineuse sur le chemin — bande verticale étroite */
+                "radial-gradient(ellipse 15% 60% at 50% 65%, rgba(232,216,199,0.10) 0%, transparent 75%)",
+                /* 3. Réduction contraste autour du chemin — fondu latéral doux */
+                "radial-gradient(ellipse 80% 70% at 50% 55%, transparent 30%, rgba(35,25,22,0.10) 100%)",
+                /* 4. Horizon lumineux */
+                "radial-gradient(ellipse 150% 12% at 50% 38%, rgba(232,216,199,0.07) 0%, transparent 80%)",
+                /* 5. Overlay directionnel — plus sombre en bas, plus clair en haut */
+                "linear-gradient(to top, rgba(35,25,22,0.10) 0%, transparent 40%, rgba(232,216,199,0.05) 100%)",
+              ].join(", "),
+            }}
+          />
+
+          <StepIndicator
+            currentStep={currentStepIndicateur}
+            completedSteps={completedSteps}
+            activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
+            immersive
+          />
+
+          <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
+            <StepCard className="!bg-[rgba(50,35,28,0.20)] !backdrop-blur-[14px] !border-[rgba(232,216,199,0.09)]">
+              <StepHeader
+                stepNumber={step.number}
+                stepName={step.name}
+                totalSteps={stepsActifs.length}
+                currentIndex={currentStep}
+                hasCachedAI={hasCachedAI}
+              />
+
+              {/* Description */}
+              {step.description && (
+                <p className="font-inter text-sm text-t-creme/55 italic mb-8">
+                  {step.description}
+                </p>
+              )}
+
+              {/* Question principale */}
+              <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
+                {step.question}
+              </p>
+
+              {/* Chips micro-action */}
+              <div className="mt-6">
+                <div className="flex flex-wrap gap-2.5">
+                  {[
+                    "boire un verre d'eau",
+                    "respirer encore un peu",
+                    "me poser 2 minutes",
+                    "sortir prendre l'air",
+                    "écrire une phrase",
+                    "envoyer un message",
+                    "ne rien faire tout de suite",
+                    "autre",
+                  ].map((action) => (
+                    <ChoiceChip
+                      key={action}
+                      label={action.charAt(0).toUpperCase() + action.slice(1)}
+                      selected={emergerChoice === action}
+                      onClick={() => { setEmergerChoice(action); if (action !== "autre") setEmergerOther(""); }}
+                      className="border-t-creme/25 text-t-creme/90"
+                    />
+                  ))}
+                </div>
+                {emergerChoice === "autre" && (
+                  <TextCapsuleField
+                    value={emergerOther}
+                    onChange={setEmergerOther}
+                    placeholder="Quelque chose de simple…"
+                    className="mt-3.5"
+                  />
+                )}
+                {emergerChoice && (emergerChoice !== "autre" || emergerOther.trim()) && (
+                  <p className="font-inter text-sm text-t-creme/45 mt-4 italic">
+                    Lequel te paraît le plus simple ?
+                  </p>
+                )}
+              </div>
+
+              {/* Bouton principal */}
+              <div className="flex items-center gap-3 mt-10">
+                {currentStep > 0 && (
+                  <button
+                    onClick={handleGoBack}
+                    className="t-btn-secondary"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    <span className="hidden sm:inline">Retour</span>
+                  </button>
+                )}
+                <PrimaryButton
+                  onClick={handleNextStep}
+                  disabled={!emergerChoice || (emergerChoice === "autre" && !emergerOther.trim())}
+                  className="flex-1"
+                >
+                  Continuer
+                </PrimaryButton>
+              </div>
+
+              {/* Aide secondaire */}
+              <SoftHelpText trigger="Rien ne vient clairement">
+                Choisis juste l&apos;option la plus douce.
+              </SoftHelpText>
+            </StepCard>
+            <HelpPanel step={step} />
+          </div>
+        </ScreenContainer>
+      );
+    }
+
+    // ╔═══════════════════════════════════════════════════════════╗
+    // ║  ÉTAPE 6 — Aligner (immersif, stabilité, clarté)         ║
+    // ╚═══════════════════════════════════════════════════════════╝
     return (
-      <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">
+      <ScreenContainer className="py-8 md:py-12" overlayOpacity={2}>
+        {/* Couche lumière étape 6 : présence stable, recentrage, ancrage */}
+        <div
+          className="fixed inset-0 pointer-events-none z-[1]"
+          style={{
+            background: [
+              /* 1. Halo de présence — plus dense, moins diffus */
+              "radial-gradient(ellipse 70% 55% at 50% 45%, rgba(214,165,106,0.08) 0%, transparent 55%)",
+              /* 2. Chaleur centrale — recentrage */
+              "radial-gradient(ellipse 50% 50% at 50% 48%, rgba(220,170,100,0.04) 0%, transparent 60%)",
+              /* 3. Chemin haut — aboutissement lumineux */
+              "radial-gradient(ellipse 16% 35% at 50% 35%, rgba(232,216,199,0.08) 0%, transparent 70%)",
+              /* 4. Bords doux */
+              "radial-gradient(ellipse 65% 75% at 50% 50%, transparent 0%, rgba(35,25,22,0.10) 100%)",
+              /* 5. Bas assombri — ancrage renforcé */
+              "linear-gradient(to top, rgba(35,25,22,0.18) 0%, rgba(35,25,22,0.06) 25%, transparent 45%)",
+            ].join(", "),
+          }}
+        />
+
         <StepIndicator
           currentStep={currentStepIndicateur}
           completedSteps={completedSteps}
           activeSteps={modeTraversee === "court" ? [0, 2, 4] : undefined}
+          immersive
         />
 
-        <div className="mt-3 md:mt-4 animate-fade-up" key={currentStep}>
-          <div className="card-base !p-5 md:!p-6">
-            {/* En-tête d'étape intégré dans la carte */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 md:w-10 md:h-10 bg-terra rounded-full flex items-center justify-center font-serif text-base md:text-lg text-cream flex-shrink-0">
-                  {step.number}
-                </div>
-                <div>
-                  <h2 className="font-serif text-xl md:text-2xl text-espresso leading-tight">{step.name}</h2>
-                  <p className="text-xs text-warm-gray mt-0.5">
-                    Étape {currentStep + 1} sur {stepsActifs.length}
+        <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
+          <StepCard className="!bg-[rgba(50,35,28,0.32)] !backdrop-blur-[22px] !border-[rgba(232,216,199,0.13)] !shadow-[0_6px_30px_rgba(0,0,0,0.14),0_0_0_1px_rgba(232,216,199,0.05)_inset]">
+            <StepHeader
+              stepNumber={step.number}
+              stepName={step.name}
+              totalSteps={stepsActifs.length}
+              currentIndex={currentStep}
+              hasCachedAI={hasCachedAI}
+            />
+
+            {/* Description */}
+            {step.description && (
+              <p className="font-inter text-sm text-t-creme/55 italic mb-8">
+                {step.description}
+              </p>
+            )}
+
+            {/* Phase choix — rappel du geste + action */}
+            {alignerPhase === "choix" && (
+              <div className="mt-2">
+                <p className="font-inter text-sm text-t-creme/60 mb-3">
+                  Ton geste du moment :
+                </p>
+                <div className="t-card !p-3 !rounded-xl mb-5">
+                  <p className="font-inter text-base text-t-beige">
+                    {emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice || "—"}
                   </p>
                 </div>
+                <div className="flex flex-col gap-2.5">
+                  <button
+                    onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                    className="t-chip t-chip-active text-left"
+                  >
+                    Je le fais maintenant
+                  </button>
+                  <button
+                    onClick={() => setAlignerPhase("reduction")}
+                    className="t-chip text-left"
+                  >
+                    Je choisis encore plus petit
+                  </button>
+                </div>
               </div>
-              {hasCachedAI && (
-                <span className="text-[10px] tracking-wider uppercase text-sage bg-sage/10 px-2 py-0.5 rounded-full flex-shrink-0">
-                  Reflet disponible
-                </span>
-              )}
-            </div>
+            )}
 
-            <p className="text-sm text-warm-gray italic mb-4">
-              {step.description}
-            </p>
+            {/* Phase réduction */}
+            {alignerPhase === "reduction" && (
+              <div className="mt-2">
+                <div className="flex flex-wrap gap-2.5">
+                  {[
+                    "juste m'asseoir",
+                    "juste poser une main sur moi",
+                    "juste boire une gorgée d'eau",
+                    "juste respirer une fois lentement",
+                    "autre",
+                  ].map((opt) => (
+                    <ChoiceChip
+                      key={opt}
+                      label={opt.charAt(0).toUpperCase() + opt.slice(1)}
+                      selected={alignerReduction === opt}
+                      onClick={() => { setAlignerReduction(opt); if (opt !== "autre") { setAlignerReductionOther(""); setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); } }}
+                    />
+                  ))}
+                </div>
+                {alignerReduction === "autre" && (
+                  <>
+                    <TextCapsuleField
+                      value={alignerReductionOther}
+                      onChange={setAlignerReductionOther}
+                      placeholder="Le plus petit geste…"
+                      className="mt-3.5"
+                    />
+                    {alignerReductionOther.trim() && (
+                      <button
+                        onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                        className="t-btn-secondary mt-3"
+                      >
+                        C&apos;est celui-là
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
 
-            {/* Guide de respiration pour l'etape Ancrer */}
-            {step.id === "ancrer" && <BreathingGuide />}
-
-            {/* Instruction corporelle avant Conscientiser */}
-            {step.id === "conscientiser" && (
-              <div className="bg-sage/5 border border-sage/15 rounded-xl px-4 py-3 mb-4">
-                <p className="font-body text-sm text-espresso/70 leading-relaxed">
-                  Laisse l&apos;attention descendre dans ton corps.
-                  <br />
-                  Pose tes mains sur tes cuisses.
+            {/* Phase fait — pause */}
+            {alignerPhase === "fait" && (
+              <div className="py-8 text-center">
+                <p className="font-inter text-sm text-t-creme/50 italic">
+                  C&apos;est suffisant pour maintenant.
                 </p>
               </div>
             )}
 
-            {/* Instruction corporelle avant Aligner */}
-            {step.id === "aligner" && (
-              <div className="bg-sage/5 border border-sage/15 rounded-xl px-4 py-3 mb-4">
-                <p className="font-body text-sm text-espresso/70 leading-relaxed">
-                  Prends ce moment.
-                  <br />
-                  Laisse ton corps faire ce qui lui ferait du bien maintenant.
-                </p>
-              </div>
-            )}
-
-            <p className={`font-body text-base md:text-lg text-espresso leading-relaxed whitespace-pre-wrap ${(step.id === "traverser" || step.id === "reconnaitre") ? "mb-2" : "mb-4"}`}>
-              {step.question}
-            </p>
-            {step.id === "reconnaitre" && (
-              <p className="font-body text-sm text-warm-gray/70 mb-4">
-                Tu peux rester simple. Même vague.
-              </p>
-            )}
-            {step.id === "traverser" && (
+            {/* Phase feedback */}
+            {alignerPhase === "feedback" && (
               <>
-                <p className="font-body text-sm text-warm-gray/70 mb-3">
-                  Pas besoin de bien répondre. Juste ce qui est là.
+                <p className="font-inter text-lg text-t-beige leading-relaxed mb-4">
+                  {step.question}
                 </p>
-                <p className="font-body text-xs text-warm-gray/50 italic mb-1">
-                  Tu peux partir du corps si c&apos;est plus simple.
-                </p>
-                <p className="font-body text-xs text-warm-gray/50 italic mb-2">
-                  Prends une seconde. Sens ton corps là, maintenant.
-                </p>
+                <div className="flex flex-wrap gap-2.5 mt-2">
+                  {([["mieux", "Un peu mieux"], ["clair", "Pareil mais plus clair"], ["difficile", "Encore difficile"]] as const).map(([key, label]) => (
+                    <ChoiceChip
+                      key={key}
+                      label={label}
+                      selected={alignerFeedback === key}
+                      onClick={() => setAlignerFeedback(key)}
+                    />
+                  ))}
+                </div>
               </>
             )}
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Écris ici, à ton rythme..."
-              className="w-full h-36 md:h-40 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40"
-            />
-            {step.id === "aligner" && (
-              <p className="font-body text-sm text-terra/70 italic mt-2">
-                Fais-le maintenant, même quelques secondes.
-              </p>
-            )}
 
-            {/* Boutons */}
-            <div className="flex items-center gap-3 mt-5">
-              {currentStep > 0 && (
-                <button
-                  onClick={handleGoBack}
-                  className="flex items-center justify-center gap-1.5 px-5 py-3.5 md:py-3 rounded-2xl border-2 border-beige-dark text-warm-gray text-sm font-medium hover:border-warm-gray hover:bg-beige transition-all"
+            {/* Bouton principal — masqué pendant "fait" */}
+            {alignerPhase !== "fait" && (
+              <div className="flex items-center gap-3 mt-10">
+                {currentStep > 0 && (
+                  <button
+                    onClick={handleGoBack}
+                    className="t-btn-secondary"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    <span className="hidden sm:inline">Retour</span>
+                  </button>
+                )}
+                <PrimaryButton
+                  onClick={handleNextStep}
+                  disabled={alignerPhase === "feedback" ? !alignerFeedback : true}
+                  className="flex-1"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                  <span className="hidden sm:inline">Retour</span>
-                </button>
-              )}
-              <button
-                onClick={handleNextStep}
-                disabled={text.trim().length < 3}
-                className="btn-primary flex-1 text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {currentStep < stepsActifs.length - 1 ? "Continuer" : "J\u2019ai fait mon geste"}
-              </button>
-            </div>
-          </div>
+                  Terminer
+                </PrimaryButton>
+              </div>
+            )}
+          </StepCard>
           <HelpPanel step={step} />
         </div>
-      </div>
+      </ScreenContainer>
     );
   }
 

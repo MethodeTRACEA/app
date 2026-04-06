@@ -1,223 +1,167 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 
-type Phase = "idle" | "inspire" | "expire";
+type Phase = "idle" | "inspire" | "expire" | "done";
 
-export function BreathingGuide() {
+interface BreathingGuideProps {
+  onComplete?: () => void;
+  /** Mode immersif TRACÉA : cercle doré, texte crème */
+  immersive?: boolean;
+}
+
+export function BreathingGuide({ onComplete, immersive }: BreathingGuideProps) {
   const [active, setActive] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
-  const [countdown, setCountdown] = useState(0);
   const [cycles, setCycles] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-
-  // Son de cloche douce via Web Audio API
-  const playBell = useCallback(() => {
-    try {
-      if (!audioCtxRef.current) {
-        audioCtxRef.current = new AudioContext();
-      }
-      const ctx = audioCtxRef.current;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(528, ctx.currentTime); // Frequence harmonique douce
-      osc.frequency.exponentialRampToValueAtTime(264, ctx.currentTime + 1.5);
-
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 1.5);
-    } catch {
-      // Audio not supported, continue silently
-    }
-  }, []);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const cyclesRef = useRef(0);
 
   useEffect(() => {
-    if (!active) {
-      setPhase("idle");
-      setCountdown(0);
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      return;
+    if (!active) return;
+
+    cyclesRef.current = 0;
+    setCycles(0);
+    setPhase("inspire");
+
+    function runCycle() {
+      // Inspire 5s (ralenti vs 4s)
+      setPhase("inspire");
+
+      timerRef.current = setTimeout(() => {
+        // Expire 7s (ralenti vs 6s)
+        setPhase("expire");
+
+        timerRef.current = setTimeout(() => {
+          cyclesRef.current += 1;
+          setCycles(cyclesRef.current);
+
+          if (cyclesRef.current >= 3) {
+            setPhase("done");
+            setTimeout(() => {
+              onComplete?.();
+            }, 1500);
+          } else {
+            runCycle();
+          }
+        }, 7000);
+      }, 5000);
     }
 
-    // Start with inspire
-    setPhase("inspire");
-    setCountdown(4);
-
-    let currentPhase: "inspire" | "expire" = "inspire";
-    let currentCount = 4;
-
-    intervalRef.current = setInterval(() => {
-      currentCount--;
-
-      if (currentCount <= 0) {
-        // Bell at the transition
-        playBell();
-
-        if (currentPhase === "inspire") {
-          currentPhase = "expire";
-          currentCount = 6;
-          setPhase("expire");
-        } else {
-          currentPhase = "inspire";
-          currentCount = 4;
-          setPhase("inspire");
-          setCycles((c) => c + 1);
-        }
-      }
-
-      setCountdown(currentCount);
-    }, 1000);
+    runCycle();
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [active, playBell]);
+  }, [active, onComplete]);
 
-  function handleStart() {
-    setCycles(0);
-    setActive(true);
-  }
-
-  function handleStop() {
-    setActive(false);
-  }
-
-  // Circle size based on phase
-  const circleSize =
+  const circleScale =
     phase === "inspire"
       ? "scale-100"
       : phase === "expire"
-        ? "scale-[0.6]"
-        : "scale-75";
+        ? "scale-[0.60]"
+        : "scale-[0.75]";
 
-  const phaseLabel =
+  const transitionDuration =
     phase === "inspire"
-      ? "Inspirez..."
+      ? "5000ms"
       : phase === "expire"
-        ? "Expirez..."
-        : "Respiration guidee";
+        ? "7000ms"
+        : "1000ms";
 
-  const phaseDuration = phase === "inspire" ? 4 : phase === "expire" ? 6 : 0;
+  const label =
+    phase === "inspire"
+      ? "Inspire…"
+      : phase === "expire"
+        ? "Relâche…"
+        : phase === "done"
+          ? "C'est bien"
+          : "";
 
-  return (
-    <div className="card-sage mb-6">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-1.5 h-1.5 rounded-full bg-sage" />
-        <p className="text-xs font-medium tracking-widest uppercase text-[#4A6B3A]">
-          Guide de respiration
-        </p>
-      </div>
-
-      <p className="text-sm text-espresso/70 mb-6 leading-relaxed">
-        Prends un moment pour respirer avec ce guide.
-        4 secondes d&apos;inspiration, 6 secondes d&apos;expiration.
-        Laisse ton corps trouver son rythme.
-      </p>
-
-      {/* Breathing circle */}
-      <div className="flex flex-col items-center py-6">
-        <div className="relative w-40 h-40 flex items-center justify-center mb-6">
-          {/* Outer ring */}
-          <div
-            className={`absolute inset-0 rounded-full border-2 transition-all ${
-              active ? "border-sage/40" : "border-sage/20"
-            }`}
-          />
-
-          {/* Animated circle */}
-          <div
-            className={`w-32 h-32 rounded-full flex items-center justify-center transition-transform ${
-              active ? "bg-sage/30 animate-breathe" : "bg-sage/15"
-            } ${circleSize}`}
-            style={{
-              transitionDuration: active
-                ? phase === "inspire"
-                  ? "4000ms"
-                  : "6000ms"
-                : "500ms",
-              transitionTimingFunction: "ease-in-out",
-            }}
-          >
-            <div className="text-center">
-              {active ? (
-                <>
-                  <div className="font-serif text-3xl text-espresso mb-1">
-                    {countdown}
-                  </div>
-                  <div className="text-xs text-[#4A6B3A] font-medium">
-                    {phaseLabel}
-                  </div>
-                </>
-              ) : (
-                <div className="text-sm text-[#4A6B3A] font-medium">
-                  {cycles > 0 ? `${cycles} cycle${cycles > 1 ? "s" : ""}` : "Pret"}
-                </div>
-              )}
+  if (!active) {
+    return (
+      <div className={`flex flex-col items-center ${immersive ? "py-12 mb-6" : "py-6 mb-4"}`}>
+        {immersive ? (
+          <>
+            {/* Cercle idle immersif — double halo */}
+            <div className="relative w-36 h-36 flex items-center justify-center mb-6">
+              <div className="absolute inset-0 rounded-full bg-t-dore/[0.04] shadow-[0_0_60px_rgba(214,165,106,0.06)]" />
+              <div className="w-24 h-24 rounded-full bg-t-dore/[0.08] shadow-[0_0_30px_rgba(214,165,106,0.10)]" />
             </div>
-          </div>
-
-          {/* Progress arc (SVG) */}
-          {active && phaseDuration > 0 && (
-            <svg
-              className="absolute inset-0 w-full h-full -rotate-90"
-              viewBox="0 0 160 160"
-            >
-              <circle
-                cx="80"
-                cy="80"
-                r="76"
-                fill="none"
-                stroke={phase === "inspire" ? "#8A9E7A" : "#C4704A"}
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeDasharray={`${2 * Math.PI * 76}`}
-                strokeDashoffset={`${2 * Math.PI * 76 * (1 - countdown / phaseDuration)}`}
-                className="transition-all duration-1000 ease-linear"
-                opacity={0.6}
-              />
-            </svg>
-          )}
-        </div>
-
-        {/* Phase label below circle */}
-        <div
-          className={`text-base font-body mb-6 transition-colors duration-500 ${
-            phase === "inspire"
-              ? "text-[#4A6B3A]"
-              : phase === "expire"
-                ? "text-terra"
-                : "text-warm-gray"
-          }`}
-        >
-          {active ? phaseLabel : cycles > 0 ? "Respiration terminee" : ""}
-        </div>
-
-        {/* Controls */}
-        <div className="flex gap-3">
-          {!active ? (
             <button
-              onClick={handleStart}
-              className="px-6 py-2.5 bg-sage text-cream rounded-xl text-sm font-medium hover:bg-sage/90 transition-all"
+              onClick={() => setActive(true)}
+              className="t-btn-secondary"
             >
               Commencer
             </button>
-          ) : (
+          </>
+        ) : (
+          <>
+            <div className="w-28 h-28 rounded-full bg-terra/8 flex items-center justify-center mb-5">
+              <div className="w-20 h-20 rounded-full bg-terra/12" />
+            </div>
             <button
-              onClick={handleStop}
-              className="px-6 py-2.5 bg-terra/20 text-terra rounded-xl text-sm font-medium hover:bg-terra/30 transition-all"
+              onClick={() => setActive(true)}
+              className="px-6 py-2.5 rounded-full text-sm font-medium border border-beige-dark text-espresso/70 hover:border-warm-gray hover:text-espresso transition-all"
             >
-              Arreter
+              Commencer
             </button>
-          )}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex flex-col items-center ${immersive ? "py-14 mb-6" : "py-6 mb-4"}`}>
+      {immersive ? (
+        /* Cercle actif immersif — plus grand, halo dynamique */
+        <div className="relative w-40 h-40 flex items-center justify-center">
+          {/* Halo externe */}
+          <div
+            className={`absolute inset-[-16px] rounded-full transition-all ease-in-out ${circleScale}`}
+            style={{
+              transitionDuration,
+              background: "radial-gradient(circle, rgba(214,165,106,0.06) 0%, transparent 70%)",
+            }}
+          />
+          {/* Cercle principal */}
+          <div
+            className={`w-40 h-40 rounded-full flex items-center justify-center transition-all ease-in-out ${circleScale}`}
+            style={{
+              transitionDuration,
+              background: "radial-gradient(circle, rgba(214,165,106,0.12) 0%, rgba(214,165,106,0.04) 100%)",
+              boxShadow: "0 0 50px rgba(214,165,106,0.10), 0 0 20px rgba(214,165,106,0.06) inset",
+            }}
+          >
+            <p className="font-inter text-sm text-t-dore/90 text-center select-none tracking-wide">
+              {label}
+            </p>
+          </div>
         </div>
+      ) : (
+        <div
+          className={`w-28 h-28 rounded-full bg-terra/10 flex items-center justify-center transition-transform ease-in-out ${circleScale}`}
+          style={{ transitionDuration }}
+        >
+          <p className="font-body text-xs text-terra/80 text-center px-3 leading-relaxed select-none">
+            {label}
+          </p>
+        </div>
+      )}
+      <div className={`flex gap-2 ${immersive ? "mt-8" : "mt-5"}`}>
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className={`rounded-full transition-colors duration-700 ${
+              immersive ? "w-2 h-2" : "w-1.5 h-1.5"
+            } ${
+              i < cycles
+                ? (immersive ? "bg-t-dore/60" : "bg-terra/50")
+                : (immersive ? "bg-t-creme/15" : "bg-beige-dark")
+            }`}
+          />
+        ))}
       </div>
     </div>
   );

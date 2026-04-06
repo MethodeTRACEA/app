@@ -2,368 +2,421 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <div
-      className="landing-page min-h-screen relative overflow-hidden"
-      style={{
-        color: "#F5EFE6",
-        background: `
-          radial-gradient(ellipse 70% 50% at 25% 15%, rgba(201,144,124,0.10), transparent 60%),
-          radial-gradient(ellipse 60% 40% at 75% 55%, rgba(131,94,84,0.08), transparent 55%),
-          radial-gradient(ellipse 80% 50% at 40% 85%, rgba(201,144,124,0.06), transparent 60%),
-          linear-gradient(180deg, #1C1410 0%, #1E1612 40%, #1C1410 100%)
-        `,
-      }}
-    >
+    <div className="min-h-screen relative overflow-hidden bg-t-nuit font-inter text-t-beige">
       {/* Grain texture */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.03]" aria-hidden="true" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundRepeat: "repeat", backgroundSize: "256px 256px" }} />
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.025] z-[1]"
+        aria-hidden="true"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+          backgroundRepeat: "repeat",
+          backgroundSize: "256px 256px",
+        }}
+      />
 
-      {/* ── HERO ── */}
-      <section className="relative min-h-[85vh] md:min-h-[95vh] flex items-center justify-center overflow-hidden" style={{ padding: "clamp(60px, 10vw, 100px) 20px" }}>
-        {/* Halo hero */}
-        <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle, rgba(201,144,124,0.08), transparent 65%)", filter: "blur(80px)" }} />
+      {/* Background gradients */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          background: [
+            "radial-gradient(ellipse 70% 45% at 25% 12%, rgba(214,165,106,0.06), transparent 60%)",
+            "radial-gradient(ellipse 55% 35% at 75% 55%, rgba(110,67,50,0.05), transparent 55%)",
+            "radial-gradient(ellipse 70% 40% at 40% 85%, rgba(214,165,106,0.04), transparent 60%)",
+            "linear-gradient(180deg, #231916 0%, #2a1e1a 40%, #231916 100%)",
+          ].join(", "),
+        }}
+      />
 
-        <div className="relative z-10 w-full text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
-          <div className="mb-8 md:mb-12">
+      {/* ════════════════════════════════════════════════════════════
+          HERO
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative min-h-[88vh] md:min-h-[95vh] flex items-center justify-center px-6 py-20 md:py-28">
+        {/* Halo */}
+        <div
+          className="absolute top-[28%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background: "radial-gradient(circle, rgba(214,165,106,0.07), transparent 65%)",
+            filter: "blur(80px)",
+          }}
+        />
+
+        <div className="relative z-10 w-full max-w-lg mx-auto text-center">
+          {/* Logo */}
+          <div className="mb-10 md:mb-14">
             <img
-              src="/images/tracea-logo-blanc-hd.png"
-              alt="TRACEA"
-              className="h-16 md:h-24 mx-auto object-contain"
-              style={{ mixBlendMode: "screen" }}
+              src="/images/tracea-logo-terra-v3.png"
+              alt="TRACÉA"
+              className="h-14 md:h-20 mx-auto object-contain"
             />
           </div>
 
-          <h1 className="font-body" style={{ fontSize: 38, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 24 }}>
-            Tu n&apos;es pas instable.
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-10 md:mb-12 border border-t-creme/[0.12] bg-t-brume/20">
+            <span className="text-[13px] text-t-creme/70 tracking-wide">
+              1re traversée gratuite · 2 à 5 minutes
+            </span>
+          </div>
+
+          {/* Titre */}
+          <h1 className="text-[32px] md:text-[40px] leading-[1.2] font-medium tracking-tight text-t-beige mb-6">
+            Quand ça monte dans ton corps,
+            <br />
+            tu fais quoi ?
           </h1>
-          <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "16px 0 clamp(24px, 4vw, 40px)" }}>
-            Tu es en &eacute;tat d&apos;alerte permanent.
-          </p>
 
-          <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6", opacity: 0.9, marginBottom: 12 }}>
-            Et &ccedil;a peut redescendre.
-          </p>
-          <p className="font-sans" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "16px 0 clamp(32px, 6vw, 56px)" }}>
-            En quelques minutes.
-          </p>
-
-          <Link
-            href="/start"
-            className="inline-block w-full sm:w-auto transition-all duration-300 active:scale-[0.98] hover:scale-[1.03]"
-            style={{
-              background: "#C9907C",
-              color: "#1C1410",
-              padding: "18px 28px",
-              borderRadius: 40,
-              fontSize: 18,
-              fontWeight: 500,
-              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15)",
-            }}
-          >
-            Commencer maintenant (gratuit)
-          </Link>
-
-          <p className="font-sans" style={{ fontSize: 14, color: "#A89080", opacity: 0.85, marginTop: 24 }}>
-            10 minutes. Sans forcer. Tu peux arr&ecirc;ter &agrave; tout moment.
-          </p>
-        </div>
-      </section>
-
-      {/* ── IDENTIFICATION — gauche soft ── */}
-      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
-        <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <div style={{ maxWidth: 480 }}>
-            <div className="space-y-6 mb-12">
-              <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6", opacity: 0.9 }}>
-                Tu envoies un message. Tu le regrettes.
-              </p>
-              <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6", opacity: 0.9 }}>
-                Tu rejoues. Tu anticipes. Tu t&apos;&eacute;puises.
-              </p>
-              <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6" }}>
-                Tu voudrais que &ccedil;a s&apos;arr&ecirc;te.
-              </p>
-              <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>
-                Ton corps ne te laisse pas.
-              </p>
-            </div>
+          {/* Sous-titre */}
+          <div className="text-base md:text-lg leading-relaxed text-t-creme/70 max-w-sm mx-auto mb-10 md:mb-12 space-y-4">
+            <p>Poitrine serrée. Souffle court. Pensées en boucle.</p>
+            <p>
+              TRACÉA t&apos;aide à redescendre.
+              <br />
+              En quelques minutes.
+            </p>
           </div>
 
-          <div className="text-center">
-            <Link
-              href="/start"
-              className="inline-block w-full sm:w-auto transition-all duration-300 active:scale-[0.98] hover:scale-[1.03]"
-              style={{
-                background: "#C9907C",
-                color: "#1C1410",
-                padding: "18px 28px",
-                borderRadius: 40,
-                fontSize: 18,
-                fontWeight: 500,
-                boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15)",
-              }}
+          {/* CTA principal */}
+          <Link
+            href="/start"
+            className="t-btn-primary inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
+          >
+            Lancer ma 1re traversée (2 minutes)
+          </Link>
+
+          {/* CTA secondaire */}
+          <div className="mt-5">
+            <a
+              href="#fonctionnement"
+              className="text-sm text-t-dore/60 hover:text-t-dore/90 transition-colors underline underline-offset-4 decoration-t-dore/20"
             >
-              Essayer maintenant (gratuit)
-            </Link>
+              Voir comment ça marche
+            </a>
           </div>
-        </div>
-      </section>
 
-      {/* ── RECADRAGE — centré avec halo ── */}
-      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle, rgba(201,144,124,0.07), transparent 65%)", filter: "blur(80px)" }} />
-
-        <div className="relative z-10 text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 className="font-body" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 32 }}>
-            Ce n&apos;est pas dans ta t&ecirc;te.
-          </h2>
-          <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "20px 0 40px" }}>
-            C&apos;est ton syst&egrave;me nerveux.
-          </p>
-          <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>
-            Quand il s&apos;emballe, tout s&apos;emballe.
-          </p>
-          <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080", opacity: 0.7, marginTop: 12 }}>
-            Tu ne peux pas juste &laquo;&thinsp;te calmer&thinsp;&raquo;.
+          {/* Micro-texte */}
+          <p className="text-[13px] text-t-creme/35 mt-8 tracking-wide">
+            Gratuit · Sans engagement
           </p>
         </div>
       </section>
 
-      {/* ── PROBLÈME — gauche soft ── */}
-      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
-        <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 className="font-body text-center" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 40 }}>
-            Ton corps est bloqu&eacute;.
+      {/* ════════════════════════════════════════════════════════════
+          IDENTIFICATION
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-20 md:py-28">
+        <div className="max-w-lg mx-auto">
+          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-10 text-center">
+            Tu connais ce moment précis
           </h2>
 
-          <div style={{ maxWidth: 480 }}>
-            <div className="space-y-5 mb-12">
-              {[
-                "Tu r\u00e9agis trop vite",
-                "Tu sur-analyses",
-                "Tu restes tendu, m\u00eame au repos",
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C9907C" }} />
-                  <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6", opacity: 0.9 }}>
-                    {item}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="text-center space-y-3">
-            <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>
-              On t&apos;a appris &agrave; g&eacute;rer tes &eacute;motions.
-            </p>
-            <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "20px 0" }}>
-              Personne ne t&apos;a appris &agrave; r&eacute;guler ton corps.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── BASCULE — section importante ── */}
-      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle, rgba(201,144,124,0.07), transparent 65%)", filter: "blur(80px)" }} />
-
-        <div className="relative z-10 text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
-          <p className="font-body" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 16 }}>
-            Le probl&egrave;me, ce n&apos;est pas ce que tu ressens.
-          </p>
-          <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "20px 0" }}>
-            C&apos;est ce qui ne redescend pas en toi.
-          </p>
-        </div>
-      </section>
-
-      {/* ── SOLUTION ── */}
-      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
-        <div className="text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 className="font-body" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 40 }}>
-            TRAC&Eacute;A est un entra&icirc;nement guid&eacute;.
-          </h2>
-
-          <div className="space-y-5 mb-10">
-            <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6", opacity: 0.9 }}>
-              Tu arrives dans ton &eacute;tat actuel.
-              <br />
-              Tu suis les &eacute;tapes.
-              <br />
-              Ton corps redescend.
-            </p>
-          </div>
-
-          <div className="space-y-2 mb-14">
-            <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>Pas de th&eacute;orie.</p>
-            <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>Pas d&apos;analyse.</p>
-            <p className="font-sans" style={{ fontSize: 20, fontWeight: 500, color: "#F5EFE6", marginTop: 20 }}>Du concret.</p>
-          </div>
-
-          <Link
-            href="/start"
-            className="inline-block w-full sm:w-auto transition-all duration-300 active:scale-[0.98] hover:scale-[1.03]"
-            style={{
-              background: "#C9907C",
-              color: "#1C1410",
-              padding: "18px 28px",
-              borderRadius: 40,
-              fontSize: 18,
-              fontWeight: 500,
-              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15)",
-            }}
-          >
-            Je veux essayer maintenant
-          </Link>
-        </div>
-      </section>
-
-      {/* ── BÉNÉFICES — cartes ── */}
-      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
-        <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 className="font-body text-center" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 40 }}>
-            En quelques minutes, tu peux :
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-5 mb-10 max-w-md">
             {[
-              "Ralentir la r\u00e9action",
-              "Rel\u00e2cher la pression",
-              "Retrouver de la clart\u00e9",
-              "Agir sans exploser",
+              "ça serre dans ta poitrine",
+              "ton souffle se coupe",
+              "tu relis le même message 10 fois",
+              "tu sens que tu vas répondre trop vite",
+              "ou tu n'arrives plus à répondre du tout",
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-4">
+                <div className="w-1.5 h-1.5 rounded-full bg-t-dore/50 mt-2.5 shrink-0" />
+                <p className="text-base md:text-lg leading-relaxed text-t-creme/75">
+                  {item}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-lg md:text-xl font-medium text-t-dore/80 text-center">
+            C&apos;est là que tout se joue.
+          </p>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          POSITIONNEMENT
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-20 md:py-28">
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[350px] pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background: "radial-gradient(circle, rgba(214,165,106,0.05), transparent 65%)",
+            filter: "blur(80px)",
+          }}
+        />
+
+        <div className="relative z-10 max-w-lg mx-auto text-center">
+          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-8">
+            Tu n&apos;as pas besoin de comprendre.
+          </h2>
+
+          <div className="space-y-4 text-base md:text-lg leading-relaxed text-t-creme/65 mb-10">
+            <p>Quand ça déborde,</p>
+            <p>réfléchir ne suffit plus.</p>
+          </div>
+
+          <div className="space-y-3 text-base md:text-lg leading-relaxed text-t-beige/90">
+            <p className="font-medium">Il faut redescendre.</p>
+            <p className="text-t-dore/80 pt-2">TRACÉA est fait pour ça.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          FONCTIONNEMENT
+      ════════════════════════════════════════════════════════════ */}
+      <section id="fonctionnement" className="relative px-6 py-20 md:py-28 scroll-mt-8">
+        <div className="max-w-lg mx-auto">
+          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-12 text-center">
+            Tu prends 2 minutes
+          </h2>
+
+          <div className="space-y-5 max-w-md mx-auto mb-12">
+            {[
+              "Tu poses ce qui est là",
+              "Tu reviens à ton corps",
+              "Tu ralentis un peu",
+              "Tu vois ce qui aiderait",
+              "Tu choisis un geste simple",
+            ].map((text, i) => (
+              <div key={i} className="flex items-center gap-5">
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium shrink-0"
+                  style={{
+                    background: "rgba(214,165,106,0.12)",
+                    border: "1px solid rgba(214,165,106,0.15)",
+                    color: "#D6A56A",
+                  }}
+                >
+                  {i + 1}
+                </div>
+                <p className="text-base md:text-lg text-t-creme/80 leading-relaxed">
+                  {text}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-lg md:text-xl text-t-beige/80 font-medium">
+            Et quelque chose change.
+          </p>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          DIFFÉRENCIATION
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-20 md:py-28">
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background: "radial-gradient(circle, rgba(214,165,106,0.05), transparent 65%)",
+            filter: "blur(80px)",
+          }}
+        />
+
+        <div className="relative z-10 max-w-lg mx-auto text-center">
+          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-10">
+            Comprendre ne calme pas le corps
+          </h2>
+
+          <div className="space-y-4 text-base md:text-lg leading-relaxed text-t-creme/65 mb-8">
+            <p>Tu peux tout analyser.</p>
+            <p>Ça ne change rien dans le moment.</p>
+          </div>
+
+          <div className="space-y-3 text-base md:text-lg leading-relaxed text-t-beige/90">
+            <p>Ce qui change quelque chose :</p>
+            <p className="text-t-dore/80 font-medium">revenir dans ton corps.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          CAS D'USAGE
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-20 md:py-28">
+        <div className="max-w-lg mx-auto">
+          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-10 text-center">
+            Utilise TRACÉA quand ça monte
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              "après un message qui te déclenche",
+              "quand ton corps est trop tendu",
+              "quand ça tourne sans arrêt",
+              "quand tu sens que tu vas exploser",
+              "quand tu es saturée",
+              "avant une discussion difficile",
             ].map((text, i) => (
               <div
                 key={i}
-                className="text-center"
+                className="px-5 py-4 rounded-[20px] border border-t-creme/[0.08] bg-t-brume/15"
                 style={{
-                  background: "#2E1F17",
-                  border: "1px solid rgba(61,42,34,0.6)",
-                  borderRadius: 20,
-                  padding: 24,
-                  boxShadow: "0 4px 24px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.1)",
+                  backdropFilter: "blur(10px)",
                 }}
               >
-                <p className="font-body" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6" }}>{text}</p>
+                <p className="text-[15px] text-t-creme/75 leading-relaxed">{text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── MÉTHODE — gauche soft ── */}
-      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
-        <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 className="font-body text-center" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 16 }}>
-            6 &eacute;tapes. 10 minutes.
+      {/* ════════════════════════════════════════════════════════════
+          IMPACT
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-20 md:py-28">
+        <div className="max-w-lg mx-auto">
+          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-10 text-center">
+            En quelques minutes
           </h2>
-          <p className="font-body text-center" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "16px 0 clamp(32px, 6vw, 56px)" }}>
-            Un chemin clair.
-          </p>
 
-          <div style={{ maxWidth: 480 }}>
-            <div className="space-y-4">
-              {[
-                { letter: "T", name: "Traverser", bg: "#C9907C" },
-                { letter: "R", name: "Reconna\u00eetre", bg: "#835E54" },
-                { letter: "A", name: "Ancrer", bg: "#8A9E7A" },
-                { letter: "C", name: "Conscientiser", bg: "#A89080" },
-                { letter: "\u00c9", name: "\u00c9merger", bg: "#C4998A" },
-                { letter: "A", name: "Aligner", bg: "#6B3D2E" },
-              ].map((step, i) => (
-                <div key={i} className="flex items-center gap-5">
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center font-body text-xl flex-shrink-0"
-                    style={{ background: step.bg, color: "#1C1410" }}
-                  >
-                    {step.letter}
-                  </div>
-                  <span className="font-body" style={{ fontSize: 20, lineHeight: 1.3, color: "#F5EFE6" }}>
-                    {step.name}
-                  </span>
-                </div>
-              ))}
-            </div>
+          <div className="grid grid-cols-2 gap-3 mb-10">
+            {[
+              "ça relâche un peu",
+              "tu respires mieux",
+              "c'est plus clair",
+              "tu sais quoi faire",
+            ].map((text, i) => (
+              <div
+                key={i}
+                className="px-5 py-5 rounded-[20px] text-center border border-t-dore/[0.10] bg-t-brume/10"
+                style={{
+                  boxShadow: "0 0 30px rgba(214,165,106,0.04)",
+                }}
+              >
+                <p className="text-[15px] text-t-beige/90 leading-relaxed">{text}</p>
+              </div>
+            ))}
           </div>
+
+          <p className="text-center text-base text-t-dore/70 font-medium">
+            C&apos;est déjà suffisant.
+          </p>
         </div>
       </section>
 
-      {/* ── EXPÉRIENCE — section importante ── */}
-      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
-        <div className="text-center space-y-5" style={{ maxWidth: 580, margin: "0 auto" }}>
-          <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>Tu respires.</p>
-          <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6", opacity: 0.7 }}>Ton corps ralentit.</p>
-          <p className="font-sans" style={{ fontSize: 20, fontWeight: 500, color: "#F5EFE6" }}>Tu reprends le contr&ocirc;le.</p>
-        </div>
-      </section>
+      {/* ════════════════════════════════════════════════════════════
+          GRATUITÉ / MODÈLE
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-20 md:py-28">
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background: "radial-gradient(circle, rgba(214,165,106,0.06), transparent 65%)",
+            filter: "blur(80px)",
+          }}
+        />
 
-      {/* ── CTA FINAL ── */}
-      <section className="relative" style={{ padding: "clamp(56px, 10vw, 120px) 20px" }}>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle, rgba(201,144,124,0.08), transparent 65%)", filter: "blur(80px)" }} />
-
-        <div className="relative z-10 text-center" style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 className="font-body" style={{ fontSize: 32, lineHeight: 1.3, letterSpacing: "-0.5px", color: "#F5EFE6", fontWeight: 500, marginBottom: 16 }}>
-            Tu n&apos;as rien &agrave; comprendre de plus. Juste &agrave; commencer.
+        <div className="relative z-10 max-w-lg mx-auto text-center">
+          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-8">
+            Commence sans réfléchir
           </h2>
-          <p className="font-body" style={{ fontSize: 20, fontWeight: 500, color: "#C9907C", margin: "16px 0 clamp(32px, 6vw, 56px)" }}>
-            Ton corps sait d&eacute;j&agrave; quoi faire.
+
+          <div className="space-y-4 text-base md:text-lg leading-relaxed text-t-creme/70 mb-6">
+            <p>La première traversée est gratuite.</p>
+            <p>Tu testes.</p>
+            <p>Tu vois si ça t&apos;aide.</p>
+          </div>
+
+          <p className="text-sm text-t-creme/40 leading-relaxed mb-10 max-w-sm mx-auto">
+            Ensuite, l&apos;accès complet se poursuit par abonnement.
           </p>
 
           <Link
             href="/start"
-            className="inline-block w-full sm:w-auto transition-all duration-300 active:scale-[0.98] hover:scale-[1.03]"
-            style={{
-              background: "#C9907C",
-              color: "#1C1410",
-              padding: "18px 28px",
-              borderRadius: 40,
-              fontSize: 18,
-              fontWeight: 500,
-              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15)",
-            }}
+            className="t-btn-primary inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
           >
-            Commencer maintenant
+            Essayer ma 1re traversée gratuite
           </Link>
-
-          <p className="font-sans" style={{ fontSize: 14, color: "#A89080", opacity: 0.85, marginTop: 24 }}>
-            10 minutes. Gratuit. Sans engagement.
-          </p>
         </div>
       </section>
 
-      {/* ── RASSURANCE ── */}
-      <section className="relative" style={{ padding: "clamp(48px, 8vw, 80px) 20px" }}>
-        <div className="text-center space-y-4" style={{ maxWidth: 580, margin: "0 auto" }}>
-          <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>
-            Ce n&apos;est pas une th&eacute;rapie.
-          </p>
-          <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#A89080" }}>
-            Ce n&apos;est pas magique.
-          </p>
-          <p className="font-sans" style={{ fontSize: 18, lineHeight: 1.6, color: "#F5EFE6" }}>
-            Mais c&apos;est structur&eacute;.
+      {/* ════════════════════════════════════════════════════════════
+          CADRE / SÉCURITÉ
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-16 md:py-20">
+        <div className="max-w-lg mx-auto">
+          <div
+            className="px-6 py-8 md:px-8 md:py-10 rounded-[28px] border border-t-creme/[0.06] bg-t-brume/10"
+            style={{ backdropFilter: "blur(10px)" }}
+          >
+            <h2 className="text-lg md:text-xl font-medium text-t-beige/90 mb-5">
+              Ce n&apos;est pas pour tous les moments
+            </h2>
+
+            <div className="space-y-3 text-sm md:text-base leading-relaxed text-t-creme/55 mb-5">
+              <p>Si tu es complètement submergé(e)</p>
+              <p>ou en état de détresse :</p>
+              <p className="text-t-beige/80 font-medium pt-1">ne reste pas seul(e) avec ça.</p>
+            </div>
+
+            <p className="text-sm md:text-base leading-relaxed text-t-creme/45">
+              TRACÉA est un appui.
+              <br />
+              Pas une solution d&apos;urgence.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          CTA FINAL
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-24 md:py-32">
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[450px] pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background: "radial-gradient(circle, rgba(214,165,106,0.07), transparent 65%)",
+            filter: "blur(80px)",
+          }}
+        />
+
+        <div className="relative z-10 max-w-lg mx-auto text-center">
+          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-6">
+            Essaye maintenant
+          </h2>
+
+          <p className="text-base text-t-creme/55 mb-10">
+            Juste 2 minutes.
             <br />
-            Et &ccedil;a fonctionne.
+            Juste voir.
           </p>
+
+          <Link
+            href="/start"
+            className="t-btn-primary inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
+          >
+            Lancer ma traversée
+          </Link>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="relative" style={{ padding: "40px 20px" }}>
-        <div className="flex flex-col items-center gap-4" style={{ maxWidth: 580, margin: "0 auto" }}>
+      {/* ════════════════════════════════════════════════════════════
+          FOOTER
+      ════════════════════════════════════════════════════════════ */}
+      <footer className="relative px-6 py-10 border-t border-t-creme/[0.06]">
+        <div className="flex flex-col items-center gap-5 max-w-lg mx-auto">
           <img
-            src="/images/tracea-logo-terra-v2.png"
-            alt="TRACEA"
-            className="h-8 object-contain opacity-50"
-              style={{ mixBlendMode: "screen" }}
+            src="/images/tracea-logo-terra-v3.png"
+            alt="TRACÉA"
+            className="h-7 object-contain opacity-40"
           />
-          <div className="flex flex-wrap justify-center gap-4" style={{ fontSize: 12, color: "#A89080" }}>
-            <Link href="/mentions-legales" className="hover:opacity-70 transition-opacity">
-              Mentions l&eacute;gales
+          <div className="flex flex-wrap justify-center gap-5 text-[12px] text-t-creme/30">
+            <Link href="/mentions-legales" className="hover:text-t-creme/50 transition-colors">
+              Mentions légales
             </Link>
-            <Link href="/politique-confidentialite" className="hover:opacity-70 transition-opacity">
-              Politique de confidentialit&eacute;
+            <Link href="/politique-confidentialite" className="hover:text-t-creme/50 transition-colors">
+              Politique de confidentialité
             </Link>
-            <Link href="/conditions-utilisation" className="hover:opacity-70 transition-opacity">
+            <Link href="/conditions-utilisation" className="hover:text-t-creme/50 transition-colors">
               Conditions d&apos;utilisation
             </Link>
           </div>

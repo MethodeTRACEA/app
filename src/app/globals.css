@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
 @layer base {
   html { scroll-behavior: smooth; }
@@ -50,6 +50,143 @@
     background: linear-gradient(90deg, #8A9E7A 0%, #C4704A 60%, #A03020 100%);
   }
   .safety-card { @apply bg-white rounded-card border-[1.5px] border-dusty p-6; }
+
+  /* ══════════════════════════════════════════════════════
+     TRACÉA Design System — Paysage intérieur immersif
+     ══════════════════════════════════════════════════════ */
+
+  /* ── Fond paysage : couches de montagnes brumeuses ── */
+  .t-landscape {
+    @apply fixed inset-0 overflow-hidden;
+    background: linear-gradient(175deg, #1A1210 0%, #231916 20%, #2E1F19 45%, #4B352D 75%, #6E4332 100%);
+  }
+  /* Couche montagnes lointaines */
+  .t-landscape::before {
+    content: "";
+    @apply absolute inset-x-0 pointer-events-none;
+    bottom: 0;
+    height: 70%;
+    background:
+      /* brume haute diffuse */
+      radial-gradient(ellipse 160% 40% at 50% 30%, rgba(75,53,45,0.5) 0%, transparent 70%),
+      /* montagne lointaine gauche */
+      radial-gradient(ellipse 90% 55% at 20% 85%, #2E1F19 0%, transparent 60%),
+      /* montagne lointaine centre */
+      radial-gradient(ellipse 100% 65% at 55% 80%, #3A2923 0%, transparent 55%),
+      /* montagne lointaine droite */
+      radial-gradient(ellipse 80% 50% at 80% 88%, #2E1F19 0%, transparent 55%);
+  }
+  /* Couche lumière dorée + brume basse */
+  .t-landscape::after {
+    content: "";
+    @apply absolute inset-x-0 bottom-0 pointer-events-none;
+    height: 55%;
+    background:
+      /* halo doré diffus central — lumière crépusculaire */
+      radial-gradient(ellipse 120% 45% at 50% 20%, rgba(214,165,106,0.10) 0%, transparent 70%),
+      /* brume basse chaude */
+      linear-gradient(to top, rgba(75,53,45,0.35) 0%, rgba(75,53,45,0.12) 40%, transparent 100%);
+  }
+
+  /* ── Voile sombre de lisibilité ── */
+  .t-overlay {
+    @apply fixed inset-0 pointer-events-none;
+    background: radial-gradient(ellipse 80% 70% at 50% 45%, rgba(35,25,22,0.35) 0%, rgba(35,25,22,0.65) 100%);
+  }
+
+  /* ── Écran principal immersif ── */
+  .t-screen {
+    @apply relative min-h-dvh px-6;
+    z-index: 1;
+    background-color: #231916;
+  }
+
+  /* ── Carte vitrée flottante ── */
+  .t-card {
+    background: rgba(50,35,28,0.28);
+    border: 1px solid rgba(232,216,199,0.09);
+    border-radius: 28px;
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    box-shadow:
+      0 8px 40px rgba(0,0,0,0.18),
+      0 0 0 1px rgba(232,216,199,0.04) inset,
+      0 1px 0 rgba(255,255,255,0.03) inset;
+    @apply p-6 md:p-8;
+  }
+
+  /* ── Chips de choix ── */
+  .t-chip {
+    border: 1px solid rgba(232,216,199,0.18);
+    border-radius: 999px;
+    @apply bg-t-brume/20 text-t-creme/80 font-inter text-sm font-medium
+           px-5 py-2.5 cursor-pointer transition-all duration-200;
+  }
+  .t-chip:hover {
+    @apply bg-t-brume/35;
+    border-color: rgba(232,216,199,0.28);
+  }
+  .t-chip-active {
+    border-color: rgba(214,165,106,0.6);
+    box-shadow: 0 0 12px rgba(214,165,106,0.10), 0 0 4px rgba(214,165,106,0.06);
+    @apply bg-t-dore/[0.12] text-t-dore;
+  }
+
+  /* ── Champ capsule ── */
+  .t-input {
+    border: 1px solid rgba(232,216,199,0.12);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    @apply w-full bg-t-brume/25 text-t-beige font-inter
+           text-base px-5 py-3.5 leading-relaxed outline-none transition-all duration-[250ms];
+  }
+  .t-input:focus {
+    border-color: rgba(214,165,106,0.40);
+    box-shadow: 0 0 16px rgba(214,165,106,0.06);
+  }
+  .t-input::placeholder {
+    @apply text-t-creme/30;
+  }
+
+  /* ── Bouton principal doré ── */
+  .t-btn-primary {
+    background: linear-gradient(135deg, #E8C88E 0%, #DFBA7E 35%, #D6A56A 65%, #C4944E 100%);
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow:
+      0 4px 28px rgba(214,165,106,0.28),
+      0 2px 10px rgba(0,0,0,0.14),
+      0 1px 0 rgba(255,255,255,0.16) inset;
+    @apply w-full h-[58px] text-t-nuit font-inter text-base font-semibold
+           cursor-pointer transition-all duration-[250ms];
+  }
+  .t-btn-primary:hover {
+    box-shadow:
+      0 6px 32px rgba(214,165,106,0.30),
+      0 2px 8px rgba(0,0,0,0.15),
+      0 1px 0 rgba(255,255,255,0.15) inset;
+    filter: brightness(1.06);
+  }
+  .t-btn-primary:disabled {
+    background: rgba(167,119,79,0.30);
+    box-shadow: none;
+    filter: none;
+    @apply opacity-45 cursor-not-allowed;
+  }
+
+  /* ── Bouton secondaire ── */
+  .t-btn-secondary {
+    border: 1px solid rgba(232,216,199,0.18);
+    border-radius: 22px;
+    @apply h-12 bg-t-brume/20 text-t-creme/70 font-inter text-sm font-medium
+           cursor-pointer transition-all duration-[250ms] px-5
+           inline-flex items-center justify-center gap-1.5;
+  }
+  .t-btn-secondary:hover {
+    @apply bg-t-brume/35;
+    border-color: rgba(232,216,199,0.30);
+  }
 }
 
 @keyframes fadeUp {
