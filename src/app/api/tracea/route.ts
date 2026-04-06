@@ -113,11 +113,18 @@ async function logAiUsage(params: {
 }
 
 // ===================================================================
-// SECTION 1 — SYSTEM PROMPT (chargé depuis docs/IA_TRACEA_SYSTEM_PROMPT.md)
+// SECTION 1 — SYSTEM PROMPTS
 // ===================================================================
 
+// Master prompt (complet) — utilisé pour final-analysis
 const SYSTEM_PROMPT = readFileSync(
   join(process.cwd(), "docs", "IA_TRACEA_SYSTEM_PROMPT.md"),
+  "utf-8"
+);
+
+// Runtime prompt (court) — utilisé pour step-mirror en production
+const RUNTIME_PROMPT = readFileSync(
+  join(process.cwd(), "docs", "IA_TRACEA_RUNTIME_PROMPT.md"),
   "utf-8"
 );
 
@@ -569,13 +576,13 @@ ${previousContext ? `--- Ce qui a déjà été traversé dans cette session ---\
 "${userInput}"
 ${sessionHistory}`;
 
-  // 3. Appeler l'API (avec prompt caching sur le system prompt stable)
+  // 3. Appeler l'API (runtime prompt court + developer prompt avec cache)
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 500,
     temperature: 0.4,
     system: [
-      { type: "text", text: SYSTEM_PROMPT },
+      { type: "text", text: RUNTIME_PROMPT },
       { type: "text", text: DEVELOPER_PROMPT, cache_control: { type: "ephemeral" } },
     ],
     messages: [{ role: "user", content: fullUserMessage }],
@@ -624,7 +631,7 @@ ${sessionHistory}`;
         max_tokens: 500,
         temperature: 0.4,
         system: [
-          { type: "text", text: SYSTEM_PROMPT },
+          { type: "text", text: RUNTIME_PROMPT },
           { type: "text", text: DEVELOPER_PROMPT, cache_control: { type: "ephemeral" } },
         ],
         messages: [{
