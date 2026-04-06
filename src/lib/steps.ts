@@ -7,9 +7,8 @@ export const STEPS: StepDefinition[] = [
     name: "Traverser",
     verb: "T",
     description:
-      "Reste juste avec ce qui est là, sans chercher à changer quoi que ce soit.",
-    question:
-      "Prends juste un instant. Qu'est-ce qui est le plus présent en toi, là ?",
+      "Prends un instant.\nLaisse sortir ce qui est là.",
+    question: "",
     help: {
       comprendre:
         "Tu n'as pas besoin de comprendre.\n\nJuste sentir ce qui est là,\nmême un tout petit peu.",
@@ -36,7 +35,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "",
     question:
-      "Si tu devais approcher ça avec un mot simple, ce serait plutôt…",
+      "Ça se rapproche de quoi ?",
     help: {
       comprendre:
         "Ce que tu ressens en premier n'est pas toujours le plus profond.\nParfois, il y a quelque chose de plus sensible dessous.",
@@ -155,7 +154,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "",
     question:
-      "Maintenant, choisis le plus petit geste possible.",
+      "Tu peux le faire comme ça… ou encore plus simple.",
     help: {
       comprendre:
         "Aligner, c'est choisir un geste — même minuscule — qui honore ce qui vient d'émerger. Juste un geste cohérent avec ta vérité. Ça peut être une conversation, une limite, un temps pour toi, ou même un acte symbolique — allumer une bougie, écrire une lettre que tu n'envoies pas, marcher en portant consciemment ce que tu viens de traverser. Ces gestes ancrent la transformation dans le corps et dans le temps.",

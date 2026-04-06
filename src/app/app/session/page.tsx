@@ -148,6 +148,7 @@ function SessionContent({ userId }: { userId: string }) {
   const [ancrerFeedback, setAncrerFeedback] = useState<"calme" | "pareil" | "agite" | "">("");
   const [showAncrerHelp, setShowAncrerHelp] = useState(false);
   const [ancrerAlt, setAncrerAlt] = useState(false);
+  const [ancrerPostPhase, setAncrerPostPhase] = useState(false);
 
   // ── Étape 4 — Conscientiser : besoin immédiat ──
   const [ecouterChoice, setEcouterChoice] = useState("");
@@ -273,6 +274,12 @@ function SessionContent({ userId }: { userId: string }) {
     }
 
     await updateSessionDb(sessionId, updates as Parameters<typeof updateSessionDb>[1]);
+
+    // ── Étape 3 Ancrer : bypass IA, transition directe ──
+    if (stepId === "ancrer") {
+      handleContinueAfterMirror();
+      return;
+    }
 
     // ── Vérifier si le cache contient déjà une réponse IA pour ce texte ──
     const cached = stepCache[stepId];
@@ -756,18 +763,17 @@ function SessionContent({ userId }: { userId: string }) {
               )}
 
               {/* Question principale — grande, aérée */}
-              <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
-                {step.question}
-              </p>
-              <p className="font-inter text-[13px] text-t-creme/40 mb-6">
-                Pas besoin de bien répondre. Juste ce qui est là.
-              </p>
+              {step.question && (
+                <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
+                  {step.question}
+                </p>
+              )}
 
               {/* Textarea capsule */}
               <TextCapsuleField
                 value={text}
                 onChange={setText}
-                placeholder="boule au ventre, tension, agitation…"
+                placeholder="ex : boule au ventre, tension, agitation, trop de pensées"
                 multiline
                 rows={2}
                 className="h-20 md:h-24"
@@ -776,7 +782,7 @@ function SessionContent({ userId }: { userId: string }) {
               {/* Zone du corps — chips — bloc bien séparé */}
               <div className="mt-8">
                 <p className="font-inter text-base text-t-beige/90 mb-3.5">
-                  Où c&apos;est le plus marqué ?
+                  Où tu le sens dans ton corps ?
                 </p>
                 <div className="flex flex-wrap gap-2.5">
                   {["poitrine", "ventre", "gorge", "tête", "épaules", "autre"].map((zone) => (
@@ -1003,8 +1009,8 @@ function SessionContent({ userId }: { userId: string }) {
                 </div>
               )}
 
-              {/* Phase 2 — Feedback post-respiration */}
-              {ancrerDone && (
+              {/* Phase 2 — Feedback post-respiration (masqué en post-phase) */}
+              {ancrerDone && !ancrerPostPhase && (
                 <>
                   <p className="font-inter text-lg text-t-beige leading-relaxed mb-4">
                     {step.question}
@@ -1019,7 +1025,7 @@ function SessionContent({ userId }: { userId: string }) {
                       />
                     ))}
                   </div>
-                  {ancrerFeedback === "agite" && (
+                  {ancrerFeedback === "agite" && !ancrerPostPhase && (
                     <p className="font-inter text-sm text-t-creme/50 mt-4 italic">
                       Ok. On ne force pas. On continue doucement.
                     </p>
@@ -1027,8 +1033,8 @@ function SessionContent({ userId }: { userId: string }) {
                 </>
               )}
 
-              {/* Bouton — secondaire par rapport à l'expérience */}
-              {ancrerDone && (
+              {/* Bouton — vers post-feedback (bypass IA) */}
+              {ancrerDone && !ancrerPostPhase && (
                 <div className="flex items-center gap-3 mt-12">
                   <button
                     onClick={handleGoBack}
@@ -1038,7 +1044,7 @@ function SessionContent({ userId }: { userId: string }) {
                     <span className="hidden sm:inline">Retour</span>
                   </button>
                   <PrimaryButton
-                    onClick={handleNextStep}
+                    onClick={() => setAncrerPostPhase(true)}
                     disabled={!ancrerFeedback}
                     className="flex-1"
                   >
@@ -1047,11 +1053,77 @@ function SessionContent({ userId }: { userId: string }) {
                 </div>
               )}
 
-              {/* Aide — visible après feedback */}
-              {ancrerDone && (
+              {/* Aide — visible après feedback, avant post-phase */}
+              {ancrerDone && !ancrerPostPhase && (
                 <SoftHelpText trigger="Je ne sais pas trop">
                   Choisis juste ce qui se rapproche le plus de ce que tu ressens.
                 </SoftHelpText>
+              )}
+
+              {/* Phase 3 — Post-feedback conditionnel (pas d'IA) */}
+              {ancrerPostPhase && (
+                <div className="mt-10 animate-fade-up">
+                  {ancrerFeedback === "calme" && (
+                    <>
+                      <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-10">
+                        Ok. On reste simple.
+                      </p>
+                      <PrimaryButton onClick={handleNextStep} className="w-full">
+                        Continuer
+                      </PrimaryButton>
+                    </>
+                  )}
+
+                  {ancrerFeedback === "pareil" && (
+                    <>
+                      <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-8">
+                        On ajuste un peu.
+                      </p>
+                      <div className="flex flex-col gap-3">
+                        <button
+                          onClick={() => {
+                            setAncrerDone(false);
+                            setAncrerPostPhase(false);
+                            setAncrerFeedback("");
+                          }}
+                          className="t-btn-secondary w-full justify-center"
+                        >
+                          Refaire un cycle
+                        </button>
+                        <button
+                          onClick={() => {
+                            setAncrerAlt(true);
+                            setAncrerDone(false);
+                            setAncrerPostPhase(false);
+                            setAncrerFeedback("");
+                          }}
+                          className="t-btn-secondary w-full justify-center"
+                        >
+                          Sentir mon corps
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                  {ancrerFeedback === "agite" && (
+                    <>
+                      <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-8">
+                        On change.
+                      </p>
+                      <div className="flex flex-col gap-3">
+                        {["Sentir mes pieds au sol", "Regarder autour de moi", "Sentir un point de contact"].map((label) => (
+                          <button
+                            key={label}
+                            onClick={handleNextStep}
+                            className="t-btn-secondary w-full justify-center"
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
             </StepCard>
             <HelpPanel step={step} />
@@ -1258,7 +1330,7 @@ function SessionContent({ userId }: { userId: string }) {
                     "sortir prendre l'air",
                     "écrire une phrase",
                     "envoyer un message",
-                    "ne rien faire tout de suite",
+                    "je ne sais pas",
                     "autre",
                   ].map((action) => (
                     <ChoiceChip
@@ -1364,31 +1436,56 @@ function SessionContent({ userId }: { userId: string }) {
               </p>
             )}
 
-            {/* Phase choix — rappel du geste + action */}
+            {/* Phase choix — rappel du geste OU proposition si "je ne sais pas" */}
             {alignerPhase === "choix" && (
               <div className="mt-2">
-                <p className="font-inter text-sm text-t-creme/60 mb-3">
-                  Ton geste du moment :
-                </p>
-                <div className="t-card !p-3 !rounded-xl mb-5">
-                  <p className="font-inter text-base text-t-beige">
-                    {emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice || "—"}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2.5">
-                  <button
-                    onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
-                    className="t-chip t-chip-active text-left"
-                  >
-                    Je le fais maintenant
-                  </button>
-                  <button
-                    onClick={() => setAlignerPhase("reduction")}
-                    className="t-chip text-left"
-                  >
-                    Je choisis encore plus petit
-                  </button>
-                </div>
+                {emergerChoice && emergerChoice !== "je ne sais pas" ? (
+                  <>
+                    <p className="font-inter text-sm text-t-creme/60 mb-3">
+                      Ton geste du moment :
+                    </p>
+                    <div className="t-card !p-3 !rounded-xl mb-5">
+                      <p className="font-inter text-base text-t-beige">
+                        {emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2.5">
+                      <button
+                        onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                        className="t-chip t-chip-active text-left"
+                      >
+                        Je le fais maintenant
+                      </button>
+                      <button
+                        onClick={() => setAlignerPhase("reduction")}
+                        className="t-chip text-left"
+                      >
+                        Je choisis encore plus petit
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-6">
+                      On va juste choisir quelque chose de très simple.
+                    </p>
+                    <div className="flex flex-col gap-2.5">
+                      {["respirer une fois lentement", "poser une main sur soi", "regarder autour de soi"].map((geste) => (
+                        <button
+                          key={geste}
+                          onClick={() => {
+                            setAlignerReduction(geste);
+                            setAlignerPhase("fait");
+                            setTimeout(() => setAlignerPhase("feedback"), 1500);
+                          }}
+                          className="t-chip text-left"
+                        >
+                          {geste.charAt(0).toUpperCase() + geste.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
@@ -1528,7 +1625,7 @@ function SessionContent({ userId }: { userId: string }) {
             </div>
           ) : mirrorData ? (
             <div className="space-y-6 mb-6 animate-fade-up">
-              {/* Miroir — "Ce que tu vis" */}
+              {/* Miroir — "Ce que tu vis" + ancrage étape 2 */}
               <div className="border-l-[3px] border-sage pl-6 py-4">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-sage" />
@@ -1537,8 +1634,31 @@ function SessionContent({ userId }: { userId: string }) {
                   </p>
                 </div>
                 <p className="font-body text-base text-espresso leading-relaxed">
-                  {mirrorData.mirror}
+                  {step?.id === "conscientiser" && ecouterChoice
+                    ? `Ça semble appeler ${ecouterChoice === "être rassuré" ? "d'être rassuré" : ecouterChoice === "relâcher" ? "à relâcher" : ecouterChoice === "autre" && ecouterOther.trim() ? ecouterOther.trim() : ["soutien", "espace", "pause"].includes(ecouterChoice) ? (ecouterChoice === "soutien" ? "du soutien" : ecouterChoice === "espace" ? "de l'espace" : "une pause") : ecouterChoice === "ralentir" ? "à ralentir" : ecouterChoice === "souffler" ? "à souffler" : ecouterChoice}.`
+                    : step?.id === "emerger" && emergerChoice
+                    ? (emergerChoice === "autre" && emergerOther.trim()
+                        ? `${emergerOther.trim().charAt(0).toUpperCase() + emergerOther.trim().slice(1)}.`
+                        : `${emergerChoice.charAt(0).toUpperCase() + emergerChoice.slice(1)}.`)
+                    : mirrorData.mirror}
                 </p>
+                {step?.id === "conscientiser" && (
+                  <p className="font-body text-sm text-espresso/70 leading-relaxed mt-3 italic">
+                    Laisse ça être là, sans chercher à préciser.
+                  </p>
+                )}
+                {step?.id === "emerger" && (
+                  <p className="font-body text-sm text-espresso/70 leading-relaxed mt-3 italic whitespace-pre-line">
+                    {emergerChoice === "je ne sais pas"
+                      ? "On reste simple.\nJuste quelque chose de très petit."
+                      : "Ok. Tu peux faire ça simplement."}
+                  </p>
+                )}
+                {step?.id === "reconnaitre" && (
+                  <p className="font-body text-sm text-espresso/70 leading-relaxed mt-3 italic">
+                    Là, reste juste avec ça un instant.
+                  </p>
+                )}
               </div>
 
               {/* Progress signal — "Ce qui évolue en toi" (Phase 3 — uniquement étapes C, É, A) */}
@@ -1557,8 +1677,8 @@ function SessionContent({ userId }: { userId: string }) {
                 </div>
               )}
 
-              {/* Hypothèse — "Ce que ça pourrait dire" */}
-              {mirrorData.hypothesis && (
+              {/* Hypothèse — "Ce que ça pourrait dire" (masqué étapes 1, 2, 4 et 5) */}
+              {mirrorData.hypothesis && !["traverser", "reconnaitre", "conscientiser", "emerger"].includes(step?.id || "") && (
                 <div className="pl-6">
                   <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-sage/70 mb-2">
                     Ce que ça pourrait dire
@@ -1576,8 +1696,17 @@ function SessionContent({ userId }: { userId: string }) {
                 </p>
               )}
 
-              {/* Question ouverte — "À explorer" */}
-              {mirrorData.question && (
+              {/* Question ouverte — "Maintenant" pour étapes 1-2, "À explorer" pour les autres */}
+              {step?.id === "traverser" ? (
+                <div className="pl-6">
+                  <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-terra/70 mb-2">
+                    Maintenant
+                  </p>
+                  <p className="font-body text-base text-espresso leading-relaxed">
+                    Regarde juste où ça se passe le plus dans ton corps.
+                  </p>
+                </div>
+              ) : ["reconnaitre", "conscientiser", "emerger"].includes(step?.id || "") ? null : mirrorData.question ? (
                 <div className="pl-6">
                   <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-terra/70 mb-2">
                     À explorer
@@ -1586,7 +1715,7 @@ function SessionContent({ userId }: { userId: string }) {
                     {mirrorData.question}
                   </p>
                 </div>
-              )}
+              ) : null}
 
               {/* Champ de dépôt — visible sauf étape Aligner */}
               {step?.id !== "aligner" && (
@@ -1601,8 +1730,37 @@ function SessionContent({ userId }: { userId: string }) {
                 </div>
               )}
 
-              {/* Micro-action — "À essayer maintenant" */}
-              {mirrorData.micro_action && (
+              {/* Micro-action — "À essayer maintenant" (masqué étape 2) */}
+              {step?.id === "traverser" ? (
+                <div className="card-base !p-4 ml-6">
+                  <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-1">
+                    À essayer maintenant
+                  </p>
+                  <p className="font-body text-sm text-espresso leading-relaxed">
+                    Reste juste avec cette sensation un instant.
+                  </p>
+                </div>
+              ) : step?.id === "reconnaitre" ? null : step?.id === "conscientiser" ? (
+                <div className="card-base !p-4 ml-6">
+                  <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-1">
+                    À essayer maintenant
+                  </p>
+                  <p className="font-body text-sm text-espresso leading-relaxed">
+                    Laisse juste venir ça comme c&apos;est.
+                  </p>
+                </div>
+              ) : step?.id === "emerger" ? (
+                <div className="card-base !p-4 ml-6">
+                  <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-1">
+                    À essayer maintenant
+                  </p>
+                  <p className="font-body text-sm text-espresso leading-relaxed">
+                    {emergerChoice === "je ne sais pas"
+                      ? "Un tout petit geste suffit."
+                      : "Tu peux commencer doucement."}
+                  </p>
+                </div>
+              ) : mirrorData.micro_action ? (
                 <div className="card-base !p-4 ml-6">
                   <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-1">
                     À essayer maintenant
@@ -1611,7 +1769,7 @@ function SessionContent({ userId }: { userId: string }) {
                     {mirrorData.micro_action}
                   </p>
                 </div>
-              )}
+              ) : null}
 
               {/* Pattern observation — "Ce que TRACÉA remarque" (Phase 2) */}
               {mirrorData.pattern_observation && (
