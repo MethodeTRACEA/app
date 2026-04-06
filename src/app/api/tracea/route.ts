@@ -49,8 +49,10 @@ function getSupabase() {
 // ===================================================================
 
 // Tarifs Claude Sonnet (claude-sonnet-4-20250514) — mai 2025
-const COST_PER_INPUT_TOKEN = 3.0 / 1_000_000;   // $3 / 1M tokens
-const COST_PER_OUTPUT_TOKEN = 15.0 / 1_000_000;  // $15 / 1M tokens
+const COST_PER_INPUT_TOKEN = 3.0 / 1_000_000;      // $3 / 1M tokens
+const COST_PER_OUTPUT_TOKEN = 15.0 / 1_000_000;     // $15 / 1M tokens
+const COST_PER_CACHE_WRITE_TOKEN = 3.75 / 1_000_000; // $3.75 / 1M tokens (écriture cache)
+const COST_PER_CACHE_READ_TOKEN = 0.30 / 1_000_000;  // $0.30 / 1M tokens (lecture cache — 90% de réduction)
 
 async function logAiUsage(params: {
   userId: string;
@@ -59,17 +61,28 @@ async function logAiUsage(params: {
   model: string;
   inputTokens: number;
   outputTokens: number;
+  cacheCreationTokens?: number;
+  cacheReadTokens?: number;
   isRetry?: boolean;
 }) {
+  const cacheWrite = params.cacheCreationTokens || 0;
+  const cacheRead = params.cacheReadTokens || 0;
+  const nonCachedInput = params.inputTokens - cacheWrite - cacheRead;
+
   const cost =
-    params.inputTokens * COST_PER_INPUT_TOKEN +
+    nonCachedInput * COST_PER_INPUT_TOKEN +
+    cacheWrite * COST_PER_CACHE_WRITE_TOKEN +
+    cacheRead * COST_PER_CACHE_READ_TOKEN +
     params.outputTokens * COST_PER_OUTPUT_TOKEN;
 
   // Console log (toujours visible dans Vercel logs)
+  const cacheInfo = (cacheWrite || cacheRead)
+    ? ` | cache_write: ${cacheWrite} cache_read: ${cacheRead}`
+    : "";
   console.log(
     `[AI COST] ${params.callType}${params.stepId ? ` (${params.stepId})` : ""}` +
     `${params.isRetry ? " [RETRY]" : ""}` +
-    ` | in: ${params.inputTokens} out: ${params.outputTokens}` +
+    ` | in: ${params.inputTokens} out: ${params.outputTokens}${cacheInfo}` +
     ` | $${cost.toFixed(6)}` +
     ` | user: ${params.userId.slice(0, 8)}...`
   );
@@ -556,14 +569,14 @@ ${previousContext ? `--- Ce qui a déjà été traversé dans cette session ---\
 "${userInput}"
 ${sessionHistory}`;
 
-  // 3. Appeler l'API
+  // 3. Appeler l'API (avec prompt caching sur le system prompt stable)
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 500,
     temperature: 0.4,
     system: [
       { type: "text", text: SYSTEM_PROMPT },
-      { type: "text", text: DEVELOPER_PROMPT },
+      { type: "text", text: DEVELOPER_PROMPT, cache_control: { type: "ephemeral" } },
     ],
     messages: [{ role: "user", content: fullUserMessage }],
   });
@@ -571,13 +584,16 @@ ${sessionHistory}`;
   const rawText = message.content[0].type === "text" ? message.content[0].text : "";
 
   // 3b. Logger l'usage (fire-and-forget, ne bloque pas la réponse)
+  const usage = message.usage as unknown as Record<string, number>;
   logAiUsage({
     userId,
     callType: "step-mirror",
     stepId: module,
     model: "claude-sonnet-4-20250514",
-    inputTokens: message.usage.input_tokens,
-    outputTokens: message.usage.output_tokens,
+    inputTokens: usage.input_tokens,
+    outputTokens: usage.output_tokens,
+    cacheCreationTokens: usage.cache_creation_input_tokens || 0,
+    cacheReadTokens: usage.cache_read_input_tokens || 0,
   }).catch(() => {});
 
   // 4. Parser le JSON
@@ -609,7 +625,7 @@ ${sessionHistory}`;
         temperature: 0.4,
         system: [
           { type: "text", text: SYSTEM_PROMPT },
-          { type: "text", text: DEVELOPER_PROMPT },
+          { type: "text", text: DEVELOPER_PROMPT, cache_control: { type: "ephemeral" } },
         ],
         messages: [{
           role: "user",
@@ -618,13 +634,16 @@ ${sessionHistory}`;
       });
       const retryRaw = retryMessage.content[0].type === "text" ? retryMessage.content[0].text : "";
       // Logger le retry (fire-and-forget)
+      const retryUsage = retryMessage.usage as unknown as Record<string, number>;
       logAiUsage({
         userId,
         callType: "step-mirror",
         stepId: module,
         model: "claude-sonnet-4-20250514",
-        inputTokens: retryMessage.usage.input_tokens,
-        outputTokens: retryMessage.usage.output_tokens,
+        inputTokens: retryUsage.input_tokens,
+        outputTokens: retryUsage.output_tokens,
+        cacheCreationTokens: retryUsage.cache_creation_input_tokens || 0,
+        cacheReadTokens: retryUsage.cache_read_input_tokens || 0,
         isRetry: true,
       }).catch(() => {});
       const retryParsed = parseJsonResponse(retryRaw);
@@ -863,7 +882,9 @@ Règles absolues :
     model: "claude-sonnet-4-20250514",
     max_tokens: 400,
     temperature: 0.45,
-    system: SYSTEM_PROMPT,
+    system: [
+      { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
+    ],
     messages: [{ role: "user", content: userMessage }],
   });
 
@@ -871,12 +892,15 @@ Règles absolues :
     message.content[0].type === "text" ? message.content[0].text : "";
 
   // Logger l'usage (fire-and-forget)
+  const analysisUsage = message.usage as unknown as Record<string, number>;
   logAiUsage({
     userId,
     callType: "final-analysis",
     model: "claude-sonnet-4-20250514",
-    inputTokens: message.usage.input_tokens,
-    outputTokens: message.usage.output_tokens,
+    inputTokens: analysisUsage.input_tokens,
+    outputTokens: analysisUsage.output_tokens,
+    cacheCreationTokens: analysisUsage.cache_creation_input_tokens || 0,
+    cacheReadTokens: analysisUsage.cache_read_input_tokens || 0,
   }).catch(() => {});
 
   return NextResponse.json({ analysis: text });

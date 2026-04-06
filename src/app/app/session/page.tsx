@@ -275,8 +275,8 @@ function SessionContent({ userId }: { userId: string }) {
 
     await updateSessionDb(sessionId, updates as Parameters<typeof updateSessionDb>[1]);
 
-    // ── Étape 3 Ancrer : bypass IA, transition directe ──
-    if (stepId === "ancrer") {
+    // ── Étapes 3, 4, 5 : bypass IA, transition directe (UI affiche du contenu fixe) ──
+    if (stepId === "ancrer" || stepId === "conscientiser" || stepId === "emerger") {
       handleContinueAfterMirror();
       return;
     }
@@ -370,9 +370,7 @@ function SessionContent({ userId }: { userId: string }) {
             if (data.next_step_suggestion) setLastNextStepSuggestion(data.next_step_suggestion);
             if (data.micro_action) setLastMicroAction(data.micro_action);
           }
-          if (stepId === "emerger" && data.insight) {
-            setLastInsight(data.insight);
-          }
+          // Note : l'étape "emerger" est bypassée (pas d'appel IA), insight non utilisé
         } else {
           setMirrorError("La réponse de l'IA est vide. Tu peux continuer.");
         }
