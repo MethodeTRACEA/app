@@ -8,22 +8,8 @@ export function SafetyBanner({ intensity }: SafetyBannerProps) {
   if (intensity < 8) return null;
 
   return (
-    <div className="safety-card animate-fade-up mb-6">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-2.5 h-2.5 rounded-full bg-terra animate-pulse-gentle flex-shrink-0" />
-        <span className="font-medium text-sm text-terra-dark">
-          Ton intensité est élevée
-        </span>
-      </div>
-      <p className="text-sm text-espresso leading-relaxed font-body">
-        Si tu traverses une période difficile ou ressens une détresse
-        importante, nous t&apos;encourageons à consulter un professionnel de santé
-        mentale. TRACÉA travaille avec ce qui est stable, jamais contre ce qui
-        est encore fragile.
-      </p>
-      <p className="text-xs text-warm-gray mt-3">
-        En cas d&apos;urgence : 3114 (numéro national de prévention du suicide)
-      </p>
-    </div>
+    <p className="text-sm text-warm-gray italic mb-6 animate-fade-up">
+      On va rester simple et court.
+    </p>
   );
 }
