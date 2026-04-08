@@ -1347,61 +1347,56 @@ function SessionContent({ userId }: { userId: string }) {
                 hasCachedAI={hasCachedAI}
               />
 
-              {/* Description */}
-              {step.description && (
-                <p className="font-inter text-sm text-t-creme/55 italic mb-8">
-                  {step.description}
-                </p>
-              )}
-
               {/* Question principale */}
               <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
-                {step.question}
+                Qu&apos;est-ce qui semble le plus juste maintenant ?
               </p>
 
               {/* Chips micro-action — conditionnées par le besoin (étape 4) */}
               <div className="mt-6">
                 <div className="flex flex-wrap gap-2.5">
                   {((): string[] => {
-                    const noBreathing = ancrerFeedback === "agite";
-                    let options: string[];
-                    switch (ecouterChoice) {
-                      case "avoir de l'espace":
-                        options = ["sortir prendre l'air", "m'éloigner un moment", "couper une stimulation", "boire un verre d'eau ailleurs"];
-                        break;
-                      case "être soutenu":
-                      case "être rassuré":
-                        options = ["envoyer un message à quelqu'un", "appeler une personne de confiance", "me rappeler un moment rassurant", "écrire ce que je voudrais entendre"];
-                        break;
-                      case "faire une pause":
+                    switch (ecouterChoice === "je ne sais pas" ? ecouterOther : ecouterChoice) {
                       case "ralentir":
+                      case "moins de pression":
+                        return ["m'asseoir 2 minutes", "respirer encore 3 fois", "enlever une stimulation", "faire une pause"];
                       case "souffler":
-                        options = noBreathing
-                          ? ["me poser 2 minutes", "fermer les yeux un instant", "m'asseoir quelque part au calme", "boire un verre d'eau"]
-                          : ["me poser 2 minutes", "fermer les yeux un instant", "respirer encore un peu", "m'asseoir quelque part au calme"];
-                        break;
+                        return ["respirer encore 3 fois", "fermer les yeux un instant", "m'asseoir quelque part au calme", "faire une pause"];
                       case "relâcher":
-                        options = noBreathing
-                          ? ["étirer mon corps doucement", "secouer mes mains", "me poser 2 minutes", "boire un verre d'eau"]
-                          : ["étirer mon corps doucement", "secouer mes mains", "respirer encore un peu", "me poser 2 minutes"];
-                        break;
+                        return ["étirer mon corps doucement", "secouer mes mains", "m'asseoir 2 minutes", "fermer les yeux un instant"];
+                      case "être rassuré":
+                      case "plus de soutien":
+                        return ["me parler plus doucement", "envoyer un message simple", "relire une phrase ressource", "rester avec quelque chose de stable"];
+                      case "avoir de l'espace":
+                      case "plus d'air":
+                        return ["sortir prendre l'air", "couper le téléphone 10 min", "m'éloigner un moment", "boire un verre d'eau ailleurs"];
+                      case "être soutenu":
+                        return ["envoyer un message simple", "me rappeler un moment rassurant", "relire une phrase ressource", "rester avec quelque chose de stable"];
+                      case "faire une pause":
+                        return ["m'asseoir 2 minutes", "fermer les yeux un instant", "boire un verre d'eau", "faire une pause dehors"];
                       default:
-                        options = noBreathing
-                          ? ["boire un verre d'eau", "me poser 2 minutes", "sortir prendre l'air", "fermer les yeux un instant"]
-                          : ["boire un verre d'eau", "respirer encore un peu", "me poser 2 minutes", "sortir prendre l'air"];
-                        break;
+                        return ["m'asseoir 2 minutes", "respirer encore 3 fois", "sortir prendre l'air", "fermer les yeux un instant"];
                     }
-                    return options;
-                  })().concat(["je ne sais pas", "autre"]).map((action) => (
+                  })().map((action) => (
                     <ChoiceChip
                       key={action}
                       label={action.charAt(0).toUpperCase() + action.slice(1)}
                       selected={emergerChoice === action}
-                      onClick={() => { setEmergerChoice(action); if (action !== "autre") setEmergerOther(""); }}
+                      onClick={() => { setEmergerChoice(action); setEmergerOther(""); }}
                       className="border-t-creme/25 text-t-creme/90"
                     />
                   ))}
                 </div>
+
+                {/* Bouton secondaire discret */}
+                {!emergerOther && emergerChoice !== "autre" && (
+                  <button
+                    onClick={() => { setEmergerChoice("autre"); setEmergerOther(""); }}
+                    className="mt-3 px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 text-t-creme/40 hover:text-t-creme/60 transition-colors"
+                  >
+                    Autre idée
+                  </button>
+                )}
                 {emergerChoice === "autre" && (
                   <TextCapsuleField
                     value={emergerOther}
@@ -1409,11 +1404,6 @@ function SessionContent({ userId }: { userId: string }) {
                     placeholder="Quelque chose de simple…"
                     className="mt-3.5"
                   />
-                )}
-                {emergerChoice && (emergerChoice !== "autre" || emergerOther.trim()) && (
-                  <p className="font-inter text-sm text-t-creme/45 mt-4 italic">
-                    Lequel te paraît le plus simple ?
-                  </p>
                 )}
               </div>
 
@@ -1436,11 +1426,6 @@ function SessionContent({ userId }: { userId: string }) {
                   Continuer
                 </PrimaryButton>
               </div>
-
-              {/* Aide secondaire */}
-              <SoftHelpText trigger="Rien ne vient clairement">
-                Choisis juste l&apos;option la plus douce.
-              </SoftHelpText>
             </StepCard>
             <HelpPanel step={step} />
           </div>
