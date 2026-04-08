@@ -37,11 +37,25 @@ function getAnthropicClient() {
   return new Anthropic({ apiKey });
 }
 
+/** Client anon — pour les requêtes SELECT avec RLS (ex: sessions) */
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
+}
+
+/** Client service role — pour les INSERT logs (bypass RLS, serveur uniquement) */
+function getSupabaseService() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) {
+    console.warn("[TRACEA API] SUPABASE_SERVICE_ROLE_KEY manquante, fallback anon");
+    return getSupabase();
+  }
+  return createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
 }
 
 // ===================================================================
@@ -87,9 +101,9 @@ async function logAiUsage(params: {
     ` | user: ${params.userId.slice(0, 8)}...`
   );
 
-  // Persist to Supabase (don't block the response if it fails)
+  // Persist to Supabase via service role (don't block the response if it fails)
   try {
-    const supabase = getSupabase();
+    const supabase = getSupabaseService();
     const { error: insertError } = await supabase.from("ai_usage_logs").insert({
       user_id: params.userId,
       call_type: params.callType,

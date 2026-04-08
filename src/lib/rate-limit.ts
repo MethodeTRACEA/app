@@ -107,12 +107,22 @@ function checkWindow(
 
 // --- Vérification mensuelle via Supabase ---
 
+/** Client service role — pour les accès logs (bypass RLS, serveur uniquement) */
+function getServiceClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) {
+    // Fallback anon si clé manquante (dev local sans service role)
+    return createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  }
+  return createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
 async function checkMonthlyLimit(userId: string): Promise<{ count: number; allowed: boolean }> {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
+    const supabase = getServiceClient();
 
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -153,12 +163,9 @@ async function logBlock(params: {
     `${params.details ? ` | ${params.details}` : ""}`,
   );
 
-  // Persist to Supabase (fire-and-forget)
+  // Persist to Supabase via service role (fire-and-forget)
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
+    const supabase = getServiceClient();
 
     await supabase.from("rate_limit_logs").insert({
       user_id: params.userId || null,
