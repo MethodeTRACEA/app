@@ -153,7 +153,7 @@ function SessionContent({ userId }: { userId: string }) {
   const [showEmergerHelp, setShowEmergerHelp] = useState(false);
 
   // ── Étape 6 — Aligner : geste + feedback ──
-  const [alignerPhase, setAlignerPhase] = useState<"choix" | "reduction" | "fait" | "feedback">("choix");
+  const [alignerPhase, setAlignerPhase] = useState<"choix" | "reduction" | "repere" | "fait" | "feedback">("choix");
   const [alignerReduction, setAlignerReduction] = useState("");
   const [alignerReductionOther, setAlignerReductionOther] = useState("");
   const [alignerFeedback, setAlignerFeedback] = useState<"mieux" | "clair" | "difficile" | "">("");
@@ -1514,7 +1514,7 @@ function SessionContent({ userId }: { userId: string }) {
                     Je peux en faire une version plus petite
                   </button>
                   <button
-                    onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                    onClick={() => setAlignerPhase("repere")}
                     className="t-chip text-left"
                   >
                     Pas maintenant, mais je garde ça pour aujourd&apos;hui
@@ -1566,6 +1566,29 @@ function SessionContent({ userId }: { userId: string }) {
                 >
                   Ça me va
                 </PrimaryButton>
+              </div>
+            )}
+
+            {/* Phase repère — pas maintenant mais aujourd'hui */}
+            {alignerPhase === "repere" && (
+              <div className="mt-2 animate-fade-up">
+                <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
+                  Ton repère
+                </p>
+                <p className="font-inter text-sm text-t-creme/55 mb-6">
+                  Choisis juste un repère simple.
+                </p>
+                <div className="flex flex-col gap-2.5">
+                  {["après ce message", "dans 10 minutes", "avant ce soir", "plus tard aujourd'hui"].map((opt) => (
+                    <button
+                      key={opt}
+                      onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                      className="t-chip text-left"
+                    >
+                      {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
