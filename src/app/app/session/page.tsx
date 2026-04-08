@@ -1010,11 +1010,17 @@ function SessionContent({ userId }: { userId: string }) {
                 </div>
               )}
 
-              {/* Phase 2 — Feedback post-respiration (masqué en post-phase) */}
+              {/* Phase 2 — Feedback post-ancrage (masqué en post-phase) */}
               {ancrerDone && !ancrerPostPhase && (
                 <>
-                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-4">
-                    {step.question}
+                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
+                    Là
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                    Il n&apos;y a pas de bonne réponse. On s&apos;adapte à ce que tu sens.
+                  </p>
+                  <p className="font-inter text-base text-t-beige/80 leading-relaxed mb-4">
+                    Là, c&apos;est comment ?
                   </p>
                   <div className="flex flex-wrap gap-2.5 mt-2">
                     {([["calme", "Un peu plus calme"], ["pareil", "Pareil"], ["agite", "Plus agité"]] as const).map(([key, label]) => (
@@ -1026,11 +1032,6 @@ function SessionContent({ userId }: { userId: string }) {
                       />
                     ))}
                   </div>
-                  {ancrerFeedback === "agite" && !ancrerPostPhase && (
-                    <p className="font-inter text-sm text-t-creme/50 mt-4 italic">
-                      Ok. On ne force pas. On continue doucement.
-                    </p>
-                  )}
                 </>
               )}
 
