@@ -1476,59 +1476,45 @@ function SessionContent({ userId }: { userId: string }) {
               </p>
             )}
 
-            {/* Phase choix — rappel du geste OU proposition si "je ne sais pas" */}
+            {/* Phase choix — rappel du geste + 4 options souples */}
             {alignerPhase === "choix" && (
               <div className="mt-2">
-                {emergerChoice && emergerChoice !== "je ne sais pas" ? (
-                  <>
-                    <p className="font-inter text-sm text-t-creme/60 mb-3">
-                      Ton geste du moment :
+                {emergerChoice && emergerChoice !== "je ne sais pas" && (
+                  <div className="t-card !p-3 !rounded-xl mb-5">
+                    <p className="font-inter text-base text-t-beige">
+                      {emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice}
                     </p>
-                    <div className="t-card !p-3 !rounded-xl mb-5">
-                      <p className="font-inter text-base text-t-beige">
-                        {emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice}
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-2.5">
-                      <button
-                        onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
-                        className="t-chip t-chip-active text-left"
-                      >
-                        Je le fais maintenant
-                      </button>
-                      <button
-                        onClick={() => setAlignerPhase("reduction")}
-                        className="t-chip text-left"
-                      >
-                        Je choisis encore plus petit
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-6">
-                      On va juste choisir quelque chose de très simple.
-                    </p>
-                    <div className="flex flex-col gap-2.5">
-                      {(ancrerFeedback === "agite"
-                        ? ["poser une main sur soi", "regarder autour de soi", "boire une gorgée d'eau"]
-                        : ["respirer une fois lentement", "poser une main sur soi", "regarder autour de soi"]
-                      ).map((geste) => (
-                        <button
-                          key={geste}
-                          onClick={() => {
-                            setAlignerReduction(geste);
-                            setAlignerPhase("fait");
-                            setTimeout(() => setAlignerPhase("feedback"), 1500);
-                          }}
-                          className="t-chip text-left"
-                        >
-                          {geste.charAt(0).toUpperCase() + geste.slice(1)}
-                        </button>
-                      ))}
-                    </div>
-                  </>
+                  </div>
                 )}
+                <p className="font-inter text-sm text-t-creme/55 italic mb-6">
+                  Choisis la version la plus simple possible.
+                </p>
+                <div className="flex flex-col gap-2.5">
+                  <button
+                    onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                    className="t-chip text-left"
+                  >
+                    Je peux le faire maintenant
+                  </button>
+                  <button
+                    onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                    className="t-chip text-left"
+                  >
+                    Je peux le faire dans 10 minutes
+                  </button>
+                  <button
+                    onClick={() => setAlignerPhase("reduction")}
+                    className="t-chip text-left"
+                  >
+                    Je peux en faire une version plus petite
+                  </button>
+                  <button
+                    onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                    className="t-chip text-left"
+                  >
+                    Pas maintenant, mais je garde ça pour aujourd&apos;hui
+                  </button>
+                </div>
               </div>
             )}
 
