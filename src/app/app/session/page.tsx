@@ -1038,9 +1038,12 @@ function SessionContent({ userId }: { userId: string }) {
 
               {/* Méthode : regarder autour */}
               {ancrerMethod === "regarder" && !ancrerDone && (
-                <div className="py-12 text-center">
-                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-8">
-                    Regarde 3 choses autour de toi. Nomme-les dans ta tête.
+                <div className="py-12 text-center animate-fade-up">
+                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-1">
+                    Autour
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-8">
+                    Regarde autour de toi.{"\n"}Repère 3 choses visibles, sans chercher plus.
                   </p>
                   <button
                     onClick={() => setAncrerDone(true)}
