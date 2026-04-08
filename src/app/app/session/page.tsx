@@ -28,7 +28,7 @@ import {
   SoftHelpText,
 } from "@/components/ui";
 
-type Phase = "intro" | "welcome" | "entry-question" | "session" | "mirror" | "integration" | "analysis" | "complete";
+type Phase = "intro" | "intro-context" | "welcome" | "entry-question" | "session" | "mirror" | "integration" | "analysis" | "complete";
 
 
 export default function SessionPage() {
@@ -589,19 +589,43 @@ function SessionContent({ userId }: { userId: string }) {
 
   // --- INTRO ---
   if (phase === "intro") {
+    const activationOptions = [
+      { label: "Très actif", value: 8 },
+      { label: "Actif", value: 6 },
+      { label: "Moyen", value: 4 },
+      { label: "Un peu plus calme", value: 2 },
+    ];
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
-        <p className="section-label">Nouvelle session</p>
-        <h1 className="section-title !text-2xl md:!text-4xl">Préparer ta traversée</h1>
+        <h1 className="section-title !text-2xl md:!text-4xl">Avant de commencer</h1>
         <p className="text-warm-gray mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
-          Avant de commencer, évalue ton état actuel.
+          Là, c&apos;est plutôt :
         </p>
 
-        <div className="card-base mb-6">
-          <IntensitySlider value={intensity} onChange={setIntensity} />
+        <div className="space-y-3 mb-8">
+          {activationOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => { setIntensity(opt.value); setPhase("intro-context"); }}
+              className="w-full py-4 md:py-3.5 px-6 rounded-2xl bg-beige text-espresso font-medium text-base md:text-sm hover:bg-beige-dark transition-all text-center"
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
 
-        <SafetyBanner intensity={intensity} />
+        <p className="text-xs text-warm-gray text-center">
+          On va rester simple et concret.
+        </p>
+      </div>
+    );
+  }
+
+  // --- INTRO-CONTEXT (contexte + parcours) ---
+  if (phase === "intro-context") {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
+        <h1 className="section-title !text-2xl md:!text-4xl">Contexte</h1>
 
         <div className="card-base mb-6 md:mb-8">
           <label className="text-xs font-medium tracking-widest uppercase text-warm-gray block mb-3">
@@ -646,9 +670,6 @@ function SessionContent({ userId }: { userId: string }) {
             className="w-full py-4 md:py-3.5 px-6 rounded-2xl border-2 border-terra/30 text-terra font-medium text-base md:text-sm hover:border-terra hover:bg-terra-light/20 transition-all text-center"
           >
             Traversée courte · 3 étapes
-            <span className="block text-xs text-warm-gray font-normal mt-0.5">
-              Pour les moments d&apos;intensité élevée
-            </span>
           </button>
         </div>
       </div>
