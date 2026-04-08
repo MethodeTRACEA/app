@@ -1002,8 +1002,19 @@ function SessionContent({ userId }: { userId: string }) {
 
               {/* Méthode : respirer */}
               {ancrerMethod === "respirer" && !ancrerDone && (
-                <div>
-                  <BreathingGuide onComplete={() => setAncrerDone(true)} immersive />
+                <div className="py-12 text-center animate-fade-up">
+                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-1">
+                    Souffler
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-8">
+                    Inspire doucement.{"\n"}Expire un peu plus lentement.{"\n"}Juste 3 fois.
+                  </p>
+                  <button
+                    onClick={() => setAncrerDone(true)}
+                    className="t-btn-secondary"
+                  >
+                    C&apos;est fait
+                  </button>
                 </div>
               )}
 
