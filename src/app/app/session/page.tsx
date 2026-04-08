@@ -1020,15 +1020,18 @@ function SessionContent({ userId }: { userId: string }) {
 
               {/* Méthode : sentir les appuis du corps */}
               {ancrerMethod === "corps" && !ancrerDone && (
-                <div className="py-12 text-center">
-                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-8">
-                    Sens le point le plus tendu. Reste là.
+                <div className="py-12 text-center animate-fade-up">
+                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-1">
+                    Appuis
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-8">
+                    Sens le contact de ton corps là où il s&apos;appuie.{"\n"}Juste ça, quelques secondes.
                   </p>
                   <button
                     onClick={() => setAncrerDone(true)}
                     className="t-btn-secondary"
                   >
-                    J&apos;ai pris le temps
+                    C&apos;est fait
                   </button>
                 </div>
               )}
