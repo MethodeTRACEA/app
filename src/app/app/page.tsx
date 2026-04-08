@@ -46,7 +46,7 @@ export default function Accueil() {
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
-            href="/app/session"
+            href="/app/traversee-courte"
             className="btn-primary inline-block text-center !py-4 !text-base !rounded-2xl"
           >
             Commencer une travers&eacute;e
@@ -91,7 +91,7 @@ export default function Accueil() {
       <section className="mb-10 md:mb-14">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Link
-            href="/app/session"
+            href="/app/traversee-courte"
             className="card-base flex items-center gap-3 hover:border-terra/40 transition-all group"
           >
             <div className="w-10 h-10 rounded-full bg-terra flex items-center justify-center flex-shrink-0">

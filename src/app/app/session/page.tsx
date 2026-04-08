@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { STEPS } from "@/lib/steps";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -28,11 +28,21 @@ import {
   SoftHelpText,
 } from "@/components/ui";
 
-type Phase = "intro" | "intro-context" | "welcome" | "entry-question" | "session" | "mirror" | "integration" | "analysis" | "complete";
+type Phase = "intro" | "intro-context" | "welcome" | "entry-question" | "session" | "mirror" | "integration" | "analysis" | "complete" | "soft-switch";
 
 
 export default function SessionPage() {
+  return (
+    <Suspense>
+      <SessionPageInner />
+    </Suspense>
+  );
+}
+
+function SessionPageInner() {
   const { user, loading } = useAuth();
+  const searchParams = useSearchParams();
+  const routerActivation = searchParams.get("activation"); // "encore" | "calme" | null
 
   if (loading) {
     return (
@@ -68,7 +78,7 @@ export default function SessionPage() {
 
   return (
     <ConsentGate>
-      <SessionContent userId={user.id} />
+      <SessionContent userId={user.id} routerActivation={routerActivation} />
     </ConsentGate>
   );
 }
@@ -82,7 +92,7 @@ interface StepCacheEntry {
   stepName: string;
 }
 
-function SessionContent({ userId }: { userId: string }) {
+function SessionContent({ userId, routerActivation }: { userId: string; routerActivation: string | null }) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("intro");
   const [intensity, setIntensity] = useState(5);
@@ -161,6 +171,81 @@ function SessionContent({ userId }: { userId: string }) {
   // ── Cache des réponses par étape (navigation sans perte) ──
   const [stepCache, setStepCache] = useState<Record<string, StepCacheEntry>>({});
 
+  // ── Soft switch (routing automatique depuis traversée courte) ──
+  const [routedFromActivation, setRoutedFromActivation] = useState(false);
+  const [softSwitchTriggered, setSoftSwitchTriggered] = useState(false);
+  const [dontKnowCount, setDontKnowCount] = useState(0);
+  const [emptyAdvanceCount, setEmptyAdvanceCount] = useState(0);
+  const [screenEnteredAt, setScreenEnteredAt] = useState(Date.now());
+  const [firstInputDone, setFirstInputDone] = useState(false);
+
+  // Auto-route if activation param present (skip intro + intro-context)
+  useEffect(() => {
+    if (routerActivation && !routedFromActivation) {
+      setRoutedFromActivation(true);
+      const intensityMap: Record<string, number> = { encore: 4, calme: 2 };
+      setIntensity(intensityMap[routerActivation] || 4);
+      setModeTraversee("complet");
+      // Create session directly, then go to entry-question
+      createSessionDb(userId, intensityMap[routerActivation] || 4, context).then(s => {
+        if (s) {
+          setSessionId(s.id);
+          setPhase("entry-question");
+        }
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routerActivation, userId]);
+
+  // Track screen entry time for soft switch
+  useEffect(() => {
+    if (phase === "session") {
+      setScreenEnteredAt(Date.now());
+      setFirstInputDone(false);
+    }
+  }, [phase, currentStep]);
+
+  // Check soft switch conditions
+  const softSwitchEligible = routedFromActivation && currentStep < 3 && !softSwitchTriggered && (phase === "session" || phase === "entry-question");
+
+  function checkSoftSwitch(): boolean {
+    if (!softSwitchEligible) return false;
+
+    const elapsed = Date.now() - screenEnteredAt;
+    const timeOverload = !firstInputDone && elapsed > 5000;
+
+    if (timeOverload || dontKnowCount >= 2 || emptyAdvanceCount >= 1) {
+      setSoftSwitchTriggered(true);
+      setPhase("soft-switch");
+      return true;
+    }
+    return false;
+  }
+
+  // Track "je ne sais pas" selections for soft switch
+  function trackDontKnow() {
+    if (!softSwitchEligible) return;
+    const newCount = dontKnowCount + 1;
+    setDontKnowCount(newCount);
+    if (newCount >= 2) {
+      setSoftSwitchTriggered(true);
+      setPhase("soft-switch");
+    }
+  }
+
+  // Track empty advance attempts for soft switch
+  function trackEmptyAdvance() {
+    if (!softSwitchEligible) return;
+    setEmptyAdvanceCount(prev => prev + 1);
+    setSoftSwitchTriggered(true);
+    setPhase("soft-switch");
+  }
+
+  // Mark first input done
+  function markFirstInput() {
+    if (!firstInputDone) setFirstInputDone(true);
+  }
+
   const STEPS_COURT = ["traverser", "ancrer", "emerger"];
   const stepsActifs = modeTraversee === "court"
     ? STEPS.filter(s => STEPS_COURT.includes(s.id))
@@ -205,6 +290,9 @@ function SessionContent({ userId }: { userId: string }) {
 
   async function handleNextStep() {
     if (!sessionId) return;
+
+    // Soft switch: check time overload before advancing
+    if (checkSoftSwitch()) return;
 
     const stepId = step.id as StepId;
 
@@ -677,6 +765,29 @@ function SessionContent({ userId }: { userId: string }) {
     );
   }
 
+  // --- SOFT SWITCH (redirect vers traversée courte) ---
+  if (phase === "soft-switch") {
+    return (
+      <ScreenContainer overlayOpacity={45}>
+        <div className="py-12">
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+            <div className="text-center space-y-4">
+              <h1 className="font-serif text-2xl text-t-beige">
+                On va faire plus simple
+              </h1>
+              <p className="font-body text-lg text-t-creme/60 leading-relaxed">
+                On va aller directement à quelque chose de plus rapide.
+              </p>
+            </div>
+            <PrimaryButton onClick={() => router.push("/app/traversee-courte?skip=entree")}>
+              Continuer
+            </PrimaryButton>
+          </div>
+        </div>
+      </ScreenContainer>
+    );
+  }
+
   // --- WELCOME (Section 2) ---
   if (phase === "welcome") {
     return <WelcomeScreen onContinue={() => setPhase("entry-question")} />;
@@ -705,6 +816,7 @@ function SessionContent({ userId }: { userId: string }) {
               />
               <button
                 onClick={() => {
+                  if (!entryQuestion.trim() && routedFromActivation) { trackEmptyAdvance(); return; }
                   setCurrentStep(0);
                   setPhase("session");
                 }}
@@ -713,7 +825,7 @@ function SessionContent({ userId }: { userId: string }) {
                 Continuer
               </button>
               <button
-                onClick={() => setShowSensations(true)}
+                onClick={() => { setShowSensations(true); trackDontKnow(); }}
                 className="block mx-auto text-sm text-warm-gray hover:text-espresso transition-colors"
               >
                 Je ne sais pas
@@ -813,7 +925,7 @@ function SessionContent({ userId }: { userId: string }) {
                       key={zone}
                       label={zone.charAt(0).toUpperCase() + zone.slice(1)}
                       selected={bodyZone === zone}
-                      onClick={() => { setBodyZone(zone); setBodyZoneOther(""); }}
+                      onClick={() => { setBodyZone(zone); setBodyZoneOther(""); markFirstInput(); if (zone === "je ne sais pas") trackDontKnow(); }}
                     />
                   ))}
                 </div>
@@ -888,7 +1000,7 @@ function SessionContent({ userId }: { userId: string }) {
                     key={emo}
                     label={emo.charAt(0).toUpperCase() + emo.slice(1)}
                     selected={emotionChoice === emo}
-                    onClick={() => { setEmotionChoice(emo); setEmotionOther(""); }}
+                    onClick={() => { setEmotionChoice(emo); setEmotionOther(""); markFirstInput(); if (emo === "je ne sais pas") trackDontKnow(); }}
                     className="border-t-creme/25 text-t-creme/90"
                   />
                 ))}

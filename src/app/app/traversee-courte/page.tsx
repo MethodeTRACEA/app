@@ -1,11 +1,24 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { ExitLink } from "@/components/ui/ExitLink";
+
+// ── Flow routing constants ─────────────────────────────────
+const SHORT_FLOW_V2 = "short" as const;
+const LONG_FLOW = "long" as const;
+
+type FlowRoute = typeof SHORT_FLOW_V2 | typeof LONG_FLOW;
+
+const ACTIVATION_FLOW_MAP: Record<string, FlowRoute> = {
+  deborde: SHORT_FLOW_V2,
+  charge: SHORT_FLOW_V2,
+  encore: LONG_FLOW,
+  calme: LONG_FLOW,
+};
 
 // ═══════════════════════════════════════════════════════════
 // TRACÉA — Traversée courte V2 (3 étapes, ultra-optimisée)
@@ -223,11 +236,23 @@ function BreathCounter({
 // PAGE PRINCIPALE
 // ═══════════════════════════════════════════════════════════
 
-export default function TraverseeCourteV2() {
+export default function TraverseeCourteV2Page() {
+  return (
+    <Suspense>
+      <TraverseeCourteV2 />
+    </Suspense>
+  );
+}
+
+function TraverseeCourteV2() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // ── Detect if entered via soft-switch (skip entry screen) ──
+  const skipEntree = searchParams.get("skip") === "entree";
 
   // ── State ──
-  const [screen, setScreen] = useState<Screen>("entree");
+  const [screen, setScreen] = useState<Screen>(skipEntree ? "ressenti" : "entree");
   const [activationLevel, setActivationLevel] = useState<ActivationLevel | null>(null);
   const [currentFeeling, setCurrentFeeling] = useState<Feeling | null>(null);
   const [bodyZone, setBodyZone] = useState<BodyZone | null>(null);
@@ -320,7 +345,12 @@ export default function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setActivationLevel(value);
-                    setScreen("ressenti");
+                    const flow = ACTIVATION_FLOW_MAP[value];
+                    if (flow === LONG_FLOW) {
+                      router.push(`/app/session?activation=${value}`);
+                    } else {
+                      setScreen("ressenti");
+                    }
                   }}
                 />
               ))}
@@ -876,6 +906,19 @@ export default function TraverseeCourteV2() {
                 className="w-full"
               >
                 Refaire plus tard
+              </SecondaryButton>
+            </div>
+
+            {/* ── Bridge optionnel vers traversée complète ── */}
+            <div className="mt-8 text-center">
+              <p className="font-inter text-[13px] text-t-creme/40 mb-2">
+                Si tu veux aller un peu plus loin, tu peux faire une travers\u00e9e compl\u00e8te.
+              </p>
+              <SecondaryButton
+                onClick={() => router.push("/app/session")}
+                className="text-sm"
+              >
+                Continuer
               </SecondaryButton>
             </div>
           </div>
