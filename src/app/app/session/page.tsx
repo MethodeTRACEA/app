@@ -229,7 +229,7 @@ function SessionContent({ userId }: { userId: string }) {
 
     // Étape 4 — construire le texte depuis le choix besoin
     if (stepId === "conscientiser" && ecouterChoice) {
-      const label = ecouterChoice === "autre" && ecouterOther.trim() ? `autre: ${ecouterOther.trim()}` : ecouterChoice;
+      const label = ecouterChoice === "je ne sais pas" && ecouterOther ? ecouterOther : ecouterChoice;
       stepText = ecouterConfirm === "appelle" ? `${label} (appelle)` : label;
     }
 
@@ -1217,18 +1217,11 @@ function SessionContent({ userId }: { userId: string }) {
             <StepCard className="!bg-[rgba(50,35,28,0.32)] !backdrop-blur-[18px] !border-[rgba(232,216,199,0.11)] !shadow-[0_8px_40px_rgba(0,0,0,0.15),0_0_0_1px_rgba(232,216,199,0.05)_inset,0_0_50px_rgba(214,165,106,0.03)]">
               <StepHeader
                 stepNumber={step.number}
-                stepName={step.name}
+                stepName="Écouter"
                 totalSteps={stepsActifs.length}
                 currentIndex={currentStep}
                 hasCachedAI={hasCachedAI}
               />
-
-              {/* Description */}
-              {step.description && (
-                <p className="font-inter text-sm text-t-creme/60 italic mb-8">
-                  {step.description}
-                </p>
-              )}
 
               {/* Question principale */}
               <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
@@ -1238,39 +1231,45 @@ function SessionContent({ userId }: { userId: string }) {
               {/* Chips besoin */}
               <div className="mt-6">
                 <div className="flex flex-wrap gap-2.5">
-                  {(showMoreNeeds
-                    ? ["ralentir", "souffler", "relâcher", "être rassuré", "espace", "soutien", "pause", "autre"]
-                    : ["ralentir", "souffler", "espace", "pause"]
-                  ).map((need) => (
+                  {["ralentir", "souffler", "relâcher", "être rassuré", "avoir de l'espace", "être soutenu", "faire une pause", "je ne sais pas"].map((need) => (
                     <ChoiceChip
                       key={need}
                       label={need.charAt(0).toUpperCase() + need.slice(1)}
                       selected={ecouterChoice === need}
-                      onClick={() => { setEcouterChoice(need); setEcouterConfirm(""); if (need !== "autre") setEcouterOther(""); }}
+                      onClick={() => { setEcouterChoice(need); setEcouterConfirm(""); setEcouterOther(""); }}
                       className="border-t-creme/30 text-t-creme"
                     />
                   ))}
-                  {!showMoreNeeds && (
-                    <button
-                      onClick={() => setShowMoreNeeds(true)}
-                      className="px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 text-t-creme/50 hover:text-t-creme/70 transition-colors"
-                    >
-                      + voir plus
-                    </button>
-                  )}
                 </div>
-                {ecouterChoice === "autre" && (
-                  <TextCapsuleField
-                    value={ecouterOther}
-                    onChange={setEcouterOther}
-                    placeholder="Ce qui aiderait…"
-                    className="mt-3.5"
-                  />
+
+                {/* Sous-écran "je ne sais pas" */}
+                {ecouterChoice === "je ne sais pas" && (
+                  <div className="mt-6 animate-fade-up">
+                    <p className="font-inter text-sm text-t-creme/55 mb-4">
+                      Tu peux juste approcher :
+                    </p>
+                    <div className="flex flex-wrap gap-2.5">
+                      {["moins de pression", "plus de soutien", "plus d'air"].map((opt) => (
+                        <ChoiceChip
+                          key={opt}
+                          label={opt.charAt(0).toUpperCase() + opt.slice(1)}
+                          selected={ecouterOther === opt}
+                          onClick={() => setEcouterOther(opt)}
+                          className="border-t-creme/30 text-t-creme"
+                        />
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
 
               {/* Micro-texte — apparaît quand un choix est fait */}
-              {ecouterChoice && (ecouterChoice !== "autre" || ecouterOther.trim()) && (
+              {ecouterChoice && ecouterChoice !== "je ne sais pas" && (
+                <p className="font-inter text-sm text-t-creme/45 mt-4 italic">
+                  C&apos;est assez pour avancer.
+                </p>
+              )}
+              {ecouterChoice === "je ne sais pas" && ecouterOther && (
                 <p className="font-inter text-sm text-t-creme/45 mt-4 italic">
                   C&apos;est assez pour avancer.
                 </p>
@@ -1289,17 +1288,12 @@ function SessionContent({ userId }: { userId: string }) {
                 )}
                 <PrimaryButton
                   onClick={handleNextStep}
-                  disabled={!ecouterChoice || (ecouterChoice === "autre" && !ecouterOther.trim())}
+                  disabled={!ecouterChoice || (ecouterChoice === "je ne sais pas" && !ecouterOther)}
                   className="flex-1"
                 >
                   Continuer
                 </PrimaryButton>
               </div>
-
-              {/* Aide secondaire */}
-              <SoftHelpText trigger="Je ne sais pas">
-                Choisis ce qui soulagerait un tout petit peu, même si ce n&apos;est pas parfait.
-              </SoftHelpText>
             </StepCard>
             <HelpPanel step={step} />
           </div>
@@ -1372,14 +1366,14 @@ function SessionContent({ userId }: { userId: string }) {
                     const noBreathing = ancrerFeedback === "agite";
                     let options: string[];
                     switch (ecouterChoice) {
-                      case "espace":
+                      case "avoir de l'espace":
                         options = ["sortir prendre l'air", "m'éloigner un moment", "couper une stimulation", "boire un verre d'eau ailleurs"];
                         break;
-                      case "soutien":
+                      case "être soutenu":
                       case "être rassuré":
                         options = ["envoyer un message à quelqu'un", "appeler une personne de confiance", "me rappeler un moment rassurant", "écrire ce que je voudrais entendre"];
                         break;
-                      case "pause":
+                      case "faire une pause":
                       case "ralentir":
                       case "souffler":
                         options = noBreathing
@@ -1684,7 +1678,7 @@ function SessionContent({ userId }: { userId: string }) {
                 </div>
                 <p className="font-body text-base text-espresso leading-relaxed">
                   {step?.id === "conscientiser" && ecouterChoice
-                    ? `Ça semble appeler ${ecouterChoice === "être rassuré" ? "d'être rassuré" : ecouterChoice === "relâcher" ? "à relâcher" : ecouterChoice === "autre" && ecouterOther.trim() ? ecouterOther.trim() : ["soutien", "espace", "pause"].includes(ecouterChoice) ? (ecouterChoice === "soutien" ? "du soutien" : ecouterChoice === "espace" ? "de l'espace" : "une pause") : ecouterChoice === "ralentir" ? "à ralentir" : ecouterChoice === "souffler" ? "à souffler" : ecouterChoice}.`
+                    ? `Ça semble appeler ${ecouterChoice === "être rassuré" ? "d'être rassuré" : ecouterChoice === "relâcher" ? "à relâcher" : ecouterChoice === "être soutenu" ? "du soutien" : ecouterChoice === "avoir de l'espace" ? "de l'espace" : ecouterChoice === "faire une pause" ? "une pause" : ecouterChoice === "ralentir" ? "à ralentir" : ecouterChoice === "souffler" ? "à souffler" : ecouterChoice === "je ne sais pas" && ecouterOther ? ecouterOther : ecouterChoice}.`
                     : step?.id === "emerger" && emergerChoice
                     ? (emergerChoice === "autre" && emergerOther.trim()
                         ? `${emergerOther.trim().charAt(0).toUpperCase() + emergerOther.trim().slice(1)}.`
