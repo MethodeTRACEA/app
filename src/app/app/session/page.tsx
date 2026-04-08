@@ -1110,24 +1110,41 @@ function SessionContent({ userId }: { userId: string }) {
 
                   {ancrerFeedback === "agite" && (
                     <>
-                      <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-8">
-                        On change.
+                      <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
+                        On change
+                      </p>
+                      <p className="font-inter text-sm text-t-creme/50 italic leading-relaxed mb-8 whitespace-pre-line">
+                        {`On ne force pas.\nOn change juste de manière.`}
                       </p>
                       <div className="flex flex-col gap-3">
                         <button
                           onClick={() => {
-                            setAncrerMethod("");
+                            setAncrerMethod("corps");
                             setAncrerDone(false);
                             setAncrerPostPhase(false);
                             setAncrerFeedback("");
                           }}
                           className="t-btn-secondary w-full justify-center"
                         >
-                          Rechoisir une méthode
+                          Sentir les appuis du corps
                         </button>
-                        <PrimaryButton onClick={handleNextStep} className="w-full">
-                          Continuer quand même
-                        </PrimaryButton>
+                        <button
+                          onClick={() => {
+                            setAncrerMethod("regarder");
+                            setAncrerDone(false);
+                            setAncrerPostPhase(false);
+                            setAncrerFeedback("");
+                          }}
+                          className="t-btn-secondary w-full justify-center"
+                        >
+                          Regarder autour de moi
+                        </button>
+                        <button
+                          onClick={handleNextStep}
+                          className="t-btn-secondary w-full justify-center"
+                        >
+                          Faire une pause quelques secondes
+                        </button>
                       </div>
                     </>
                   )}
