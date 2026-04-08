@@ -172,10 +172,10 @@ export default function Accueil() {
           <div className="flex flex-wrap gap-2 justify-center mb-5">
             {[
               { name: "Traverser", color: "bg-terra" },
-              { name: "Reconna\u00eetre", color: "bg-dusty" },
+              { name: "Reconnaître", color: "bg-dusty" },
               { name: "Ancrer", color: "bg-sage" },
               { name: "Conscientiser", color: "bg-warm-gray" },
-              { name: "\u00c9merger", color: "bg-espresso" },
+              { name: "Émerger", color: "bg-espresso" },
               { name: "Aligner", color: "bg-terra-dark" },
             ].map((step) => (
               <span

@@ -8,7 +8,7 @@ export default function PolitiqueConfidentialite() {
       <p className="section-label">Protection des données</p>
       <h1 className="section-title">Politique de confidentialité</h1>
       <p className="text-xs text-warm-gray mb-8">
-        Dernière mise à jour\u00A0: 25 mars 2026 · Version 1.0
+        Dernière mise à jour : 25 mars 2026 · Version 1.0
       </p>
 
       <div className="space-y-8 font-body text-base text-espresso leading-relaxed">

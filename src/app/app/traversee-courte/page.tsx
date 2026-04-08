@@ -220,7 +220,7 @@ function BreathCounter({
       </div>
       {!done && (
         <p className="font-body text-xl text-t-beige/80 italic animate-pulse">
-          {phase === "inspire" ? "Inspire\u2026" : "Expire\u2026"}
+          {phase === "inspire" ? "Inspire\…" : "Expire\…"}
         </p>
       )}
       {done && (
@@ -260,7 +260,7 @@ function TraverseeCourteV2() {
   const [anchorEffect, setAnchorEffect] = useState<AnchorEffect | null>(null);
   const [nextAction, setNextAction] = useState<string | null>(null);
   const [actionPlanType, setActionPlanType] = useState<ActionPlanType | null>(null);
-  const [reducedAction, setReducedAction] = useState<string | null>(null);
+  const [red컚ction, setRed컚ction] = useState<string | null>(null);
   const [timeAnchor, setTimeAnchor] = useState<TimeAnchor | null>(null);
   const [endState, setEndState] = useState<EndState | null>(null);
   const [showMoreFeelings, setShowMoreFeelings] = useState(false);
@@ -299,13 +299,13 @@ function TraverseeCourteV2() {
       case "10-minutes":
         return `${nextAction} (dans 10 min)`;
       case "version-petite":
-        return reducedAction || nextAction;
+        return red컚ction || nextAction;
       case "pas-maintenant": {
         const anchorLabels: Record<TimeAnchor, string> = {
-          "apres-ecran": "apr\u00e8s cet \u00e9cran",
+          "apres-ecran": "après cet écran",
           "10-minutes": "dans 10 minutes",
           "avant-ce-soir": "avant ce soir",
-          "plus-tard": "plus tard aujourd\u2019hui",
+          "plus-tard": "plus tard aujourd’hui",
         };
         const when = timeAnchor ? anchorLabels[timeAnchor] : "plus tard";
         return `${nextAction} (${when})`;
@@ -313,7 +313,7 @@ function TraverseeCourteV2() {
       default:
         return nextAction;
     }
-  }, [nextAction, actionPlanType, reducedAction, timeAnchor]);
+  }, [nextAction, actionPlanType, red컚ction, timeAnchor]);
 
   // ── Rendu par écran ──────────────────────────────────────
 
@@ -330,15 +330,15 @@ function TraverseeCourteV2() {
                 Avant de commencer
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                L\u00e0, c&apos;est plut\u00f4t :
+                Là, c&apos;est plutôt :
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
-                ["deborde", "\u00c7a d\u00e9borde"],
-                ["charge", "C\u2019est charg\u00e9"],
-                ["encore", "\u00c7a va encore"],
-                ["calme", "Plut\u00f4t calme"],
+                ["deborde", "Ça déborde"],
+                ["charge", "C’est chargé"],
+                ["encore", "Ça va encore"],
+                ["calme", "Plutôt calme"],
               ] as [ActivationLevel, string][]).map(([value, label]) => (
                 <AutoChip
                   key={value}
@@ -356,7 +356,7 @@ function TraverseeCourteV2() {
               ))}
             </div>
             <p className="font-inter text-xs text-t-creme/40 text-center">
-              Sans r\u00e9fl\u00e9chir longtemps.
+              Sans réfléchir longtemps.
             </p>
             <div className="mt-4">
               <ExitLink label="Quitter" href="/app" />
@@ -375,7 +375,7 @@ function TraverseeCourteV2() {
                 Traverser
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                L\u00e0, c&apos;est surtout :
+                Là, c&apos;est surtout :
               </p>
             </div>
             <div className="w-full space-y-3">
@@ -427,7 +427,7 @@ function TraverseeCourteV2() {
                 Dans le corps
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                O\u00f9 c&apos;est le plus marqu\u00e9 ?
+                Où c&apos;est le plus marqué ?
               </p>
             </div>
             <div className="w-full grid grid-cols-2 gap-3">
@@ -517,17 +517,17 @@ function TraverseeCourteV2() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
               <h1 className="font-serif text-2xl text-t-beige">
-                L\u00e0
+                Là
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                \u00c7a a boug\u00e9 un peu ?
+                Ça a bougé un peu ?
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
                 ["un-peu", "un peu"],
                 ["pareil", "pareil"],
-                ["plus-agite", "plus agit\u00e9"],
+                ["plus-agite", "plus agité"],
                 ["je-ne-sais-pas", "je ne sais pas trop"],
               ] as [AnchorEffect, string][]).map(([value, label]) => (
                 <AutoChip
@@ -559,7 +559,7 @@ function TraverseeCourteV2() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-4">
               <h1 className="font-serif text-2xl text-t-beige">
-                On change l\u00e9g\u00e8rement
+                On change légèrement
               </h1>
               <p className="font-body text-lg text-t-creme/60">
                 Ce n&apos;est pas grave si c&apos;est pareil.
@@ -592,17 +592,17 @@ function TraverseeCourteV2() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
               <h1 className="font-serif text-2xl text-t-beige">
-                L\u00e0
+                Là
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                \u00c7a a boug\u00e9 ?
+                Ça a bougé ?
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
                 ["un-peu", "un peu mieux"],
                 ["pareil", "pareil"],
-                ["plus-agite", "plus agit\u00e9"],
+                ["plus-agite", "plus agité"],
               ] as [AnchorEffect, string][]).map(([value, label]) => (
                 <AutoChip
                   key={value}
@@ -633,7 +633,7 @@ function TraverseeCourteV2() {
                 On ne force pas.
               </p>
               <p className="font-body text-lg text-t-creme/60">
-                On quitte cette mani\u00e8re-l\u00e0.
+                On quitte cette manière-là.
               </p>
             </div>
             <PrimaryButton
@@ -664,7 +664,7 @@ function TraverseeCourteV2() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
               <h1 className="font-serif text-2xl text-t-beige">
-                \u00c9merger
+                Émerger
               </h1>
               <p className="font-body text-lg text-t-creme/70">
                 Qu&apos;est-ce qui est le plus simple maintenant ?
@@ -699,7 +699,7 @@ function TraverseeCourteV2() {
                 onClick={() => setShowMoreActions(true)}
                 className="font-inter text-[13px] text-t-creme/50 underline underline-offset-[3px]"
               >
-                Autre id\u00e9e
+                Autre idée
               </button>
             )}
           </div>
@@ -724,8 +724,8 @@ function TraverseeCourteV2() {
               {([
                 ["maintenant", "je le fais maintenant"],
                 ["10-minutes", "je le fais dans 10 minutes"],
-                ["version-petite", "j\u2019en fais une version plus petite"],
-                ["pas-maintenant", "pas maintenant, mais aujourd\u2019hui"],
+                ["version-petite", "j’en fais une version plus petite"],
+                ["pas-maintenant", "pas maintenant, mais aujourd’hui"],
               ] as [ActionPlanType, string][]).map(([value, label]) => (
                 <AutoChip
                   key={value}
@@ -758,7 +758,7 @@ function TraverseeCourteV2() {
                 Encore plus simple
               </h1>
               <p className="font-body text-lg text-t-creme/60">
-                On r\u00e9duit encore.
+                On réduit encore.
               </p>
             </div>
             <div className="t-card p-6 text-center">
@@ -768,11 +768,11 @@ function TraverseeCourteV2() {
             </div>
             <PrimaryButton
               onClick={() => {
-                setReducedAction(reduced);
+                setRed컚ction(reduced);
                 setScreen("check-final");
               }}
             >
-              \u00c7a me va
+              Ça me va
             </PrimaryButton>
           </div>
         );
@@ -786,18 +786,18 @@ function TraverseeCourteV2() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
               <h1 className="font-serif text-2xl text-t-beige">
-                Ton rep\u00e8re
+                Ton repère
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                Choisis un rep\u00e8re.
+                Choisis un repère.
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
-                ["apres-ecran", "apr\u00e8s cet \u00e9cran"],
+                ["apres-ecran", "après cet écran"],
                 ["10-minutes", "dans 10 minutes"],
                 ["avant-ce-soir", "avant ce soir"],
-                ["plus-tard", "plus tard aujourd\u2019hui"],
+                ["plus-tard", "plus tard aujourd’hui"],
               ] as [TimeAnchor, string][]).map(([value, label]) => (
                 <AutoChip
                   key={value}
@@ -823,15 +823,15 @@ function TraverseeCourteV2() {
                 En repartant
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                L\u00e0, c&apos;est plut\u00f4t :
+                Là, c&apos;est plutôt :
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
                 ["prochain-pas", "juste un prochain pas"],
                 ["calme", "un peu plus de calme"],
-                ["clarte", "un peu plus de clart\u00e9"],
-                ["rien-special", "rien de sp\u00e9cial, mais je continue"],
+                ["clarte", "un peu plus de clarté"],
+                ["rien-special", "rien de spécial, mais je continue"],
               ] as [EndState, string][]).map(([value, label]) => (
                 <AutoChip
                   key={value}
@@ -854,25 +854,25 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <h1 className="font-serif text-2xl text-t-beige text-center">
-              Ta travers\u00e9e
+              Ta traversée
             </h1>
 
             <div className="t-card p-6 w-full space-y-4">
               <SynthRow
-                label="Ce qui \u00e9tait l\u00e0"
-                value={currentFeeling ? FEELING_LABELS[currentFeeling] : "\u2014"}
+                label="Ce qui était là"
+                value={currentFeeling ? FEELING_LABELS[currentFeeling] : "\—"}
               />
               <SynthRow
                 label="Dans le corps"
-                value={bodyZone ? BODY_LABELS[bodyZone] : "\u2014"}
+                value={bodyZone ? BODY_LABELS[bodyZone] : "\—"}
               />
               <SynthRow
-                label="Ce qui a aid\u00e9"
-                value={anchorMethod ? ANCHOR_LABELS[anchorMethod] : "\u2014"}
+                label="Ce qui a aidé"
+                value={anchorMethod ? ANCHOR_LABELS[anchorMethod] : "\—"}
               />
               <SynthRow
                 label="Le prochain pas"
-                value={finalAction || "\u2014"}
+                value={finalAction || "\—"}
               />
             </div>
 
@@ -882,7 +882,7 @@ function TraverseeCourteV2() {
 
             <div className="w-full space-y-3">
               <PrimaryButton onClick={() => router.push("/app")}>
-                Retour \u00e0 l&apos;accueil
+                Retour à l&apos;accueil
               </PrimaryButton>
               <SecondaryButton
                 onClick={() => {
@@ -895,7 +895,7 @@ function TraverseeCourteV2() {
                   setAnchorEffect(null);
                   setNextAction(null);
                   setActionPlanType(null);
-                  setReducedAction(null);
+                  setRed컚ction(null);
                   setTimeAnchor(null);
                   setEndState(null);
                   setShowMoreFeelings(false);
@@ -912,7 +912,7 @@ function TraverseeCourteV2() {
             {/* ── Bridge optionnel vers traversée complète ── */}
             <div className="mt-8 text-center">
               <p className="font-inter text-[13px] text-t-creme/40 mb-2">
-                Si tu veux aller un peu plus loin, tu peux faire une travers\u00e9e compl\u00e8te.
+                Si tu veux aller un peu plus loin, tu peux faire une traversée complète.
               </p>
               <SecondaryButton
                 onClick={() => router.push("/app/session")}
@@ -947,7 +947,7 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <p className="font-inter text-xs text-t-creme/40">
-              Reste avec \u00e7a 10 secondes.
+              Reste avec ça 10 secondes.
             </p>
             <Timer10 onComplete={onDone} />
           </div>
@@ -962,7 +962,7 @@ function TraverseeCourteV2() {
                 Regarde autour de toi.
               </p>
               <p className="font-body text-lg text-t-creme/70 leading-relaxed">
-                Rep\u00e8re :
+                Repère :
                 <br />
                 1 chose stable,
                 <br />

@@ -19,7 +19,7 @@ const steps: StepResource[] = [
     subtitle: "Ce qui se passe dans ton corps",
     dotColor: "#C9907C",
     content: [
-      "Quand une émotion surgit, ton cerveau déclenche une réaction en chaîne\u00A0: l'amygdale, ce petit noyau au centre du cerveau, envoie un signal d'alarme. Le cortisol et l'adrénaline inondent le corps. Le cœur s'accélère, les muscles se contractent, la respiration se raccourcit. Tout ça en moins d'une seconde.",
+      "Quand une émotion surgit, ton cerveau déclenche une réaction en chaîne : l'amygdale, ce petit noyau au centre du cerveau, envoie un signal d'alarme. Le cortisol et l'adrénaline inondent le corps. Le cœur s'accélère, les muscles se contractent, la respiration se raccourcit. Tout ça en moins d'une seconde.",
       "La tentation naturelle est de fuir cette vague, de penser à autre chose, de s'occuper, de minimiser. Mais fuir une émotion ne la dissout pas. Elle s'enkystera, trouvera d'autres chemins.",
       "Traverser, c'est accepter de rester là, présent, pendant que la vague passe. Pas pour souffrir davantage, mais parce que c'est le seul chemin vers l'autre rive.",
     ],
@@ -33,7 +33,7 @@ const steps: StepResource[] = [
     content: [
       "Le cerveau possède deux voies de traitement émotionnel. La voie rapide, instinctive et automatique, réagit avant même que tu aies le temps de penser. La voie lente, portée par le cortex préfrontal, analyse, nuance, donne du sens.",
       "Reconnaître une émotion, c'est activer cette deuxième voie. Des recherches ont montré que nommer une émotion, simplement lui donner un mot, réduit son intensité dans le corps. C'est ce qu'on appelle l'affect labeling. Dire « j'ai peur » diminue l'activation de l'amygdale. Pas parce que la peur disparaît, mais parce que le cerveau passe du mode survie au mode compréhension.",
-      "La distinction entre émotion primaire et secondaire est cruciale\u00A0: la colère protège souvent une peur. L'irritation cache parfois une tristesse profonde. Reconnaître la couche de dessous, c'est accéder à la vérité.",
+      "La distinction entre émotion primaire et secondaire est cruciale : la colère protège souvent une peur. L'irritation cache parfois une tristesse profonde. Reconnaître la couche de dessous, c'est accéder à la vérité.",
     ],
   },
   {
@@ -43,7 +43,7 @@ const steps: StepResource[] = [
     subtitle: "Ce qui se passe dans ton corps",
     dotColor: "#8A9E7A",
     content: [
-      "Le système nerveux autonome régule tout ce que tu ne contrôles pas consciemment\u00A0: ton rythme cardiaque, ta digestion, ta respiration. Il fonctionne en deux modes\u00A0: le système sympathique (activation, stress, survie) et le système parasympathique (repos, récupération, sécurité).",
+      "Le système nerveux autonome régule tout ce que tu ne contrôles pas consciemment : ton rythme cardiaque, ta digestion, ta respiration. Il fonctionne en deux modes : le système sympathique (activation, stress, survie) et le système parasympathique (repos, récupération, sécurité).",
       "Quand une émotion intense surgit, le sympathique prend le dessus. Ancrer le corps, c'est réactiver le parasympathique. La respiration est le seul pont conscient entre ces deux systèmes.",
       "Expirer plus longtemps que tu n'inspires, comme dans le guide 4/6 secondes, active le nerf vague, qui envoie un signal de sécurité à tout le corps. Ce n'est pas de la relaxation. C'est de la régulation neurologique.",
     ],
@@ -56,7 +56,7 @@ const steps: StepResource[] = [
     dotColor: "#A89080",
     content: [
       "Le cortex préfrontal, la partie la plus évoluée du cerveau, est le siège de la compréhension, du sens, de la mise en perspective. Mais il ne fonctionne bien que quand le système nerveux est suffisamment régulé. C'est pourquoi Conscientiser vient après Ancrer, pas avant.",
-      "Une fois le corps stabilisé, tu peux remonter le fil\u00A0: pourquoi cette émotion\u00A0? Que te raconte-t-elle de tes besoins profonds\u00A0?",
+      "Une fois le corps stabilisé, tu peux remonter le fil : pourquoi cette émotion ? Que te raconte-t-elle de tes besoins profonds ?",
       "Nos schémas émotionnels se forment tôt, souvent dans l'enfance. Ils se répètent parce qu'ils ont été utiles — des stratégies de survie devenues des réflexes. Les voir clairement, sans les juger, c'est déjà commencer à s'en libérer.",
     ],
   },
@@ -69,7 +69,7 @@ const steps: StepResource[] = [
     content: [
       "L'intégration émotionnelle est un processus neurologique réel. Quand une expérience difficile est traversée, nommée, régulée et mise en sens, le cerveau crée de nouvelles connexions, ce qu'on appelle la plasticité neuronale.",
       "Une nouvelle compréhension émerge. Ce n'est pas une conclusion intellectuelle. C'est souvent une sensation physique d'abord, un souffle qui se libère, une légèreté dans les épaules, une évidence qui arrive sans forcer.",
-      "Émerger ne se commande pas. Ça se laisse venir. L'invitation de cette étape est simple\u00A0: rester à l'écoute de ce qui change, sans l'anticiper.",
+      "Émerger ne se commande pas. Ça se laisse venir. L'invitation de cette étape est simple : rester à l'écoute de ce qui change, sans l'anticiper.",
     ],
   },
   {

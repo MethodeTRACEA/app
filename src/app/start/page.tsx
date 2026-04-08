@@ -95,7 +95,7 @@ export default function StartPage() {
             marginBottom: 48,
           }}
         >
-          {["10 minutes", "Gratuit", "Sans engagement", "Arr\u00eate quand tu veux"].map((item) => (
+          {["10 minutes", "Gratuit", "Sans engagement", "Arrête quand tu veux"].map((item) => (
             <span
               key={item}
               className="font-sans"

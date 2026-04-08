@@ -53,7 +53,7 @@ export default function MentionsLegales() {
           </h2>
           <div className="card-base space-y-2">
             <p>
-              <strong>Hébergeur :</strong> [À compléter, ex\u00A0: Vercel Inc., OVH,
+              <strong>Hébergeur :</strong> [À compléter, ex : Vercel Inc., OVH,
               Scaleway]
             </p>
             <p>
