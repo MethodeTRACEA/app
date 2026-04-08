@@ -801,27 +801,22 @@ function SessionContent({ userId }: { userId: string }) {
 
               {/* Zone du corps — chips — bloc bien séparé */}
               <div className="mt-8">
-                <p className="font-inter text-base text-t-beige/90 mb-3.5">
-                  Où tu le sens dans ton corps ?
+                <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
+                  Dans le corps
+                </p>
+                <p className="font-inter text-sm text-t-creme/50 italic mb-3.5">
+                  Où c&apos;est le plus marqué ?
                 </p>
                 <div className="flex flex-wrap gap-2.5">
-                  {["poitrine", "ventre", "gorge", "tête", "épaules", "autre"].map((zone) => (
+                  {["poitrine", "ventre", "gorge", "tête", "épaules", "partout", "je ne sais pas"].map((zone) => (
                     <ChoiceChip
                       key={zone}
                       label={zone.charAt(0).toUpperCase() + zone.slice(1)}
                       selected={bodyZone === zone}
-                      onClick={() => { setBodyZone(zone); if (zone !== "autre") setBodyZoneOther(""); }}
+                      onClick={() => { setBodyZone(zone); setBodyZoneOther(""); }}
                     />
                   ))}
                 </div>
-                {bodyZone === "autre" && (
-                  <TextCapsuleField
-                    value={bodyZoneOther}
-                    onChange={setBodyZoneOther}
-                    placeholder="Où exactement ?"
-                    className="mt-3.5"
-                  />
-                )}
               </div>
 
               {/* Bouton principal — bien espacé */}
@@ -845,8 +840,8 @@ function SessionContent({ userId }: { userId: string }) {
               </div>
 
               {/* Aide secondaire */}
-              <SoftHelpText trigger="Je ne sais pas trop">
-                Tu peux juste choisir la zone du corps la plus marquée.
+              <SoftHelpText trigger="Je bloque">
+                Choisis juste la zone où tu sens quelque chose, même vaguement.
               </SoftHelpText>
             </StepCard>
             <HelpPanel step={step} />
