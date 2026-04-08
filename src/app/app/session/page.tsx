@@ -28,19 +28,8 @@ import {
   SoftHelpText,
 } from "@/components/ui";
 
-type Phase = "intro" | "welcome" | "entry-question" | "session" | "mirror" | "transitioning" | "integration" | "intensity-after" | "analysis" | "complete";
+type Phase = "intro" | "welcome" | "entry-question" | "session" | "mirror" | "integration" | "intensity-after" | "analysis" | "complete";
 
-// Messages de transition entre étapes (Section 4)
-const TRANSITION_MESSAGES: Record<string, string> = {
-  "traverser→reconnaitre": "Tu as posé ce qui était là. Maintenant, regardons de plus près.",
-  "reconnaitre→ancrer": "Tu as nommé ce que tu ressens. Maintenant, ralentis.",
-  "ancrer→conscientiser": "Ton corps a trouvé un appui. Maintenant, on peut regarder ce qui se joue.",
-  "conscientiser→emerger": "Tu as vu ce qui était en jeu. Voyons ce qui émerge.",
-  "emerger→aligner": "Quelque chose s'est clarifié. Maintenant, on le traduit en geste concret.",
-  // Transitions pour le mode court
-  "traverser→ancrer": "Tu as posé ce qui était là. Maintenant, ralentis.",
-  "ancrer→emerger": "Ton corps a trouvé un appui. Voyons ce qui émerge.",
-};
 
 export default function SessionPage() {
   const { user, loading } = useAuth();
@@ -125,7 +114,6 @@ function SessionContent({ userId }: { userId: string }) {
   const [lastMicroAction, setLastMicroAction] = useState("");
   const [lastInsight, setLastInsight] = useState("");
   const [entryQuestion, setEntryQuestion] = useState("");
-  const [transitionMessage, setTransitionMessage] = useState("");
   const [integrationResponse, setIntegrationResponse] = useState<"yes" | "no" | "unsure" | null>(null);
   const [integrationMessage, setIntegrationMessage] = useState("");
   const [mirrorNote, setMirrorNote] = useState("");
@@ -407,23 +395,11 @@ function SessionContent({ userId }: { userId: string }) {
         setEmergerOther("");
       }
 
-      // Transition entre étapes (Section 4)
-      const key = `${currentStepId}→${nextStepId}`;
-      const message = TRANSITION_MESSAGES[key] || "";
+      // Passage direct à l'étape suivante (sans écran de transition)
       setMirrorNote("");
-      if (message) {
-        setTransitionMessage(message);
-        setPhase("transitioning");
-        setTimeout(() => {
-          setCurrentStep(nextIndex);
-          setText(restoredText);
-          setPhase("session");
-        }, 2000);
-      } else {
-        setCurrentStep(nextIndex);
-        setText(restoredText);
-        setPhase("session");
-      }
+      setCurrentStep(nextIndex);
+      setText(restoredText);
+      setPhase("session");
     } else {
       // Sauvegarder la dernière note si non vide
       const lastStepId = stepsActifs[currentStep].id;
@@ -720,18 +696,7 @@ function SessionContent({ userId }: { userId: string }) {
     );
   }
 
-  // --- TRANSITIONING (Section 4) ---
-  if (phase === "transitioning") {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-16 animate-fade-in">
-        <div className="text-center min-h-[40vh] flex items-center justify-center">
-          <p className="font-body text-lg text-cream italic leading-relaxed max-w-md">
-            {transitionMessage}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // (Écran de transition supprimé — passage direct entre étapes)
 
   // --- SESSION ---
   if (phase === "session") {
