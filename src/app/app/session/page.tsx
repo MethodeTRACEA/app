@@ -1122,33 +1122,15 @@ function SessionContent({ userId }: { userId: string }) {
 
                   {ancrerFeedback === "pareil" && (
                     <>
-                      <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-8">
-                        On ajuste un peu.
+                      <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
+                        On simplifie
                       </p>
-                      <div className="flex flex-col gap-3">
-                        <button
-                          onClick={() => {
-                            setAncrerMethod("");
-                            setAncrerDone(false);
-                            setAncrerPostPhase(false);
-                            setAncrerFeedback("");
-                          }}
-                          className="t-btn-secondary w-full justify-center"
-                        >
-                          Rechoisir une méthode
-                        </button>
-                        <button
-                          onClick={() => {
-                            setAncrerMethod("");
-                            setAncrerDone(false);
-                            setAncrerPostPhase(false);
-                            setAncrerFeedback("");
-                          }}
-                          className="t-btn-secondary w-full justify-center"
-                        >
-                          Essayer autrement
-                        </button>
-                      </div>
+                      <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-10">
+                        Ce n&apos;est pas grave si c&apos;est pareil.{"\n"}On va juste faire encore plus simple.
+                      </p>
+                      <PrimaryButton onClick={handleNextStep} className="w-full">
+                        Continuer
+                      </PrimaryButton>
                     </>
                   )}
 
