@@ -1523,40 +1523,49 @@ function SessionContent({ userId }: { userId: string }) {
               </div>
             )}
 
-            {/* Phase réduction */}
+            {/* Phase réduction — dynamique selon l'action choisie */}
             {alignerPhase === "reduction" && (
-              <div className="mt-2">
-                <div className="flex flex-wrap gap-2.5">
-                  {(ancrerFeedback === "agite"
-                    ? ["juste m'asseoir", "juste poser une main sur moi", "juste boire une gorgée d'eau", "autre"]
-                    : ["juste m'asseoir", "juste poser une main sur moi", "juste boire une gorgée d'eau", "juste respirer une fois lentement", "autre"]
-                  ).map((opt) => (
-                    <ChoiceChip
-                      key={opt}
-                      label={opt.charAt(0).toUpperCase() + opt.slice(1)}
-                      selected={alignerReduction === opt}
-                      onClick={() => { setAlignerReduction(opt); if (opt !== "autre") { setAlignerReductionOther(""); setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); } }}
-                    />
-                  ))}
-                </div>
-                {alignerReduction === "autre" && (
-                  <>
-                    <TextCapsuleField
-                      value={alignerReductionOther}
-                      onChange={setAlignerReductionOther}
-                      placeholder="Le plus petit geste…"
-                      className="mt-3.5"
-                    />
-                    {alignerReductionOther.trim() && (
-                      <button
-                        onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
-                        className="t-btn-secondary mt-3"
-                      >
-                        C&apos;est celui-là
-                      </button>
-                    )}
-                  </>
-                )}
+              <div className="mt-2 animate-fade-up">
+                <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
+                  Encore plus simple
+                </p>
+                <p className="font-inter text-sm text-t-creme/55 mb-8">
+                  On réduit encore.
+                </p>
+                <p className="font-inter text-base text-t-beige/80 leading-relaxed whitespace-pre-line mb-8">
+                  {((): string => {
+                    const action = emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim().toLowerCase() : (emergerChoice || "").toLowerCase();
+                    if (action.includes("asseoir") || action.includes("poser") || action.includes("minute"))
+                      return "2 minutes → 30 secondes.\nJuste s'asseoir, c'est tout.";
+                    if (action.includes("écrire") || action.includes("noter") || action.includes("message"))
+                      return "Écrire → noter 3 mots.\nPas besoin de plus.";
+                    if (action.includes("appeler") || action.includes("envoyer"))
+                      return "Appeler → envoyer 1 phrase.\nJuste un signe.";
+                    if (action.includes("sortir") || action.includes("prendre l'air") || action.includes("éloigner") || action.includes("dehors"))
+                      return "Sortir → ouvrir la fenêtre.\nJuste sentir l'air.";
+                    if (action.includes("respirer") || action.includes("souffler"))
+                      return "3 respirations → 1 seule.\nJuste celle-là.";
+                    if (action.includes("fermer les yeux"))
+                      return "Fermer les yeux → 5 secondes.\nJuste un instant.";
+                    if (action.includes("étirer") || action.includes("secouer"))
+                      return "Étirer → juste bouger les mains.\nRien de plus.";
+                    if (action.includes("couper") || action.includes("stimulation") || action.includes("téléphone"))
+                      return "Couper 10 min → retourner le téléphone.\nJuste ça.";
+                    if (action.includes("boire") || action.includes("eau"))
+                      return "Boire un verre → une gorgée.\nJuste une.";
+                    if (action.includes("relire") || action.includes("phrase"))
+                      return "Relire une phrase → la dire dans ta tête.\nUne seule fois.";
+                    if (action.includes("pause"))
+                      return "Une pause → 30 secondes.\nJuste rester là.";
+                    return "Version réduite → le plus petit geste.\nJuste un, maintenant.";
+                  })()}
+                </p>
+                <PrimaryButton
+                  onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
+                  className="w-full"
+                >
+                  Ça me va
+                </PrimaryButton>
               </div>
             )}
 
