@@ -135,6 +135,7 @@ function SessionContent({ userId }: { userId: string }) {
   const [ancrerDone, setAncrerDone] = useState(false);
   const [ancrerFeedback, setAncrerFeedback] = useState<"calme" | "pareil" | "agite" | "">("");
   const [showAncrerHelp, setShowAncrerHelp] = useState(false);
+  const [ancrerMethod, setAncrerMethod] = useState<"" | "respirer" | "corps" | "regarder">("");
   const [ancrerAlt, setAncrerAlt] = useState(false);
   const [ancrerPostPhase, setAncrerPostPhase] = useState(false);
 
@@ -931,9 +932,9 @@ function SessionContent({ userId }: { userId: string }) {
               Ça semble bien présent. On va juste revenir au corps.
             </p>
 
-            <StepCard className={`transition-all duration-1000 ease-in-out ${!ancrerDone ? "!bg-[rgba(50,35,28,0.08)] !border-[rgba(232,216,199,0.03)] !shadow-none !backdrop-blur-[40px]" : ""}`}>
-              {/* En-tête — très effacé pendant la respiration */}
-              <div className={`transition-opacity duration-1000 ${!ancrerDone ? "opacity-[0.3]" : "opacity-100"}`}>
+            <StepCard className={`transition-all duration-1000 ease-in-out ${!ancrerDone && ancrerMethod ? "!bg-[rgba(50,35,28,0.08)] !border-[rgba(232,216,199,0.03)] !shadow-none !backdrop-blur-[40px]" : ""}`}>
+              {/* En-tête */}
+              <div className={`transition-opacity duration-1000 ${!ancrerDone && ancrerMethod ? "opacity-[0.3]" : "opacity-100"}`}>
                 <StepHeader
                   stepNumber={step.number}
                   stepName={step.name}
@@ -943,28 +944,44 @@ function SessionContent({ userId }: { userId: string }) {
                 />
               </div>
 
-              {/* Description courte — s'efface pendant la respiration */}
-              <p className={`font-inter text-sm text-t-creme/45 italic transition-all duration-1000 ${!ancrerDone ? "mb-2 opacity-[0.2]" : "mb-10 opacity-100"}`}>
-                Juste ralentir.
-              </p>
-
-              {/* Phase 1 — Respiration guidée */}
-              {!ancrerDone && !ancrerAlt && (
-                <div>
-                  <BreathingGuide onComplete={() => setAncrerDone(true)} immersive />
-                  <div className="text-center mt-6">
+              {/* Choix de méthode d'ancrage */}
+              {!ancrerMethod && !ancrerDone && (
+                <div className="animate-fade-up">
+                  <p className="font-inter text-sm text-t-creme/45 italic mb-8">
+                    On va juste ralentir un peu, de la manière la plus simple pour toi.
+                  </p>
+                  <div className="flex flex-col gap-3">
                     <button
-                      onClick={() => setAncrerAlt(true)}
-                      className="font-inter text-sm text-t-creme/70 underline underline-offset-4 hover:text-t-creme transition-colors py-3 px-4"
+                      onClick={() => setAncrerMethod("respirer")}
+                      className="t-btn-secondary w-full justify-center"
                     >
-                      Je préfère juste sentir mon corps
+                      Expirer plus lentement
+                    </button>
+                    <button
+                      onClick={() => setAncrerMethod("corps")}
+                      className="t-btn-secondary w-full justify-center"
+                    >
+                      Sentir les appuis du corps
+                    </button>
+                    <button
+                      onClick={() => setAncrerMethod("regarder")}
+                      className="t-btn-secondary w-full justify-center"
+                    >
+                      Regarder autour de moi
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* Phase 1 alt — Sentir sans respirer */}
-              {ancrerAlt && !ancrerDone && (
+              {/* Méthode : respirer */}
+              {ancrerMethod === "respirer" && !ancrerDone && (
+                <div>
+                  <BreathingGuide onComplete={() => setAncrerDone(true)} immersive />
+                </div>
+              )}
+
+              {/* Méthode : sentir les appuis du corps */}
+              {ancrerMethod === "corps" && !ancrerDone && (
                 <div className="py-12 text-center">
                   <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-8">
                     Sens le point le plus tendu. Reste là.
@@ -974,6 +991,21 @@ function SessionContent({ userId }: { userId: string }) {
                     className="t-btn-secondary"
                   >
                     J&apos;ai pris le temps
+                  </button>
+                </div>
+              )}
+
+              {/* Méthode : regarder autour */}
+              {ancrerMethod === "regarder" && !ancrerDone && (
+                <div className="py-12 text-center">
+                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-8">
+                    Regarde 3 choses autour de toi. Nomme-les dans ta tête.
+                  </p>
+                  <button
+                    onClick={() => setAncrerDone(true)}
+                    className="t-btn-secondary"
+                  >
+                    C&apos;est fait
                   </button>
                 </div>
               )}
@@ -1051,24 +1083,25 @@ function SessionContent({ userId }: { userId: string }) {
                       <div className="flex flex-col gap-3">
                         <button
                           onClick={() => {
+                            setAncrerMethod("");
                             setAncrerDone(false);
                             setAncrerPostPhase(false);
                             setAncrerFeedback("");
                           }}
                           className="t-btn-secondary w-full justify-center"
                         >
-                          Refaire un cycle
+                          Rechoisir une méthode
                         </button>
                         <button
                           onClick={() => {
-                            setAncrerAlt(true);
+                            setAncrerMethod("");
                             setAncrerDone(false);
                             setAncrerPostPhase(false);
                             setAncrerFeedback("");
                           }}
                           className="t-btn-secondary w-full justify-center"
                         >
-                          Sentir mon corps
+                          Essayer autrement
                         </button>
                       </div>
                     </>
@@ -1080,15 +1113,20 @@ function SessionContent({ userId }: { userId: string }) {
                         On change.
                       </p>
                       <div className="flex flex-col gap-3">
-                        {["Sentir mes pieds au sol", "Regarder autour de moi", "Sentir un point de contact"].map((label) => (
-                          <button
-                            key={label}
-                            onClick={handleNextStep}
-                            className="t-btn-secondary w-full justify-center"
-                          >
-                            {label}
-                          </button>
-                        ))}
+                        <button
+                          onClick={() => {
+                            setAncrerMethod("");
+                            setAncrerDone(false);
+                            setAncrerPostPhase(false);
+                            setAncrerFeedback("");
+                          }}
+                          className="t-btn-secondary w-full justify-center"
+                        >
+                          Rechoisir une méthode
+                        </button>
+                        <PrimaryButton onClick={handleNextStep} className="w-full">
+                          Continuer quand même
+                        </PrimaryButton>
                       </div>
                     </>
                   )}
