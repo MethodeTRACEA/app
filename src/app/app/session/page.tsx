@@ -873,56 +873,39 @@ function SessionContent({ userId }: { userId: string }) {
                 hasCachedAI={hasCachedAI}
               />
 
-              {/* Description */}
-              {step.description && (
-                <p className="font-inter text-sm text-t-creme/55 italic mb-8">
-                  {step.description}
-                </p>
-              )}
-
-              {/* Question principale */}
-              <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
-                {step.question}
+              {/* Titre + question */}
+              <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
+                Reconnaître
+              </p>
+              <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                Si tu devais approcher ça avec un mot simple…
               </p>
 
-              {/* Chips émotion — contraste légèrement renforcé */}
-              <div className="mt-6">
-                <div className="flex flex-wrap gap-2.5">
-                  {(showMoreEmotions
-                    ? ["tension", "peur", "tristesse", "colère", "fatigue", "confusion", "trop-plein", "vide", "autre"]
-                    : ["tension", "peur", "tristesse", "colère", "fatigue"]
-                  ).map((emo) => (
-                    <ChoiceChip
-                      key={emo}
-                      label={emo.charAt(0).toUpperCase() + emo.slice(1)}
-                      selected={emotionChoice === emo}
-                      onClick={() => { setEmotionChoice(emo); setEmotionConfirm(""); if (emo !== "autre") setEmotionOther(""); }}
-                      className="border-t-creme/25 text-t-creme/90"
-                    />
-                  ))}
-                  {!showMoreEmotions && (
-                    <button
-                      onClick={() => setShowMoreEmotions(true)}
-                      className="px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 text-t-creme/50 hover:text-t-creme/70 transition-colors"
-                    >
-                      + voir plus
-                    </button>
-                  )}
-                </div>
-                {emotionChoice === "autre" && (
-                  <TextCapsuleField
-                    value={emotionOther}
-                    onChange={setEmotionOther}
-                    placeholder="Un mot simple…"
-                    className="mt-3.5"
+              {/* Chips émotion — liste complète à plat */}
+              <div className="flex flex-wrap gap-2.5">
+                {["tension", "peur", "tristesse", "colère", "fatigue", "confusion", "trop-plein", "vide", "autre", "je ne sais pas"].map((emo) => (
+                  <ChoiceChip
+                    key={emo}
+                    label={emo.charAt(0).toUpperCase() + emo.slice(1)}
+                    selected={emotionChoice === emo}
+                    onClick={() => { setEmotionChoice(emo); setEmotionOther(""); }}
+                    className="border-t-creme/25 text-t-creme/90"
                   />
-                )}
+                ))}
               </div>
+              {emotionChoice === "autre" && (
+                <TextCapsuleField
+                  value={emotionOther}
+                  onChange={setEmotionOther}
+                  placeholder="Un mot simple…"
+                  className="mt-3.5"
+                />
+              )}
 
-              {/* Micro-texte — apparaît quand un choix est fait */}
+              {/* Micro-texte rassurant après sélection */}
               {emotionChoice && (emotionChoice !== "autre" || emotionOther.trim()) && (
                 <p className="font-inter text-sm text-t-creme/45 mt-4 italic">
-                  Pas besoin d&apos;être exact. C&apos;est assez.
+                  On n&apos;a pas besoin d&apos;être exact.
                 </p>
               )}
 
