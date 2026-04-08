@@ -264,8 +264,8 @@ function SessionContent({ userId }: { userId: string }) {
 
     await updateSessionDb(sessionId, updates as Parameters<typeof updateSessionDb>[1]);
 
-    // ── Étapes 3, 4, 5 : bypass IA, transition directe (UI affiche du contenu fixe) ──
-    if (stepId === "ancrer" || stepId === "conscientiser" || stepId === "emerger") {
+    // ── Étapes 2, 3, 4, 5 : bypass IA, transition directe (UI affiche du contenu fixe) ──
+    if (stepId === "reconnaitre" || stepId === "ancrer" || stepId === "conscientiser" || stepId === "emerger") {
       handleContinueAfterMirror();
       return;
     }
@@ -926,6 +926,11 @@ function SessionContent({ userId }: { userId: string }) {
           />
 
           <div className="mt-6 md:mt-8 animate-fade-up" key={currentStep}>
+            {/* Micro-texte de transition depuis reconnaitre */}
+            <p className="font-body text-sm text-warm-gray/70 italic text-center mb-4">
+              Ça semble bien présent. On va juste revenir au corps.
+            </p>
+
             <StepCard className={`transition-all duration-1000 ease-in-out ${!ancrerDone ? "!bg-[rgba(50,35,28,0.08)] !border-[rgba(232,216,199,0.03)] !shadow-none !backdrop-blur-[40px]" : ""}`}>
               {/* En-tête — très effacé pendant la respiration */}
               <div className={`transition-opacity duration-1000 ${!ancrerDone ? "opacity-[0.3]" : "opacity-100"}`}>
