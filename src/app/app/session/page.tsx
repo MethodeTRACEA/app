@@ -1913,87 +1913,49 @@ function SessionContent({ userId }: { userId: string }) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
       <h1 className="section-title !text-2xl md:!text-4xl">Ta traversée</h1>
-      {analysisLoading ? (
-        <div className="card-base text-center py-12 md:py-16">
-          <div className="font-serif text-2xl md:text-3xl text-terra mb-4 animate-pulse-gentle">TRACEA</div>
-          <p className="text-warm-gray text-sm md:text-base">Un instant de recul...</p>
+
+      {/* Synthèse descriptive */}
+      <div className="card-base mb-6 space-y-3">
+        {steps.reconnaitre && (
+          <p className="font-body text-sm text-espresso leading-relaxed">
+            Ce qui était là : {steps.reconnaitre}.
+          </p>
+        )}
+        {steps.conscientiser && (
+          <p className="font-body text-sm text-espresso leading-relaxed">
+            Ce qui aidait : {steps.conscientiser}.
+          </p>
+        )}
+        {steps.aligner && (
+          <p className="font-body text-sm text-espresso leading-relaxed">
+            Le geste choisi : {steps.aligner}.
+          </p>
+        )}
+      </div>
+
+      {/* Clôture */}
+      <div className="text-center py-6 md:py-8">
+        <p className="font-body text-base text-espresso/80 leading-relaxed mb-1">
+          Ce n&apos;est peut-être pas tout réglé.
+        </p>
+        <p className="font-body text-base text-espresso/80 leading-relaxed mb-10">
+          Mais quelque chose a bougé.
+        </p>
+        <button
+          onClick={() => router.push("/app")}
+          className="btn-primary w-full md:w-auto mb-3 !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
+        >
+          Retour à l&apos;accueil
+        </button>
+        <div className="mt-3">
+          <button
+            onClick={() => router.push("/app")}
+            className="text-sm text-warm-gray hover:text-terra transition-colors underline underline-offset-2"
+          >
+            Refaire plus tard
+          </button>
         </div>
-      ) : (
-        <>
-          {/* Résumé post-session — choix utilisateur + observation IA */}
-          {(steps.reconnaitre || lastStepSnapshot) && (
-            <div className="card-base mb-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
-                Ce qui a été traversé
-              </p>
-              <div className="space-y-2">
-                {steps.reconnaitre && (
-                  <p className="font-body text-sm text-espresso">
-                    Émotion identifiée : {steps.reconnaitre}.
-                  </p>
-                )}
-                {steps.conscientiser && (
-                  <p className="font-body text-sm text-espresso">
-                    Besoin : {steps.conscientiser}.
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {veriteInterieure && (
-            <div className="border-l-[3px] border-terra pl-6 py-3 mb-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
-                Le geste que tu as choisi
-              </p>
-              <p className="font-body text-xl italic text-espresso">
-                {veriteInterieure.toLowerCase().includes("je ne sais pas") || veriteInterieure.toLowerCase().includes("sais pas") || veriteInterieure.trim().length < 10
-                  ? "Pas de geste formulé pour le moment."
-                  : <>&ldquo;{veriteInterieure}&rdquo;</>}
-              </p>
-            </div>
-          )}
-
-          {/* Action posée + suggestion IA (Phase 3) */}
-          {(steps.aligner || lastNextStepSuggestion) && (
-            <div className="card-base mb-6 space-y-4">
-              {steps.aligner && (
-                <div>
-                  <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
-                    Ce que tu as posé
-                  </p>
-                  <p className="font-body text-sm text-espresso leading-relaxed">
-                    {steps.aligner}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Écran de fin */}
-          <div className="text-center py-6 md:py-8 animate-fade-in">
-            <h2 className="font-serif text-xl md:text-2xl text-espresso mb-4">
-              Ta traversée est terminée.
-            </h2>
-            <button
-              onClick={() => router.push("/app")}
-              className="btn-primary w-full md:w-auto mb-3 !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
-            >
-              Retour à l&apos;accueil
-            </button>
-            <div className="mt-3">
-              <Link
-                href="/app/profil"
-                className="text-sm text-warm-gray hover:text-terra transition-colors underline underline-offset-2"
-              >
-                Voir mon profil
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-10" />
-        </>
-      )}
+      </div>
     </div>
   );
 }
