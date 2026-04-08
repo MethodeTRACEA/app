@@ -114,6 +114,7 @@ function SessionContent({ userId }: { userId: string }) {
   const [lastMicroAction, setLastMicroAction] = useState("");
   const [lastInsight, setLastInsight] = useState("");
   const [entryQuestion, setEntryQuestion] = useState("");
+  const [showSensations, setShowSensations] = useState(false);
   const [integrationResponse, setIntegrationResponse] = useState<"yes" | "no" | "unsure" | null>(null);
   const [integrationMessage, setIntegrationMessage] = useState("");
   const [mirrorNote, setMirrorNote] = useState("");
@@ -683,27 +684,63 @@ function SessionContent({ userId }: { userId: string }) {
 
   // --- ENTRY QUESTION (Section 3) ---
   if (phase === "entry-question") {
+    const sensationOptions = ["serré", "agité", "lourd", "flou", "vide", "bloqué"];
     return (
       <div className="max-w-2xl mx-auto px-4 py-10 md:py-16 animate-fade-in">
         <div className="text-center max-w-lg mx-auto">
-          <h2 className="font-serif text-xl md:text-3xl text-espresso leading-relaxed mb-6 md:mb-8">
-            Qu&apos;est-ce qui est le plus présent pour toi en ce moment ?
+          <h2 className="font-serif text-xl md:text-3xl text-espresso leading-relaxed mb-2">
+            Traverser
           </h2>
-          <textarea
-            value={entryQuestion}
-            onChange={(e) => setEntryQuestion(e.target.value)}
-            placeholder="Décris ce que tu ressens, sans chercher les bons mots..."
-            className="w-full h-32 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 mb-6"
-          />
-          <button
-            onClick={() => {
-              setCurrentStep(0);
-              setPhase("session");
-            }}
-            className="btn-primary w-full md:w-auto !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
-          >
-            Continuer
-          </button>
+          <p className="text-warm-gray mb-6 md:mb-8 text-sm md:text-base">
+            Qu&apos;est-ce qui est le plus présent là ?
+          </p>
+
+          {!showSensations ? (
+            <>
+              <textarea
+                value={entryQuestion}
+                onChange={(e) => setEntryQuestion(e.target.value)}
+                placeholder="boule au ventre, tension, agitation, fatigue…"
+                className="w-full h-24 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 mb-4"
+              />
+              <button
+                onClick={() => {
+                  setCurrentStep(0);
+                  setPhase("session");
+                }}
+                className="btn-primary w-full md:w-auto !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl mb-3"
+              >
+                Continuer
+              </button>
+              <button
+                onClick={() => setShowSensations(true)}
+                className="block mx-auto text-sm text-warm-gray hover:text-espresso transition-colors"
+              >
+                Je ne sais pas
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="text-warm-gray mb-4 text-sm">
+                Tu peux juste approcher ce que ça fait :
+              </p>
+              <div className="grid grid-cols-2 gap-2 mb-6">
+                {sensationOptions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => {
+                      setEntryQuestion(s);
+                      setCurrentStep(0);
+                      setPhase("session");
+                    }}
+                    className="py-3.5 md:py-3 px-4 rounded-xl text-sm font-medium bg-beige text-espresso hover:bg-beige-dark transition-all"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
