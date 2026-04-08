@@ -28,7 +28,7 @@ import {
   SoftHelpText,
 } from "@/components/ui";
 
-type Phase = "intro" | "welcome" | "entry-question" | "session" | "mirror" | "integration" | "intensity-after" | "analysis" | "complete";
+type Phase = "intro" | "welcome" | "entry-question" | "session" | "mirror" | "integration" | "analysis" | "complete";
 
 
 export default function SessionPage() {
@@ -434,21 +434,12 @@ function SessionContent({ userId }: { userId: string }) {
 
   function handleIntegrationChoice(choice: "yes" | "no" | "unsure") {
     setIntegrationResponse(choice);
-    if (choice === "no" || choice === "unsure") {
-      setIntegrationMessage("C'est normal. Parfois le changement se voit après.");
-      setTimeout(() => {
-        setPhase("intensity-after");
-      }, 1500);
-    } else {
-      setPhase("intensity-after");
+    // Passage direct à l'analyse sans écran de métriques
+    if (sessionId) {
+      updateSessionDb(sessionId, { intensity_after: intensityAfter });
     }
-  }
-
-  async function handleIntensityAfterDone() {
-    if (!sessionId) return;
-    await updateSessionDb(sessionId, { intensity_after: intensityAfter });
     setPhase("analysis");
-    await generateAnalysis();
+    generateAnalysis();
   }
 
   async function generateAnalysis() {
@@ -1879,109 +1870,44 @@ function SessionContent({ userId }: { userId: string }) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 animate-fade-in">
         <div className="text-center min-h-[40vh] flex flex-col items-center justify-center">
-          {integrationMessage ? (
-            <p className="font-body text-lg text-espresso/80 italic animate-fade-in">
-              {integrationMessage}
-            </p>
-          ) : (
-            <>
-              <p className="font-serif text-2xl text-espresso mb-3">
-                Prends 10 secondes.
-              </p>
-              <p className="font-body text-sm text-warm-gray italic mb-6">
-                Reste là, sans rien faire. Juste sentir.
-              </p>
-              <p className="font-body text-lg text-espresso/80 mb-10">
-                Est-ce que quelque chose a légèrement changé ?
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center w-full max-w-sm">
-                <button
-                  onClick={() => handleIntegrationChoice("yes")}
-                  className="flex-1 min-w-[80px] px-6 py-3.5 rounded-2xl border-2 border-sage/30 text-espresso font-medium text-base hover:border-sage hover:bg-sage/10 transition-all"
-                >
-                  Oui
-                </button>
-                <button
-                  onClick={() => handleIntegrationChoice("no")}
-                  className="flex-1 min-w-[80px] px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-base hover:border-warm-gray hover:bg-beige transition-all"
-                >
-                  Non
-                </button>
-                <button
-                  onClick={() => handleIntegrationChoice("unsure")}
-                  className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-base hover:border-warm-gray hover:bg-beige transition-all"
-                >
-                  Je ne sais pas
-                </button>
-              </div>
-            </>
-          )}
+          <p className="font-serif text-2xl text-espresso mb-3">
+            En repartant
+          </p>
+          <p className="font-body text-base text-espresso/80 mb-10">
+            Là, tu repars avec quoi ?
+          </p>
+          <div className="flex flex-col gap-3 w-full max-w-sm">
+            <button
+              onClick={() => handleIntegrationChoice("yes")}
+              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
+            >
+              Un peu plus de calme
+            </button>
+            <button
+              onClick={() => handleIntegrationChoice("yes")}
+              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
+            >
+              Un peu plus de clarté
+            </button>
+            <button
+              onClick={() => handleIntegrationChoice("yes")}
+              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
+            >
+              Juste un prochain pas
+            </button>
+            <button
+              onClick={() => handleIntegrationChoice("unsure")}
+              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-sm hover:border-warm-gray hover:bg-beige transition-all"
+            >
+              Pas vraiment, mais quelque chose s&apos;est posé
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
-  // --- INTENSITY AFTER ---
-  if (phase === "intensity-after") {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
-        <p className="section-label">Fin de traversée</p>
-        <h1 className="section-title !text-2xl md:!text-4xl">Où en es-tu maintenant ?</h1>
-        <p className="text-warm-gray text-sm md:text-base text-center mb-6 leading-relaxed">
-          Place le curseur là où tu te sens, maintenant.
-        </p>
-        <div className="card-base mb-6">
-          <IntensitySlider
-            value={intensityAfter}
-            onChange={(v: number) => { setIntensityAfter(v); setIntensityAfterTouched(true); }}
-            label="Intensité après la traversée"
-          />
-        </div>
-        {intensityAfterTouched && (
-          <>
-            {intensity > intensityAfter ? (
-              <div className="text-center mb-4 animate-fade-in">
-                <p className="font-body text-sm text-sage italic">
-                  Ton intensité a baissé.
-                </p>
-              </div>
-            ) : intensity === intensityAfter ? (
-              <div className="text-center mb-4 animate-fade-in">
-                <p className="font-body text-sm text-warm-gray italic">
-                  Ton intensité est restée stable.
-                </p>
-              </div>
-            ) : (
-              <div className="text-center mb-4 animate-fade-in">
-                <p className="font-body text-sm text-warm-gray italic">
-                  Ton intensité a monté.
-                </p>
-              </div>
-            )}
-            <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8 animate-fade-in">
-              <div className="card-terra flex-1 text-center !p-3 md:!p-5">
-                <div className="text-[10px] md:text-xs text-terra-dark tracking-widest uppercase mb-1">Avant</div>
-                <div className="font-serif text-xl md:text-2xl text-espresso">{intensity}/10</div>
-              </div>
-              <div className="font-serif text-lg md:text-xl text-warm-gray">→</div>
-              <div className="card-sage flex-1 text-center !p-3 md:!p-5">
-                <div className="text-[10px] md:text-xs text-[#4A6B3A] tracking-widest uppercase mb-1">Après</div>
-                <div className="font-serif text-xl md:text-2xl text-espresso">{intensityAfter}/10</div>
-              </div>
-            </div>
-          </>
-        )}
-        <button
-          onClick={handleIntensityAfterDone}
-          disabled={!intensityAfterTouched}
-          className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
-          style={{ opacity: intensityAfterTouched ? 1 : 0.4 }}
-        >
-          Voir mon parcours
-        </button>
-      </div>
-    );
-  }
+  // (Écran intensity-after supprimé — check final intégré dans l'écran integration)
 
   // --- ANALYSIS / COMPLETE ---
   return (
@@ -1994,42 +1920,6 @@ function SessionContent({ userId }: { userId: string }) {
         </div>
       ) : (
         <>
-          {/* Intensity summary — empilé sur mobile, horizontal sur desktop */}
-          <div className="grid grid-cols-3 gap-2 md:flex md:items-center md:gap-4 mb-6">
-            <div className="card-terra text-center !p-3 md:!p-5 md:flex-1">
-              <div className="text-[10px] md:text-xs text-terra-dark tracking-widest uppercase mb-1">Avant</div>
-              <div className="font-serif text-lg md:text-2xl text-espresso">{intensity}/10</div>
-            </div>
-            <div className="card-sage text-center !p-3 md:!p-5 md:flex-1">
-              <div className="text-[10px] md:text-xs text-[#4A6B3A] tracking-widest uppercase mb-1">Après</div>
-              <div className="font-serif text-lg md:text-2xl text-espresso">{intensityAfter}/10</div>
-            </div>
-            <div className="text-center flex flex-col items-center justify-center md:flex-1">
-              {intensity - intensityAfter > 0 ? (
-                <>
-                  <div className="text-[10px] md:text-xs text-sage tracking-widest uppercase mb-1">Régulation</div>
-                  <div className="font-serif text-lg md:text-2xl text-sage">
-                    -{intensity - intensityAfter} <span className="text-xs md:text-base">pts</span>
-                  </div>
-                </>
-              ) : intensity - intensityAfter === 0 ? (
-                <>
-                  <div className="text-[10px] md:text-xs text-warm-gray tracking-widest uppercase mb-1">Évolution</div>
-                  <div className="font-serif text-sm md:text-2xl text-warm-gray">
-                    Stable
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="text-[10px] md:text-xs text-terra tracking-widest uppercase mb-1">Évolution</div>
-                  <div className="font-serif text-sm md:text-2xl text-terra">
-                    En cours
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-
           {/* Résumé post-session — choix utilisateur + observation IA */}
           {(steps.reconnaitre || lastStepSnapshot) && (
             <div className="card-base mb-6">
