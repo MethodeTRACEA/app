@@ -29,6 +29,7 @@ const ACTIVATION_FLOW_MAP: Record<string, FlowRoute> = {
 
 type Screen =
   | "entree"
+  | "propose-long"
   | "ressenti"
   | "corps"
   | "bascule"
@@ -347,7 +348,7 @@ function TraverseeCourteV2() {
                     setActivationLevel(value);
                     const flow = ACTIVATION_FLOW_MAP[value];
                     if (flow === LONG_FLOW) {
-                      router.push(`/app/session?activation=${value}`);
+                      setScreen("propose-long");
                     } else {
                       setScreen("ressenti");
                     }
@@ -360,6 +361,61 @@ function TraverseeCourteV2() {
             </p>
             <div className="mt-4">
               <ExitLink label="Quitter" href="/app" />
+            </div>
+          </div>
+        );
+
+      // ════════════════════════════════════════════════════
+      // PROPOSITION BASCULE COURT → LONG
+      // ════════════════════════════════════════════════════
+      case "propose-long":
+        return (
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+            <div className="text-center space-y-4">
+              <h1 className="font-serif text-2xl text-t-beige">
+                Continuer
+              </h1>
+              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+                On peut te proposer une version plus complète de la traversée.
+                <br />
+                Tu veux continuer ici ou passer au parcours complet ?
+              </p>
+            </div>
+            <div className="w-full space-y-3">
+              <PrimaryButton
+                onClick={() => {
+                  console.info("[TRACEA flow_router]", JSON.stringify({
+                    source: "flow_router",
+                    current_flow: "short",
+                    proposed_flow: "long",
+                    router_reason: "activation_level_" + (activationLevel || "unknown"),
+                    source_step: "entree",
+                    user_choice: "stay",
+                    next_flow: "short",
+                    next_screen: "ressenti",
+                  }));
+                  setScreen("ressenti");
+                }}
+              >
+                Continuer ici
+              </PrimaryButton>
+              <SecondaryButton
+                onClick={() => {
+                  console.info("[TRACEA flow_router]", JSON.stringify({
+                    source: "flow_router",
+                    current_flow: "short",
+                    proposed_flow: "long",
+                    router_reason: "activation_level_" + (activationLevel || "unknown"),
+                    source_step: "entree",
+                    user_choice: "switch",
+                    next_flow: "long",
+                    next_screen: "session",
+                  }));
+                  router.push(`/app/session?activation=${activationLevel}`);
+                }}
+              >
+                Passer au parcours complet
+              </SecondaryButton>
             </div>
           </div>
         );

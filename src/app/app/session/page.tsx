@@ -765,23 +765,64 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     );
   }
 
-  // --- SOFT SWITCH (redirect vers traversée courte) ---
+  // --- SOFT SWITCH (proposition traversée courte — choix utilisateur) ---
   if (phase === "soft-switch") {
+    const softSwitchReason = dontKnowCount >= 2
+      ? "dont_know_repeated"
+      : emptyAdvanceCount >= 1
+        ? "empty_advance"
+        : "time_overload";
+    const sourceStep = step?.id || "entry-question";
+
     return (
       <ScreenContainer overlayOpacity={45}>
         <div className="py-12">
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-4">
               <h1 className="font-serif text-2xl text-t-beige">
-                On va faire plus simple
+                Continuer
               </h1>
               <p className="font-body text-lg text-t-creme/60 leading-relaxed">
-                On va aller directement à quelque chose de plus rapide.
+                On peut te proposer une version plus simple de la traversée.
+                <br />
+                Tu veux continuer ici ou passer à une version plus simple ?
               </p>
             </div>
-            <PrimaryButton onClick={() => router.push("/app/traversee-courte?skip=entree")}>
-              Continuer
-            </PrimaryButton>
+            <div className="w-full max-w-md space-y-3">
+              <PrimaryButton onClick={() => {
+                console.info("[TRACEA flow_router]", JSON.stringify({
+                  source: "flow_router",
+                  current_flow: "long",
+                  proposed_flow: "short",
+                  router_reason: softSwitchReason,
+                  source_step: sourceStep,
+                  user_choice: "stay",
+                  next_flow: "long",
+                  next_screen: sourceStep,
+                }));
+                setPhase(step ? "session" : "entry-question");
+              }}>
+                Continuer ici
+              </PrimaryButton>
+              <button
+                onClick={() => {
+                  console.info("[TRACEA flow_router]", JSON.stringify({
+                    source: "flow_router",
+                    current_flow: "long",
+                    proposed_flow: "short",
+                    router_reason: softSwitchReason,
+                    source_step: sourceStep,
+                    user_choice: "switch",
+                    next_flow: "short",
+                    next_screen: "ressenti",
+                  }));
+                  router.push("/app/traversee-courte?skip=entree");
+                }}
+                className="w-full py-4 md:py-3.5 px-6 rounded-2xl border-2 border-terra/30 text-terra font-medium text-base md:text-sm hover:border-terra hover:bg-terra-light/20 transition-all text-center"
+              >
+                Passer à une version plus simple
+              </button>
+            </div>
           </div>
         </div>
       </ScreenContainer>
