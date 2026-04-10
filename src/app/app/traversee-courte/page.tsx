@@ -32,7 +32,6 @@ type Screen =
   | "propose-long"
   | "ressenti"
   | "corps"
-  | "bascule"
   | "ancrer"
   | "exercice"
   | "feedback"
@@ -488,7 +487,7 @@ function TraverseeCourteV2() {
                   label={BODY_LABELS[z]}
                   onClick={() => {
                     setBodyZone(z);
-                    setScreen("bascule");
+                    setScreen("ancrer");
                   }}
                 />
               ))}
@@ -499,7 +498,7 @@ function TraverseeCourteV2() {
                     label={BODY_LABELS[z]}
                     onClick={() => {
                       setBodyZone(z);
-                      setScreen("bascule");
+                      setScreen("ancrer");
                     }}
                   />
                 ))}
@@ -512,27 +511,7 @@ function TraverseeCourteV2() {
         );
 
       // ════════════════════════════════════════════════════
-      // ÉCRAN 3 — BASCULE
-      // ════════════════════════════════════════════════════
-      case "bascule":
-        return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-4">
-              <p className="font-body text-xl text-t-beige/90 italic">
-                C&apos;est surtout dans la {bodyLabel}.
-              </p>
-              <p className="font-body text-lg text-t-creme/60">
-                On revient juste au corps.
-              </p>
-            </div>
-            <PrimaryButton onClick={() => setScreen("ancrer")}>
-              Continuer
-            </PrimaryButton>
-          </div>
-        );
-
-      // ════════════════════════════════════════════════════
-      // ÉCRAN 4 — ANCRER
+      // ÉCRAN 3 — ANCRER
       // ════════════════════════════════════════════════════
       case "ancrer":
         return (
