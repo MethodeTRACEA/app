@@ -679,10 +679,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   // --- INTRO ---
   if (phase === "intro") {
     const activationOptions = [
-      { label: "Très actif", value: 8 },
-      { label: "Actif", value: 6 },
-      { label: "Moyen", value: 4 },
-      { label: "Un peu plus calme", value: 2 },
+      { label: "Très chargé", value: 8 },
+      { label: "Assez chargé", value: 6 },
+      { label: "Un peu chargé", value: 4 },
+      { label: "Plutôt calme", value: 2 },
     ];
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
@@ -831,72 +831,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
   // --- WELCOME (Section 2) ---
   if (phase === "welcome") {
-    return <WelcomeScreen onContinue={() => setPhase("entry-question")} />;
-  }
-
-  // --- ENTRY QUESTION (Section 3) ---
-  if (phase === "entry-question") {
-    const sensationOptions = ["serré", "agité", "lourd", "flou", "vide", "bloqué"];
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-10 md:py-16 animate-fade-in">
-        <div className="text-center max-w-lg mx-auto">
-          <h2 className="font-serif text-xl md:text-3xl text-espresso leading-relaxed mb-2">
-            Traverser
-          </h2>
-          <p className="text-warm-gray mb-6 md:mb-8 text-sm md:text-base">
-            Qu&apos;est-ce qui est le plus présent là ?
-          </p>
-
-          {!showSensations ? (
-            <>
-              <textarea
-                value={entryQuestion}
-                onChange={(e) => setEntryQuestion(e.target.value)}
-                placeholder="boule au ventre, tension, agitation, fatigue…"
-                className="w-full h-24 bg-beige/50 rounded-xl p-4 text-espresso font-body text-base leading-relaxed resize-none border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 mb-4"
-              />
-              <button
-                onClick={() => {
-                  if (!entryQuestion.trim() && routedFromActivation) { trackEmptyAdvance(); return; }
-                  setCurrentStep(0);
-                  setPhase("session");
-                }}
-                className="btn-primary w-full md:w-auto !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl mb-3"
-              >
-                Continuer
-              </button>
-              <button
-                onClick={() => { setShowSensations(true); trackDontKnow(); }}
-                className="block mx-auto text-sm text-warm-gray hover:text-espresso transition-colors"
-              >
-                Je ne sais pas
-              </button>
-            </>
-          ) : (
-            <>
-              <p className="text-warm-gray mb-4 text-sm">
-                Tu peux juste approcher ce que ça fait :
-              </p>
-              <div className="grid grid-cols-2 gap-2 mb-6">
-                {sensationOptions.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => {
-                      setEntryQuestion(s);
-                      setCurrentStep(0);
-                      setPhase("session");
-                    }}
-                    className="py-3.5 md:py-3 px-4 rounded-xl text-sm font-medium bg-beige text-espresso hover:bg-beige-dark transition-all"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    );
+    return <WelcomeScreen onContinue={() => { setCurrentStep(0); setPhase("session"); }} />;
   }
 
   // (Écran de transition supprimé — passage direct entre étapes)
@@ -946,7 +881,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               <TextCapsuleField
                 value={text}
                 onChange={setText}
-                placeholder="ex : boule au ventre, tension, agitation, trop de pensées"
+                placeholder="ex : tension, agitation, fatigue, trop de pensées"
                 multiline
                 rows={2}
                 className="h-20 md:h-24"
@@ -1007,6 +942,23 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     // ║  ÉTAPE 2 — Reconnaître (immersif, overlay allégé)        ║
     // ╚═══════════════════════════════════════════════════════════╝
     if (step.id === "reconnaitre") {
+      const mainEmotions = ["tension", "peur", "tristesse", "colère", "fatigue", "confusion"];
+      const moreEmotions = ["trop-plein", "vide"];
+
+      function handleEmoSelect(emo: string) {
+        setEmotionChoice(emo);
+        markFirstInput();
+        if (emo === "je ne sais pas") trackDontKnow();
+        // Auto-advance : bypass l'état stale en passant la valeur directement
+        const stepText = emo;
+        const updatedSteps = { ...steps, reconnaitre: stepText };
+        setSteps(updatedSteps);
+        if (sessionId) {
+          updateSessionDb(sessionId, { steps: updatedSteps, emotion_primaire: stepText.slice(0, 100) } as Parameters<typeof updateSessionDb>[1]);
+        }
+        handleContinueAfterMirror();
+      }
+
       return (
         <ScreenContainer className="py-8 md:py-12" overlayOpacity={22}>
           <StepIndicator
@@ -1034,37 +986,30 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 Si tu devais approcher ça avec un mot simple…
               </p>
 
-              {/* Chips émotion — liste complète à plat */}
+              {/* Chips émotion — 6 par défaut, reste derrière "Voir plus" */}
               <div className="flex flex-wrap gap-2.5">
-                {["tension", "peur", "tristesse", "colère", "fatigue", "confusion", "trop-plein", "vide", "autre", "je ne sais pas"].map((emo) => (
+                {[...mainEmotions, ...(showMoreEmotions ? moreEmotions : []), "je ne sais pas"].map((emo) => (
                   <ChoiceChip
                     key={emo}
                     label={emo.charAt(0).toUpperCase() + emo.slice(1)}
                     selected={emotionChoice === emo}
-                    onClick={() => { setEmotionChoice(emo); setEmotionOther(""); markFirstInput(); if (emo === "je ne sais pas") trackDontKnow(); }}
+                    onClick={() => handleEmoSelect(emo)}
                     className="border-t-creme/25 text-t-creme/90"
                   />
                 ))}
+                {!showMoreEmotions && (
+                  <button
+                    onClick={() => setShowMoreEmotions(true)}
+                    className="px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 text-t-creme/40 hover:text-t-creme/60 transition-colors"
+                  >
+                    Voir plus
+                  </button>
+                )}
               </div>
-              {emotionChoice === "autre" && (
-                <TextCapsuleField
-                  value={emotionOther}
-                  onChange={setEmotionOther}
-                  placeholder="Un mot simple…"
-                  className="mt-3.5"
-                />
-              )}
 
-              {/* Micro-texte rassurant après sélection */}
-              {emotionChoice && (emotionChoice !== "autre" || emotionOther.trim()) && (
-                <p className="font-inter text-sm text-t-creme/45 mt-4 italic">
-                  On n&apos;a pas besoin d&apos;être exact.
-                </p>
-              )}
-
-              {/* Bouton principal */}
-              <div className="flex items-center gap-3 mt-10">
-                {currentStep > 0 && (
+              {/* Bouton retour uniquement */}
+              {currentStep > 0 && (
+                <div className="flex items-center gap-3 mt-10">
                   <button
                     onClick={handleGoBack}
                     className="t-btn-secondary"
@@ -1072,20 +1017,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     <span className="hidden sm:inline">Retour</span>
                   </button>
-                )}
-                <PrimaryButton
-                  onClick={handleNextStep}
-                  disabled={!emotionChoice || (emotionChoice === "autre" && !emotionOther.trim())}
-                  className="flex-1"
-                >
-                  Continuer
-                </PrimaryButton>
-              </div>
-
-              {/* Aide secondaire */}
-              <SoftHelpText trigger="Aucun mot ne colle vraiment">
-                Ce n&apos;est pas grave. Choisis juste ce qui s&apos;en approche le plus.
-              </SoftHelpText>
+                </div>
+              )}
             </StepCard>
             <HelpPanel step={step} />
           </div>
@@ -1097,6 +1030,21 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     // ║  ÉTAPE 3 — Ancrer (immersif, ralenti, respirant)         ║
     // ╚═══════════════════════════════════════════════════════════╝
     if (step.id === "ancrer") {
+      function handleFeedbackSelect(key: "calme" | "pareil" | "agite") {
+        setAncrerFeedback(key);
+        if (key === "calme") {
+          const stepText = "un peu plus calme";
+          const updatedSteps = { ...steps, ancrer: stepText };
+          setSteps(updatedSteps);
+          if (sessionId) {
+            updateSessionDb(sessionId, { steps: updatedSteps } as Parameters<typeof updateSessionDb>[1]);
+          }
+          handleContinueAfterMirror();
+        } else {
+          setAncrerPostPhase(true);
+        }
+      }
+
       return (
         <ScreenContainer className="py-10 md:py-16" overlayOpacity={18}>
           <StepIndicator
@@ -1127,29 +1075,35 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               {/* Choix de méthode d'ancrage */}
               {!ancrerMethod && !ancrerDone && (
                 <div className="animate-fade-up">
-                  <p className="font-inter text-sm text-t-creme/45 italic mb-8">
+                  <p className="font-inter text-sm text-t-creme/45 italic mb-2">
                     On va juste ralentir un peu, de la manière la plus simple pour toi.
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/60 mb-8">
+                    Choisis le plus simple maintenant.
                   </p>
                   <div className="flex flex-col gap-3">
                     <button
-                      onClick={() => setAncrerMethod("respirer")}
-                      className="t-btn-secondary w-full justify-center"
-                    >
-                      Expirer plus lentement
-                    </button>
-                    <button
-                      onClick={() => setAncrerMethod("corps")}
+                      onClick={() => { setAncrerMethod("corps"); setAncrerAlt(false); }}
                       className="t-btn-secondary w-full justify-center"
                     >
                       Sentir les appuis du corps
                     </button>
                     <button
-                      onClick={() => setAncrerMethod("regarder")}
+                      onClick={() => { setAncrerMethod("regarder"); setAncrerAlt(false); }}
                       className="t-btn-secondary w-full justify-center"
                     >
                       Regarder autour de moi
                     </button>
+                    <button
+                      onClick={() => { setAncrerMethod("respirer"); setAncrerAlt(false); }}
+                      className="t-btn-secondary w-full justify-center"
+                    >
+                      Expirer plus lentement
+                    </button>
                   </div>
+                  <p className="font-inter text-xs text-t-creme/35 text-center mt-5">
+                    Si ça n&apos;aide pas, on changera juste de manière.
+                  </p>
                 </div>
               )}
 
@@ -1174,15 +1128,29 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               {/* Méthode : sentir les appuis du corps */}
               {ancrerMethod === "corps" && !ancrerDone && (
                 <div className="py-12 text-center animate-fade-up">
+                  <style>{`@keyframes ancrer-timer { from { width: 0% } to { width: 100% } }`}</style>
                   <p className="font-inter text-lg text-t-beige leading-relaxed mb-1">
                     Appuis
                   </p>
-                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-8">
-                    Sens le contact de ton corps là où il s&apos;appuie.{"\n"}Juste ça, quelques secondes.
+                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-1">
+                    Sens le contact de ton corps là où il s&apos;appuie.
                   </p>
+                  <p className="font-inter text-xs text-t-creme/40 italic mb-1">
+                    pieds, bassin, dos ou mains
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/55 mb-6">
+                    Juste ça, pendant 8 à 10 secondes.
+                  </p>
+                  <div className="w-full h-1 bg-t-creme/10 rounded-full overflow-hidden mb-8">
+                    <div
+                      style={{ height: "100%", background: "rgba(232,216,199,0.35)", borderRadius: "9999px", animation: "ancrer-timer 9s linear forwards" }}
+                      onAnimationEnd={() => setAncrerAlt(true)}
+                    />
+                  </div>
                   <button
                     onClick={() => setAncrerDone(true)}
-                    className="t-btn-secondary"
+                    disabled={!ancrerAlt}
+                    className={`t-btn-secondary${!ancrerAlt ? " opacity-30 cursor-not-allowed" : ""}`}
                   >
                     C&apos;est fait
                   </button>
@@ -1207,11 +1175,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 </div>
               )}
 
-              {/* Phase 2 — Feedback post-ancrage (masqué en post-phase) */}
+              {/* Phase 2 — Feedback post-ancrage (auto-advance) */}
               {ancrerDone && !ancrerPostPhase && (
                 <>
                   <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
-                    Là
+                    Maintenant
                   </p>
                   <p className="font-inter text-sm text-t-creme/50 italic mb-6">
                     Il n&apos;y a pas de bonne réponse. On s&apos;adapte à ce que tu sens.
@@ -1225,14 +1193,19 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                         key={key}
                         label={label}
                         selected={ancrerFeedback === key}
-                        onClick={() => setAncrerFeedback(key)}
+                        onClick={() => handleFeedbackSelect(key)}
                       />
                     ))}
+                    <ChoiceChip
+                      label="Je ne sais pas trop"
+                      selected={false}
+                      onClick={() => { setAncrerFeedback("pareil"); setAncrerPostPhase(true); }}
+                    />
                   </div>
                 </>
               )}
 
-              {/* Bouton — vers post-feedback (bypass IA) */}
+              {/* Bouton retour uniquement */}
               {ancrerDone && !ancrerPostPhase && (
                 <div className="flex items-center gap-3 mt-12">
                   <button
@@ -1242,21 +1215,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     <span className="hidden sm:inline">Retour</span>
                   </button>
-                  <PrimaryButton
-                    onClick={() => setAncrerPostPhase(true)}
-                    disabled={!ancrerFeedback}
-                    className="flex-1"
-                  >
-                    Continuer
-                  </PrimaryButton>
                 </div>
-              )}
-
-              {/* Aide — visible après feedback, avant post-phase */}
-              {ancrerDone && !ancrerPostPhase && (
-                <SoftHelpText trigger="Je ne sais pas trop">
-                  Choisis juste ce qui se rapproche le plus de ce que tu ressens.
-                </SoftHelpText>
               )}
 
               {/* Phase 3 — Post-feedback conditionnel (pas d'IA) */}
@@ -1302,6 +1261,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                             setAncrerDone(false);
                             setAncrerPostPhase(false);
                             setAncrerFeedback("");
+                            setAncrerAlt(false);
                           }}
                           className="t-btn-secondary w-full justify-center"
                         >
@@ -1313,6 +1273,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                             setAncrerDone(false);
                             setAncrerPostPhase(false);
                             setAncrerFeedback("");
+                            setAncrerAlt(false);
                           }}
                           className="t-btn-secondary w-full justify-center"
                         >
@@ -1416,17 +1377,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 )}
               </div>
 
-              {/* Micro-texte — apparaît quand un choix est fait */}
-              {ecouterChoice && ecouterChoice !== "je ne sais pas" && (
-                <p className="font-inter text-sm text-t-creme/45 mt-4 italic">
-                  C&apos;est assez pour avancer.
-                </p>
-              )}
-              {ecouterChoice === "je ne sais pas" && ecouterOther && (
-                <p className="font-inter text-sm text-t-creme/45 mt-4 italic">
-                  C&apos;est assez pour avancer.
-                </p>
-              )}
 
               {/* Bouton principal */}
               <div className="flex items-center gap-3 mt-10">
@@ -1670,7 +1620,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                     onClick={() => setAlignerPhase("repere")}
                     className="t-chip text-left"
                   >
-                    Pas maintenant, mais je garde ça pour aujourd&apos;hui
+                    Pas maintenant, mais aujourd&apos;hui
                   </button>
                 </div>
               </div>
@@ -1761,20 +1711,20 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                   {step.question}
                 </p>
                 <div className="flex flex-wrap gap-2.5 mt-2">
-                  {([["mieux", "Un peu mieux"], ["clair", "Pareil mais plus clair"], ["difficile", "Encore difficile"]] as const).map(([key, label]) => (
+                  {([["mieux", "Faisable maintenant"], ["clair", "Faisable en plus petit"], ["difficile", "Encore difficile"]] as const).map(([key, label]) => (
                     <ChoiceChip
                       key={key}
                       label={label}
                       selected={alignerFeedback === key}
-                      onClick={() => setAlignerFeedback(key)}
+                      onClick={() => { setAlignerFeedback(key); handleNextStep(); }}
                     />
                   ))}
                 </div>
               </>
             )}
 
-            {/* Bouton principal — masqué pendant "fait" */}
-            {alignerPhase !== "fait" && (
+            {/* Bouton principal — masqué pendant "fait" et "feedback" (auto-advance) */}
+            {alignerPhase !== "fait" && alignerPhase !== "feedback" && (
               <div className="flex items-center gap-3 mt-10">
                 {currentStep > 0 && (
                   <button
@@ -1819,11 +1769,13 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           </div>
 
           {mirrorLoading ? (
-            <div className="text-center py-6">
-              <p className="text-sm text-warm-gray italic animate-pulse-gentle">
-                Un instant.
-              </p>
-            </div>
+            step?.id !== "traverser" && step?.id !== "aligner" ? (
+              <div className="text-center py-6">
+                <p className="text-sm text-warm-gray italic animate-pulse-gentle">
+                  Un instant.
+                </p>
+              </div>
+            ) : null
           ) : mirrorError ? (
             <div className="border-l-[3px] border-dusty pl-6 py-4 mb-6">
               <div className="flex items-center gap-2 mb-3">
@@ -1890,8 +1842,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 </div>
               )}
 
-              {/* Hypothèse — "Ce que ça pourrait dire" (masqué étapes 1, 2, 4 et 5) */}
-              {mirrorData.hypothesis && !["traverser", "reconnaitre", "conscientiser", "emerger"].includes(step?.id || "") && (
+              {/* Hypothèse — "Ce que ça pourrait dire" (masqué étapes 1, 2, 4, 5 et 6) */}
+              {mirrorData.hypothesis && !["traverser", "reconnaitre", "conscientiser", "emerger", "aligner"].includes(step?.id || "") && (
                 <div className="pl-6">
                   <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-sage/70 mb-2">
                     Ce que ça pourrait dire
@@ -1909,34 +1861,36 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 </p>
               )}
 
-              {/* Question ouverte — choix corporel rapide pour étape 1, "À explorer" pour les autres */}
+              {/* Question ouverte — choix corporel rapide pour étape 1 (si non déjà sélectionné), "À explorer" pour les autres */}
               {step?.id === "traverser" ? (
-                <div className="pl-6">
-                  <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-terra/70 mb-2">
-                    Maintenant
-                  </p>
-                  <p className="font-body text-base text-espresso leading-relaxed mb-3">
-                    Où tu le sens le plus ?
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {["poitrine", "ventre", "gorge", "tête", "épaules", "partout", "je ne sais pas"].map((zone) => (
-                      <button
-                        key={zone}
-                        onClick={() => {
-                          setBodyZone(zone);
-                          setMirrorNote(zone);
-                        }}
-                        className={`px-3 py-1.5 rounded-full text-sm font-body border transition-all ${
-                          bodyZone === zone
-                            ? "bg-terra/20 border-terra text-espresso"
-                            : "border-beige-dark text-warm-gray hover:border-terra/40"
-                        }`}
-                      >
-                        {zone.charAt(0).toUpperCase() + zone.slice(1)}
-                      </button>
-                    ))}
+                !bodyZone ? (
+                  <div className="pl-6">
+                    <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-terra/70 mb-2">
+                      Maintenant
+                    </p>
+                    <p className="font-body text-base text-espresso leading-relaxed mb-3">
+                      Où tu le sens le plus ?
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {["poitrine", "ventre", "gorge", "tête", "épaules", "partout", "je ne sais pas"].map((zone) => (
+                        <button
+                          key={zone}
+                          onClick={() => {
+                            setBodyZone(zone);
+                            setMirrorNote(zone);
+                          }}
+                          className={`px-3 py-1.5 rounded-full text-sm font-body border transition-all ${
+                            bodyZone === zone
+                              ? "bg-terra/20 border-terra text-espresso"
+                              : "border-beige-dark text-warm-gray hover:border-terra/40"
+                          }`}
+                        >
+                          {zone.charAt(0).toUpperCase() + zone.slice(1)}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ) : null
               ) : ["reconnaitre", "conscientiser", "emerger"].includes(step?.id || "") ? null : mirrorData.question ? (
                 <div className="pl-6">
                   <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-terra/70 mb-2">
@@ -2047,7 +2001,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               disabled={mirrorLoading}
               className="btn-primary flex-1 text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40"
             >
-              {currentStep < stepsActifs.length - 1 ? "Continuer" : "Étape suivante"}
+              {step?.id === "aligner" ? "Voir ma synthèse" : currentStep < stepsActifs.length - 1 ? "Continuer" : "Étape suivante"}
             </button>
           </div>
 
@@ -2080,6 +2034,12 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               onClick={() => handleIntegrationChoice("yes")}
               className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
             >
+              Juste un prochain pas
+            </button>
+            <button
+              onClick={() => handleIntegrationChoice("yes")}
+              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
+            >
               Un peu plus de calme
             </button>
             <button
@@ -2089,16 +2049,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               Un peu plus de clarté
             </button>
             <button
-              onClick={() => handleIntegrationChoice("yes")}
-              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
-            >
-              Juste un prochain pas
-            </button>
-            <button
               onClick={() => handleIntegrationChoice("unsure")}
               className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-sm hover:border-warm-gray hover:bg-beige transition-all"
             >
-              Pas vraiment, mais quelque chose s&apos;est posé
+              Pas vraiment, mais ça s&apos;est un peu posé
             </button>
           </div>
         </div>
@@ -2115,6 +2069,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
       {/* Synthèse descriptive */}
       <div className="card-base mb-6 space-y-3">
+        {bodyZone && (
+          <p className="font-body text-sm text-espresso leading-relaxed">
+            Dans le corps : {bodyZone}.
+          </p>
+        )}
         {steps.reconnaitre && (
           <p className="font-body text-sm text-espresso leading-relaxed">
             Ce qui était là : {steps.reconnaitre}.
@@ -2134,11 +2093,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
       {/* Clôture */}
       <div className="text-center py-6 md:py-8">
-        <p className="font-body text-base text-espresso/80 leading-relaxed mb-1">
-          Ce n&apos;est peut-être pas tout réglé.
-        </p>
         <p className="font-body text-base text-espresso/80 leading-relaxed mb-10">
-          Mais quelque chose a bougé.
+          Tu as pris un moment pour toi.
         </p>
         <button
           onClick={() => router.push("/app")}

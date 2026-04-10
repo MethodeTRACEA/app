@@ -284,9 +284,9 @@ function TraverseeCourteV2() {
             </div>
             <div className="w-full space-y-3">
               {([
-                ["deborde", "Ça déborde"],
-                ["charge", "C’est chargé"],
-                ["encore", "Ça va encore"],
+                ["deborde", "Très chargé"],
+                ["charge", "Assez chargé"],
+                ["encore", "Un peu chargé"],
                 ["calme", "Plutôt calme"],
               ] as [ActivationLevel, string][]).map(([value, label]) => (
                 <AutoChip
@@ -300,7 +300,7 @@ function TraverseeCourteV2() {
               ))}
             </div>
             <p className="font-inter text-xs text-t-creme/40 text-center">
-              Sans réfléchir longtemps.
+              Choisis le plus proche maintenant.
             </p>
             <div className="mt-4">
               <ExitLink label="Quitter" href="/app" />
@@ -319,46 +319,50 @@ function TraverseeCourteV2() {
                 Continuer
               </h1>
               <p className="font-body text-lg text-t-creme/70 leading-relaxed">
-                On peut te proposer une version plus complète de la traversée.
-                <br />
-                Tu veux continuer ici ou passer au parcours complet ?
+                Tu peux rester sur la version simple ou choisir le parcours complet.
               </p>
             </div>
             <div className="w-full space-y-3">
-              <PrimaryButton
-                onClick={() => {
-                  console.info("[TRACEA flow_router]", JSON.stringify({
-                    source: "flow_router",
-                    current_flow: "short",
-                    proposed_flow: "long",
-                    router_reason: "activation_level_" + (activationLevel || "unknown"),
-                    source_step: "entree",
-                    user_choice: "stay",
-                    next_flow: "short",
-                    next_screen: "ressenti",
-                  }));
-                  setScreen("ressenti");
-                }}
-              >
-                Continuer ici
-              </PrimaryButton>
-              <SecondaryButton
-                onClick={() => {
-                  console.info("[TRACEA flow_router]", JSON.stringify({
-                    source: "flow_router",
-                    current_flow: "short",
-                    proposed_flow: "long",
-                    router_reason: "activation_level_" + (activationLevel || "unknown"),
-                    source_step: "entree",
-                    user_choice: "switch",
-                    next_flow: "long",
-                    next_screen: "session",
-                  }));
-                  router.push(`/app/session?activation=${activationLevel}`);
-                }}
-              >
-                Passer au parcours complet
-              </SecondaryButton>
+              <div>
+                <PrimaryButton
+                  onClick={() => {
+                    console.info("[TRACEA flow_router]", JSON.stringify({
+                      source: "flow_router",
+                      current_flow: "short",
+                      proposed_flow: "long",
+                      router_reason: "activation_level_" + (activationLevel || "unknown"),
+                      source_step: "entree",
+                      user_choice: "stay",
+                      next_flow: "short",
+                      next_screen: "ressenti",
+                    }));
+                    setScreen("ressenti");
+                  }}
+                >
+                  Version simple (2–3 min)
+                </PrimaryButton>
+                <p className="font-inter text-xs text-t-creme/40 text-center mt-1">le plus rapide</p>
+              </div>
+              <div>
+                <SecondaryButton
+                  onClick={() => {
+                    console.info("[TRACEA flow_router]", JSON.stringify({
+                      source: "flow_router",
+                      current_flow: "short",
+                      proposed_flow: "long",
+                      router_reason: "activation_level_" + (activationLevel || "unknown"),
+                      source_step: "entree",
+                      user_choice: "switch",
+                      next_flow: "long",
+                      next_screen: "session",
+                    }));
+                    router.push(`/app/session?activation=${activationLevel}`);
+                  }}
+                >
+                  Parcours complet (5–10 min)
+                </SecondaryButton>
+                <p className="font-inter text-xs text-t-creme/40 text-center mt-1">le plus guidé</p>
+              </div>
             </div>
           </div>
         );

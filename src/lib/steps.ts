@@ -7,7 +7,7 @@ export const STEPS: StepDefinition[] = [
     name: "Traverser",
     verb: "T",
     description:
-      "Prends un instant.\nLaisse sortir ce qui est là.",
+      "Un mot ou une courte phrase suffit.",
     question: "",
     help: {
       comprendre:
