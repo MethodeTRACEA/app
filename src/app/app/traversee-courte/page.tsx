@@ -346,12 +346,7 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setActivationLevel(value);
-                    const flow = ACTIVATION_FLOW_MAP[value];
-                    if (flow === LONG_FLOW) {
-                      setScreen("propose-long");
-                    } else {
-                      setScreen("ressenti");
-                    }
+                    setScreen("ressenti");
                   }}
                 />
               ))}
