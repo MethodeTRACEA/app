@@ -92,6 +92,13 @@ const EMERGE_ACTIONS = [
   "ouvrir une fenêtre",
 ] as const;
 
+// Micro-actions : faisables sur place, < 30 secondes → saute "Aligner"
+const MICRO_ACTIONS = new Set([
+  "relâcher les épaules",
+  "poser mes pieds au sol un moment",
+  "regarder au loin 10 secondes",
+]);
+
 // Versions réduites
 const REDUCED_ACTIONS: Record<string, string> = {
   "m'asseoir 2 minutes": "m'asseoir 30 secondes",
@@ -641,7 +648,12 @@ function TraverseeCourteV2() {
                   label={action}
                   onClick={() => {
                     setNextAction(action);
-                    setScreen("aligner");
+                    if (MICRO_ACTIONS.has(action)) {
+                      setActionPlanType("maintenant");
+                      setScreen("check-final");
+                    } else {
+                      setScreen("aligner");
+                    }
                   }}
                 />
               ))}
