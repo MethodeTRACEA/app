@@ -842,7 +842,7 @@ function TraverseeCourteV2() {
             </div>
 
             <p className="font-body text-lg text-t-creme/60 italic text-center">
-              Tu as pris un moment pour toi.
+              Tu repars avec un point d&apos;appui clair.
             </p>
 
             <div className="w-full space-y-3">
