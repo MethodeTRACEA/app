@@ -123,59 +123,6 @@ function AutoChip({
 }
 
 // ── Timer circulaire (10s) ─────────────────────────────────
-function Timer10({
-  onComplete,
-}: {
-  onComplete: () => void;
-}) {
-  const [seconds, setSeconds] = useState(10);
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    if (seconds <= 0) {
-      setDone(true);
-      return;
-    }
-    const t = setTimeout(() => setSeconds((s) => s - 1), 1000);
-    return () => clearTimeout(t);
-  }, [seconds]);
-
-  const progress = ((10 - seconds) / 10) * 100;
-
-  return (
-    <div className="flex flex-col items-center gap-6 mt-6">
-      <div className="relative w-20 h-20">
-        <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-          <circle
-            cx="40" cy="40" r="36"
-            fill="none"
-            stroke="rgba(232,216,199,0.12)"
-            strokeWidth="4"
-          />
-          <circle
-            cx="40" cy="40" r="36"
-            fill="none"
-            stroke="rgba(214,165,106,0.6)"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeDasharray={`${2 * Math.PI * 36}`}
-            strokeDashoffset={`${2 * Math.PI * 36 * (1 - progress / 100)}`}
-            className="transition-all duration-1000 ease-linear"
-          />
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center font-inter text-lg text-t-creme/70">
-          {seconds}
-        </span>
-      </div>
-      {done && (
-        <PrimaryButton onClick={onComplete}>
-          C&apos;est fait
-        </PrimaryButton>
-      )}
-    </div>
-  );
-}
-
 // ── Compteur 3 cycles respiration ──────────────────────────
 function BreathCounter({
   onComplete,
@@ -981,22 +928,15 @@ function TraverseeCourteV2() {
             <h1 className="font-serif text-2xl text-t-beige">Autour</h1>
             <div className="text-center space-y-4">
               <p className="font-body text-xl text-t-beige/90 leading-relaxed">
-                Regarde autour de toi.
-              </p>
-              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
-                Repère :
-                <br />
-                1 chose stable,
-                <br />
-                1 chose claire,
-                <br />
-                1 chose immobile.
+                Regarde 3 choses autour de toi.
               </p>
             </div>
             <p className="font-inter text-xs text-t-creme/40">
-              Prends 10 secondes.
+              Juste quelques secondes.
             </p>
-            <Timer10 onComplete={onDone} />
+            <PrimaryButton onClick={onDone}>
+              C&apos;est fait
+            </PrimaryButton>
           </div>
         );
 
