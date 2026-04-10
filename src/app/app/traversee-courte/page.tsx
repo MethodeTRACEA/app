@@ -342,7 +342,7 @@ function TraverseeCourteV2() {
                 />
               ))}
               {showMoreFeelings &&
-                (["vide", "bloque", "je-ne-sais-pas"] as Feeling[]).map((f) => (
+                (["vide", "bloque"] as Feeling[]).map((f) => (
                   <AutoChip
                     key={f}
                     label={FEELING_LABELS[f]}
@@ -352,6 +352,13 @@ function TraverseeCourteV2() {
                     }}
                   />
                 ))}
+              <AutoChip
+                label="je ne sais pas"
+                onClick={() => {
+                  setCurrentFeeling("je-ne-sais-pas");
+                  setScreen("corps");
+                }}
+              />
             </div>
             {!showMoreFeelings && (
               <button
@@ -393,15 +400,13 @@ function TraverseeCourteV2() {
                   }}
                 />
               ))}
-              <div className="opacity-50 pt-1">
-                <AutoChip
-                  label="autre / je ne sais pas"
-                  onClick={() => {
-                    setBodyZone("je-ne-sais-pas");
-                    setScreen("ancrer");
-                  }}
-                />
-              </div>
+              <AutoChip
+                label="autre / je ne sais pas"
+                onClick={() => {
+                  setBodyZone("je-ne-sais-pas");
+                  setScreen("ancrer");
+                }}
+              />
             </div>
           </div>
         );
