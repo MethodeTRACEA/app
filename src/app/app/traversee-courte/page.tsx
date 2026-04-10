@@ -644,11 +644,11 @@ function TraverseeCourteV2() {
             <div className="t-card p-6 w-full space-y-4">
               <SynthRow
                 label="Ce qui était là"
-                value={currentFeeling ? FEELING_LABELS[currentFeeling] : "\—"}
+                value={currentFeeling === "je-ne-sais-pas" ? "quelque chose de flou" : (currentFeeling ? FEELING_LABELS[currentFeeling] : "\—")}
               />
               <SynthRow
                 label="Dans le corps"
-                value={bodyZone ? BODY_LABELS[bodyZone] : "\—"}
+                value={bodyZone === "je-ne-sais-pas" ? "pas clairement localisé" : (bodyZone ? BODY_LABELS[bodyZone] : "\—")}
               />
               <SynthRow
                 label="Ce qui a aidé"
