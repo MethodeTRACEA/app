@@ -526,19 +526,22 @@ function TraverseeCourteV2() {
             </div>
             <div className="w-full space-y-3">
               {(["appuis", "autour", "souffle"] as AnchorMethod[]).map((m) => (
-                <AutoChip
+                <button
                   key={m}
-                  label={ANCHOR_LABELS[m]}
+                  type="button"
                   onClick={() => {
                     setAnchorMethod(m);
                     setTriedMethods((prev) => [...prev, m]);
                     setScreen("exercice");
                   }}
-                />
+                  className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-t-brume/30 text-t-beige border border-[rgba(232,216,199,0.45)] hover:bg-t-brume/55 hover:border-[rgba(232,216,199,0.70)] hover:text-white"
+                >
+                  {ANCHOR_LABELS[m]}
+                </button>
               ))}
             </div>
-            <p className="font-inter text-xs text-t-creme/40 text-center">
-              Choisis le plus simple maintenant.
+            <p className="font-inter text-xs text-t-creme/60 text-center">
+              Commence par le plus concret.
             </p>
           </div>
         );
