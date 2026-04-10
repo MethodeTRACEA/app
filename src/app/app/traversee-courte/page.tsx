@@ -832,8 +832,8 @@ function TraverseeCourteV2() {
                 value={bodyZone ? BODY_LABELS[bodyZone] : "\—"}
               />
               <SynthRow
-                label="Ce qui a aidé"
-                value={anchorMethod ? ANCHOR_LABELS[anchorMethod] : "\—"}
+                label="Ce qui a été essayé"
+                value={triedMethods.length > 0 ? triedMethods.join(", puis ") : (anchorMethod || "—")}
               />
               <SynthRow
                 label="Le prochain pas"
