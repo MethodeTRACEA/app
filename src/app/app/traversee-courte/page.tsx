@@ -788,7 +788,7 @@ function TraverseeCourteV2() {
                 En repartant
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                Là, c&apos;est plutôt :
+                Tu repars avec quoi ?
               </p>
             </div>
             <div className="w-full space-y-3">
@@ -796,7 +796,7 @@ function TraverseeCourteV2() {
                 ["prochain-pas", "juste un prochain pas"],
                 ["calme", "un peu plus de calme"],
                 ["clarte", "un peu plus de clarté"],
-                ["rien-special", "rien de spécial, mais je continue"],
+                ["rien-special", "pas vraiment, mais quelque chose s'est posé"],
               ] as [EndState, string][]).map(([value, label]) => (
                 <AutoChip
                   key={value}
