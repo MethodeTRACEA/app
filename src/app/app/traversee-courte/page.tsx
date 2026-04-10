@@ -41,9 +41,6 @@ type Screen =
   | "branche-agite"
   | "branche-agite-exercice"
   | "emerger"
-  | "aligner"
-  | "sous-ecran-reduit"
-  | "sous-ecran-repere"
   | "synthese";
 
 type ActivationLevel = "deborde" | "charge" | "encore" | "calme";
@@ -51,8 +48,6 @@ type Feeling = "serre" | "agite" | "lourd" | "flou" | "vide" | "bloque" | "je-ne
 type BodyZone = "poitrine" | "ventre" | "gorge" | "tete" | "epaules" | "partout" | "je-ne-sais-pas";
 type AnchorMethod = "appuis" | "autour" | "souffle";
 type AnchorEffect = "un-peu" | "pareil" | "plus-agite" | "je-ne-sais-pas";
-type ActionPlanType = "maintenant" | "10-minutes" | "version-petite" | "pas-maintenant";
-type TimeAnchor = "apres-ecran" | "10-minutes" | "avant-ce-soir" | "plus-tard";
 
 const FEELING_LABELS: Record<Feeling, string> = {
   "serre": "serré",
@@ -91,23 +86,6 @@ const EMERGE_ACTIONS = [
   "ouvrir une fenêtre",
 ] as const;
 
-// Micro-actions : faisables sur place, < 30 secondes → saute "Aligner"
-const MICRO_ACTIONS = new Set([
-  "relâcher les épaules",
-  "poser mes pieds au sol un moment",
-  "regarder au loin 10 secondes",
-]);
-
-// Versions réduites
-const REDUCED_ACTIONS: Record<string, string> = {
-  "m'asseoir 2 minutes": "m'asseoir 30 secondes",
-  "poser mes pieds au sol un moment": "poser mes pieds au sol 10 secondes",
-  "enlever une stimulation": "baisser le son ou la lumière",
-  "regarder au loin 10 secondes": "regarder au loin 5 secondes",
-  "ouvrir une fenêtre": "me tourner vers la fenêtre",
-  "boire un verre d'eau": "boire une gorgée",
-  "relâcher les épaules": "relâcher les épaules une fois",
-};
 
 // ── Chip auto-advance ──────────────────────────────────────
 function AutoChip({
@@ -211,9 +189,6 @@ function TraverseeCourteV2() {
   const [anchorMethod, setAnchorMethod] = useState<AnchorMethod | null>(null);
   const [anchorEffect, setAnchorEffect] = useState<AnchorEffect | null>(null);
   const [nextAction, setNextAction] = useState<string | null>(null);
-  const [actionPlanType, setActionPlanType] = useState<ActionPlanType | null>(null);
-  const [red컚ction, setRed컚ction] = useState<string | null>(null);
-  const [timeAnchor, setTimeAnchor] = useState<TimeAnchor | null>(null);
   const [showMoreFeelings, setShowMoreFeelings] = useState(false);
   const [emergeOffset, setEmergeOffset] = useState(0);
 
@@ -237,30 +212,6 @@ function TraverseeCourteV2() {
     },
     []
   );
-
-  const getFinalAction = useCallback((): string => {
-    if (!nextAction) return "";
-    switch (actionPlanType) {
-      case "maintenant":
-        return nextAction;
-      case "10-minutes":
-        return `${nextAction} (dans 10 min)`;
-      case "version-petite":
-        return red컚ction || nextAction;
-      case "pas-maintenant": {
-        const anchorLabels: Record<TimeAnchor, string> = {
-          "apres-ecran": "après cet écran",
-          "10-minutes": "dans 10 minutes",
-          "avant-ce-soir": "avant ce soir",
-          "plus-tard": "plus tard aujourd’hui",
-        };
-        const when = timeAnchor ? anchorLabels[timeAnchor] : "plus tard";
-        return `${nextAction} (${when})`;
-      }
-      default:
-        return nextAction;
-    }
-  }, [nextAction, actionPlanType, red컚ction, timeAnchor]);
 
   // ── Rendu par écran ──────────────────────────────────────
 
@@ -646,7 +597,7 @@ function TraverseeCourteV2() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
               <h1 className="font-serif text-2xl text-t-beige">
-                Émerger
+                Maintenant
               </h1>
               <p className="font-body text-lg text-t-creme/70">
                 Qu&apos;est-ce qui est le plus simple maintenant ?
@@ -659,12 +610,7 @@ function TraverseeCourteV2() {
                   label={action}
                   onClick={() => {
                     setNextAction(action);
-                    if (MICRO_ACTIONS.has(action)) {
-                      setActionPlanType("maintenant");
-                      setScreen("synthese");
-                    } else {
-                      setScreen("aligner");
-                    }
+                    setScreen("synthese");
                   }}
                 />
               ))}
@@ -683,117 +629,9 @@ function TraverseeCourteV2() {
       }
 
       // ════════════════════════════════════════════════════
-      // ÉCRAN 8 — ALIGNER
+      // ÉCRAN — SYNTHÈSE
       // ════════════════════════════════════════════════════
-      case "aligner":
-        return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-3">
-              <h1 className="font-serif text-2xl text-t-beige">
-                Aligner
-              </h1>
-              <p className="font-body text-lg text-t-creme/70">
-                Choisis la version la plus simple.
-              </p>
-            </div>
-            <div className="w-full space-y-3">
-              {([
-                ["maintenant", "je le fais maintenant"],
-                ["10-minutes", "je le fais dans 10 minutes"],
-                ["version-petite", "j’en fais une version plus petite"],
-                ["pas-maintenant", "pas maintenant, mais aujourd’hui"],
-              ] as [ActionPlanType, string][]).map(([value, label]) => (
-                <AutoChip
-                  key={value}
-                  label={label}
-                  onClick={() => {
-                    setActionPlanType(value);
-                    if (value === "version-petite") {
-                      setScreen("sous-ecran-reduit");
-                    } else if (value === "pas-maintenant") {
-                      setScreen("sous-ecran-repere");
-                    } else {
-                      setScreen("synthese");
-                    }
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        );
-
-      // ════════════════════════════════════════════════════
-      // SOUS-ÉCRAN — VERSION PLUS PETITE
-      // ════════════════════════════════════════════════════
-      case "sous-ecran-reduit": {
-        const reduced = nextAction ? REDUCED_ACTIONS[nextAction] || nextAction : "";
-        return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-3">
-              <h1 className="font-serif text-2xl text-t-beige">
-                Encore plus simple
-              </h1>
-              <p className="font-body text-lg text-t-creme/60">
-                On réduit encore.
-              </p>
-            </div>
-            <div className="t-card p-6 text-center">
-              <p className="font-body text-xl text-t-beige/90 italic">
-                {reduced}
-              </p>
-            </div>
-            <PrimaryButton
-              onClick={() => {
-                setRed컚ction(reduced);
-                setScreen("synthese");
-              }}
-            >
-              Ça me va
-            </PrimaryButton>
-          </div>
-        );
-      }
-
-      // ════════════════════════════════════════════════════
-      // SOUS-ÉCRAN — REPÈRE
-      // ════════════════════════════════════════════════════
-      case "sous-ecran-repere":
-        return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-3">
-              <h1 className="font-serif text-2xl text-t-beige">
-                Ton repère
-              </h1>
-              <p className="font-body text-lg text-t-creme/70">
-                Choisis un repère.
-              </p>
-            </div>
-            <div className="w-full space-y-3">
-              {([
-                ["apres-ecran", "après cet écran"],
-                ["10-minutes", "dans 10 minutes"],
-                ["avant-ce-soir", "avant ce soir"],
-                ["plus-tard", "plus tard aujourd’hui"],
-              ] as [TimeAnchor, string][]).map(([value, label]) => (
-                <AutoChip
-                  key={value}
-                  label={label}
-                  onClick={() => {
-                    setTimeAnchor(value);
-                    setScreen("synthese");
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        );
-
-
-      // ════════════════════════════════════════════════════
-      // ÉCRAN 10 — SYNTHÈSE
-      // ════════════════════════════════════════════════════
-      case "synthese": {
-        const finalAction = getFinalAction();
+      case "synthese":
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <h1 className="font-serif text-2xl text-t-beige text-center">
@@ -815,7 +653,7 @@ function TraverseeCourteV2() {
               />
               <SynthRow
                 label="Le prochain pas"
-                value={finalAction || "\—"}
+                value={nextAction || "\—"}
               />
             </div>
 
@@ -824,7 +662,6 @@ function TraverseeCourteV2() {
             </PrimaryButton>
           </div>
         );
-      }
     }
   };
 
