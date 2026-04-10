@@ -70,9 +70,9 @@ const BODY_LABELS: Record<BodyZone, string> = {
 };
 
 const ANCHOR_LABELS: Record<AnchorMethod, string> = {
-  "appuis": "mes appuis",
-  "autour": "autour de moi",
-  "souffle": "mon souffle",
+  "appuis": "sentir mes pieds",
+  "autour": "regarder autour",
+  "souffle": "respirer",
 };
 
 // Actions émerger — pool complet
@@ -153,11 +153,9 @@ function BreathCounter({
           {phase === "inspire" ? "Inspire\…" : "Expire\…"}
         </p>
       )}
-      {done && (
-        <PrimaryButton onClick={onComplete}>
-          C&apos;est fait
-        </PrimaryButton>
-      )}
+      <PrimaryButton onClick={onComplete}>
+        C&apos;est fait
+      </PrimaryButton>
     </div>
   );
 }
@@ -654,7 +652,7 @@ function TraverseeCourteV2() {
               />
               <SynthRow
                 label="Ce qui a aidé"
-                value={triedMethods.length > 0 ? triedMethods.join(", puis ") : (anchorMethod || "—")}
+                value={triedMethods.length > 0 ? triedMethods.map(m => ANCHOR_LABELS[m]).join(", puis ") : (anchorMethod ? ANCHOR_LABELS[anchorMethod] : "—")}
               />
               <SynthRow
                 label="Le prochain pas"
