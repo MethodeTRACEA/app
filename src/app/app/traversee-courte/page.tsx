@@ -481,9 +481,19 @@ function TraverseeCourteV2() {
                 Où c&apos;est le plus marqué ?
               </p>
             </div>
-            <div className="w-full grid grid-cols-2 gap-3">
-              {(["poitrine", "ventre", "gorge", "tete", "epaules", "partout", "je-ne-sais-pas"] as BodyZone[]).map(
-                (z) => (
+            <div className="w-full space-y-3">
+              {(["poitrine", "ventre", "gorge", "tete", "epaules"] as BodyZone[]).map((z) => (
+                <AutoChip
+                  key={z}
+                  label={BODY_LABELS[z]}
+                  onClick={() => {
+                    setBodyZone(z);
+                    setScreen("bascule");
+                  }}
+                />
+              ))}
+              <div className="opacity-50 space-y-3 pt-1">
+                {(["partout", "je-ne-sais-pas"] as BodyZone[]).map((z) => (
                   <AutoChip
                     key={z}
                     label={BODY_LABELS[z]}
@@ -492,11 +502,11 @@ function TraverseeCourteV2() {
                       setScreen("bascule");
                     }}
                   />
-                )
-              )}
+                ))}
+              </div>
             </div>
             <p className="font-inter text-xs text-t-creme/40 text-center">
-              Le plus proche suffit.
+              Choisis l&apos;endroit le plus marqu&eacute;, m&ecirc;me si ce n&apos;est pas parfait.
             </p>
           </div>
         );
