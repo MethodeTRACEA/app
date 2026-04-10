@@ -663,6 +663,13 @@ function TraverseeCourteV2() {
             <PrimaryButton onClick={() => router.push("/app")}>
               Retour à l&apos;accueil
             </PrimaryButton>
+            <button
+              type="button"
+              onClick={() => router.push("/app/session")}
+              className="font-inter text-[13px] text-t-creme/50 underline underline-offset-[3px]"
+            >
+              Aller plus loin
+            </button>
           </div>
         );
     }
