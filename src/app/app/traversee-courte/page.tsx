@@ -990,9 +990,14 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <p className="font-inter text-xs text-t-creme/40">
-              Reste avec ça 10 secondes.
+              Juste quelques secondes.
             </p>
-            <Timer10 onComplete={onDone} />
+            <p className="font-inter text-xs text-t-creme/30 text-center">
+              Tu n&apos;as rien à réussir ici.
+            </p>
+            <PrimaryButton onClick={onDone}>
+              C&apos;est fait
+            </PrimaryButton>
           </div>
         );
 
