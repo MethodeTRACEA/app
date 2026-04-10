@@ -563,13 +563,13 @@ function TraverseeCourteV2() {
                 Là
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                Ça a bougé un peu ?
+                Là, c&apos;est comment ?
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
-                ["un-peu", "un peu"],
                 ["pareil", "pareil"],
+                ["un-peu", "un peu"],
                 ["plus-agite", "plus agité"],
                 ["je-ne-sais-pas", "je ne sais pas trop"],
               ] as [AnchorEffect, string][]).map(([value, label]) => (
@@ -589,6 +589,9 @@ function TraverseeCourteV2() {
                 />
               ))}
             </div>
+            <p className="font-inter text-xs text-t-creme/30 text-center">
+              Il n&apos;y a pas de bonne réponse.
+            </p>
           </div>
         );
 
