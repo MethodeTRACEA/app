@@ -83,13 +83,13 @@ const ANCHOR_LABELS: Record<AnchorMethod, string> = {
 
 // Actions émerger — pool complet
 const EMERGE_ACTIONS = [
-  "m'asseoir 2 minutes",
-  "poser mes pieds au sol un moment",
-  "enlever une stimulation",
-  "regarder au loin 10 secondes",
-  "ouvrir une fenêtre",
-  "boire un verre d'eau",
   "relâcher les épaules",
+  "poser mes pieds au sol un moment",
+  "regarder au loin 10 secondes",
+  "m'asseoir 2 minutes",
+  "enlever une stimulation",
+  "boire un verre d'eau",
+  "ouvrir une fenêtre",
 ] as const;
 
 // Versions réduites
@@ -210,18 +210,14 @@ function TraverseeCourteV2() {
   const [timeAnchor, setTimeAnchor] = useState<TimeAnchor | null>(null);
   const [endState, setEndState] = useState<EndState | null>(null);
   const [showMoreFeelings, setShowMoreFeelings] = useState(false);
-  const [showMoreActions, setShowMoreActions] = useState(false);
+  const [emergeOffset, setEmergeOffset] = useState(0);
 
   // Méthodes déjà essayées (pour ne jamais reproposer)
   const [triedMethods, setTriedMethods] = useState<AnchorMethod[]>([]);
   // Branche pareil: méthode alternative
   const [altMethod, setAltMethod] = useState<AnchorMethod | null>(null);
 
-  // Actions émerger: 3 aléatoires puis 3 autres
-  const [emergePool] = useState(() => {
-    const shuffled = [...EMERGE_ACTIONS].sort(() => Math.random() - 0.5);
-    return shuffled;
-  });
+  const [emergePool] = useState(() => [...EMERGE_ACTIONS]);
 
   // ── Helpers ──
   const bodyLabel = bodyZone ? BODY_LABELS[bodyZone] : "";
@@ -626,8 +622,8 @@ function TraverseeCourteV2() {
       // ÉCRAN 7 — ÉMERGER
       // ════════════════════════════════════════════════════
       case "emerger": {
-        const first3 = emergePool.slice(0, 3);
-        const next3 = emergePool.slice(3, 6);
+        const visibleActions = emergePool.slice(emergeOffset, emergeOffset + 3);
+        const hasMore = emergeOffset + 3 < emergePool.length;
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
@@ -639,7 +635,7 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <div className="w-full space-y-3">
-              {first3.map((action) => (
+              {visibleActions.map((action) => (
                 <AutoChip
                   key={action}
                   label={action}
@@ -649,22 +645,11 @@ function TraverseeCourteV2() {
                   }}
                 />
               ))}
-              {showMoreActions &&
-                next3.map((action) => (
-                  <AutoChip
-                    key={action}
-                    label={action}
-                    onClick={() => {
-                      setNextAction(action);
-                      setScreen("aligner");
-                    }}
-                  />
-                ))}
             </div>
-            {!showMoreActions && (
+            {hasMore && (
               <button
                 type="button"
-                onClick={() => setShowMoreActions(true)}
+                onClick={() => setEmergeOffset((o) => o + 3)}
                 className="font-inter text-[13px] text-t-creme/50 underline underline-offset-[3px]"
               >
                 Autre idée
