@@ -35,6 +35,7 @@ type Screen =
   | "ancrer"
   | "exercice"
   | "feedback"
+  | "branche-pareil"
   | "branche-pareil-exercice"
   | "branche-pareil-feedback"
   | "branche-agite"
@@ -43,7 +44,6 @@ type Screen =
   | "aligner"
   | "sous-ecran-reduit"
   | "sous-ecran-repere"
-  | "check-final"
   | "synthese";
 
 type ActivationLevel = "deborde" | "charge" | "encore" | "calme";
@@ -52,7 +52,6 @@ type BodyZone = "poitrine" | "ventre" | "gorge" | "tete" | "epaules" | "partout"
 type AnchorMethod = "appuis" | "autour" | "souffle";
 type AnchorEffect = "un-peu" | "pareil" | "plus-agite" | "je-ne-sais-pas";
 type ActionPlanType = "maintenant" | "10-minutes" | "version-petite" | "pas-maintenant";
-type EndState = "prochain-pas" | "calme" | "clarte" | "rien-special";
 type TimeAnchor = "apres-ecran" | "10-minutes" | "avant-ce-soir" | "plus-tard";
 
 const FEELING_LABELS: Record<Feeling, string> = {
@@ -76,9 +75,9 @@ const BODY_LABELS: Record<BodyZone, string> = {
 };
 
 const ANCHOR_LABELS: Record<AnchorMethod, string> = {
-  "appuis": "sentir les appuis du corps",
-  "autour": "regarder autour de moi",
-  "souffle": "expirer plus lentement",
+  "appuis": "mes appuis",
+  "autour": "autour de moi",
+  "souffle": "mon souffle",
 };
 
 // Actions émerger — pool complet
@@ -215,7 +214,6 @@ function TraverseeCourteV2() {
   const [actionPlanType, setActionPlanType] = useState<ActionPlanType | null>(null);
   const [red컚ction, setRed컚ction] = useState<string | null>(null);
   const [timeAnchor, setTimeAnchor] = useState<TimeAnchor | null>(null);
-  const [endState, setEndState] = useState<EndState | null>(null);
   const [showMoreFeelings, setShowMoreFeelings] = useState(false);
   const [emergeOffset, setEmergeOffset] = useState(0);
 
@@ -375,7 +373,7 @@ function TraverseeCourteV2() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
               <h1 className="font-serif text-2xl text-t-beige">
-                Traverser
+                Là
               </h1>
               <p className="font-body text-lg text-t-creme/70">
                 Là, c&apos;est surtout :
@@ -434,7 +432,7 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <div className="w-full space-y-3">
-              {(["poitrine", "ventre", "gorge", "tete", "epaules"] as BodyZone[]).map((z) => (
+              {(["poitrine", "ventre", "tete", "epaules"] as BodyZone[]).map((z) => (
                 <AutoChip
                   key={z}
                   label={BODY_LABELS[z]}
@@ -444,22 +442,16 @@ function TraverseeCourteV2() {
                   }}
                 />
               ))}
-              <div className="opacity-50 space-y-3 pt-1">
-                {(["partout", "je-ne-sais-pas"] as BodyZone[]).map((z) => (
-                  <AutoChip
-                    key={z}
-                    label={BODY_LABELS[z]}
-                    onClick={() => {
-                      setBodyZone(z);
-                      setScreen("ancrer");
-                    }}
-                  />
-                ))}
+              <div className="opacity-50 pt-1">
+                <AutoChip
+                  label="autre / je ne sais pas"
+                  onClick={() => {
+                    setBodyZone("je-ne-sais-pas");
+                    setScreen("ancrer");
+                  }}
+                />
               </div>
             </div>
-            <p className="font-inter text-xs text-t-creme/40 text-center">
-              Choisis l&apos;endroit le plus marqu&eacute;, m&ecirc;me si ce n&apos;est pas parfait.
-            </p>
           </div>
         );
 
@@ -537,7 +529,7 @@ function TraverseeCourteV2() {
                       const alt = getAlternativeMethod(triedMethods, false);
                       setAltMethod(alt);
                       setTriedMethods((prev) => [...prev, alt]);
-                      setScreen("branche-pareil-exercice");
+                      setScreen("branche-pareil");
                     } else {
                       setScreen("branche-agite");
                     }
@@ -548,6 +540,21 @@ function TraverseeCourteV2() {
             <p className="font-inter text-xs text-t-creme/30 text-center">
               Il n&apos;y a pas de bonne réponse.
             </p>
+          </div>
+        );
+
+      // ════════════════════════════════════════════════════
+      case "branche-pareil":
+        return (
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+            <div className="text-center space-y-4">
+              <h1 className="font-serif text-2xl text-t-beige">
+                On essaie autrement
+              </h1>
+            </div>
+            <PrimaryButton onClick={() => setScreen("branche-pareil-exercice")}>
+              Continuer
+            </PrimaryButton>
           </div>
         );
 
@@ -654,7 +661,7 @@ function TraverseeCourteV2() {
                     setNextAction(action);
                     if (MICRO_ACTIONS.has(action)) {
                       setActionPlanType("maintenant");
-                      setScreen("check-final");
+                      setScreen("synthese");
                     } else {
                       setScreen("aligner");
                     }
@@ -706,7 +713,7 @@ function TraverseeCourteV2() {
                     } else if (value === "pas-maintenant") {
                       setScreen("sous-ecran-repere");
                     } else {
-                      setScreen("check-final");
+                      setScreen("synthese");
                     }
                   }}
                 />
@@ -738,7 +745,7 @@ function TraverseeCourteV2() {
             <PrimaryButton
               onClick={() => {
                 setRed컚ction(reduced);
-                setScreen("check-final");
+                setScreen("synthese");
               }}
             >
               Ça me va
@@ -773,40 +780,6 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setTimeAnchor(value);
-                    setScreen("check-final");
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        );
-
-      // ════════════════════════════════════════════════════
-      // ÉCRAN 9 — CHECK FINAL
-      // ════════════════════════════════════════════════════
-      case "check-final":
-        return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-3">
-              <h1 className="font-serif text-2xl text-t-beige">
-                En repartant
-              </h1>
-              <p className="font-body text-lg text-t-creme/70">
-                Tu repars avec quoi ?
-              </p>
-            </div>
-            <div className="w-full space-y-3">
-              {([
-                ["prochain-pas", "juste un prochain pas"],
-                ["calme", "un peu plus de calme"],
-                ["clarte", "un peu plus de clarté"],
-                ["rien-special", "pas vraiment, mais quelque chose s'est posé"],
-              ] as [EndState, string][]).map(([value, label]) => (
-                <AutoChip
-                  key={value}
-                  label={label}
-                  onClick={() => {
-                    setEndState(value);
                     setScreen("synthese");
                   }}
                 />
@@ -814,6 +787,7 @@ function TraverseeCourteV2() {
             </div>
           </div>
         );
+
 
       // ════════════════════════════════════════════════════
       // ÉCRAN 10 — SYNTHÈSE
@@ -836,7 +810,7 @@ function TraverseeCourteV2() {
                 value={bodyZone ? BODY_LABELS[bodyZone] : "\—"}
               />
               <SynthRow
-                label="Ce qui a été essayé"
+                label="Ce qui a aidé"
                 value={triedMethods.length > 0 ? triedMethods.join(", puis ") : (anchorMethod || "—")}
               />
               <SynthRow
@@ -845,51 +819,9 @@ function TraverseeCourteV2() {
               />
             </div>
 
-            <p className="font-body text-lg text-t-creme/60 italic text-center">
-              Tu repars avec un point d&apos;appui clair.
-            </p>
-
-            <div className="w-full space-y-3">
-              <PrimaryButton onClick={() => router.push("/app")}>
-                Retour à l&apos;accueil
-              </PrimaryButton>
-              <SecondaryButton
-                onClick={() => {
-                  // Reset tout et recommencer
-                  setScreen("entree");
-                  setActivationLevel(null);
-                  setCurrentFeeling(null);
-                  setBodyZone(null);
-                  setAnchorMethod(null);
-                  setAnchorEffect(null);
-                  setNextAction(null);
-                  setActionPlanType(null);
-                  setRed컚ction(null);
-                  setTimeAnchor(null);
-                  setEndState(null);
-                  setShowMoreFeelings(false);
-                  setShowMoreActions(false);
-                  setTriedMethods([]);
-                  setAltMethod(null);
-                }}
-                className="w-full"
-              >
-                Refaire plus tard
-              </SecondaryButton>
-            </div>
-
-            {/* ── Bridge optionnel vers traversée complète ── */}
-            <div className="mt-8 text-center">
-              <p className="font-inter text-[13px] text-t-creme/40 mb-2">
-                Si tu veux aller un peu plus loin, tu peux faire une traversée complète.
-              </p>
-              <SecondaryButton
-                onClick={() => router.push("/app/session")}
-                className="text-sm"
-              >
-                Continuer
-              </SecondaryButton>
-            </div>
+            <PrimaryButton onClick={() => router.push("/app")}>
+              Retour à l&apos;accueil
+            </PrimaryButton>
           </div>
         );
       }
