@@ -35,7 +35,6 @@ type Screen =
   | "ancrer"
   | "exercice"
   | "feedback"
-  | "branche-pareil"
   | "branche-pareil-exercice"
   | "branche-pareil-feedback"
   | "branche-agite"
@@ -581,7 +580,10 @@ function TraverseeCourteV2() {
                     if (value === "un-peu" || value === "je-ne-sais-pas") {
                       setScreen("emerger");
                     } else if (value === "pareil") {
-                      setScreen("branche-pareil");
+                      const alt = getAlternativeMethod(triedMethods, false);
+                      setAltMethod(alt);
+                      setTriedMethods((prev) => [...prev, alt]);
+                      setScreen("branche-pareil-exercice");
                     } else {
                       setScreen("branche-agite");
                     }
@@ -596,37 +598,6 @@ function TraverseeCourteV2() {
         );
 
       // ════════════════════════════════════════════════════
-      // BRANCHE PAREIL
-      // ════════════════════════════════════════════════════
-      case "branche-pareil": {
-        const alt = getAlternativeMethod(triedMethods, false);
-        if (!altMethod) setAltMethod(alt);
-        return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-4">
-              <h1 className="font-serif text-2xl text-t-beige">
-                On change légèrement
-              </h1>
-              <p className="font-body text-lg text-t-creme/60">
-                Ce n&apos;est pas grave si c&apos;est pareil.
-              </p>
-              <p className="font-body text-lg text-t-creme/60">
-                On essaie autrement.
-              </p>
-            </div>
-            <PrimaryButton
-              onClick={() => {
-                const method = altMethod || alt;
-                setTriedMethods((prev) => [...prev, method]);
-                setScreen("branche-pareil-exercice");
-              }}
-            >
-              Continuer
-            </PrimaryButton>
-          </div>
-        );
-      }
-
       case "branche-pareil-exercice":
         return renderExercise(
           altMethod || getAlternativeMethod(triedMethods.slice(0, -1), false),
