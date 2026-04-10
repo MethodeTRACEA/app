@@ -458,11 +458,11 @@ function TraverseeCourteV2() {
                 onClick={() => setShowMoreFeelings(true)}
                 className="font-inter text-[13px] text-t-creme/50 underline underline-offset-[3px]"
               >
-                Voir plus
+                Autre mot
               </button>
             )}
             <p className="font-inter text-xs text-t-creme/40 text-center">
-              Tu peux choisir le plus proche.
+              Le plus proche suffit.
             </p>
           </div>
         );
