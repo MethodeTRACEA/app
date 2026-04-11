@@ -182,6 +182,15 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [screenEnteredAt, setScreenEnteredAt] = useState(Date.now());
   const [firstInputDone, setFirstInputDone] = useState(false);
 
+  // ── Micro-réception (accusé de réception visuel bref) ──
+  const [ack, setAck] = useState<string | null>(null);
+
+  function triggerAck(text: string, next: () => void) {
+    setAck(text);
+    setTimeout(() => next(), 280);
+    setTimeout(() => setAck(null), 400);
+  }
+
   // Auto-route if activation param present (skip intro + intro-context)
   useEffect(() => {
     if (routerActivation && !routedFromActivation) {
@@ -368,8 +377,15 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
     await updateSessionDb(sessionId, updates as Parameters<typeof updateSessionDb>[1]);
 
-    // ── Toutes les étapes : transition directe, pas de mirror intermédiaire ──
-    handleContinueAfterMirror();
+    // ── Toutes les étapes : micro-réception puis transition ──
+    const ackMap: Record<string, string> = {
+      traverser: "Ok",
+      ancrer: "Ok",
+      conscientiser: "Ça marche",
+      emerger: (emergerChoice === "autre" && emergerOther.trim()) ? emergerOther.trim() : emergerChoice || "Ok",
+      aligner: "C'est noté",
+    };
+    triggerAck(ackMap[stepId] || "Ok", () => handleContinueAfterMirror());
     return;
 
     // ── Vérifier si le cache contient déjà une réponse IA pour ce texte ──
@@ -692,6 +708,18 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     return parts.join("\n");
   }
 
+  // --- ACK (micro-réception non-bloquante) ---
+  const ackOverlay = (
+    <div
+      className="fixed top-[38%] left-0 right-0 z-50 flex justify-center pointer-events-none"
+      style={{ opacity: ack ? 1 : 0, transition: "opacity 120ms ease" }}
+    >
+      <span className="font-inter text-base text-t-beige/70 bg-[rgba(35,25,22,0.85)] px-5 py-2 rounded-xl backdrop-blur-sm">
+        {ack}
+      </span>
+    </div>
+  );
+
   // --- INTRO ---
   if (phase === "intro") {
     const activationOptions = [
@@ -859,6 +887,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     if (step.id === "traverser") {
       return (
         <ScreenContainer className="py-8 md:py-12">
+          {ackOverlay}
           <StepIndicator
             currentStep={currentStepIndicateur}
             completedSteps={completedSteps}
@@ -895,7 +924,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                           setRessentiChoice(r);
                           markFirstInput();
                           if (r === "je ne sais pas") trackDontKnow();
-                          setTraverserPhase("corps");
+                          triggerAck("Ok", () => setTraverserPhase("corps"));
                         }}
                       />
                     ))}
@@ -923,7 +952,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                           setBodyZoneOther("");
                           markFirstInput();
                           if (zone === "je ne sais pas") trackDontKnow();
-                          setTraverserPhase("texte");
+                          triggerAck("Noté", () => setTraverserPhase("texte"));
                         }}
                       />
                     ))}
@@ -1006,11 +1035,12 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         if (sessionId) {
           updateSessionDb(sessionId, { steps: updatedSteps, emotion_primaire: stepText.slice(0, 100) } as Parameters<typeof updateSessionDb>[1]);
         }
-        handleContinueAfterMirror();
+        triggerAck("D'accord", () => handleContinueAfterMirror());
       }
 
       return (
         <ScreenContainer className="py-8 md:py-12" overlayOpacity={22}>
+          {ackOverlay}
           <StepIndicator
             currentStep={currentStepIndicateur}
             completedSteps={completedSteps}
@@ -1093,7 +1123,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           if (sessionId) {
             updateSessionDb(sessionId, { steps: updatedSteps } as Parameters<typeof updateSessionDb>[1]);
           }
-          handleContinueAfterMirror();
+          triggerAck("Ok", () => handleContinueAfterMirror());
         } else {
           setAncrerPostPhase(true);
         }
@@ -1101,6 +1131,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
       return (
         <ScreenContainer className="py-10 md:py-16" overlayOpacity={18}>
+          {ackOverlay}
           <StepIndicator
             currentStep={currentStepIndicateur}
             completedSteps={completedSteps}
@@ -1370,6 +1401,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     if (step.id === "conscientiser") {
       return (
         <ScreenContainer className="py-8 md:py-12" overlayOpacity={4}>
+          {ackOverlay}
           {/* Couche lumière étape 4 : halo central, horizon, bas allégé */}
           <div
             className="fixed inset-0 pointer-events-none z-[1]"
@@ -1489,6 +1521,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           overlayOpacity={3}
           /* backgroundImage="/images/tracea-bg-step5.png" — à activer quand l'image sera prête */
         >
+          {ackOverlay}
           {/* Couche lumière étape 5 : direction vers l'avant, guidage chemin */}
           <div
             className="fixed inset-0 pointer-events-none z-[1]"
@@ -1621,6 +1654,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     // ╚═══════════════════════════════════════════════════════════╝
     return (
       <ScreenContainer className="py-8 md:py-12" overlayOpacity={2}>
+        {ackOverlay}
         {/* Couche lumière étape 6 : présence stable, recentrage, ancrage */}
         <div
           className="fixed inset-0 pointer-events-none z-[1]"
