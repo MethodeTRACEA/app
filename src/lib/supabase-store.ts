@@ -253,6 +253,20 @@ export async function migrateFromLocalStorage(userId: string) {
   return 0;
 }
 
+// --- Tracking events ---
+
+export async function trackEvent(
+  userId: string | null,
+  event: string,
+  data?: Record<string, unknown>
+) {
+  await supabase.from("tracea_events").insert({
+    user_id: userId,
+    event,
+    data: data ?? {},
+  });
+}
+
 // --- Helpers ---
 
 function mapDbToSession(row: Record<string, unknown>): SessionData {

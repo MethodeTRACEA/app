@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import {
   createSessionDb,
   updateSessionDb,
+  trackEvent,
 } from "@/lib/supabase-store";
 import type { SessionData, StepId, TraceaAIResponse } from "@/lib/types";
 import { IntensitySlider } from "@/components/IntensitySlider";
@@ -203,6 +204,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         if (s) {
           setSessionId(s.id);
           setPhase("session");
+          trackEvent(userId, "session_start", {
+            mode: "complet",
+            intensity: intensityMap[routerActivation] || 4,
+            context: context || null,
+          });
         }
       });
     }
@@ -297,6 +303,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     if (s) {
       setSessionId(s.id);
       setPhase("session");
+      trackEvent(userId, "session_start", {
+        mode: modeTraversee,
+        intensity,
+        context: context || null,
+      });
     }
   }
 

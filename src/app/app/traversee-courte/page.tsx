@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
+import { trackEvent } from "@/lib/supabase-store";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
@@ -175,6 +177,7 @@ export default function TraverseeCourteV2Page() {
 function TraverseeCourteV2() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useAuth();
 
   // ── Detect if entered via soft-switch (skip entry screen) ──
   const skipEntree = searchParams.get("skip") === "entree";
@@ -241,6 +244,11 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setActivationLevel(value);
+                    trackEvent(user?.id ?? null, "session_start", {
+                      mode: "court",
+                      intensity: value,
+                      context: null,
+                    });
                     setScreen("ressenti");
                   }}
                 />
