@@ -64,6 +64,25 @@ export default function HistoriquePage() {
     setNoteText("");
   }
 
+  // ── Texte dynamique ──────────────────────────────────────
+  const ligne1 = sessions.length < 3
+    ? "Tu es revenu·e ici."
+    : "Tu es revenu·e ici plusieurs fois.";
+
+  const topRessentis = (() => {
+    const counts: Record<string, number> = {};
+    sessions.forEach((s) => {
+      if (s.emotionPrimaire) {
+        const e = s.emotionPrimaire.toLowerCase().trim().slice(0, 30);
+        counts[e] = (counts[e] || 0) + 1;
+      }
+    });
+    return Object.entries(counts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 2)
+      .map(([e]) => e);
+  })();
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="section-title">Traces</h1>
@@ -77,12 +96,14 @@ export default function HistoriquePage() {
         ) : (
           <div className="space-y-2">
             <p className="font-body text-base text-espresso/80 leading-relaxed">
-              Tu es revenu·e ici plusieurs fois.
+              {ligne1}
             </p>
-            <p className="font-body text-base text-warm-gray leading-relaxed">
-              Parfois, c&apos;était flou.<br />
-              Parfois, c&apos;était agité.
-            </p>
+            {topRessentis.length > 0 && (
+              <p className="font-body text-base text-warm-gray leading-relaxed">
+                {topRessentis[0] && <>Parfois, c&apos;était {topRessentis[0]}.</>}
+                {topRessentis[1] && <><br />Parfois, c&apos;était {topRessentis[1]}.</>}
+              </p>
+            )}
             <p className="font-body text-base text-espresso/80 leading-relaxed">
               Tu as pris le temps quand même.
             </p>
