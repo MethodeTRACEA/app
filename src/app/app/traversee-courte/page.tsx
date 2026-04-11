@@ -343,6 +343,7 @@ function TraverseeCourteV2() {
                   label={FEELING_LABELS[f]}
                   onClick={() => {
                     setCurrentFeeling(f);
+                    trackEvent(user?.id ?? null, "step_complete", { step: "ressenti", mode: "court" });
                     setScreen("corps");
                   }}
                 />
@@ -354,6 +355,7 @@ function TraverseeCourteV2() {
                     label={FEELING_LABELS[f]}
                     onClick={() => {
                       setCurrentFeeling(f);
+                      trackEvent(user?.id ?? null, "step_complete", { step: "ressenti", mode: "court" });
                       setScreen("corps");
                     }}
                   />
@@ -362,6 +364,7 @@ function TraverseeCourteV2() {
                 label="je ne sais pas"
                 onClick={() => {
                   setCurrentFeeling("je-ne-sais-pas");
+                  trackEvent(user?.id ?? null, "step_complete", { step: "ressenti", mode: "court" });
                   setScreen("corps");
                 }}
               />
@@ -402,6 +405,7 @@ function TraverseeCourteV2() {
                   label={BODY_LABELS[z]}
                   onClick={() => {
                     setBodyZone(z);
+                    trackEvent(user?.id ?? null, "step_complete", { step: "corps", mode: "court" });
                     setScreen("ancrer");
                   }}
                 />
@@ -410,6 +414,7 @@ function TraverseeCourteV2() {
                 label="autre / je ne sais pas"
                 onClick={() => {
                   setBodyZone("je-ne-sais-pas");
+                  trackEvent(user?.id ?? null, "step_complete", { step: "corps", mode: "court" });
                   setScreen("ancrer");
                 }}
               />
@@ -439,6 +444,7 @@ function TraverseeCourteV2() {
                   onClick={() => {
                     setAnchorMethod(m);
                     setTriedMethods((prev) => [...prev, m]);
+                    trackEvent(user?.id ?? null, "step_complete", { step: "ancrer", mode: "court" });
                     setScreen("exercice");
                   }}
                   className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-t-brume/30 text-t-beige border border-[rgba(232,216,199,0.45)] hover:bg-t-brume/55 hover:border-[rgba(232,216,199,0.70)] hover:text-white"
@@ -624,6 +630,7 @@ function TraverseeCourteV2() {
                   label={action}
                   onClick={() => {
                     setNextAction(action);
+                    trackEvent(user?.id ?? null, "step_complete", { step: "emerger", mode: "court" });
                     setScreen("synthese");
                   }}
                 />
