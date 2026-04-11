@@ -40,7 +40,7 @@ export default function HistoriquePage() {
           Connexion requise
         </h1>
         <p className="text-warm-gray mb-6">
-          Connecte-toi pour retrouver ton historique de sessions.
+          Connecte-toi pour retrouver tes traces.
         </p>
         <Link href="/app/connexion" className="btn-primary inline-block">
           Se connecter
@@ -66,56 +66,65 @@ export default function HistoriquePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <p className="section-label">Journal</p>
       <h1 className="section-title">Traces</h1>
-      <p className="text-warm-gray mb-8 leading-relaxed">
-        {sessions.length === 0
-          ? "Aucune session complétée. Commence ta première traversée."
-          : `${sessions.length} session${sessions.length > 1 ? "s" : ""} complétée${sessions.length > 1 ? "s" : ""}.`}
-      </p>
 
-      {sessions.length > 0 && (
-        <div className="card-base mb-8">
-          <h3 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
-            Émotions traversées
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {(() => {
-              const counts: Record<string, number> = {};
-              sessions.forEach((s) => {
-                if (s.emotionPrimaire) {
-                  const e = s.emotionPrimaire.toLowerCase().trim().slice(0, 30);
-                  counts[e] = (counts[e] || 0) + 1;
-                }
-              });
-              return Object.entries(counts)
-                .sort(([, a], [, b]) => b - a)
-                .slice(0, 12)
-                .map(([emotion, count]) => (
-                  <span
-                    key={emotion}
-                    className="px-3 py-1.5 rounded-full text-sm font-medium"
-                    style={{
-                      backgroundColor:
-                        count > 2 ? "#F0D5C4" : count > 1 ? "#D6E2CE" : "#F5EDE2",
-                      color: count > 2 ? "#8A4A2F" : "#2C1F14",
-                    }}
-                  >
-                    {emotion}
-                    {count > 1 && (
-                      <span className="ml-1 text-xs opacity-60">x{count}</span>
-                    )}
-                  </span>
-                ));
-            })()}
+      {/* Bloc d'accueil */}
+      <div className="mb-10">
+        {sessions.length === 0 ? (
+          <p className="font-body text-base text-warm-gray leading-relaxed">
+            Aucune traversée complétée pour l&apos;instant.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            <p className="font-body text-base text-espresso/80 leading-relaxed">
+              Tu es revenu·e ici plusieurs fois.
+            </p>
+            <p className="font-body text-base text-warm-gray leading-relaxed">
+              Parfois, c&apos;était flou.<br />
+              Parfois, c&apos;était agité.
+            </p>
+            <p className="font-body text-base text-espresso/80 leading-relaxed">
+              Tu as pris le temps quand même.
+            </p>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
+      {/* Ce qui revient */}
+      {sessions.length > 0 && (() => {
+        const counts: Record<string, number> = {};
+        sessions.forEach((s) => {
+          if (s.emotionPrimaire) {
+            const e = s.emotionPrimaire.toLowerCase().trim().slice(0, 30);
+            counts[e] = (counts[e] || 0) + 1;
+          }
+        });
+        const emotions = Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, 12);
+        if (emotions.length === 0) return null;
+        return (
+          <div className="mb-8">
+            <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
+              Ce qui revient
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {emotions.map((emotion) => (
+                <span
+                  key={emotion}
+                  className="px-3 py-1.5 rounded-full text-sm font-medium bg-beige text-espresso"
+                >
+                  {emotion}
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Ce qui t'a aidé — fil de vérités intérieures */}
       {sessions.filter(s => s.veriteInterieure).length > 0 && (
         <div className="mb-10">
-          <p className="text-xs font-medium tracking-widest uppercase text-terra mb-5">
-            Ton fil de vérités intérieures
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-5">
+            Ce qui t&apos;a aidé
           </p>
           <div className="space-y-4">
             {sessions
@@ -123,9 +132,9 @@ export default function HistoriquePage() {
               .map((s, i) => (
                 <div key={s.id} className="flex gap-4 items-start">
                   <div className="flex flex-col items-center flex-shrink-0">
-                    <div className="w-2.5 h-2.5 rounded-full bg-terra mt-1.5" />
+                    <div className="w-2 h-2 rounded-full bg-terra/50 mt-1.5" />
                     {i < sessions.filter(s => s.veriteInterieure).length - 1 && (
-                      <div className="w-px flex-1 bg-terra/20 mt-1 min-h-[2rem]" />
+                      <div className="w-px flex-1 bg-terra/15 mt-1 min-h-[2rem]" />
                     )}
                   </div>
                   <div className="pb-4">
@@ -146,13 +155,10 @@ export default function HistoriquePage() {
         </div>
       )}
 
+      {/* Liste des sessions */}
       <div className="space-y-3">
         {sessions.map((s) => {
           const isExpanded = expandedId === s.id;
-          const recovery =
-            s.intensiteAfter !== null
-              ? s.intensiteBefore - s.intensiteAfter
-              : null;
 
           return (
             <div key={s.id} className="card-base !p-0 overflow-hidden">
@@ -160,61 +166,35 @@ export default function HistoriquePage() {
                 onClick={() => setExpandedId(isExpanded ? null : s.id)}
                 className="w-full text-left"
               >
-                <div className="flex items-stretch">
-                  <div
-                    className="w-1.5 flex-shrink-0 rounded-l-card"
-                    style={{
-                      backgroundColor:
-                        s.context === "relationnel" ? "#C4704A" :
-                        s.context === "existentiel" ? "#8A9E7A" :
-                        s.context === "professionnel" ? "#C4998A" : "#9E8E80"
-                    }}
-                  />
-                  <div className="flex-1 px-5 py-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="font-serif text-lg text-espresso">
-                          {new Date(s.date).toLocaleDateString("fr-FR", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </div>
-                        <div className="text-xs text-warm-gray mt-0.5">
-                          {s.context} ·{" "}
-                          {new Date(s.date).toLocaleTimeString("fr-FR", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </div>
+                <div className="px-5 py-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-serif text-base text-espresso">
+                        {new Date(s.date).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
                       </div>
-                      <div className="flex items-center gap-3">
-                        {recovery !== null && recovery > 0 && (
-                          <span className="font-serif text-base text-sage">
-                            ↓ {recovery} pts
-                          </span>
-                        )}
-                        <span className="text-xs text-warm-gray">
-                          {s.intensiteBefore}/10 → {s.intensiteAfter}/10
-                        </span>
-                        <span className={`transition-transform duration-200 text-warm-gray ${isExpanded ? "rotate-90" : ""}`}>
-                          ▸
-                        </span>
-                      </div>
+                      {(s.veriteInterieure || s.emotionPrimaire) && (
+                        <p className="font-body text-sm text-warm-gray italic mt-0.5 truncate max-w-[260px]">
+                          {s.veriteInterieure
+                            ? `"${s.veriteInterieure}"`
+                            : s.emotionPrimaire}
+                        </p>
+                      )}
                     </div>
-                    {s.veriteInterieure && !isExpanded && (
-                      <p className="font-body italic text-sm text-warm-gray mt-2 truncate">
-                        &ldquo;{s.veriteInterieure}&rdquo;
-                      </p>
-                    )}
+                    <span className={`transition-transform duration-200 text-warm-gray/50 ${isExpanded ? "rotate-90" : ""}`}>
+                      ▸
+                    </span>
                   </div>
                 </div>
               </button>
 
               {isExpanded && (
-                <div className="px-5 pb-4 pt-2 ml-1.5 border-t border-beige-dark animate-fade-up">
+                <div className="px-5 pb-4 pt-2 border-t border-beige-dark animate-fade-up">
                   {s.veriteInterieure && (
-                    <div className="border-l-[3px] border-terra pl-4 py-2 mb-4">
+                    <div className="border-l-[3px] border-terra/40 pl-4 py-2 mb-4">
                       <p className="font-body text-base italic text-espresso">
                         &ldquo;{s.veriteInterieure}&rdquo;
                       </p>
@@ -234,7 +214,7 @@ export default function HistoriquePage() {
                       };
                       return (
                         <div key={stepId}>
-                          <h4 className="text-xs font-medium tracking-widest uppercase text-terra mb-1">
+                          <h4 className="text-xs font-medium tracking-widest uppercase text-terra/70 mb-1">
                             {stepNames[stepId] || stepId}
                           </h4>
                           <p className="font-body text-sm text-espresso leading-relaxed">
@@ -244,16 +224,8 @@ export default function HistoriquePage() {
                       );
                     })}
                   </div>
-                  {s.analysis && (
-                    <div className="mt-4 pt-4 border-t border-beige-dark">
-                      <h4 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
-                        Analyse
-                      </h4>
-                      <pre className="font-body text-sm text-espresso leading-relaxed whitespace-pre-wrap">
-                        {s.analysis}
-                      </pre>
-                    </div>
-                  )}
+
+                  {/* Note entre sessions */}
                   <div className="mt-4 pt-3 border-t border-beige-dark">
                     <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
                       Ce qui a continué à travailler après
@@ -300,11 +272,12 @@ export default function HistoriquePage() {
                       </div>
                     )}
                   </div>
+
                   <div className="mt-4 pt-3 border-t border-beige-dark flex justify-end">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (confirm("Supprimer cette session ?")) {
+                        if (confirm("Supprimer cette trace ?")) {
                           handleDelete(s.id);
                         }
                       }}
