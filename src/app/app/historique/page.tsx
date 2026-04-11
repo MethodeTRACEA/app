@@ -228,7 +228,7 @@ export default function HistoriquePage() {
                         traverser: "Traverser",
                         reconnaitre: "Reconnaître",
                         ancrer: "Ancrer",
-                        conscientiser: "Conscientiser",
+                        conscientiser: "Écouter",
                         emerger: "Émerger",
                         aligner: "Aligner",
                       };

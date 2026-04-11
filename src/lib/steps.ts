@@ -89,7 +89,7 @@ export const STEPS: StepDefinition[] = [
   {
     id: "conscientiser",
     number: 4,
-    name: "Conscientiser",
+    name: "Écouter",
     verb: "C",
     description:
       "",

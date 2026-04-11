@@ -130,7 +130,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [mirrorNote, setMirrorNote] = useState("");
   const [mirrorNotes, setMirrorNotes] = useState<Record<string, string>>({});
 
-  // ── Étape 1 — Traverser : zone du corps ──
+  // ── Étape 1 — Traverser : sous-phases (ressenti → corps → texte) ──
+  const [traverserPhase, setTraverserPhase] = useState<"ressenti" | "corps" | "texte">("ressenti");
+  const [ressentiChoice, setRessentiChoice] = useState("");
+  const [traverserFreeText, setTraverserFreeText] = useState("");
   const [bodyZone, setBodyZone] = useState("");
   const [bodyZoneOther, setBodyZoneOther] = useState("");
   const [showTraverserHelp, setShowTraverserHelp] = useState(false);
@@ -150,7 +153,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [ancrerAlt, setAncrerAlt] = useState(false);
   const [ancrerPostPhase, setAncrerPostPhase] = useState(false);
 
-  // ── Étape 4 — Conscientiser : besoin immédiat ──
+  // ── Étape 4 — Écouter : besoin immédiat ──
   const [ecouterChoice, setEcouterChoice] = useState("");
   const [ecouterOther, setEcouterOther] = useState("");
   const [ecouterConfirm, setEcouterConfirm] = useState<"oui" | "appelle" | "">("");
@@ -166,7 +169,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [alignerPhase, setAlignerPhase] = useState<"choix" | "reduction" | "repere" | "fait" | "feedback">("choix");
   const [alignerReduction, setAlignerReduction] = useState("");
   const [alignerReductionOther, setAlignerReductionOther] = useState("");
-  const [alignerFeedback, setAlignerFeedback] = useState<"mieux" | "clair" | "difficile" | "">("");
+  const [alignerFeedback, setAlignerFeedback] = useState<"maintenant" | "plus-petit" | "plus-tard" | "">("");
 
   // ── Cache des réponses par étape (navigation sans perte) ──
   const [stepCache, setStepCache] = useState<Record<string, StepCacheEntry>>({});
@@ -186,11 +189,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       const intensityMap: Record<string, number> = { encore: 4, calme: 2 };
       setIntensity(intensityMap[routerActivation] || 4);
       setModeTraversee("complet");
-      // Create session directly, then go to entry-question
+      // Create session directly, then go to first step
       createSessionDb(userId, intensityMap[routerActivation] || 4, context).then(s => {
         if (s) {
           setSessionId(s.id);
-          setPhase("entry-question");
+          setPhase("session");
         }
       });
     }
@@ -284,7 +287,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     const s = await createSessionDb(userId, intensity, context);
     if (s) {
       setSessionId(s.id);
-      setPhase("entry-question");
+      setPhase("session");
     }
   }
 
@@ -296,11 +299,20 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
     const stepId = step.id as StepId;
 
-    // Étape 1 — concaténer la zone du corps au texte si renseignée
+    // Étape 1 — assembler ressenti + zone + texte facultatif
     let stepText = text;
-    if (stepId === "traverser" && bodyZone) {
-      const zone = bodyZone === "autre" && bodyZoneOther.trim() ? bodyZoneOther.trim() : bodyZone;
-      stepText = `${text.trim()} [corps: ${zone}]`;
+    if (stepId === "traverser") {
+      const parts: string[] = [];
+      if (ressentiChoice) parts.push(ressentiChoice);
+      if (bodyZone) {
+        const zone = bodyZone === "autre" && bodyZoneOther.trim() ? bodyZoneOther.trim() : bodyZone;
+        parts.push(`[corps: ${zone}]`);
+      }
+      if (text.trim()) {
+        parts.push(text.trim());
+        setTraverserFreeText(text.trim());
+      }
+      stepText = parts.join(" ");
     }
 
     // Étape 2 — construire le texte depuis le choix émotion
@@ -326,14 +338,16 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       stepText = emergerChoice === "autre" && emergerOther.trim() ? `autre: ${emergerOther.trim()}` : emergerChoice;
     }
 
-    // Étape 6 — construire le texte depuis le geste final
+    // Étape 6 — combiner geste (étape 5) + engagement (étape 6)
     if (stepId === "aligner") {
-      if (alignerReduction) {
-        stepText = alignerReduction === "autre" && alignerReductionOther.trim() ? `autre: ${alignerReductionOther.trim()}` : alignerReduction;
-      } else {
-        // Geste repris de l'étape 5
-        stepText = emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice;
-      }
+      const geste = emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice;
+      const engagementLabels: Record<string, string> = {
+        "maintenant": "maintenant",
+        "plus-petit": "en plus petit",
+        "plus-tard": "plus tard",
+      };
+      const engagement = alignerFeedback ? engagementLabels[alignerFeedback] || "" : "";
+      stepText = engagement ? `${geste} (${engagement})` : geste;
     }
 
     const updatedSteps = { ...steps, [stepId]: stepText };
@@ -354,11 +368,9 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
     await updateSessionDb(sessionId, updates as Parameters<typeof updateSessionDb>[1]);
 
-    // ── Étapes 2, 3, 4, 5 : bypass IA, transition directe (UI affiche du contenu fixe) ──
-    if (stepId === "reconnaitre" || stepId === "ancrer" || stepId === "conscientiser" || stepId === "emerger") {
-      handleContinueAfterMirror();
-      return;
-    }
+    // ── Toutes les étapes : transition directe, pas de mirror intermédiaire ──
+    handleContinueAfterMirror();
+    return;
 
     // ── Vérifier si le cache contient déjà une réponse IA pour ce texte ──
     const cached = stepCache[stepId];
@@ -496,8 +508,12 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       if (mirrorNote.trim()) {
         setMirrorNotes(prev => ({ ...prev, [lastStepId]: mirrorNote.trim() }));
       }
-      // Dernière étape → micro-intégration (Section 5)
-      setPhase("integration");
+      // Dernière étape → synthèse finale directe
+      if (sessionId) {
+        updateSessionDb(sessionId, { intensity_after: intensityAfter });
+      }
+      setPhase("analysis");
+      generateAnalysis();
     }
   }
 
@@ -714,11 +730,18 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   if (phase === "intro-context") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
-        <h1 className="section-title !text-2xl md:!text-4xl">Contexte</h1>
+        <h1 className="section-title !text-2xl md:!text-4xl">Traversée complète</h1>
+
+        <p className="font-body text-base text-espresso/80 leading-relaxed mb-3">
+          6 étapes pour clarifier ce qui se passe, revenir au corps, et repartir avec un geste juste.
+        </p>
+        <p className="font-body text-sm text-warm-gray mb-8">
+          Environ 5 à 8 minutes
+        </p>
 
         <div className="card-base mb-6 md:mb-8">
           <label className="text-xs font-medium tracking-widest uppercase text-warm-gray block mb-3">
-            Contexte de la traversée
+            C&apos;est lié à quoi ?
           </label>
           <div className="grid grid-cols-2 gap-2">
             {(
@@ -744,23 +767,12 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           </div>
         </div>
 
-        <div className="space-y-3">
-          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray text-center mb-4">
-            Choisir ton parcours
-          </p>
-          <button
-            onClick={() => { setModeTraversee("complet"); handleStartSession(); }}
-            className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
-          >
-            Traversée complète · 6 étapes
-          </button>
-          <button
-            onClick={() => { setModeTraversee("court"); handleStartSession(); }}
-            className="w-full py-4 md:py-3.5 px-6 rounded-2xl border-2 border-terra/30 text-terra font-medium text-base md:text-sm hover:border-terra hover:bg-terra-light/20 transition-all text-center"
-          >
-            Traversée courte · 3 étapes
-          </button>
-        </div>
+        <button
+          onClick={() => { setModeTraversee("complet"); handleStartSession(); }}
+          className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
+        >
+          Commencer
+        </button>
       </div>
     );
   }
@@ -800,7 +812,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                   next_flow: "long",
                   next_screen: sourceStep,
                 }));
-                setPhase(step ? "session" : "entry-question");
+                setPhase("session");
               }}>
                 Continuer ici
               </PrimaryButton>
@@ -841,7 +853,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     const hasCachedAI = !!(stepCache[step.id]?.aiResponse && stepCache[step.id]?.validatedText === text.trim());
 
     // ╔═══════════════════════════════════════════════════════════╗
-    // ║  ÉTAPE 1 — TRAVERSER (immersif paysage intérieur)        ║
+    // ║  ÉTAPE 1 — TRAVERSER (3 sous-phases : ressenti → corps → texte) ║
     // ╚═══════════════════════════════════════════════════════════╝
     if (step.id === "traverser") {
       return (
@@ -853,7 +865,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
             immersive
           />
 
-          <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
+          <div className="mt-5 md:mt-6 animate-fade-up" key={`${currentStep}-${traverserPhase}`}>
             <StepCard>
               <StepHeader
                 stepNumber={step.number}
@@ -863,73 +875,108 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 hasCachedAI={hasCachedAI}
               />
 
-              {/* Description — espacée */}
-              {step.description && (
-                <p className="font-inter text-sm text-t-creme/50 italic mb-8">
-                  {step.description}
-                </p>
-              )}
-
-              {/* Question principale — grande, aérée */}
-              {step.question && (
-                <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
-                  {step.question}
-                </p>
-              )}
-
-              {/* Textarea capsule */}
-              <TextCapsuleField
-                value={text}
-                onChange={setText}
-                placeholder="ex : tension, agitation, fatigue, trop de pensées"
-                multiline
-                rows={2}
-                className="h-20 md:h-24"
-              />
-
-              {/* Zone du corps — chips — bloc bien séparé */}
-              <div className="mt-8">
-                <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
-                  Dans le corps
-                </p>
-                <p className="font-inter text-sm text-t-creme/50 italic mb-3.5">
-                  Où c&apos;est le plus marqué ?
-                </p>
-                <div className="flex flex-wrap gap-2.5">
-                  {["poitrine", "ventre", "gorge", "tête", "épaules", "partout", "je ne sais pas"].map((zone) => (
-                    <ChoiceChip
-                      key={zone}
-                      label={zone.charAt(0).toUpperCase() + zone.slice(1)}
-                      selected={bodyZone === zone}
-                      onClick={() => { setBodyZone(zone); setBodyZoneOther(""); markFirstInput(); if (zone === "je ne sais pas") trackDontKnow(); }}
-                    />
-                  ))}
+              {/* ── Sous-phase 1 : Ressenti ── */}
+              {traverserPhase === "ressenti" && (
+                <div className="animate-fade-up">
+                  <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
+                    Là, c&apos;est surtout :
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                    Tu peux choisir le plus proche.
+                  </p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {["serré", "agité", "lourd", "flou", "je ne sais pas"].map((r) => (
+                      <ChoiceChip
+                        key={r}
+                        label={r.charAt(0).toUpperCase() + r.slice(1)}
+                        selected={ressentiChoice === r}
+                        onClick={() => {
+                          setRessentiChoice(r);
+                          markFirstInput();
+                          if (r === "je ne sais pas") trackDontKnow();
+                          setTraverserPhase("corps");
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Bouton principal — bien espacé */}
-              <div className="flex items-center gap-3 mt-10">
-                {currentStep > 0 && (
-                  <button
-                    onClick={handleGoBack}
-                    className="t-btn-secondary"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    <span className="hidden sm:inline">Retour</span>
-                  </button>
-                )}
-                <PrimaryButton
-                  onClick={handleNextStep}
-                  disabled={text.trim().length < 3}
-                  className="flex-1"
-                >
-                  Continuer
-                </PrimaryButton>
-              </div>
+              {/* ── Sous-phase 2 : Zone corporelle ── */}
+              {traverserPhase === "corps" && (
+                <div className="animate-fade-up">
+                  <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
+                    Dans le corps
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                    Où c&apos;est le plus marqué ?
+                  </p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {["poitrine", "ventre", "gorge", "tête", "épaules", "partout", "je ne sais pas"].map((zone) => (
+                      <ChoiceChip
+                        key={zone}
+                        label={zone.charAt(0).toUpperCase() + zone.slice(1)}
+                        selected={bodyZone === zone}
+                        onClick={() => {
+                          setBodyZone(zone);
+                          setBodyZoneOther("");
+                          markFirstInput();
+                          if (zone === "je ne sais pas") trackDontKnow();
+                          setTraverserPhase("texte");
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-3 mt-10">
+                    <button
+                      onClick={() => setTraverserPhase("ressenti")}
+                      className="t-btn-secondary"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                      <span className="hidden sm:inline">Retour</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ── Sous-phase 3 : Texte libre facultatif ── */}
+              {traverserPhase === "texte" && (
+                <div className="animate-fade-up">
+                  <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
+                    Tu veux ajouter quelque chose ?
+                  </p>
+                  <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                    Facultatif. Quelques mots suffisent.
+                  </p>
+                  <TextCapsuleField
+                    value={text}
+                    onChange={setText}
+                    placeholder="ex : tension, agitation, fatigue…"
+                    multiline
+                    rows={2}
+                    className="h-20 md:h-24"
+                  />
+                  <div className="flex items-center gap-3 mt-10">
+                    <button
+                      onClick={() => setTraverserPhase("corps")}
+                      className="t-btn-secondary"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                      <span className="hidden sm:inline">Retour</span>
+                    </button>
+                    <PrimaryButton
+                      onClick={handleNextStep}
+                      className="flex-1"
+                    >
+                      Continuer
+                    </PrimaryButton>
+                  </div>
+                </div>
+              )}
 
               {/* Aide secondaire */}
               <SoftHelpText trigger="Je bloque">
-                Choisis juste la zone où tu sens quelque chose, même vaguement.
+                Choisis juste ce qui est le plus proche de ce que tu sens.
               </SoftHelpText>
             </StepCard>
             <HelpPanel step={step} />
@@ -949,8 +996,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         setEmotionChoice(emo);
         markFirstInput();
         if (emo === "je ne sais pas") trackDontKnow();
-        // Auto-advance : bypass l'état stale en passant la valeur directement
-        const stepText = emo;
+      }
+
+      function handleEmoConfirm() {
+        const stepText = emotionChoice;
         const updatedSteps = { ...steps, reconnaitre: stepText };
         setSteps(updatedSteps);
         if (sessionId) {
@@ -1007,9 +1056,9 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 )}
               </div>
 
-              {/* Bouton retour uniquement */}
-              {currentStep > 0 && (
-                <div className="flex items-center gap-3 mt-10">
+              {/* Boutons retour + continuer */}
+              <div className="flex items-center gap-3 mt-10">
+                {currentStep > 0 && (
                   <button
                     onClick={handleGoBack}
                     className="t-btn-secondary"
@@ -1017,8 +1066,15 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     <span className="hidden sm:inline">Retour</span>
                   </button>
-                </div>
-              )}
+                )}
+                <PrimaryButton
+                  onClick={handleEmoConfirm}
+                  disabled={!emotionChoice}
+                  className="flex-1"
+                >
+                  Continuer
+                </PrimaryButton>
+              </div>
             </StepCard>
             <HelpPanel step={step} />
           </div>
@@ -1149,8 +1205,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                   </div>
                   <button
                     onClick={() => setAncrerDone(true)}
-                    disabled={!ancrerAlt}
-                    className={`t-btn-secondary${!ancrerAlt ? " opacity-30 cursor-not-allowed" : ""}`}
+                    className="t-btn-secondary"
                   >
                     C&apos;est fait
                   </button>
@@ -1298,7 +1353,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     }
 
     // ╔═══════════════════════════════════════════════════════════╗
-    // ║  ÉTAPE 4 — Conscientiser (immersif, remontée douce)      ║
+    // ║  ÉTAPE 4 — Écouter (immersif, remontée douce)             ║
     // ╚═══════════════════════════════════════════════════════════╝
     if (step.id === "conscientiser") {
       return (
@@ -1345,7 +1400,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               {/* Chips besoin */}
               <div className="mt-6">
                 <div className="flex flex-wrap gap-2.5">
-                  {["ralentir", "souffler", "relâcher", "être rassuré", "avoir de l'espace", "être soutenu", "faire une pause", "je ne sais pas"].map((need) => (
+                  {[...["ralentir", "souffler", "relâcher", "faire une pause"], ...(showMoreNeeds ? ["être rassuré", "avoir de l'espace", "être soutenu"] : []), "je ne sais pas"].map((need) => (
                     <ChoiceChip
                       key={need}
                       label={need.charAt(0).toUpperCase() + need.slice(1)}
@@ -1354,6 +1409,14 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                       className="border-t-creme/30 text-t-creme"
                     />
                   ))}
+                  {!showMoreNeeds && (
+                    <button
+                      onClick={() => setShowMoreNeeds(true)}
+                      className="px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 text-t-creme/40 hover:text-t-creme/60 transition-colors"
+                    >
+                      Voir plus
+                    </button>
+                  )}
                 </div>
 
                 {/* Sous-écran "je ne sais pas" */}
@@ -1450,6 +1513,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 hasCachedAI={hasCachedAI}
               />
 
+              {/* Lien perceptif avec le parcours */}
+              <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                À partir de ce que tu as posé :
+              </p>
+
               {/* Question principale */}
               <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
                 Qu&apos;est-ce qui semble le plus juste maintenant ?
@@ -1464,9 +1532,9 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                       case "moins de pression":
                         return ["m'asseoir 2 minutes", "respirer encore 3 fois", "enlever une stimulation", "faire une pause"];
                       case "souffler":
-                        return ["respirer encore 3 fois", "fermer les yeux un instant", "m'asseoir quelque part au calme", "faire une pause"];
+                        return ["respirer encore 3 fois", "m'asseoir quelque part au calme", "boire un verre d'eau", "faire une pause"];
                       case "relâcher":
-                        return ["étirer mon corps doucement", "secouer mes mains", "m'asseoir 2 minutes", "fermer les yeux un instant"];
+                        return ["étirer mon corps doucement", "secouer mes mains", "m'asseoir 2 minutes", "faire une pause"];
                       case "être rassuré":
                       case "plus de soutien":
                         return ["me parler plus doucement", "envoyer un message simple", "relire une phrase ressource", "rester avec quelque chose de stable"];
@@ -1476,9 +1544,9 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                       case "être soutenu":
                         return ["envoyer un message simple", "me rappeler un moment rassurant", "relire une phrase ressource", "rester avec quelque chose de stable"];
                       case "faire une pause":
-                        return ["m'asseoir 2 minutes", "fermer les yeux un instant", "boire un verre d'eau", "faire une pause dehors"];
+                        return ["m'asseoir 2 minutes", "boire un verre d'eau", "faire une pause dehors", "respirer encore 3 fois"];
                       default:
-                        return ["m'asseoir 2 minutes", "respirer encore 3 fois", "sortir prendre l'air", "fermer les yeux un instant"];
+                        return ["m'asseoir 2 minutes", "respirer encore 3 fois", "sortir prendre l'air", "faire une pause"];
                     }
                   })().map((action) => (
                     <ChoiceChip
@@ -1577,173 +1645,50 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               hasCachedAI={hasCachedAI}
             />
 
-            {/* Description */}
-            {step.description && (
-              <p className="font-inter text-sm text-t-creme/55 italic mb-8">
-                {step.description}
-              </p>
-            )}
-
-            {/* Phase choix — rappel du geste + 4 options souples */}
-            {alignerPhase === "choix" && (
-              <div className="mt-2">
-                {emergerChoice && emergerChoice !== "je ne sais pas" && (
-                  <div className="t-card !p-3 !rounded-xl mb-5">
-                    <p className="font-inter text-base text-t-beige">
-                      {emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice}
-                    </p>
-                  </div>
-                )}
-                <p className="font-inter text-sm text-t-creme/55 italic mb-6">
-                  Choisis la version la plus simple possible.
+            {/* Rappel du geste choisi */}
+            {emergerChoice && emergerChoice !== "je ne sais pas" && (
+              <div className="t-card !p-3 !rounded-xl mb-5">
+                <p className="font-inter text-base text-t-beige">
+                  {emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim() : emergerChoice}
                 </p>
-                <div className="flex flex-col gap-2.5">
-                  <button
-                    onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
-                    className="t-chip text-left"
-                  >
-                    Je peux le faire maintenant
-                  </button>
-                  <button
-                    onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
-                    className="t-chip text-left"
-                  >
-                    Je peux le faire dans 10 minutes
-                  </button>
-                  <button
-                    onClick={() => setAlignerPhase("reduction")}
-                    className="t-chip text-left"
-                  >
-                    Je peux en faire une version plus petite
-                  </button>
-                  <button
-                    onClick={() => setAlignerPhase("repere")}
-                    className="t-chip text-left"
-                  >
-                    Pas maintenant, mais aujourd&apos;hui
-                  </button>
-                </div>
               </div>
             )}
 
-            {/* Phase réduction — dynamique selon l'action choisie */}
-            {alignerPhase === "reduction" && (
-              <div className="mt-2 animate-fade-up">
-                <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
-                  Encore plus simple
-                </p>
-                <p className="font-inter text-sm text-t-creme/55 mb-8">
-                  On réduit encore.
-                </p>
-                <p className="font-inter text-base text-t-beige/80 leading-relaxed whitespace-pre-line mb-8">
-                  {((): string => {
-                    const action = emergerChoice === "autre" && emergerOther.trim() ? emergerOther.trim().toLowerCase() : (emergerChoice || "").toLowerCase();
-                    if (action.includes("asseoir") || action.includes("poser") || action.includes("minute"))
-                      return "2 minutes → 30 secondes.\nJuste s'asseoir, c'est tout.";
-                    if (action.includes("écrire") || action.includes("noter") || action.includes("message"))
-                      return "Écrire → noter 3 mots.\nPas besoin de plus.";
-                    if (action.includes("appeler") || action.includes("envoyer"))
-                      return "Appeler → envoyer 1 phrase.\nJuste un signe.";
-                    if (action.includes("sortir") || action.includes("prendre l'air") || action.includes("éloigner") || action.includes("dehors"))
-                      return "Sortir → ouvrir la fenêtre.\nJuste sentir l'air.";
-                    if (action.includes("respirer") || action.includes("souffler"))
-                      return "3 respirations → 1 seule.\nJuste celle-là.";
-                    if (action.includes("fermer les yeux"))
-                      return "Fermer les yeux → 5 secondes.\nJuste un instant.";
-                    if (action.includes("étirer") || action.includes("secouer"))
-                      return "Étirer → juste bouger les mains.\nRien de plus.";
-                    if (action.includes("couper") || action.includes("stimulation") || action.includes("téléphone"))
-                      return "Couper 10 min → retourner le téléphone.\nJuste ça.";
-                    if (action.includes("boire") || action.includes("eau"))
-                      return "Boire un verre → une gorgée.\nJuste une.";
-                    if (action.includes("relire") || action.includes("phrase"))
-                      return "Relire une phrase → la dire dans ta tête.\nUne seule fois.";
-                    if (action.includes("pause"))
-                      return "Une pause → 30 secondes.\nJuste rester là.";
-                    return "Version réduite → le plus petit geste.\nJuste un, maintenant.";
-                  })()}
-                </p>
-                <PrimaryButton
-                  onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
-                  className="w-full"
+            <p className="font-inter text-sm text-t-creme/55 italic mb-6">
+              Choisis la version la plus simple.
+            </p>
+
+            {/* 3 choix simples */}
+            <div className="flex flex-wrap gap-2.5">
+              {([["maintenant", "Maintenant"], ["plus-petit", "En plus petit"], ["plus-tard", "Plus tard"]] as const).map(([key, label]) => (
+                <ChoiceChip
+                  key={key}
+                  label={label}
+                  selected={alignerFeedback === key}
+                  onClick={() => setAlignerFeedback(key)}
+                />
+              ))}
+            </div>
+
+            {/* Boutons */}
+            <div className="flex items-center gap-3 mt-10">
+              {currentStep > 0 && (
+                <button
+                  onClick={handleGoBack}
+                  className="t-btn-secondary"
                 >
-                  Ça me va
-                </PrimaryButton>
-              </div>
-            )}
-
-            {/* Phase repère — pas maintenant mais aujourd'hui */}
-            {alignerPhase === "repere" && (
-              <div className="mt-2 animate-fade-up">
-                <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
-                  Ton repère
-                </p>
-                <p className="font-inter text-sm text-t-creme/55 mb-6">
-                  Choisis juste un repère simple.
-                </p>
-                <div className="flex flex-col gap-2.5">
-                  {["après ce message", "dans 10 minutes", "avant ce soir", "plus tard aujourd'hui"].map((opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => { setAlignerPhase("fait"); setTimeout(() => setAlignerPhase("feedback"), 1500); }}
-                      className="t-chip text-left"
-                    >
-                      {opt.charAt(0).toUpperCase() + opt.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Phase fait — pause */}
-            {alignerPhase === "fait" && (
-              <div className="py-8 text-center">
-                <p className="font-inter text-sm text-t-creme/50 italic">
-                  C&apos;est suffisant pour maintenant.
-                </p>
-              </div>
-            )}
-
-            {/* Phase feedback */}
-            {alignerPhase === "feedback" && (
-              <>
-                <p className="font-inter text-lg text-t-beige leading-relaxed mb-4">
-                  {step.question}
-                </p>
-                <div className="flex flex-wrap gap-2.5 mt-2">
-                  {([["mieux", "Faisable maintenant"], ["clair", "Faisable en plus petit"], ["difficile", "Encore difficile"]] as const).map(([key, label]) => (
-                    <ChoiceChip
-                      key={key}
-                      label={label}
-                      selected={alignerFeedback === key}
-                      onClick={() => { setAlignerFeedback(key); handleNextStep(); }}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Bouton principal — masqué pendant "fait" et "feedback" (auto-advance) */}
-            {alignerPhase !== "fait" && alignerPhase !== "feedback" && (
-              <div className="flex items-center gap-3 mt-10">
-                {currentStep > 0 && (
-                  <button
-                    onClick={handleGoBack}
-                    className="t-btn-secondary"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    <span className="hidden sm:inline">Retour</span>
-                  </button>
-                )}
-                <PrimaryButton
-                  onClick={handleNextStep}
-                  disabled={alignerPhase === "feedback" ? !alignerFeedback : true}
-                  className="flex-1"
-                >
-                  Terminer
-                </PrimaryButton>
-              </div>
-            )}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                  <span className="hidden sm:inline">Retour</span>
+                </button>
+              )}
+              <PrimaryButton
+                onClick={handleNextStep}
+                disabled={!alignerFeedback}
+                className="flex-1"
+              >
+                Terminer
+              </PrimaryButton>
+            </div>
           </StepCard>
           <HelpPanel step={step} />
         </div>
@@ -1751,8 +1696,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     );
   }
 
-  // --- MIRROR (retour après chaque étape) ---
-  if (phase === "mirror") {
+  // (Écran mirror supprimé — transition directe entre étapes)
+  if (false && phase === "mirror") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">
         <StepIndicator
@@ -2018,47 +1963,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     );
   }
 
-  // --- INTEGRATION (Section 5) ---
-  if (phase === "integration") {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-16 animate-fade-in">
-        <div className="text-center min-h-[40vh] flex flex-col items-center justify-center">
-          <p className="font-serif text-2xl text-espresso mb-3">
-            En repartant
-          </p>
-          <p className="font-body text-base text-espresso/80 mb-10">
-            Là, tu repars avec quoi ?
-          </p>
-          <div className="flex flex-col gap-3 w-full max-w-sm">
-            <button
-              onClick={() => handleIntegrationChoice("yes")}
-              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
-            >
-              Juste un prochain pas
-            </button>
-            <button
-              onClick={() => handleIntegrationChoice("yes")}
-              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
-            >
-              Un peu plus de calme
-            </button>
-            <button
-              onClick={() => handleIntegrationChoice("yes")}
-              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-espresso font-medium text-sm hover:border-sage hover:bg-sage/10 transition-all"
-            >
-              Un peu plus de clarté
-            </button>
-            <button
-              onClick={() => handleIntegrationChoice("unsure")}
-              className="w-full px-6 py-3.5 rounded-2xl border-2 border-beige-dark text-warm-gray font-medium text-sm hover:border-warm-gray hover:bg-beige transition-all"
-            >
-              Pas vraiment, mais ça s&apos;est un peu posé
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // (Écran intégration supprimé — passage direct à la synthèse finale)
 
   // (Écran intensity-after supprimé — check final intégré dans l'écran integration)
 
@@ -2069,14 +1974,24 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
       {/* Synthèse descriptive */}
       <div className="card-base mb-6 space-y-3">
+        {ressentiChoice && (
+          <p className="font-body text-sm text-espresso leading-relaxed">
+            Ce qui était là : {ressentiChoice}.
+          </p>
+        )}
         {bodyZone && (
           <p className="font-body text-sm text-espresso leading-relaxed">
             Dans le corps : {bodyZone}.
           </p>
         )}
+        {traverserFreeText && (
+          <p className="font-body text-sm text-espresso/70 leading-relaxed italic">
+            &laquo;&nbsp;{traverserFreeText.slice(0, 200)}&nbsp;&raquo;
+          </p>
+        )}
         {steps.reconnaitre && (
           <p className="font-body text-sm text-espresso leading-relaxed">
-            Ce qui était là : {steps.reconnaitre}.
+            L&apos;émotion : {steps.reconnaitre}.
           </p>
         )}
         {steps.conscientiser && (
@@ -2091,6 +2006,28 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         )}
       </div>
 
+      {/* Analyse IA — filtrée pour ne garder que du texte lisible */}
+      {analysis && (() => {
+        const junkPatterns = /^(Analyse de ta traversée|Contexte\s*:|Intensité\s*:|TRAVERSER\s*·|RECONNAÎTRE\s*·|ANCRER\s*·|CONSCIENTISER\s*·|ÉMERGER\s*·|ALIGNER\s*·|Ton système nerveux|Le protocole t|récupération\s*:)/i;
+        const cleaned = analysis
+          .split("\n")
+          .map(l => l.trim())
+          .filter(l => l && !junkPatterns.test(l) && !l.startsWith("«") && !l.includes("/10"))
+          .slice(0, 4);
+        const displayText = cleaned.join(" ");
+        if (!displayText) return null;
+        return (
+          <div className="card-base mb-6">
+            <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
+              Ce que TRACÉA retient
+            </p>
+            <p className="font-body text-sm text-espresso leading-relaxed">
+              {displayText}
+            </p>
+          </div>
+        );
+      })()}
+
       {/* Clôture */}
       <div className="text-center py-6 md:py-8">
         <p className="font-body text-base text-espresso/80 leading-relaxed mb-10">
@@ -2104,10 +2041,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         </button>
         <div className="mt-3">
           <button
-            onClick={() => router.push("/app")}
+            onClick={() => router.push("/app/historique")}
             className="text-sm text-warm-gray hover:text-terra transition-colors underline underline-offset-2"
           >
-            Refaire plus tard
+            Voir mes traversées
           </button>
         </div>
       </div>
