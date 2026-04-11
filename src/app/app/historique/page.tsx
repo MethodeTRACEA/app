@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues } from "@/lib/supabase-store";
+import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues, getSessionEndCount, getTopRessentiValues } from "@/lib/supabase-store";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 
@@ -14,15 +14,21 @@ export default function HistoriquePage() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
   const [topEmerger, setTopEmerger] = useState<string[]>([]);
+  const [sessionEndCount, setSessionEndCount] = useState(0);
+  const [topRessentis, setTopRessentis] = useState<string[]>([]);
 
   useEffect(() => {
     if (!user) return;
     Promise.all([
       getCompletedSessionsDb(user.id),
       getTopEmergerValues(user.id),
-    ]).then(([data, emerger]) => {
+      getSessionEndCount(user.id),
+      getTopRessentiValues(user.id),
+    ]).then(([data, emerger, endCount, ressentis]) => {
       setSessions(data);
       setTopEmerger(emerger);
+      setSessionEndCount(endCount);
+      setTopRessentis(ressentis);
       setLoading(false);
     });
   }, [user]);
@@ -68,24 +74,11 @@ export default function HistoriquePage() {
     setNoteText("");
   }
 
-  // ── Texte dynamique ──────────────────────────────────────
-  const ligne1 = sessions.length < 3
-    ? "Tu es revenu·e ici."
-    : "Tu es revenu·e ici plusieurs fois.";
-
-  const topRessentis = (() => {
-    const counts: Record<string, number> = {};
-    sessions.forEach((s) => {
-      if (s.emotionPrimaire) {
-        const e = s.emotionPrimaire.toLowerCase().trim().slice(0, 30);
-        counts[e] = (counts[e] || 0) + 1;
-      }
-    });
-    return Object.entries(counts)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 2)
-      .map(([e]) => e);
-  })();
+  // ── Texte dynamique depuis tracking ──────────────────────
+  const ligne1 =
+    sessionEndCount <= 1 ? "Tu es revenu·e ici." :
+    sessionEndCount === 2 ? "Tu es revenu·e ici deux fois." :
+    "Tu es revenu·e ici plusieurs fois.";
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -93,21 +86,26 @@ export default function HistoriquePage() {
 
       {/* Bloc d'accueil */}
       <div className="mb-10">
-        {sessions.length === 0 ? (
-          <p className="font-body text-base text-warm-gray leading-relaxed">
-            Aucune traversée complétée pour l&apos;instant.
-          </p>
+        {sessionEndCount === 0 ? (
+          <div className="space-y-2">
+            <p className="font-body text-base text-espresso/80 leading-relaxed">
+              Tu es revenu·e ici.
+            </p>
+            <p className="font-body text-base text-espresso/80 leading-relaxed">
+              Tu as pris le temps quand même.
+            </p>
+          </div>
         ) : (
           <div className="space-y-2">
             <p className="font-body text-base text-espresso/80 leading-relaxed">
               {ligne1}
             </p>
-            {topRessentis.length > 0 && (
+            {topRessentis.length > 0 ? (
               <p className="font-body text-base text-warm-gray leading-relaxed">
                 {topRessentis[0] && <>Parfois, c&apos;était {topRessentis[0]}.</>}
                 {topRessentis[1] && <><br />Parfois, c&apos;était {topRessentis[1]}.</>}
               </p>
-            )}
+            ) : null}
             <p className="font-body text-base text-espresso/80 leading-relaxed">
               Tu as pris le temps quand même.
             </p>
