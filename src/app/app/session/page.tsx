@@ -1142,7 +1142,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           <div className="mt-6 md:mt-8 animate-fade-up" key={currentStep}>
             {/* Micro-texte de transition depuis reconnaitre */}
             <p className="font-body text-sm text-warm-gray/70 italic text-center mb-4">
-              Ça semble bien présent. On va juste revenir au corps.
+              On va juste revenir au corps, simplement.
             </p>
 
             <StepCard className={`transition-all duration-1000 ease-in-out ${!ancrerDone && ancrerMethod ? "!bg-[rgba(50,35,28,0.08)] !border-[rgba(232,216,199,0.03)] !shadow-none !backdrop-blur-[40px]" : ""}`}>
@@ -2028,6 +2028,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         {bodyZone && (
           <p className="font-body text-sm text-espresso leading-relaxed">
             Dans le corps : {bodyZone}.
+          </p>
+        )}
+        {steps.ancrer && (
+          <p className="font-body text-sm text-espresso leading-relaxed">
+            Ce qui a bougé : {steps.ancrer}.
           </p>
         )}
         {traverserFreeText && (

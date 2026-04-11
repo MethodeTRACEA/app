@@ -94,7 +94,7 @@ export const STEPS: StepDefinition[] = [
     description:
       "",
     question:
-      "Sous ce que tu ressens, qu'est-ce qui aiderait un peu ?",
+      "Qu'est-ce qui aiderait un peu, là ?",
     help: {
       comprendre:
         "L'émotion que tu as traversée n'est pas un accident. Elle porte un message — sur un besoin non satisfait, sur une blessure ancienne, sur quelque chose qui compte profondément pour toi. Conscientiser, c'est écouter ce message. C'est aussi l'étape où tu peux commencer à regarder tes réactions non pas comme des défauts, mais comme des mécanismes de survie qui ont eu une raison d'être. Ce que tu ressens a du sens.\nÇa protège quelque chose en toi.",
