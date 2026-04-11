@@ -631,6 +631,7 @@ function TraverseeCourteV2() {
                   onClick={() => {
                     setNextAction(action);
                     trackEvent(user?.id ?? null, "step_complete", { step: "emerger", mode: "court" });
+                    trackEvent(user?.id ?? null, "session_end", { mode: "court" });
                     setScreen("synthese");
                   }}
                 />

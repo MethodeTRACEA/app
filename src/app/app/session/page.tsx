@@ -617,6 +617,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     // IMPORTANT : afficher l'analyse AVANT de lancer le résumé mémoire
     setAnalysisLoading(false);
     setPhase("complete");
+    trackEvent(userId, "session_end", { mode: modeTraversee });
 
     // Phase 2 : Générer le résumé mémoire en arrière-plan (fire-and-forget)
     const summarizeWithTimeout = async () => {
