@@ -12,9 +12,8 @@ const publicLinks = [{ href: "/app", label: "Accueil" }];
 const authLinks = [
   { href: "/app", label: "Accueil" },
   { href: "/app/session", label: "Session" },
-  { href: "/app/historique", label: "Historique" },
+  { href: "/app/historique", label: "Traces" },
   { href: "/app/ressources", label: "Ressources" },
-  { href: "/app/profil", label: "Profil" },
 ];
 
 export function Navigation() {

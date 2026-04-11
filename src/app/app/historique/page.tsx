@@ -67,7 +67,7 @@ export default function HistoriquePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <p className="section-label">Journal</p>
-      <h1 className="section-title">Historique des traversées</h1>
+      <h1 className="section-title">Traces</h1>
       <p className="text-warm-gray mb-8 leading-relaxed">
         {sessions.length === 0
           ? "Aucune session complétée. Commence ta première traversée."
