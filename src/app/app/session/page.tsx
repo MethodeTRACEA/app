@@ -200,7 +200,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       setIntensity(intensityMap[routerActivation] || 4);
       setModeTraversee("complet");
       // Create session directly, then go to first step
-      createSessionDb(userId, intensityMap[routerActivation] || 4, context).then(s => {
+      createSessionDb(userId, intensityMap[routerActivation] || 4, context || "autre").then(s => {
         if (s) {
           setSessionId(s.id);
           setPhase("session");
@@ -299,7 +299,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   }
 
   async function handleStartSession() {
-    const s = await createSessionDb(userId, intensity, context);
+    const s = await createSessionDb(userId, intensity, context || "autre");
     if (s) {
       setSessionId(s.id);
       setPhase("session");
