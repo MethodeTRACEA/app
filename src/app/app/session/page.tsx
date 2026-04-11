@@ -493,7 +493,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           setMirrorError("La réponse de l'IA est vide. Tu peux continuer.");
         }
       }
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       console.error("Fetch error:", err);
       if (err instanceof DOMException && err.name === "AbortError") {
         setMirrorError("Le temps de réponse a été dépassé. Tu peux continuer ta session.");
@@ -1033,13 +1034,13 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       const mainEmotions = ["tension", "peur", "tristesse", "colère", "fatigue", "confusion"];
       const moreEmotions = ["trop-plein", "vide"];
 
-      function handleEmoSelect(emo: string) {
+      const handleEmoSelect = (emo: string) => {
         setEmotionChoice(emo);
         markFirstInput();
         if (emo === "je ne sais pas") trackDontKnow();
       }
 
-      function handleEmoConfirm() {
+      const handleEmoConfirm = () => {
         const stepText = emotionChoice;
         const updatedSteps = { ...steps, reconnaitre: stepText };
         setSteps(updatedSteps);
@@ -1125,7 +1126,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     // ║  ÉTAPE 3 — Ancrer (immersif, ralenti, respirant)         ║
     // ╚═══════════════════════════════════════════════════════════╝
     if (step.id === "ancrer") {
-      function handleFeedbackSelect(key: "calme" | "pareil" | "agite") {
+      const handleFeedbackSelect = (key: "calme" | "pareil" | "agite") => {
         setAncrerFeedback(key);
         if (key === "calme") {
           const stepText = "un peu plus calme";
@@ -1807,7 +1808,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                     ? (emergerChoice === "autre" && emergerOther.trim()
                         ? `${emergerOther.trim().charAt(0).toUpperCase() + emergerOther.trim().slice(1)}.`
                         : `${emergerChoice.charAt(0).toUpperCase() + emergerChoice.slice(1)}.`)
-                    : mirrorData.mirror}
+                    : mirrorData?.mirror}
                 </p>
                 {step?.id === "conscientiser" && (
                   <p className="font-body text-sm text-espresso/70 leading-relaxed mt-3 italic">
@@ -1829,7 +1830,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               </div>
 
               {/* Progress signal — "Ce qui évolue en toi" (Phase 3 — uniquement étapes C, É, A) */}
-              {mirrorData.progress_signal &&
+              {mirrorData?.progress_signal &&
                 ["conscientiser", "emerger", "aligner"].includes(step?.id || "") && (
                 <div className="flex items-start gap-2 pl-6 py-2">
                   <span className="text-sage text-sm mt-0.5">↗</span>
@@ -1838,28 +1839,28 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                       Ce qui évolue en toi
                     </p>
                     <p className="font-body text-sm text-sage leading-relaxed">
-                      {mirrorData.progress_signal}
+                      {mirrorData?.progress_signal}
                     </p>
                   </div>
                 </div>
               )}
 
               {/* Hypothèse — "Ce que ça pourrait dire" (masqué étapes 1, 2, 4, 5 et 6) */}
-              {mirrorData.hypothesis && !["traverser", "reconnaitre", "conscientiser", "emerger", "aligner"].includes(step?.id || "") && (
+              {mirrorData?.hypothesis && !["traverser", "reconnaitre", "conscientiser", "emerger", "aligner"].includes(step?.id || "") && (
                 <div className="pl-6">
                   <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-sage/70 mb-2">
                     Ce que ça pourrait dire
                   </p>
                   <p className="font-body text-base text-espresso/80 leading-relaxed italic">
-                    {mirrorData.hypothesis}
+                    {mirrorData?.hypothesis}
                   </p>
                 </div>
               )}
 
               {/* Éclairage — pas de label */}
-              {mirrorData.insight && (
+              {mirrorData?.insight && (
                 <p className="font-body text-base text-espresso leading-relaxed pl-6">
-                  {mirrorData.insight}
+                  {mirrorData?.insight}
                 </p>
               )}
 
@@ -1893,13 +1894,13 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                     </div>
                   </div>
                 ) : null
-              ) : ["reconnaitre", "conscientiser", "emerger"].includes(step?.id || "") ? null : mirrorData.question ? (
+              ) : ["reconnaitre", "conscientiser", "emerger"].includes(step?.id || "") ? null : mirrorData?.question ? (
                 <div className="pl-6">
                   <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-terra/70 mb-2">
                     À explorer
                   </p>
                   <p className="font-serif text-lg text-terra leading-relaxed">
-                    {mirrorData.question}
+                    {mirrorData?.question}
                   </p>
                 </div>
               ) : null}
@@ -1947,45 +1948,45 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                       : "Tu peux commencer doucement."}
                   </p>
                 </div>
-              ) : mirrorData.micro_action ? (
+              ) : mirrorData?.micro_action ? (
                 <div className="card-base !p-4 ml-6">
                   <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-1">
                     À essayer maintenant
                   </p>
                   <p className="font-body text-sm text-espresso leading-relaxed">
-                    {mirrorData.micro_action}
+                    {mirrorData?.micro_action}
                   </p>
                 </div>
               ) : null}
 
               {/* Pattern observation — "Ce que TRACÉA remarque" (Phase 2) */}
-              {mirrorData.pattern_observation && (
-                <PatternObservation observation={mirrorData.pattern_observation} />
+              {mirrorData?.pattern_observation && (
+                <PatternObservation observation={mirrorData?.pattern_observation ?? ""} />
               )}
 
               {/* Next step suggestion — "Pour la prochaine fois" (Phase 3 — uniquement étape Aligner) */}
-              {mirrorData.next_step_suggestion && step?.id === "aligner" && (
+              {mirrorData?.next_step_suggestion && step?.id === "aligner" && (
                 <div className="border-l-[3px] border-sage/40 pl-5 py-3 ml-6 bg-sage/5 rounded-r-xl">
                   <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-sage mb-1">
                     Pour la prochaine fois
                   </p>
                   <p className="font-body text-sm text-espresso/80 leading-relaxed italic">
-                    {mirrorData.next_step_suggestion}
+                    {mirrorData?.next_step_suggestion}
                   </p>
                 </div>
               )}
 
               {/* Message de sécurité */}
-              {mirrorData.safety_message && (
+              {mirrorData?.safety_message && (
                 <div className="card-base !border-l-4 !border-l-terra !p-4 ml-6 bg-terra-light/10">
                   <p className="font-body text-sm text-espresso leading-relaxed">
-                    {mirrorData.safety_message}
+                    {mirrorData?.safety_message}
                   </p>
                 </div>
               )}
 
               {/* Ressources d'urgence si risk_level = high */}
-              {mirrorData.showSafetyResources && <SafetyResources />}
+              {mirrorData?.showSafetyResources && <SafetyResources />}
             </div>
           ) : null}
 
