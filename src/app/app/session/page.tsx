@@ -98,7 +98,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [intensity, setIntensity] = useState(5);
   const [intensityAfter, setIntensityAfter] = useState(3);
   const [intensityAfterTouched, setIntensityAfterTouched] = useState(false);
-  const [context, setContext] = useState<SessionData["context"]>("existentiel");
+  const [context, setContext] = useState<SessionData["context"] | "">("");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [steps, setSteps] = useState<Record<StepId, string>>({
     traverser: "",
@@ -147,7 +147,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
   // ── Étape 3 — Ancrer : respiration + feedback ──
   const [ancrerDone, setAncrerDone] = useState(false);
-  const [ancrerFeedback, setAncrerFeedback] = useState<"calme" | "pareil" | "agite" | "">("");
+  const [ancrerFeedback, setAncrerFeedback] = useState<"calme" | "pareil" | "agite" | "incertain" | "">("");
   const [showAncrerHelp, setShowAncrerHelp] = useState(false);
   const [ancrerMethod, setAncrerMethod] = useState<"" | "respirer" | "corps" | "regarder">("");
   const [ancrerAlt, setAncrerAlt] = useState(false);
@@ -323,8 +323,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
     // Étape 3 — construire le texte depuis le feedback
     if (stepId === "ancrer" && ancrerFeedback) {
-      const feedbackLabels = { calme: "un peu plus calme", pareil: "pareil", agite: "plus agité" };
-      stepText = feedbackLabels[ancrerFeedback];
+      const feedbackLabels: Record<string, string> = { calme: "un peu plus calme", pareil: "pareil", agite: "plus agité", incertain: "pas sûr" };
+      stepText = feedbackLabels[ancrerFeedback] || "pas sûr";
     }
 
     // Étape 4 — construire le texte depuis le choix besoin
@@ -769,7 +769,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
         <button
           onClick={() => { setModeTraversee("complet"); handleStartSession(); }}
-          className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
+          disabled={!context}
+          className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Commencer
         </button>
@@ -1027,10 +1028,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 hasCachedAI={hasCachedAI}
               />
 
-              {/* Titre + question */}
-              <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
-                Reconnaître
-              </p>
+              {/* Question */}
               <p className="font-inter text-sm text-t-creme/50 italic mb-6">
                 Si tu devais approcher ça avec un mot simple…
               </p>
@@ -1254,7 +1252,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                     <ChoiceChip
                       label="Je ne sais pas trop"
                       selected={false}
-                      onClick={() => { setAncrerFeedback("pareil"); setAncrerPostPhase(true); }}
+                      onClick={() => { setAncrerFeedback("incertain"); setAncrerPostPhase(true); }}
                     />
                   </div>
                 </>
@@ -1294,6 +1292,20 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                       </p>
                       <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-10">
                         Ce n&apos;est pas grave si c&apos;est pareil.{"\n"}On va juste faire encore plus simple.
+                      </p>
+                      <PrimaryButton onClick={handleNextStep} className="w-full">
+                        Continuer
+                      </PrimaryButton>
+                    </>
+                  )}
+
+                  {ancrerFeedback === "incertain" && (
+                    <>
+                      <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-2">
+                        C&apos;est ok de ne pas savoir.
+                      </p>
+                      <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-10">
+                        On continue doucement.
                       </p>
                       <PrimaryButton onClick={handleNextStep} className="w-full">
                         Continuer
@@ -2001,7 +2013,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         )}
         {steps.aligner && (
           <p className="font-body text-sm text-espresso leading-relaxed">
-            Le geste choisi : {steps.aligner}.
+            Le geste choisi : {steps.aligner.replace(/\s*\(([^)]+)\)/, " — $1")}.
           </p>
         )}
       </div>
