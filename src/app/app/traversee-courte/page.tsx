@@ -30,6 +30,8 @@ const ACTIVATION_FLOW_MAP: Record<string, FlowRoute> = {
 // ═══════════════════════════════════════════════════════════
 
 type Screen =
+  | "onboarding"
+  | "transition"
   | "entree"
   | "propose-long"
   | "ressenti"
@@ -181,9 +183,11 @@ function TraverseeCourteV2() {
 
   // ── Detect if entered via soft-switch (skip entry screen) ──
   const skipEntree = searchParams.get("skip") === "entree";
+  const onboardingSeen = typeof window !== "undefined" && localStorage.getItem("tracea_onboarding_seen") === "true";
 
   // ── State ──
-  const [screen, setScreen] = useState<Screen>(skipEntree ? "ressenti" : "entree");
+  const [screen, setScreen] = useState<Screen>(skipEntree ? "ressenti" : onboardingSeen ? "entree" : "onboarding");
+  const [transitionOpacity, setTransitionOpacity] = useState(0);
   const [activationLevel, setActivationLevel] = useState<ActivationLevel | null>(null);
   const [currentFeeling, setCurrentFeeling] = useState<Feeling | null>(null);
   const [bodyZone, setBodyZone] = useState<BodyZone | null>(null);
@@ -201,6 +205,20 @@ function TraverseeCourteV2() {
   const [emergePool] = useState(() => [...EMERGE_ACTIONS]);
 
   // ── Helpers ──
+  // ── Transition animation (onboarding → entree) ──
+  useEffect(() => {
+    if (screen !== "transition") return;
+    setTransitionOpacity(0);
+    const fadeIn = setTimeout(() => setTransitionOpacity(1), 16);
+    const fadeOut = setTimeout(() => setTransitionOpacity(0), 1000);
+    const done = setTimeout(() => setScreen("entree"), 1200);
+    return () => {
+      clearTimeout(fadeIn);
+      clearTimeout(fadeOut);
+      clearTimeout(done);
+    };
+  }, [screen]);
+
   const bodyLabel = bodyZone ? BODY_LABELS[bodyZone] : "";
 
   const getAlternativeMethod = useCallback(
@@ -219,6 +237,48 @@ function TraverseeCourteV2() {
   const renderScreen = () => {
     switch (screen) {
       // ════════════════════════════════════════════════════
+      // ONBOARDING — Écran d'accueil
+      // ════════════════════════════════════════════════════
+      case "onboarding":
+        return (
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
+            <div className="text-center space-y-6">
+              <p className="font-serif text-2xl text-t-beige leading-relaxed">
+                Tu ne vas pas mal.
+              </p>
+              <p className="font-serif text-2xl text-t-beige leading-relaxed">
+                Tu es en surcharge.
+              </p>
+              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+                On va juste revenir au corps.
+              </p>
+              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+                Quelques minutes suffisent.
+              </p>
+            </div>
+            <PrimaryButton onClick={() => {
+              localStorage.setItem("tracea_onboarding_seen", "true");
+              setScreen("transition");
+            }}>
+              Commencer
+            </PrimaryButton>
+          </div>
+        );
+
+      // ════════════════════════════════════════════════════
+      // ════════════════════════════════════════════════════
+      // TRANSITION — Micro-pause sensorielle
+      // ════════════════════════════════════════════════════
+      case "transition":
+        return (
+          <div
+            className="flex items-center justify-center min-h-[80vh]"
+            style={{ opacity: transitionOpacity, transition: "opacity 200ms ease" }}
+          >
+            <p className="font-serif text-2xl text-t-beige">On ralentit.</p>
+          </div>
+        );
+
       // ÉCRAN 0 — ENTRÉE
       // ════════════════════════════════════════════════════
       case "entree":
