@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getCompletedSessionsDb, deleteSessionDb } from "@/lib/supabase-store";
+import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues } from "@/lib/supabase-store";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
-import { updateSessionDb } from "@/lib/supabase-store";
 
 export default function HistoriquePage() {
   const { user, loading: authLoading } = useAuth();
@@ -14,11 +13,16 @@ export default function HistoriquePage() {
   const [loading, setLoading] = useState(true);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
+  const [topEmerger, setTopEmerger] = useState<string[]>([]);
 
   useEffect(() => {
     if (!user) return;
-    getCompletedSessionsDb(user.id).then((data) => {
+    Promise.all([
+      getCompletedSessionsDb(user.id),
+      getTopEmergerValues(user.id),
+    ]).then(([data, emerger]) => {
       setSessions(data);
+      setTopEmerger(emerger);
       setLoading(false);
     });
   }, [user]);
@@ -175,6 +179,29 @@ export default function HistoriquePage() {
           </div>
         </div>
       )}
+
+      {/* Ce qui t'aide quand ça compte */}
+      <div className="mb-8">
+        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
+          Ce qui t&apos;aide quand ça compte
+        </p>
+        {topEmerger.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {topEmerger.map((v) => (
+              <span
+                key={v}
+                className="px-3 py-1.5 rounded-full text-sm font-medium bg-beige text-espresso"
+              >
+                {v}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="font-body text-sm text-warm-gray/60 italic">
+            Les gestes reviendront ici.
+          </p>
+        )}
+      </div>
 
       {/* Liste des sessions */}
       <div className="space-y-3">

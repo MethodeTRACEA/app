@@ -253,6 +253,33 @@ export async function migrateFromLocalStorage(userId: string) {
   return 0;
 }
 
+// --- Tracking queries ---
+
+export async function getTopEmergerValues(userId: string, limit = 3): Promise<string[]> {
+  const { data } = await supabase
+    .from("tracea_events")
+    .select("data")
+    .eq("user_id", userId)
+    .eq("event", "step_complete")
+    .filter("data->>step", "eq", "emerger");
+
+  if (!data || data.length === 0) return [];
+
+  const counts: Record<string, number> = {};
+  data.forEach((row) => {
+    const value = (row.data as Record<string, unknown>)?.value;
+    if (typeof value === "string" && value.trim()) {
+      const v = value.trim();
+      counts[v] = (counts[v] || 0) + 1;
+    }
+  });
+
+  return Object.entries(counts)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, limit)
+    .map(([v]) => v);
+}
+
 // --- Tracking events ---
 
 export async function trackEvent(
