@@ -32,6 +32,7 @@ const ACTIVATION_FLOW_MAP: Record<string, FlowRoute> = {
 type Screen =
   | "onboarding"
   | "transition"
+  | "exit-transition"
   | "entree"
   | "propose-long"
   | "ressenti"
@@ -188,6 +189,7 @@ function TraverseeCourteV2() {
   // ── State ──
   const [screen, setScreen] = useState<Screen>(skipEntree ? "ressenti" : onboardingSeen ? "entree" : "onboarding");
   const [transitionOpacity, setTransitionOpacity] = useState(0);
+  const [exitOpacity, setExitOpacity] = useState(0);
   const [activationLevel, setActivationLevel] = useState<ActivationLevel | null>(null);
   const [currentFeeling, setCurrentFeeling] = useState<Feeling | null>(null);
   const [bodyZone, setBodyZone] = useState<BodyZone | null>(null);
@@ -218,6 +220,20 @@ function TraverseeCourteV2() {
       clearTimeout(done);
     };
   }, [screen]);
+
+  // ── Exit transition animation (synthese → accueil) ──
+  useEffect(() => {
+    if (screen !== "exit-transition") return;
+    setExitOpacity(0);
+    const fadeIn = setTimeout(() => setExitOpacity(1), 16);
+    const fadeOut = setTimeout(() => setExitOpacity(0), 1050);
+    const done = setTimeout(() => router.push("/app"), 1200);
+    return () => {
+      clearTimeout(fadeIn);
+      clearTimeout(fadeOut);
+      clearTimeout(done);
+    };
+  }, [screen, router]);
 
   const bodyLabel = bodyZone ? BODY_LABELS[bodyZone] : "";
 
@@ -276,6 +292,19 @@ function TraverseeCourteV2() {
             style={{ opacity: transitionOpacity, transition: "opacity 200ms ease" }}
           >
             <p className="font-serif text-2xl text-t-beige">On ralentit.</p>
+          </div>
+        );
+
+      // ════════════════════════════════════════════════════
+      // EXIT TRANSITION — Micro-pause de sortie
+      // ════════════════════════════════════════════════════
+      case "exit-transition":
+        return (
+          <div
+            className="flex items-center justify-center min-h-[80vh]"
+            style={{ opacity: exitOpacity, transition: "opacity 150ms ease" }}
+          >
+            <p className="font-serif text-2xl text-t-beige">C&apos;est suffisant pour maintenant.</p>
           </div>
         );
 
@@ -739,7 +768,7 @@ function TraverseeCourteV2() {
               />
             </div>
 
-            <PrimaryButton onClick={() => router.push("/app")}>
+            <PrimaryButton onClick={() => setScreen("exit-transition")}>
               Retour à l&apos;accueil
             </PrimaryButton>
             <button
