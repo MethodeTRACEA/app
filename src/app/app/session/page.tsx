@@ -388,7 +388,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
     await updateSessionDb(sessionId, updates as Parameters<typeof updateSessionDb>[1]);
 
-    trackEvent(userId, "step_complete", { step: stepId, mode: modeTraversee });
+    trackEvent(userId, "step_complete", { step: stepId, mode: modeTraversee, value: stepText });
 
     // ── Toutes les étapes : micro-réception puis transition ──
     const ackMap: Record<string, string> = {
