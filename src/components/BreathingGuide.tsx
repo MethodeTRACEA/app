@@ -38,21 +38,37 @@ export function BreathingGuide({ onComplete }: BreathingGuideProps) {
     phase === "inspire" ? "Inspire" :
     phase === "expire" ? "Expire" : "";
 
+  const scale = expanded ? 1 : 0.45;
+
   return (
     <div className="flex flex-col items-center gap-10">
       <div
         style={{
-          width: expanded ? 160 : 72,
-          height: expanded ? 160 : 72,
+          width: 160,
+          height: 160,
           borderRadius: "50%",
           background: "rgba(214,165,106,0.08)",
           border: "1px solid rgba(214,165,106,0.20)",
-          transition: `width ${expanded ? "4s" : "6s"} ease-in-out, height ${expanded ? "4s" : "6s"} ease-in-out`,
+          transform: `scale(${scale})`,
+          transition: `transform ${expanded ? "4s" : "6s"} ease-in-out`,
+          willChange: "transform",
         }}
       />
-      <p className="font-body text-xl text-t-beige/60 italic" style={{ minHeight: "1.75rem" }}>
-        {phaseText}
-      </p>
+      <div className="flex flex-col items-center gap-1">
+        <p className="font-body text-xl text-t-beige/60 italic" style={{ minHeight: "1.75rem" }}>
+          {phaseText}
+        </p>
+        {phase !== "idle" && phase !== "done" && (
+          <p className="font-inter text-xs text-t-creme/35">
+            Laisse ton souffle suivre le mouvement
+          </p>
+        )}
+      </div>
+      {phase !== "idle" && (
+        <p className="font-inter text-xs text-t-creme/25" style={{ minHeight: "1rem" }}>
+          {phase !== "done" ? `${cycle + 1} / ${CYCLES}` : ""}
+        </p>
+      )}
       <button type="button" onClick={onComplete} className="t-btn-secondary">
         C&apos;est fait
       </button>
