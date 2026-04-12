@@ -6,13 +6,13 @@ import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 
-type Screen = "closure" | "bridge" | "paywall";
+type Screen = "micro-check" | "closure" | "bridge" | "paywall";
 
 const LS_KEY = "tracea_post_session_seen";
 
 export default function PostSessionPage() {
   const router = useRouter();
-  const [screen, setScreen] = useState<Screen>("closure");
+  const [screen, setScreen] = useState<Screen>("micro-check");
 
   // Mark as seen on first load — subsequent completions skip this page
   useEffect(() => {
@@ -24,6 +24,27 @@ export default function PostSessionPage() {
   return (
     <ScreenContainer overlayOpacity={45}>
       <div className="py-12">
+
+        {/* ── Écran 0 — Micro-check ── */}
+        {screen === "micro-check" && (
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
+            <p className="font-serif text-2xl text-t-beige text-center leading-relaxed">
+              Ça t&apos;a aidé un peu ?
+            </p>
+            <div className="w-full flex flex-col gap-3">
+              {(["Oui", "Un peu", "Pas vraiment"] as const).map((label) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setScreen("closure")}
+                  className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-t-brume/30 text-t-beige border border-[rgba(232,216,199,0.45)] hover:bg-t-brume/55 hover:border-[rgba(232,216,199,0.70)] hover:text-white"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Écran 1 — Clôture ── */}
         {screen === "closure" && (
