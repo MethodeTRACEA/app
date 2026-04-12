@@ -65,19 +65,22 @@ export default function PostSessionPage() {
         {screen === "paywall" && (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
             <div className="text-center space-y-6">
-              <div className="space-y-2">
-                <p className="font-serif text-2xl text-t-beige leading-relaxed">
-                  Là, tu viens de revenir un peu.
+              <p className="font-serif text-2xl text-t-beige leading-relaxed">
+                Là, tu viens de revenir un peu.
+              </p>
+              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+                La prochaine fois que ça monte,<br />
+                tu pourras revenir plus vite.
+              </p>
+              <div className="space-y-1">
+                <p className="font-body text-base text-t-creme/50 leading-relaxed">
+                  Sans chercher.<br />
+                  Sans réfléchir.
                 </p>
-                <p className="font-body text-lg text-t-creme/70 leading-relaxed">
-                  La prochaine fois,<br />
-                  tu n&apos;auras pas à repartir de zéro.
+                <p className="font-body text-base text-t-creme/50 leading-relaxed">
+                  Juste reprendre là où tu en étais.
                 </p>
               </div>
-              <p className="font-body text-sm text-t-creme/40 leading-relaxed">
-                TRACÉA peut rester un moment ponctuel<br />
-                ou devenir un repère.
-              </p>
             </div>
 
             {/* Prix */}
@@ -103,7 +106,7 @@ export default function PostSessionPage() {
                 Continuer avec TRACÉA
               </PrimaryButton>
               <SecondaryButton onClick={exit}>
-                Continuer sans abonnement
+                Continuer seul
               </SecondaryButton>
             </div>
           </div>
