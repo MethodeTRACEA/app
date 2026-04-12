@@ -1389,6 +1389,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 hasCachedAI={hasCachedAI}
               />
 
+              {/* Pont de profondeur */}
+              <p className="font-inter text-sm text-t-creme/40 italic mb-4">
+                Et là, sous ce qui s&apos;est un peu posé…
+              </p>
+
               {/* Question principale */}
               <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed whitespace-pre-wrap mb-3">
                 {step.question}
