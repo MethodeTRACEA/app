@@ -18,6 +18,7 @@ import { SafetyResources } from "@/components/SafetyResources";
 import { PatternObservation } from "@/components/PatternObservation";
 import { ConsentGate } from "@/components/ConsentGate";
 import { BreathingGuide } from "@/components/BreathingGuide";
+import { GroundingGuide } from "@/components/GroundingGuide";
 import Link from "next/link";
 import {
   ScreenContainer,
@@ -1154,32 +1155,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
               {/* Méthode : sentir les appuis du corps */}
               {ancrerMethod === "corps" && !ancrerDone && (
-                <div className="py-12 text-center animate-fade-up">
-                  <style>{`@keyframes ancrer-timer { from { width: 0% } to { width: 100% } }`}</style>
-                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-1">
-                    Appuis
-                  </p>
-                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-1">
-                    Sens le contact de ton corps là où il s&apos;appuie.
-                  </p>
-                  <p className="font-inter text-xs text-t-creme/40 italic mb-1">
-                    pieds, bassin, dos ou mains
-                  </p>
-                  <p className="font-inter text-sm text-t-creme/55 mb-6">
-                    Juste ça, pendant 8 à 10 secondes.
-                  </p>
-                  <div className="w-full h-1 bg-t-creme/10 rounded-full overflow-hidden mb-8">
-                    <div
-                      style={{ height: "100%", background: "rgba(232,216,199,0.35)", borderRadius: "9999px", animation: "ancrer-timer 9s linear forwards" }}
-                      onAnimationEnd={() => setAncrerAlt(true)}
-                    />
-                  </div>
-                  <button
-                    onClick={() => setAncrerDone(true)}
-                    className="t-btn-secondary"
-                  >
-                    C&apos;est fait
-                  </button>
+                <div className="py-12 animate-fade-up">
+                  <GroundingGuide onComplete={() => setAncrerDone(true)} />
                 </div>
               )}
 

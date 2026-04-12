@@ -9,6 +9,7 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { ExitLink } from "@/components/ui/ExitLink";
 import { BreathingGuide } from "@/components/BreathingGuide";
+import { GroundingGuide } from "@/components/GroundingGuide";
 
 // ── Flow routing constants ─────────────────────────────────
 const SHORT_FLOW_V2 = "short" as const;
@@ -708,27 +709,7 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <h1 className="font-serif text-2xl text-t-beige">Appuis</h1>
-            <div className="text-center space-y-4">
-              <p className="font-body text-xl text-t-beige/90 leading-relaxed">
-                Sens 3 points d&apos;appui :
-              </p>
-              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
-                tes pieds,
-                <br />
-                ton dos ou ton bassin,
-                <br />
-                tes mains.
-              </p>
-            </div>
-            <p className="font-inter text-xs text-t-creme/40">
-              Juste quelques secondes.
-            </p>
-            <p className="font-inter text-xs text-t-creme/30 text-center">
-              Tu n&apos;as rien à réussir ici.
-            </p>
-            <PrimaryButton onClick={onDone}>
-              C&apos;est fait
-            </PrimaryButton>
+            <GroundingGuide onComplete={onDone} />
           </div>
         );
 
