@@ -2039,8 +2039,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
       {/* Clôture */}
       <div className="text-center py-6 md:py-8">
-        <p className="font-body text-base text-espresso/80 leading-relaxed mb-10">
+        <p className="font-body text-base text-espresso/80 leading-relaxed mb-4">
           Tu as pris un moment pour toi.
+        </p>
+        <p className="font-body text-base text-espresso/50 leading-relaxed mb-10">
+          C&apos;est suffisant pour maintenant.
         </p>
         <button
           onClick={() => router.push("/app")}

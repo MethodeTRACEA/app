@@ -736,6 +736,9 @@ function TraverseeCourteV2() {
               />
             </div>
 
+            <p className="font-body text-base text-t-creme/50 text-center">
+              C&apos;est suffisant pour maintenant.
+            </p>
             <PrimaryButton onClick={() => setScreen("exit-transition")}>
               Retour à l&apos;accueil
             </PrimaryButton>
