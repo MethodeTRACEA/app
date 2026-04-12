@@ -64,23 +64,19 @@ export default function PostSessionPage() {
         {/* ── Écran 3 — Paywall ── */}
         {screen === "paywall" && (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
-            <div className="text-center space-y-4">
-              <p className="font-body text-lg text-t-creme/80 leading-relaxed">
-                Avec TRACÉA
-              </p>
+            <div className="text-center space-y-6">
               <div className="space-y-2">
-                <p className="font-body text-base text-t-creme/60 leading-relaxed">
-                  Tu retrouves plus facilement ce que tu vis.
+                <p className="font-serif text-2xl text-t-beige leading-relaxed">
+                  Là, tu viens de revenir un peu.
                 </p>
-                <p className="font-body text-base text-t-creme/60 leading-relaxed">
-                  Tu vois ce qui revient.
-                </p>
-                <p className="font-body text-base text-t-creme/60 leading-relaxed">
-                  Tu gardes ce qui t&apos;aide.
+                <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+                  La prochaine fois,<br />
+                  tu n&apos;auras pas à repartir de zéro.
                 </p>
               </div>
-              <p className="font-serif text-xl text-t-beige pt-2">
-                Tu ne repars plus de zéro.
+              <p className="font-body text-sm text-t-creme/40 leading-relaxed">
+                TRACÉA peut rester un moment ponctuel<br />
+                ou devenir un repère.
               </p>
             </div>
 
