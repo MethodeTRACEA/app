@@ -565,6 +565,9 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
+              <p className="font-body text-sm text-t-creme/40">
+                Prends juste une seconde.
+              </p>
               <h1 className="font-serif text-2xl text-t-beige">
                 Là
               </h1>
