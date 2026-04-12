@@ -11,6 +11,7 @@ import { ExitLink } from "@/components/ui/ExitLink";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
+import { getTopAnchorMethod } from "@/lib/supabase-store";
 
 // ── Flow routing constants ─────────────────────────────────
 const SHORT_FLOW_V2 = "short" as const;
@@ -41,6 +42,7 @@ type Screen =
   | "ressenti"
   | "corps"
   | "ancrer"
+  | "ancrer-suggest"
   | "exercice"
   | "feedback"
   | "branche-pareil"
@@ -129,7 +131,7 @@ export default function TraverseeCourteV2Page() {
 function TraverseeCourteV2() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, isSubscribed } = useAuth();
 
   // ── Detect if entered via soft-switch (skip entry screen) ──
   const skipEntree = searchParams.get("skip") === "entree";
@@ -152,8 +154,27 @@ function TraverseeCourteV2() {
   const [triedMethods, setTriedMethods] = useState<AnchorMethod[]>([]);
   // Branche pareil: méthode alternative
   const [altMethod, setAltMethod] = useState<AnchorMethod | null>(null);
+  // Personalisation abonné — méthode dominante
+  const [topMethod, setTopMethod] = useState<AnchorMethod | null>(null);
 
   const [emergePool] = useState(() => [...EMERGE_ACTIONS]);
+
+  // ── Charger méthode dominante pour abonnés ──
+  useEffect(() => {
+    if (!isSubscribed || !user?.id) return;
+    getTopAnchorMethod(user.id).then((m) => {
+      if (m === "appuis" || m === "autour" || m === "souffle") setTopMethod(m);
+    });
+  }, [isSubscribed, user?.id]);
+
+  // ── Helper : aller à ancrer (ou suggestion si abonné + méthode dominante) ──
+  function goToAncrer() {
+    if (isSubscribed && topMethod) {
+      setScreen("ancrer-suggest");
+    } else {
+      setScreen("ancrer");
+    }
+  }
 
   // ── Helpers ──
   // ── Transition animation (onboarding → entree) ──
@@ -412,7 +433,7 @@ function TraverseeCourteV2() {
                   onClick={() => {
                     setBodyZone(z);
                     trackEvent(user?.id ?? null, "step_complete", { step: "corps", mode: "court", value: z });
-                    setScreen("ancrer");
+                    goToAncrer();
                   }}
                 />
               ))}
@@ -421,12 +442,56 @@ function TraverseeCourteV2() {
                 onClick={() => {
                   setBodyZone("je-ne-sais-pas");
                   trackEvent(user?.id ?? null, "step_complete", { step: "corps", mode: "court", value: "je-ne-sais-pas" });
-                  setScreen("ancrer");
+                  goToAncrer();
                 }}
               />
             </div>
           </div>
         );
+
+      // ════════════════════════════════════════════════════
+      // ÉCRAN 3b — ANCRER SUGGEST (abonnés, méthode dominante)
+      // ════════════════════════════════════════════════════
+      case "ancrer-suggest": {
+        const suggestLabels: Record<AnchorMethod, string> = {
+          appuis: "Sentir tes pieds t'aide souvent.",
+          autour: "Regarder autour t'aide souvent.",
+          souffle: "Respirer t'aide souvent.",
+        };
+        return (
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+            <div className="text-center space-y-3">
+              <p className="font-body text-lg text-t-beige/80">
+                {topMethod ? suggestLabels[topMethod] : ""}
+              </p>
+              <p className="font-inter text-sm text-t-creme/50">
+                Tu veux commencer par là ?
+              </p>
+            </div>
+            <div className="w-full space-y-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setAnchorMethod(topMethod!);
+                  setTriedMethods([topMethod!]);
+                  trackEvent(user?.id ?? null, "step_complete", { step: "ancrer", mode: "court", value: topMethod });
+                  setScreen("exercice");
+                }}
+                className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-t-brume/30 text-t-beige border border-[rgba(232,216,199,0.45)] hover:bg-t-brume/55 hover:border-[rgba(232,216,199,0.70)] hover:text-white"
+              >
+                Oui
+              </button>
+              <button
+                type="button"
+                onClick={() => setScreen("ancrer")}
+                className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-transparent text-t-creme/50 border border-[rgba(232,216,199,0.20)] hover:text-t-beige"
+              >
+                Autre chose
+              </button>
+            </div>
+          </div>
+        );
+      }
 
       // ════════════════════════════════════════════════════
       // ÉCRAN 3 — ANCRER

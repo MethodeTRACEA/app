@@ -264,6 +264,28 @@ export async function getSessionEndCount(userId: string): Promise<number> {
   return count ?? 0;
 }
 
+export async function getTopAnchorMethod(userId: string): Promise<string | null> {
+  const { data } = await supabase
+    .from("tracea_events")
+    .select("data")
+    .eq("user_id", userId)
+    .eq("event", "step_complete")
+    .filter("data->>step", "eq", "ancrer");
+
+  if (!data || data.length === 0) return null;
+
+  const counts: Record<string, number> = {};
+  data.forEach((row) => {
+    const value = (row.data as Record<string, unknown>)?.value;
+    if (typeof value === "string" && ["appuis", "autour", "souffle"].includes(value)) {
+      counts[value] = (counts[value] || 0) + 1;
+    }
+  });
+
+  const top = Object.entries(counts).sort(([, a], [, b]) => b - a)[0];
+  return top && top[1] >= 2 ? top[0] : null; // at least 2 uses to be "dominant"
+}
+
 export async function getTopRessentiValues(userId: string, limit = 2): Promise<string[]> {
   const { data } = await supabase
     .from("tracea_events")

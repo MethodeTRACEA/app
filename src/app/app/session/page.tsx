@@ -8,6 +8,7 @@ import {
   createSessionDb,
   updateSessionDb,
   trackEvent,
+  getTopAnchorMethod,
 } from "@/lib/supabase-store";
 import type { SessionData, StepId, TraceaAIResponse } from "@/lib/types";
 import { IntensitySlider } from "@/components/IntensitySlider";
@@ -97,6 +98,7 @@ interface StepCacheEntry {
 
 function SessionContent({ userId, routerActivation }: { userId: string; routerActivation: string | null }) {
   const router = useRouter();
+  const { isSubscribed } = useAuth();
   const [phase, setPhase] = useState<Phase>("intro");
   const [intensity, setIntensity] = useState(5);
   const [intensityAfter, setIntensityAfter] = useState(3);
@@ -156,6 +158,15 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [ancrerMethod, setAncrerMethod] = useState<"" | "respirer" | "corps" | "regarder">("");
   const [ancrerAlt, setAncrerAlt] = useState(false);
   const [ancrerPostPhase, setAncrerPostPhase] = useState(false);
+  // Personnalisation abonné — méthode dominante (clé format court : "appuis"|"autour"|"souffle")
+  const [ancrerSuggestedMethod, setAncrerSuggestedMethod] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isSubscribed || !userId) return;
+    getTopAnchorMethod(userId).then((m) => {
+      if (m) setAncrerSuggestedMethod(m);
+    });
+  }, [isSubscribed, userId]);
 
   // ── Étape 4 — Écouter : besoin immédiat ──
   const [ecouterChoice, setEcouterChoice] = useState("");
@@ -1115,39 +1126,85 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               </div>
 
               {/* Choix de méthode d'ancrage */}
-              {!ancrerMethod && !ancrerDone && (
-                <div className="animate-fade-up">
-                  <p className="font-inter text-sm text-t-creme/45 italic mb-2">
-                    On va juste ralentir un peu, de la manière la plus simple pour toi.
-                  </p>
-                  <p className="font-inter text-sm text-t-creme/60 mb-8">
-                    Choisis le plus simple maintenant.
-                  </p>
-                  <div className="flex flex-col gap-3">
-                    <button
-                      onClick={() => { setAncrerMethod("corps"); setAncrerAlt(false); }}
-                      className="t-btn-secondary w-full justify-center"
-                    >
-                      Sentir les appuis du corps
-                    </button>
-                    <button
-                      onClick={() => { setAncrerMethod("regarder"); setAncrerAlt(false); }}
-                      className="t-btn-secondary w-full justify-center"
-                    >
-                      Regarder autour de moi
-                    </button>
-                    <button
-                      onClick={() => { setAncrerMethod("respirer"); setAncrerAlt(false); }}
-                      className="t-btn-secondary w-full justify-center"
-                    >
-                      Expirer plus lentement
-                    </button>
+              {!ancrerMethod && !ancrerDone && (() => {
+                // Mapping clé court → clé long
+                const courtToLong: Record<string, "respirer" | "corps" | "regarder"> = {
+                  appuis: "corps",
+                  autour: "regarder",
+                  souffle: "respirer",
+                };
+                const suggestLabels: Record<string, string> = {
+                  appuis: "Sentir tes pieds t'aide souvent.",
+                  autour: "Regarder autour t'aide souvent.",
+                  souffle: "Respirer t'aide souvent.",
+                };
+
+                // Écran suggestion abonné
+                if (ancrerSuggestedMethod && courtToLong[ancrerSuggestedMethod]) {
+                  return (
+                    <div className="animate-fade-up">
+                      <p className="font-inter text-base text-t-beige/80 mb-2">
+                        {suggestLabels[ancrerSuggestedMethod]}
+                      </p>
+                      <p className="font-inter text-sm text-t-creme/50 mb-8">
+                        Tu veux commencer par là ?
+                      </p>
+                      <div className="flex flex-col gap-3">
+                        <button
+                          onClick={() => {
+                            setAncrerMethod(courtToLong[ancrerSuggestedMethod]);
+                            setAncrerAlt(false);
+                          }}
+                          className="t-btn-secondary w-full justify-center"
+                        >
+                          Oui
+                        </button>
+                        <button
+                          onClick={() => setAncrerSuggestedMethod(null)}
+                          className="t-btn-secondary w-full justify-center opacity-60"
+                        >
+                          Autre chose
+                        </button>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Choix normal
+                return (
+                  <div className="animate-fade-up">
+                    <p className="font-inter text-sm text-t-creme/45 italic mb-2">
+                      On va juste ralentir un peu, de la manière la plus simple pour toi.
+                    </p>
+                    <p className="font-inter text-sm text-t-creme/60 mb-8">
+                      Choisis le plus simple maintenant.
+                    </p>
+                    <div className="flex flex-col gap-3">
+                      <button
+                        onClick={() => { setAncrerMethod("corps"); setAncrerAlt(false); }}
+                        className="t-btn-secondary w-full justify-center"
+                      >
+                        Sentir les appuis du corps
+                      </button>
+                      <button
+                        onClick={() => { setAncrerMethod("regarder"); setAncrerAlt(false); }}
+                        className="t-btn-secondary w-full justify-center"
+                      >
+                        Regarder autour de moi
+                      </button>
+                      <button
+                        onClick={() => { setAncrerMethod("respirer"); setAncrerAlt(false); }}
+                        className="t-btn-secondary w-full justify-center"
+                      >
+                        Expirer plus lentement
+                      </button>
+                    </div>
+                    <p className="font-inter text-xs text-t-creme/35 text-center mt-5">
+                      Si ça n&apos;aide pas, on changera juste de manière.
+                    </p>
                   </div>
-                  <p className="font-inter text-xs text-t-creme/35 text-center mt-5">
-                    Si ça n&apos;aide pas, on changera juste de manière.
-                  </p>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Méthode : respirer */}
               {ancrerMethod === "respirer" && !ancrerDone && (
