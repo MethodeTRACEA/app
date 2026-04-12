@@ -735,6 +735,36 @@ const STEP_LABELS: Record<string, string> = {
 };
 
 // ===================================================================
+// AI LIMIT — free tier: 1 session with AI, unlimited for subscribers
+// ===================================================================
+
+async function checkAiLimit(userId: string): Promise<boolean> {
+  if (!userId) return false;
+  try {
+    const supabase = getSupabaseService();
+
+    // TODO: replace with Stripe subscription check when payment is integrated
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_subscribed")
+      .eq("id", userId)
+      .single();
+    if (profile?.is_subscribed === true) return false; // subscribed → unlimited
+
+    // Count completed sessions for free users
+    const { count } = await supabase
+      .from("sessions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("completed", true);
+
+    return (count ?? 0) >= 1; // limited after 1st completed session
+  } catch {
+    return false; // fail open — allow if DB check fails
+  }
+}
+
+// ===================================================================
 // ROUTES
 // ===================================================================
 
@@ -810,6 +840,13 @@ async function handleStepMirror(body: {
 }) {
   const { stepId, stepResponse, previousSteps, context, intensity, userId, entryContext, mirrorNotes } = body;
 
+  // Check AI limit before any Claude call
+  const aiLimited = await checkAiLimit(userId);
+  if (aiLimited) {
+    console.log("[TRACEA API] step-mirror: AI limited for user:", userId?.slice(0, 8));
+    return NextResponse.json(buildFallbackResponse("", stepId));
+  }
+
   // Build context from previous steps
   let previousContext = "";
 
@@ -862,6 +899,17 @@ async function handleFinalAnalysis(body: {
   userId: string;
 }) {
   const { steps, context, intensityBefore, intensityAfter, userId } = body;
+
+  // Check AI limit before any Claude call
+  const aiLimited = await checkAiLimit(userId);
+  if (aiLimited) {
+    console.log("[TRACEA API] final-analysis: AI limited for user:", userId?.slice(0, 8));
+    return NextResponse.json({
+      analysis: "Tu as pris un moment pour revenir au corps.\nQuelque chose s'est un peu posé.\nEt tu repars avec un geste.",
+      ai_limited: true,
+    });
+  }
+
   const recovery = intensityBefore - intensityAfter;
 
   let stepsContent = "";

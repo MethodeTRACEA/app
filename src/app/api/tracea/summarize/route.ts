@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { createClient } from "@supabase/supabase-js";
 import {
   saveSessionSummary,
   updateMemoryProfile,
@@ -155,6 +156,39 @@ function ensureSummaryFields(data: SummaryData): SummaryData {
 }
 
 // ===================================================================
+// AI LIMIT — mirrors the check in /api/tracea/route.ts
+// ===================================================================
+
+async function checkAiLimit(userId: string): Promise<boolean> {
+  if (!userId) return false;
+  try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
+
+    // TODO: replace with Stripe subscription check when payment is integrated
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_subscribed")
+      .eq("id", userId)
+      .single();
+    if (profile?.is_subscribed === true) return false;
+
+    const { count } = await supabase
+      .from("sessions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("completed", true);
+
+    return (count ?? 0) >= 1;
+  } catch {
+    return false;
+  }
+}
+
+// ===================================================================
 // ROUTE POST
 // ===================================================================
 
@@ -178,6 +212,13 @@ export async function POST(request: NextRequest) {
         { error: "userId et sessionId requis" },
         { status: 400 }
       );
+    }
+
+    // Skip AI summarization for free users past the first session
+    const aiLimited = await checkAiLimit(userId);
+    if (aiLimited) {
+      console.log("[TRACEA SUMMARIZE] AI limited for user:", userId.slice(0, 8));
+      return NextResponse.json({ success: true, ai_limited: true });
     }
 
     console.log("[TRACEA SUMMARIZE] Generating summary for session:", sessionId);

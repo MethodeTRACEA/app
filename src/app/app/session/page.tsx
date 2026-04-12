@@ -115,6 +115,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [text, setText] = useState("");
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysis, setAnalysis] = useState("");
+  const [analysisAiLimited, setAnalysisAiLimited] = useState(false);
   const [veriteInterieure, setVeriteInterieure] = useState("");
   const [mirrorData, setMirrorData] = useState<TraceaAIResponse | null>(null);
   const [mirrorLoading, setMirrorLoading] = useState(false);
@@ -600,6 +601,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       });
       const data = await res.json();
       analysisText = data.analysis || "";
+      if (data.ai_limited) setAnalysisAiLimited(true);
     } catch {
       // Fallback si l'API échoue
       analysisText = generateFallbackAnalysis();
@@ -1992,6 +1994,18 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           </div>
         );
       })()}
+
+      {/* Nudge abonnement — affiché uniquement si IA désactivée (free tier) */}
+      {analysisAiLimited && (
+        <div className="card-base mb-6 text-center space-y-2 py-5">
+          <p className="font-body text-sm text-espresso/80 leading-relaxed">
+            Tu peux continuer seul
+          </p>
+          <p className="font-body text-sm text-espresso/50 leading-relaxed">
+            ou aller plus loin avec TRACÉA.
+          </p>
+        </div>
+      )}
 
       {/* Clôture */}
       <div className="text-center py-6 md:py-8">
