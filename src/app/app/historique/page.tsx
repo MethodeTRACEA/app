@@ -182,21 +182,19 @@ export default function HistoriquePage() {
         </div>
       )}
 
-      {/* Ce qui t'aide quand ça compte */}
+      {/* Quand ça monte */}
       <div className="mb-8">
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
-          Ce qui t&apos;aide quand ça compte
+          Quand ça monte
         </p>
         {topEmerger.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {topEmerger.map((v) => (
-              <span
-                key={v}
-                className="px-3 py-1.5 rounded-full text-sm font-medium bg-beige text-espresso"
-              >
-                {v}
-              </span>
-            ))}
+          <div className="space-y-2">
+            <p className="font-body text-sm text-espresso/70">
+              ce qui t&apos;aide le plus : <span className="text-espresso font-medium">{topEmerger[0]}</span>
+            </p>
+            <p className="font-body text-sm text-warm-gray/60 italic">
+              Tu peux commencer par ça.
+            </p>
           </div>
         ) : (
           <p className="font-body text-sm text-warm-gray/60 italic">
