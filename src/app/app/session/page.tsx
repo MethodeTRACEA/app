@@ -1147,19 +1147,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
               {/* Méthode : respirer */}
               {ancrerMethod === "respirer" && !ancrerDone && (
-                <div className="py-12 text-center animate-fade-up">
-                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-1">
-                    Souffler
-                  </p>
-                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-8">
-                    Inspire doucement.{"\n"}Expire un peu plus lentement.{"\n"}Juste 3 fois.
-                  </p>
-                  <button
-                    onClick={() => setAncrerDone(true)}
-                    className="t-btn-secondary"
-                  >
-                    C&apos;est fait
-                  </button>
+                <div className="py-12 animate-fade-up">
+                  <BreathingGuide onComplete={() => setAncrerDone(true)} />
                 </div>
               )}
 
