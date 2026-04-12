@@ -19,6 +19,7 @@ import { PatternObservation } from "@/components/PatternObservation";
 import { ConsentGate } from "@/components/ConsentGate";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
+import { GazeGuide } from "@/components/GazeGuide";
 import Link from "next/link";
 import {
   ScreenContainer,
@@ -1162,19 +1163,8 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
               {/* Méthode : regarder autour */}
               {ancrerMethod === "regarder" && !ancrerDone && (
-                <div className="py-12 text-center animate-fade-up">
-                  <p className="font-inter text-lg text-t-beige leading-relaxed mb-1">
-                    Autour
-                  </p>
-                  <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-8">
-                    Regarde autour de toi.{"\n"}Repère 3 choses visibles, sans chercher plus.
-                  </p>
-                  <button
-                    onClick={() => setAncrerDone(true)}
-                    className="t-btn-secondary"
-                  >
-                    C&apos;est fait
-                  </button>
+                <div className="py-12 animate-fade-up">
+                  <GazeGuide onComplete={() => setAncrerDone(true)} />
                 </div>
               )}
 

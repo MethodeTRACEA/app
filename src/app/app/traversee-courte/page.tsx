@@ -10,6 +10,7 @@ import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { ExitLink } from "@/components/ui/ExitLink";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
+import { GazeGuide } from "@/components/GazeGuide";
 
 // ── Flow routing constants ─────────────────────────────────
 const SHORT_FLOW_V2 = "short" as const;
@@ -717,17 +718,7 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <h1 className="font-serif text-2xl text-t-beige">Autour</h1>
-            <div className="text-center space-y-4">
-              <p className="font-body text-xl text-t-beige/90 leading-relaxed">
-                Regarde 3 choses autour de toi.
-              </p>
-            </div>
-            <p className="font-inter text-xs text-t-creme/40">
-              Juste quelques secondes.
-            </p>
-            <PrimaryButton onClick={onDone}>
-              C&apos;est fait
-            </PrimaryButton>
+            <GazeGuide onComplete={onDone} />
           </div>
         );
 
