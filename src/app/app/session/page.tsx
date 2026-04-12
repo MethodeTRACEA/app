@@ -659,68 +659,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   }
 
   function generateFallbackAnalysis(): string {
-    const recovery = intensity - intensityAfter;
-    const parts: string[] = [];
-
-    parts.push(
-      `Analyse de ta traversée · ${new Date().toLocaleDateString("fr-FR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })}`
-    );
-    parts.push("");
-    parts.push(
-      `Contexte : ${context} | Intensité : ${intensity}/10 → ${intensityAfter}/10 (récupération : ${recovery > 0 ? "-" : ""}${Math.abs(recovery)} points)`
-    );
-    parts.push("");
-
-    if (steps.traverser) {
-      parts.push("TRAVERSER · Ce que tu as vécu :");
-      parts.push(`« ${steps.traverser.slice(0, 150)}${steps.traverser.length > 150 ? "..." : ""} »`);
-      parts.push("");
-    }
-    if (steps.reconnaitre) {
-      parts.push("RECONNAÎTRE · L'émotion primaire identifiée :");
-      parts.push(steps.reconnaitre.slice(0, 150));
-      parts.push("");
-    }
-    if (steps.ancrer) {
-      parts.push("ANCRER · Stabilisation :");
-      parts.push(steps.ancrer.slice(0, 150));
-      parts.push("");
-    }
-    if (steps.conscientiser) {
-      parts.push("CONSCIENTISER · Le besoin identifié :");
-      parts.push(steps.conscientiser.slice(0, 200));
-      parts.push("");
-    }
-    if (steps.emerger) {
-      parts.push("ÉMERGER · Le geste choisi :");
-      parts.push(steps.emerger.slice(0, 200));
-      parts.push("");
-    }
-    if (steps.aligner) {
-      parts.push("ALIGNER · L'action posée :");
-      parts.push(steps.aligner.slice(0, 200));
-      parts.push("");
-    }
-
-    if (recovery > 0) {
-      parts.push(
-        `Ton système nerveux a récupéré ${recovery} points d'intensité. Le protocole t'a permis de traverser cette émotion de manière structurée.`
-      );
-    } else if (recovery === 0) {
-      parts.push(
-        "Ton intensité est restée stable. Certaines émotions demandent plus d'une traversée."
-      );
-    } else {
-      parts.push(
-        "Ton intensité a augmenté. Cela peut arriver lors de prises de conscience profondes."
-      );
-    }
-
-    return parts.join("\n");
+    return "Tu as pris un moment pour revenir au corps.\nQuelque chose s'est un peu posé.\nEt tu repars avec un geste.";
   }
 
   // --- ACK (micro-réception non-bloquante) ---
