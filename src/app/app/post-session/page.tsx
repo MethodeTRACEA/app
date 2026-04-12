@@ -112,6 +112,7 @@ export default function PostSessionPage() {
                 </p>
                 <p className="font-serif text-2xl text-t-beige">9€</p>
                 <p className="font-inter text-xs text-t-creme/40">par mois</p>
+                <p className="font-inter text-xs text-t-creme/25 mt-1">Moins qu&apos;un café par semaine</p>
               </div>
               <div className="t-card p-5 text-center space-y-1 border-[rgba(232,216,199,0.30)]">
                 <p className="font-inter text-xs text-t-creme/40 uppercase tracking-wider">
