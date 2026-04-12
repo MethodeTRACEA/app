@@ -23,7 +23,7 @@ export default function HistoriquePage() {
       getCompletedSessionsDb(user.id),
       getTopEmergerValues(user.id),
       getSessionEndCount(user.id),
-      getTopRessentiValues(user.id),
+      getTopRessentiValues(user.id, 12),
     ]).then(([data, emerger, endCount, ressentis]) => {
       setSessions(data);
       setTopEmerger(emerger);
@@ -114,13 +114,17 @@ export default function HistoriquePage() {
       </div>
 
       {/* Ce qui revient */}
-      {sessions.length > 0 && (() => {
+      {(sessions.length > 0 || topRessentis.length > 0) && (() => {
         const counts: Record<string, number> = {};
         sessions.forEach((s) => {
           if (s.emotionPrimaire) {
             const e = s.emotionPrimaire.toLowerCase().trim().slice(0, 30);
             counts[e] = (counts[e] || 0) + 1;
           }
+        });
+        topRessentis.forEach((r) => {
+          const e = r.toLowerCase().trim().slice(0, 30);
+          counts[e] = (counts[e] || 0) + 1;
         });
         const emotions = Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, 12);
         if (emotions.length === 0) return null;
