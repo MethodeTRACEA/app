@@ -674,7 +674,7 @@ function TraverseeCourteV2() {
                 Maintenant
               </h1>
               <p className="font-body text-lg text-t-creme/70">
-                À partir de ce que tu as posé :
+                À partir de ce qui s&apos;est éclairci…
               </p>
               <p className="font-body text-lg text-t-creme/70">
                 Qu&apos;est-ce qui est le plus simple maintenant ?

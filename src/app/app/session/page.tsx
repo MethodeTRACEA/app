@@ -1518,7 +1518,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
               {/* Lien perceptif avec le parcours */}
               <p className="font-inter text-sm text-t-creme/50 italic mb-6">
-                À partir de ce que tu as posé :
+                À partir de ce qui s&apos;est éclairci…
               </p>
 
               {/* Question principale */}
