@@ -338,7 +338,11 @@ function TraverseeCourteV2() {
                       intensity: value,
                       context: null,
                     });
-                    setScreen("ressenti");
+                    if (ACTIVATION_FLOW_MAP[value] === LONG_FLOW) {
+                      router.push(`/app/session?activation=${value}`);
+                    } else {
+                      setScreen("ressenti");
+                    }
                   }}
                 />
               ))}
