@@ -339,7 +339,7 @@ function TraverseeCourteV2() {
                       context: null,
                     });
                     if (ACTIVATION_FLOW_MAP[value] === LONG_FLOW) {
-                      router.push(`/app/session?activation=${value}`);
+                      setScreen("propose-long");
                     } else {
                       setScreen("ressenti");
                     }
@@ -357,61 +357,22 @@ function TraverseeCourteV2() {
         );
 
       // ════════════════════════════════════════════════════
-      // PROPOSITION BASCULE COURT → LONG
+      // TRANSITION COURT → LONG
       // ════════════════════════════════════════════════════
       case "propose-long":
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-4">
-              <h1 className="font-serif text-2xl text-t-beige">
-                Continuer
-              </h1>
               <p className="font-body text-lg text-t-creme/70 leading-relaxed">
-                Tu peux rester sur la version simple ou choisir le parcours complet.
+                On peut prendre un peu plus de temps pour aller plus loin.
+              </p>
+              <p className="font-body text-base text-t-creme/50">
+                Environ 5 à 6 minutes.
               </p>
             </div>
-            <div className="w-full space-y-3">
-              <div>
-                <PrimaryButton
-                  onClick={() => {
-                    console.info("[TRACEA flow_router]", JSON.stringify({
-                      source: "flow_router",
-                      current_flow: "short",
-                      proposed_flow: "long",
-                      router_reason: "activation_level_" + (activationLevel || "unknown"),
-                      source_step: "entree",
-                      user_choice: "stay",
-                      next_flow: "short",
-                      next_screen: "ressenti",
-                    }));
-                    setScreen("ressenti");
-                  }}
-                >
-                  Version simple (2–3 min)
-                </PrimaryButton>
-                <p className="font-inter text-xs text-t-creme/40 text-center mt-1">le plus rapide</p>
-              </div>
-              <div>
-                <SecondaryButton
-                  onClick={() => {
-                    console.info("[TRACEA flow_router]", JSON.stringify({
-                      source: "flow_router",
-                      current_flow: "short",
-                      proposed_flow: "long",
-                      router_reason: "activation_level_" + (activationLevel || "unknown"),
-                      source_step: "entree",
-                      user_choice: "switch",
-                      next_flow: "long",
-                      next_screen: "session",
-                    }));
-                    router.push(`/app/session?activation=${activationLevel}`);
-                  }}
-                >
-                  Parcours complet (5–10 min)
-                </SecondaryButton>
-                <p className="font-inter text-xs text-t-creme/40 text-center mt-1">le plus guidé</p>
-              </div>
-            </div>
+            <PrimaryButton onClick={() => router.push(`/app/session?activation=${activationLevel}`)}>
+              Continuer
+            </PrimaryButton>
           </div>
         );
 
