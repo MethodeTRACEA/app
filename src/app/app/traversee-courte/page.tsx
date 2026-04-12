@@ -111,53 +111,58 @@ function AutoChip({
   );
 }
 
-// ── Timer circulaire (10s) ─────────────────────────────────
-// ── Compteur 3 cycles respiration ──────────────────────────
-function BreathCounter({
+// ── Respiration guidée visuelle ────────────────────────────
+function BreathVisual({
   onComplete,
 }: {
   onComplete: () => void;
 }) {
+  const [phase, setPhase] = useState<"idle" | "inspire" | "expire" | "done">("idle");
   const [cycle, setCycle] = useState(0);
-  const [phase, setPhase] = useState<"inspire" | "expire">("inspire");
+  const CYCLES = 4;
 
   useEffect(() => {
-    if (cycle >= 3) return;
-    const duration = phase === "inspire" ? 4000 : 5000;
-    const t = setTimeout(() => {
-      if (phase === "inspire") {
-        setPhase("expire");
-      } else {
-        setPhase("inspire");
-        setCycle((c) => c + 1);
-      }
-    }, duration);
+    const t = setTimeout(() => setPhase("inspire"), 60);
     return () => clearTimeout(t);
-  }, [cycle, phase]);
+  }, []);
 
-  const done = cycle >= 3;
+  useEffect(() => {
+    if (phase !== "inspire") return;
+    const t = setTimeout(() => setPhase("expire"), 4000);
+    return () => clearTimeout(t);
+  }, [phase, cycle]);
+
+  useEffect(() => {
+    if (phase !== "expire") return;
+    const t = setTimeout(() => {
+      const next = cycle + 1;
+      setCycle(next);
+      setPhase(next >= CYCLES ? "done" : "inspire");
+    }, 6000);
+    return () => clearTimeout(t);
+  }, [phase, cycle]);
+
+  const expanded = phase === "inspire";
+  const phaseText =
+    phase === "done" ? "Laisse faire" :
+    phase === "inspire" ? "Inspire" :
+    phase === "expire" ? "Expire" : "";
 
   return (
-    <div className="flex flex-col items-center gap-6 mt-6">
-      <div className="flex items-center gap-3">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className={`w-4 h-4 rounded-full transition-all duration-500 ${
-              i < cycle
-                ? "bg-t-dore/70"
-                : i === cycle && !done
-                ? "bg-t-dore/40 animate-pulse"
-                : "bg-t-creme/15"
-            }`}
-          />
-        ))}
-      </div>
-      {!done && (
-        <p className="font-body text-xl text-t-beige/80 italic animate-pulse">
-          {phase === "inspire" ? "Inspire\…" : "Expire\…"}
-        </p>
-      )}
+    <div className="flex flex-col items-center gap-10">
+      <div
+        style={{
+          width: expanded ? 160 : 72,
+          height: expanded ? 160 : 72,
+          borderRadius: "50%",
+          background: "rgba(214,165,106,0.08)",
+          border: "1px solid rgba(214,165,106,0.20)",
+          transition: `width ${expanded ? "4s" : "6s"} ease-in-out, height ${expanded ? "4s" : "6s"} ease-in-out`,
+        }}
+      />
+      <p className="font-body text-xl text-t-beige/60 italic" style={{ minHeight: "1.75rem" }}>
+        {phaseText}
+      </p>
       <PrimaryButton onClick={onComplete}>
         C&apos;est fait
       </PrimaryButton>
@@ -807,20 +812,7 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <h1 className="font-serif text-2xl text-t-beige">Souffle</h1>
-            <div className="text-center space-y-4">
-              <p className="font-body text-xl text-t-beige/90 leading-relaxed">
-                Inspire doucement.
-              </p>
-              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
-                Puis laisse l&apos;air sortir un peu plus lentement.
-                <br />
-                Juste 3 fois.
-              </p>
-            </div>
-            <p className="font-inter text-xs text-t-creme/40">
-              Sans forcer.
-            </p>
-            <BreathCounter onComplete={onDone} />
+            <BreathVisual onComplete={onDone} />
           </div>
         );
     }
