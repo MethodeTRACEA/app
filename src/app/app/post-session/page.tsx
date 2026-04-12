@@ -103,7 +103,7 @@ export default function PostSessionPage() {
             </div>
 
             <div className="w-full flex flex-col gap-4">
-              <PrimaryButton onClick={exit}>
+              <PrimaryButton onClick={() => router.push("/app/subscribe")}>
                 Continuer avec TRACÉA
               </PrimaryButton>
               <SecondaryButton onClick={exit}>

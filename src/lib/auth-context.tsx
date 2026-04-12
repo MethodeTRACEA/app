@@ -16,6 +16,7 @@ interface AuthState {
   session: Session | null;
   loading: boolean;
   isAdmin: boolean;
+  isSubscribed: boolean;
   signInWithMagicLink: (email: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation: boolean }>;
   signInWithPassword: (email: string, password: string) => Promise<{ error: string | null }>;
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthState>({
   session: null,
   loading: true,
   isAdmin: false,
+  isSubscribed: false,
   signInWithMagicLink: async () => ({ error: null }),
   signUp: async () => ({ error: null, needsConfirmation: false }),
   signInWithPassword: async () => ({ error: null }),
@@ -44,14 +46,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const checkAdmin = useCallback(async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
-      .select("is_admin")
+      .select("is_admin, is_subscribed")
       .eq("id", userId)
       .single();
     setIsAdmin(data?.is_admin ?? false);
+    setIsSubscribed(data?.is_subscribed ?? false);
   }, []);
 
   useEffect(() => {
@@ -145,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setSession(null);
     setIsAdmin(false);
+    setIsSubscribed(false);
   }
 
   async function refreshProfile() {
@@ -158,6 +163,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         loading,
         isAdmin,
+        isSubscribed,
         signInWithMagicLink,
         signUp,
         signInWithPassword,
