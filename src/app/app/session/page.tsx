@@ -2002,7 +2002,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           C&apos;est suffisant pour maintenant.
         </p>
         <button
-          onClick={() => router.push("/app")}
+          onClick={() => {
+            const seen = localStorage.getItem("tracea_post_session_seen") === "true";
+            router.push(seen ? "/app" : "/app/post-session");
+          }}
           className="btn-primary w-full md:w-auto mb-3 !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
         >
           Retour à l&apos;accueil

@@ -170,13 +170,16 @@ function TraverseeCourteV2() {
     };
   }, [screen]);
 
-  // ── Exit transition animation (synthese → accueil) ──
+  // ── Exit transition animation (synthese → post-session ou accueil) ──
   useEffect(() => {
     if (screen !== "exit-transition") return;
     setExitOpacity(0);
     const fadeIn = setTimeout(() => setExitOpacity(1), 16);
     const fadeOut = setTimeout(() => setExitOpacity(0), 1050);
-    const done = setTimeout(() => router.push("/app"), 1200);
+    const done = setTimeout(() => {
+      const seen = localStorage.getItem("tracea_post_session_seen") === "true";
+      router.push(seen ? "/app" : "/app/post-session");
+    }, 1200);
     return () => {
       clearTimeout(fadeIn);
       clearTimeout(fadeOut);
