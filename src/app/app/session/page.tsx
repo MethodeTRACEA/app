@@ -751,8 +751,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
         <button
           onClick={() => { setModeTraversee("complet"); handleStartSession(); }}
-          disabled={!context}
-          className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed"
+          className="btn-primary w-full text-center !py-4 md:!py-3 !text-base md:!text-sm !rounded-2xl"
         >
           Commencer
         </button>
