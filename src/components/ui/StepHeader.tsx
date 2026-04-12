@@ -22,7 +22,7 @@ export function StepHeader({ stepNumber, stepName, totalSteps, currentIndex, has
           <h2 className="font-inter text-xl font-medium text-t-beige leading-tight">
             {stepName}
           </h2>
-          <p className="font-inter text-[11px] text-t-creme/35 mt-1 tracking-wide uppercase">
+          <p className="font-inter text-[11px] t-text-ghost mt-1 tracking-wide uppercase">
             Étape {currentIndex + 1} sur {totalSteps}
           </p>
         </div>

@@ -55,7 +55,7 @@ export default function LandingPage() {
 
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-10 md:mb-12 border border-t-creme/[0.12] bg-t-brume/20">
-            <span className="text-[13px] text-t-creme/70 tracking-wide">
+            <span className="text-[13px] t-text-secondary tracking-wide">
               1re traversée gratuite · 2 à 5 minutes
             </span>
           </div>
@@ -68,7 +68,7 @@ export default function LandingPage() {
           </h1>
 
           {/* Sous-titre */}
-          <div className="text-base md:text-lg leading-relaxed text-t-creme/70 max-w-sm mx-auto mb-10 md:mb-12 space-y-4">
+          <div className="text-base md:text-lg leading-relaxed t-text-secondary max-w-sm mx-auto mb-10 md:mb-12 space-y-4">
             <p>Poitrine serrée. Souffle court. Pensées en boucle.</p>
             <p>
               TRACÉA t&apos;aide à redescendre.
@@ -96,7 +96,7 @@ export default function LandingPage() {
           </div>
 
           {/* Micro-texte */}
-          <p className="text-[13px] text-t-creme/35 mt-8 tracking-wide">
+          <p className="text-[13px] t-text-ghost mt-8 tracking-wide">
             Gratuit · Sans engagement
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function LandingPage() {
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-t-dore/50 mt-2.5 shrink-0" />
-                <p className="text-base md:text-lg leading-relaxed text-t-creme/75">
+                <p className="text-base md:text-lg leading-relaxed t-text-secondary">
                   {item}
                 </p>
               </div>
@@ -152,12 +152,12 @@ export default function LandingPage() {
             Tu n&apos;as pas besoin de comprendre.
           </h2>
 
-          <div className="space-y-4 text-base md:text-lg leading-relaxed text-t-creme/65 mb-10">
+          <div className="space-y-4 text-base md:text-lg leading-relaxed t-text-secondary mb-10">
             <p>Quand ça déborde,</p>
             <p>réfléchir ne suffit plus.</p>
           </div>
 
-          <div className="space-y-3 text-base md:text-lg leading-relaxed text-t-beige/90">
+          <div className="space-y-3 text-base md:text-lg leading-relaxed t-text-primary">
             <p className="font-medium">Il faut redescendre.</p>
             <p className="text-t-dore/80 pt-2">TRACÉA est fait pour ça.</p>
           </div>
@@ -192,14 +192,14 @@ export default function LandingPage() {
                 >
                   {i + 1}
                 </div>
-                <p className="text-base md:text-lg text-t-creme/80 leading-relaxed">
+                <p className="text-base md:text-lg t-text-primary leading-relaxed">
                   {text}
                 </p>
               </div>
             ))}
           </div>
 
-          <p className="text-center text-lg md:text-xl text-t-beige/80 font-medium">
+          <p className="text-center text-lg md:text-xl t-text-primary font-medium">
             Et quelque chose change.
           </p>
         </div>
@@ -223,12 +223,12 @@ export default function LandingPage() {
             Comprendre ne calme pas le corps
           </h2>
 
-          <div className="space-y-4 text-base md:text-lg leading-relaxed text-t-creme/65 mb-8">
+          <div className="space-y-4 text-base md:text-lg leading-relaxed t-text-secondary mb-8">
             <p>Tu peux tout analyser.</p>
             <p>Ça ne change rien dans le moment.</p>
           </div>
 
-          <div className="space-y-3 text-base md:text-lg leading-relaxed text-t-beige/90">
+          <div className="space-y-3 text-base md:text-lg leading-relaxed t-text-primary">
             <p>Ce qui change quelque chose :</p>
             <p className="text-t-dore/80 font-medium">revenir dans ton corps.</p>
           </div>
@@ -260,7 +260,7 @@ export default function LandingPage() {
                   backdropFilter: "blur(10px)",
                 }}
               >
-                <p className="text-[15px] text-t-creme/75 leading-relaxed">{text}</p>
+                <p className="text-[15px] t-text-secondary leading-relaxed">{text}</p>
               </div>
             ))}
           </div>
@@ -290,7 +290,7 @@ export default function LandingPage() {
                   boxShadow: "0 0 30px rgba(214,165,106,0.04)",
                 }}
               >
-                <p className="text-[15px] text-t-beige/90 leading-relaxed">{text}</p>
+                <p className="text-[15px] t-text-primary leading-relaxed">{text}</p>
               </div>
             ))}
           </div>
@@ -319,13 +319,13 @@ export default function LandingPage() {
             Commence sans réfléchir
           </h2>
 
-          <div className="space-y-4 text-base md:text-lg leading-relaxed text-t-creme/70 mb-6">
+          <div className="space-y-4 text-base md:text-lg leading-relaxed t-text-secondary mb-6">
             <p>La première traversée est gratuite.</p>
             <p>Tu testes.</p>
             <p>Tu vois si ça t&apos;aide.</p>
           </div>
 
-          <p className="text-sm text-t-creme/40 leading-relaxed mb-10 max-w-sm mx-auto">
+          <p className="text-sm t-text-secondary leading-relaxed mb-10 max-w-sm mx-auto">
             Ensuite, l&apos;accès complet se poursuit par abonnement.
           </p>
 
@@ -347,17 +347,17 @@ export default function LandingPage() {
             className="px-6 py-8 md:px-8 md:py-10 rounded-[28px] border border-t-creme/[0.06] bg-t-brume/10"
             style={{ backdropFilter: "blur(10px)" }}
           >
-            <h2 className="text-lg md:text-xl font-medium text-t-beige/90 mb-5">
+            <h2 className="text-lg md:text-xl font-medium t-text-primary mb-5">
               Ce n&apos;est pas pour tous les moments
             </h2>
 
-            <div className="space-y-3 text-sm md:text-base leading-relaxed text-t-creme/55 mb-5">
+            <div className="space-y-3 text-sm md:text-base leading-relaxed t-text-secondary mb-5">
               <p>Si tu es complètement submergé(e)</p>
               <p>ou en état de détresse :</p>
-              <p className="text-t-beige/80 font-medium pt-1">ne reste pas seul(e) avec ça.</p>
+              <p className="t-text-primary font-medium pt-1">ne reste pas seul(e) avec ça.</p>
             </div>
 
-            <p className="text-sm md:text-base leading-relaxed text-t-creme/45">
+            <p className="text-sm md:text-base leading-relaxed t-text-secondary">
               TRACÉA est un appui.
               <br />
               Pas une solution d&apos;urgence.
@@ -384,7 +384,7 @@ export default function LandingPage() {
             Essaye maintenant
           </h2>
 
-          <p className="text-base text-t-creme/55 mb-10">
+          <p className="text-base t-text-secondary mb-10">
             Juste 2 minutes.
             <br />
             Juste voir.
@@ -409,7 +409,7 @@ export default function LandingPage() {
             alt="TRACÉA"
             className="h-7 object-contain opacity-40"
           />
-          <div className="flex flex-wrap justify-center gap-5 text-[12px] text-t-creme/30">
+          <div className="flex flex-wrap justify-center gap-5 text-[12px] t-text-ghost">
             <Link href="/mentions-legales" className="hover:text-t-creme/50 transition-colors">
               Mentions légales
             </Link>

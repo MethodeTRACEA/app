@@ -115,11 +115,19 @@
     @apply p-6 md:p-8;
   }
 
+  /* ── 3 niveaux de texte standardisés ── */
+  /* primary  : titres, labels actifs, instructions directes */
+  /* secondary : corps de texte, descriptions, aides */
+  /* ghost    : hints décoratifs, légal, compteurs discrets  */
+  .t-text-primary   { color: #E8D8C7; }
+  .t-text-secondary { color: rgba(232,216,199,0.62); }
+  .t-text-ghost     { color: rgba(232,216,199,0.35); }
+
   /* ── Chips de choix ── */
   .t-chip {
     border: 1px solid rgba(232,216,199,0.18);
     border-radius: 999px;
-    @apply bg-t-brume/20 text-t-creme/80 font-inter text-sm font-medium
+    @apply bg-t-brume/20 t-text-primary font-inter text-sm font-medium
            px-5 py-2.5 cursor-pointer transition-all duration-200;
   }
   .t-chip:hover {
@@ -146,7 +154,7 @@
     box-shadow: 0 0 16px rgba(214,165,106,0.06);
   }
   .t-input::placeholder {
-    @apply text-t-creme/30;
+    @apply t-text-ghost;
   }
 
   /* ── Bouton principal doré ── */
@@ -179,7 +187,7 @@
   .t-btn-secondary {
     border: 1px solid rgba(232,216,199,0.18);
     border-radius: 22px;
-    @apply h-12 bg-t-brume/20 text-t-creme/70 font-inter text-sm font-medium
+    @apply h-12 bg-t-brume/20 t-text-secondary font-inter text-sm font-medium
            cursor-pointer transition-all duration-[250ms] px-5
            inline-flex items-center justify-center gap-1.5;
   }

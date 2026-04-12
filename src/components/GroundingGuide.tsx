@@ -9,13 +9,13 @@ export function GroundingGuide({ onComplete }: GroundingGuideProps) {
     <div className="flex flex-col items-center gap-10">
       {/* Texte sobre */}
       <div className="text-center space-y-3">
-        <p className="font-body text-lg text-t-beige/80">
+        <p className="font-body text-lg t-text-primary">
           Sens le contact de tes pieds au sol
         </p>
-        <p className="font-inter text-sm text-t-creme/40">
+        <p className="font-inter text-sm t-text-secondary">
           Rien à faire
         </p>
-        <p className="font-inter text-sm text-t-creme/40">
+        <p className="font-inter text-sm t-text-secondary">
           Juste sentir
         </p>
       </div>

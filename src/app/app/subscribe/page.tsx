@@ -63,7 +63,7 @@ export default function SubscribePage() {
             <p className="font-serif text-2xl text-t-beige">
               C&apos;est en place.
             </p>
-            <p className="font-body text-base text-t-creme/60">
+            <p className="font-body text-base t-text-secondary">
               Tu repars avec TRACÉA.
             </p>
           </div>
@@ -82,9 +82,9 @@ export default function SubscribePage() {
             Tu ne repars plus de zéro.
           </p>
           <div className="space-y-1 pt-1">
-            <p className="font-body text-base text-t-creme/60">Tu retrouves ce qui t&apos;aide.</p>
-            <p className="font-body text-base text-t-creme/60">Tu vois ce qui revient.</p>
-            <p className="font-body text-base text-t-creme/60">L&apos;IA t&apos;accompagne à chaque traversée.</p>
+            <p className="font-body text-base t-text-secondary">Tu retrouves ce qui t&apos;aide.</p>
+            <p className="font-body text-base t-text-secondary">Tu vois ce qui revient.</p>
+            <p className="font-body text-base t-text-secondary">L&apos;IA t&apos;accompagne à chaque traversée.</p>
           </div>
         </div>
 
@@ -99,11 +99,11 @@ export default function SubscribePage() {
                 : "border-[rgba(232,216,199,0.15)] bg-transparent"
             }`}
           >
-            <p className="font-inter text-xs text-t-creme/40 uppercase tracking-wider mb-1">
+            <p className="font-inter text-xs t-text-secondary uppercase tracking-wider mb-1">
               Annuel · le plus simple
             </p>
             <p className="font-serif text-2xl text-t-beige">79€</p>
-            <p className="font-inter text-xs text-t-creme/40 mt-1">par an · soit 6,60€/mois</p>
+            <p className="font-inter text-xs t-text-secondary mt-1">par an · soit 6,60€/mois</p>
           </button>
 
           <button
@@ -115,11 +115,11 @@ export default function SubscribePage() {
                 : "border-[rgba(232,216,199,0.15)] bg-transparent"
             }`}
           >
-            <p className="font-inter text-xs text-t-creme/40 uppercase tracking-wider mb-1">
+            <p className="font-inter text-xs t-text-secondary uppercase tracking-wider mb-1">
               Mensuel
             </p>
             <p className="font-serif text-2xl text-t-beige">9€</p>
-            <p className="font-inter text-xs text-t-creme/40 mt-1">par mois</p>
+            <p className="font-inter text-xs t-text-secondary mt-1">par mois</p>
           </button>
         </div>
 
@@ -144,7 +144,7 @@ export default function SubscribePage() {
         </div>
 
         {/* Note mock */}
-        <p className="font-inter text-xs text-t-creme/25 text-center">
+        <p className="font-inter text-xs t-text-ghost text-center">
           Paiement sécurisé · Résiliable à tout moment
         </p>
 

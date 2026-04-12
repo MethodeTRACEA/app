@@ -683,7 +683,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       className="fixed top-[38%] left-0 right-0 z-50 flex justify-center pointer-events-none"
       style={{ opacity: ack ? 1 : 0, transition: "opacity 120ms ease" }}
     >
-      <span className="font-inter text-base text-t-beige/70 bg-[rgba(35,25,22,0.85)] px-5 py-2 rounded-xl backdrop-blur-sm">
+      <span className="font-inter text-base t-text-secondary bg-[rgba(35,25,22,0.85)] px-5 py-2 rounded-xl backdrop-blur-sm">
         {ack}
       </span>
     </div>
@@ -791,7 +791,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               <h1 className="font-serif text-2xl text-t-beige">
                 Continuer
               </h1>
-              <p className="font-body text-lg text-t-creme/60 leading-relaxed">
+              <p className="font-body text-lg t-text-secondary leading-relaxed">
                 On peut te proposer une version plus simple de la traversée.
                 <br />
                 Tu veux continuer ici ou passer à une version plus simple ?
@@ -879,7 +879,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                   <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
                     Là, c&apos;est surtout :
                   </p>
-                  <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                  <p className="font-inter text-sm t-text-secondary italic mb-6">
                     Tu peux choisir le plus proche.
                   </p>
                   <div className="flex flex-wrap gap-2.5">
@@ -906,7 +906,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                   <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
                     Dans le corps
                   </p>
-                  <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                  <p className="font-inter text-sm t-text-secondary italic mb-6">
                     Où c&apos;est le plus marqué ?
                   </p>
                   <div className="flex flex-wrap gap-2.5">
@@ -943,7 +943,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                   <p className="font-inter text-lg md:text-xl text-t-beige leading-relaxed mb-1">
                     Tu veux ajouter quelque chose ?
                   </p>
-                  <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                  <p className="font-inter text-sm t-text-secondary italic mb-6">
                     Facultatif. Quelques mots suffisent.
                   </p>
                   <TextCapsuleField
@@ -1027,7 +1027,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               />
 
               {/* Question */}
-              <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+              <p className="font-inter text-sm t-text-secondary italic mb-6">
                 Si tu devais approcher ça avec un mot simple…
               </p>
 
@@ -1045,7 +1045,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 {!showMoreEmotions && (
                   <button
                     onClick={() => setShowMoreEmotions(true)}
-                    className="px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 text-t-creme/40 hover:text-t-creme/60 transition-colors"
+                    className="px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 t-text-secondary hover:text-t-creme/60 transition-colors"
                   >
                     Voir plus
                   </button>
@@ -1143,10 +1143,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 if (ancrerSuggestedMethod && courtToLong[ancrerSuggestedMethod]) {
                   return (
                     <div className="animate-fade-up">
-                      <p className="font-inter text-base text-t-beige/80 mb-2">
+                      <p className="font-inter text-base t-text-primary mb-2">
                         {suggestLabels[ancrerSuggestedMethod]}
                       </p>
-                      <p className="font-inter text-sm text-t-creme/50 mb-8">
+                      <p className="font-inter text-sm t-text-secondary mb-8">
                         Tu veux commencer par là ?
                       </p>
                       <div className="flex flex-col gap-3">
@@ -1173,10 +1173,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 // Choix normal
                 return (
                   <div className="animate-fade-up">
-                    <p className="font-inter text-sm text-t-creme/45 italic mb-2">
+                    <p className="font-inter text-sm t-text-secondary italic mb-2">
                       On va juste ralentir un peu, de la manière la plus simple pour toi.
                     </p>
-                    <p className="font-inter text-sm text-t-creme/60 mb-8">
+                    <p className="font-inter text-sm t-text-secondary mb-8">
                       Choisis le plus simple maintenant.
                     </p>
                     <div className="flex flex-col gap-3">
@@ -1199,7 +1199,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                         Expirer plus lentement
                       </button>
                     </div>
-                    <p className="font-inter text-xs text-t-creme/35 text-center mt-5">
+                    <p className="font-inter text-xs t-text-secondary text-center mt-5">
                       Si ça n&apos;aide pas, on changera juste de manière.
                     </p>
                   </div>
@@ -1233,10 +1233,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                   <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
                     Maintenant
                   </p>
-                  <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+                  <p className="font-inter text-sm t-text-secondary italic mb-6">
                     Il n&apos;y a pas de bonne réponse. On s&apos;adapte à ce que tu sens.
                   </p>
-                  <p className="font-inter text-base text-t-beige/80 leading-relaxed mb-4">
+                  <p className="font-inter text-base t-text-primary leading-relaxed mb-4">
                     Là, c&apos;est comment ?
                   </p>
                   <div className="flex flex-wrap gap-2.5 mt-2">
@@ -1275,7 +1275,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 <div className="mt-10 animate-fade-up">
                   {ancrerFeedback === "calme" && (
                     <>
-                      <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-10">
+                      <p className="font-inter text-base t-text-primary leading-relaxed mb-10">
                         Ok. On reste simple.
                       </p>
                       <PrimaryButton onClick={handleNextStep} className="w-full">
@@ -1289,7 +1289,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                       <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
                         On simplifie
                       </p>
-                      <p className="font-inter text-sm text-t-creme/55 leading-relaxed whitespace-pre-line mb-10">
+                      <p className="font-inter text-sm t-text-secondary leading-relaxed whitespace-pre-line mb-10">
                         Ce n&apos;est pas grave si c&apos;est pareil.{"\n"}On va juste faire encore plus simple.
                       </p>
                       <PrimaryButton onClick={handleNextStep} className="w-full">
@@ -1300,10 +1300,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
                   {ancrerFeedback === "incertain" && (
                     <>
-                      <p className="font-inter text-base text-t-beige/90 leading-relaxed mb-2">
+                      <p className="font-inter text-base t-text-primary leading-relaxed mb-2">
                         C&apos;est ok de ne pas savoir.
                       </p>
-                      <p className="font-inter text-sm text-t-creme/55 leading-relaxed mb-10">
+                      <p className="font-inter text-sm t-text-secondary leading-relaxed mb-10">
                         On continue doucement.
                       </p>
                       <PrimaryButton onClick={handleNextStep} className="w-full">
@@ -1317,7 +1317,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                       <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
                         On change
                       </p>
-                      <p className="font-inter text-sm text-t-creme/50 italic leading-relaxed mb-8 whitespace-pre-line">
+                      <p className="font-inter text-sm t-text-secondary italic leading-relaxed mb-8 whitespace-pre-line">
                         {`On ne force pas.\nOn change juste de manière.`}
                       </p>
                       <div className="flex flex-col gap-3">
@@ -1405,7 +1405,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               />
 
               {/* Pont de profondeur */}
-              <p className="font-inter text-sm text-t-creme/40 italic mb-4">
+              <p className="font-inter text-sm t-text-secondary italic mb-4">
                 Et là, sous ce qui s&apos;est un peu posé…
               </p>
 
@@ -1429,7 +1429,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                   {!showMoreNeeds && (
                     <button
                       onClick={() => setShowMoreNeeds(true)}
-                      className="px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 text-t-creme/40 hover:text-t-creme/60 transition-colors"
+                      className="px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 t-text-secondary hover:text-t-creme/60 transition-colors"
                     >
                       Voir plus
                     </button>
@@ -1439,7 +1439,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 {/* Sous-écran "je ne sais pas" */}
                 {ecouterChoice === "je ne sais pas" && (
                   <div className="mt-6 animate-fade-up">
-                    <p className="font-inter text-sm text-t-creme/55 mb-4">
+                    <p className="font-inter text-sm t-text-secondary mb-4">
                       Tu peux juste approcher :
                     </p>
                     <div className="flex flex-wrap gap-2.5">
@@ -1532,7 +1532,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               />
 
               {/* Lien perceptif avec le parcours */}
-              <p className="font-inter text-sm text-t-creme/50 italic mb-6">
+              <p className="font-inter text-sm t-text-secondary italic mb-6">
                 À partir de ce qui s&apos;est éclairci…
               </p>
 
@@ -1581,7 +1581,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                 {!emergerOther && emergerChoice !== "autre" && (
                   <button
                     onClick={() => { setEmergerChoice("autre"); setEmergerOther(""); }}
-                    className="mt-3 px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 text-t-creme/40 hover:text-t-creme/60 transition-colors"
+                    className="mt-3 px-3 py-1.5 rounded-full text-sm font-inter border border-t-creme/15 t-text-secondary hover:text-t-creme/60 transition-colors"
                   >
                     Autre idée
                   </button>
@@ -1673,7 +1673,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               </div>
             )}
 
-            <p className="font-inter text-sm text-t-creme/55 italic mb-6">
+            <p className="font-inter text-sm t-text-secondary italic mb-6">
               Choisis la version la plus simple.
             </p>
 

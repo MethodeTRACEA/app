@@ -53,7 +53,7 @@ export default function PostSessionPage() {
               <p className="font-serif text-2xl text-t-beige leading-relaxed">
                 C&apos;est suffisant pour maintenant.
               </p>
-              <p className="font-body text-lg text-t-creme/60 leading-relaxed">
+              <p className="font-body text-lg t-text-secondary leading-relaxed">
                 Tu peux t&apos;arrêter là.
               </p>
             </div>
@@ -67,11 +67,11 @@ export default function PostSessionPage() {
         {screen === "bridge" && (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
             <div className="text-center space-y-6">
-              <p className="font-body text-lg text-t-creme/80 leading-relaxed">
+              <p className="font-body text-lg t-text-primary leading-relaxed">
                 Tu peux continuer seul<br />
                 ou ne plus repartir de zéro.
               </p>
-              <p className="font-body text-base text-t-creme/50 leading-relaxed">
+              <p className="font-body text-base t-text-secondary leading-relaxed">
                 TRACÉA peut rester un moment ponctuel<br />
                 ou devenir un repère dans le temps.
               </p>
@@ -89,16 +89,16 @@ export default function PostSessionPage() {
               <p className="font-serif text-2xl text-t-beige leading-relaxed">
                 Là, tu viens de revenir un peu.
               </p>
-              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+              <p className="font-body text-lg t-text-secondary leading-relaxed">
                 La prochaine fois que ça monte,<br />
                 tu pourras revenir plus vite.
               </p>
               <div className="space-y-1">
-                <p className="font-body text-base text-t-creme/50 leading-relaxed">
+                <p className="font-body text-base t-text-secondary leading-relaxed">
                   Sans chercher.<br />
                   Sans réfléchir.
                 </p>
-                <p className="font-body text-base text-t-creme/50 leading-relaxed">
+                <p className="font-body text-base t-text-secondary leading-relaxed">
                   Juste reprendre là où tu en étais.
                 </p>
               </div>
@@ -107,19 +107,19 @@ export default function PostSessionPage() {
             {/* Prix */}
             <div className="w-full flex flex-col gap-3">
               <div className="t-card p-5 text-center space-y-1">
-                <p className="font-inter text-xs text-t-creme/40 uppercase tracking-wider">
+                <p className="font-inter text-xs t-text-secondary uppercase tracking-wider">
                   Mensuel
                 </p>
                 <p className="font-serif text-2xl text-t-beige">9€</p>
-                <p className="font-inter text-xs text-t-creme/40">par mois</p>
-                <p className="font-inter text-xs text-t-creme/25 mt-1">Moins qu&apos;un café par semaine</p>
+                <p className="font-inter text-xs t-text-secondary">par mois</p>
+                <p className="font-inter text-xs t-text-ghost mt-1">Moins qu&apos;un café par semaine</p>
               </div>
               <div className="t-card p-5 text-center space-y-1 border-[rgba(232,216,199,0.30)]">
-                <p className="font-inter text-xs text-t-creme/40 uppercase tracking-wider">
+                <p className="font-inter text-xs t-text-secondary uppercase tracking-wider">
                   Annuel
                 </p>
                 <p className="font-serif text-2xl text-t-beige">79€</p>
-                <p className="font-inter text-xs text-t-creme/40">par an · soit 6,60€/mois</p>
+                <p className="font-inter text-xs t-text-secondary">par an · soit 6,60€/mois</p>
               </div>
             </div>
 

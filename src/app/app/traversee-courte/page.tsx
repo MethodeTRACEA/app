@@ -238,10 +238,10 @@ function TraverseeCourteV2() {
               <p className="font-serif text-2xl text-t-beige leading-relaxed">
                 Tu es en surcharge.
               </p>
-              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+              <p className="font-body text-lg t-text-secondary leading-relaxed">
                 On va juste revenir au corps.
               </p>
-              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+              <p className="font-body text-lg t-text-secondary leading-relaxed">
                 Quelques minutes suffisent.
               </p>
             </div>
@@ -290,7 +290,7 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 Avant de commencer
               </h1>
-              <p className="font-body text-lg text-t-creme/70">
+              <p className="font-body text-lg t-text-secondary">
                 Là, c&apos;est plutôt :
               </p>
             </div>
@@ -320,7 +320,7 @@ function TraverseeCourteV2() {
                 />
               ))}
             </div>
-            <p className="font-inter text-xs text-t-creme/40 text-center">
+            <p className="font-inter text-xs t-text-secondary text-center">
               Choisis le plus proche maintenant.
             </p>
             <div className="mt-4">
@@ -336,10 +336,10 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-4">
-              <p className="font-body text-lg text-t-creme/70 leading-relaxed">
+              <p className="font-body text-lg t-text-secondary leading-relaxed">
                 On peut prendre un peu plus de temps pour aller plus loin.
               </p>
-              <p className="font-body text-base text-t-creme/50">
+              <p className="font-body text-base t-text-secondary">
                 Environ 5 à 6 minutes.
               </p>
             </div>
@@ -359,7 +359,7 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 Là
               </h1>
-              <p className="font-body text-lg text-t-creme/70">
+              <p className="font-body text-lg t-text-secondary">
                 Là, c&apos;est surtout :
               </p>
             </div>
@@ -400,12 +400,12 @@ function TraverseeCourteV2() {
               <button
                 type="button"
                 onClick={() => setShowMoreFeelings(true)}
-                className="font-inter text-[13px] text-t-creme/50 underline underline-offset-[3px]"
+                className="font-inter text-[13px] t-text-secondary underline underline-offset-[3px]"
               >
                 Autre mot
               </button>
             )}
-            <p className="font-inter text-xs text-t-creme/40 text-center">
+            <p className="font-inter text-xs t-text-secondary text-center">
               Le plus proche suffit.
             </p>
           </div>
@@ -421,7 +421,7 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 Dans le corps
               </h1>
-              <p className="font-body text-lg text-t-creme/70">
+              <p className="font-body text-lg t-text-secondary">
                 Où c&apos;est le plus marqué ?
               </p>
             </div>
@@ -461,10 +461,10 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
-              <p className="font-body text-lg text-t-beige/80">
+              <p className="font-body text-lg t-text-primary">
                 {topMethod ? suggestLabels[topMethod] : ""}
               </p>
-              <p className="font-inter text-sm text-t-creme/50">
+              <p className="font-inter text-sm t-text-secondary">
                 Tu veux commencer par là ?
               </p>
             </div>
@@ -484,7 +484,7 @@ function TraverseeCourteV2() {
               <button
                 type="button"
                 onClick={() => setScreen("ancrer")}
-                className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-transparent text-t-creme/50 border border-[rgba(232,216,199,0.20)] hover:text-t-beige"
+                className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-transparent t-text-secondary border border-[rgba(232,216,199,0.20)] hover:text-t-beige"
               >
                 Autre chose
               </button>
@@ -503,7 +503,7 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 Ancrer
               </h1>
-              <p className="font-body text-lg text-t-creme/70">
+              <p className="font-body text-lg t-text-secondary">
                 On ralentit un peu, simplement.
               </p>
             </div>
@@ -524,7 +524,7 @@ function TraverseeCourteV2() {
                 </button>
               ))}
             </div>
-            <p className="font-inter text-xs text-t-creme/60 text-center">
+            <p className="font-inter text-xs t-text-secondary text-center">
               Commence par le plus concret.
             </p>
           </div>
@@ -543,13 +543,13 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
-              <p className="font-body text-sm text-t-creme/40">
+              <p className="font-body text-sm t-text-secondary">
                 Prends juste une seconde.
               </p>
               <h1 className="font-serif text-2xl text-t-beige">
                 Là
               </h1>
-              <p className="font-body text-lg text-t-creme/70">
+              <p className="font-body text-lg t-text-secondary">
                 Là, c&apos;est comment ?
               </p>
             </div>
@@ -579,7 +579,7 @@ function TraverseeCourteV2() {
                 />
               ))}
             </div>
-            <p className="font-inter text-xs text-t-creme/30 text-center">
+            <p className="font-inter text-xs t-text-ghost text-center">
               Il n&apos;y a pas de bonne réponse.
             </p>
           </div>
@@ -614,7 +614,7 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 Là
               </h1>
-              <p className="font-body text-lg text-t-creme/70">
+              <p className="font-body text-lg t-text-secondary">
                 Là, c&apos;est comment ?
               </p>
             </div>
@@ -635,7 +635,7 @@ function TraverseeCourteV2() {
                 />
               ))}
             </div>
-            <p className="font-inter text-xs text-t-creme/30 text-center">
+            <p className="font-inter text-xs t-text-ghost text-center">
               Il n&apos;y a pas de bonne réponse.
             </p>
           </div>
@@ -653,10 +653,10 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 On change
               </h1>
-              <p className="font-body text-lg text-t-creme/60">
+              <p className="font-body text-lg t-text-secondary">
                 On ne force pas.
               </p>
-              <p className="font-body text-lg text-t-creme/60">
+              <p className="font-body text-lg t-text-secondary">
                 On quitte cette manière-là.
               </p>
             </div>
@@ -690,10 +690,10 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 Maintenant
               </h1>
-              <p className="font-body text-lg text-t-creme/70">
+              <p className="font-body text-lg t-text-secondary">
                 À partir de ce qui s&apos;est éclairci…
               </p>
-              <p className="font-body text-lg text-t-creme/70">
+              <p className="font-body text-lg t-text-secondary">
                 Qu&apos;est-ce qui est le plus simple maintenant ?
               </p>
             </div>
@@ -715,7 +715,7 @@ function TraverseeCourteV2() {
               <button
                 type="button"
                 onClick={() => setEmergeOffset((o) => o + 3)}
-                className="font-inter text-[13px] text-t-creme/50 underline underline-offset-[3px]"
+                className="font-inter text-[13px] t-text-secondary underline underline-offset-[3px]"
               >
                 Autre idée
               </button>
@@ -753,7 +753,7 @@ function TraverseeCourteV2() {
               />
             </div>
 
-            <p className="font-body text-base text-t-creme/50 text-center">
+            <p className="font-body text-base t-text-secondary text-center">
               C&apos;est suffisant pour maintenant.
             </p>
             <PrimaryButton onClick={() => setScreen("exit-transition")}>
@@ -762,7 +762,7 @@ function TraverseeCourteV2() {
             <button
               type="button"
               onClick={() => router.push("/app/session")}
-              className="font-inter text-[13px] text-t-creme/50 underline underline-offset-[3px]"
+              className="font-inter text-[13px] t-text-secondary underline underline-offset-[3px]"
             >
               Aller plus loin
             </button>
@@ -813,10 +813,10 @@ function TraverseeCourteV2() {
 function SynthRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between items-baseline gap-4">
-      <span className="font-inter text-sm text-t-creme/50 shrink-0">
+      <span className="font-inter text-sm t-text-secondary shrink-0">
         {label}
       </span>
-      <span className="font-body text-lg text-t-beige/90 text-right italic">
+      <span className="font-body text-lg t-text-primary text-right italic">
         {value}
       </span>
     </div>

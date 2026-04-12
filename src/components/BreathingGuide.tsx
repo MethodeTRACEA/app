@@ -55,17 +55,17 @@ export function BreathingGuide({ onComplete }: BreathingGuideProps) {
         }}
       />
       <div className="flex flex-col items-center gap-1">
-        <p className="font-body text-xl text-t-beige/60 italic" style={{ minHeight: "1.75rem" }}>
+        <p className="font-body text-xl t-text-secondary italic" style={{ minHeight: "1.75rem" }}>
           {phaseText}
         </p>
         {phase !== "idle" && phase !== "done" && (
-          <p className="font-inter text-xs text-t-creme/35">
+          <p className="font-inter text-xs t-text-secondary">
             Laisse ton souffle suivre le mouvement
           </p>
         )}
       </div>
       {phase !== "idle" && (
-        <p className="font-inter text-xs text-t-creme/25" style={{ minHeight: "1rem" }}>
+        <p className="font-inter text-xs t-text-ghost" style={{ minHeight: "1rem" }}>
           {phase !== "done" ? `${cycle + 1} / ${CYCLES}` : ""}
         </p>
       )}
