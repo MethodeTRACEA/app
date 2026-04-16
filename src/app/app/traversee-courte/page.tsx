@@ -292,11 +292,13 @@ function TraverseeCourteV2() {
       case "entree":
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-3">
-              <h1 className="font-serif text-2xl text-t-beige">
+            <div className="text-center space-y-2">
+              {/* Label discret — contexte procédural */}
+              <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
                 Avant de commencer
-              </h1>
-              <p className="font-body text-lg t-text-secondary">
+              </p>
+              {/* Question principale — élément dominant */}
+              <p className="font-serif text-2xl text-t-beige">
                 Là, c&apos;est plutôt :
               </p>
             </div>
@@ -555,7 +557,8 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 Là
               </h1>
-              <p className="font-body text-lg t-text-secondary">
+              {/* Question visible — oriente le choix de chip */}
+              <p className="font-body text-lg text-t-beige">
                 Là, c&apos;est comment ?
               </p>
             </div>
@@ -620,7 +623,7 @@ function TraverseeCourteV2() {
               <h1 className="font-serif text-2xl text-t-beige">
                 Là
               </h1>
-              <p className="font-body text-lg t-text-secondary">
+              <p className="font-body text-lg text-t-beige">
                 Là, c&apos;est comment ?
               </p>
             </div>
@@ -759,7 +762,8 @@ function TraverseeCourteV2() {
               />
             </div>
 
-            <p className="font-body text-base t-text-secondary text-center">
+            {/* Clôture émotionnelle — doit être lue, pas effacée */}
+            <p className="font-body text-lg text-t-beige text-center">
               C&apos;est suffisant pour maintenant.
             </p>
             <PrimaryButton onClick={() => setScreen("exit-transition")}>
@@ -782,24 +786,24 @@ function TraverseeCourteV2() {
     switch (method) {
       case "appuis":
         return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <h1 className="font-serif text-2xl text-t-beige">Appuis</h1>
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-5">
+            <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">Appuis</p>
             <GroundingGuide onComplete={onDone} />
           </div>
         );
 
       case "autour":
         return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <h1 className="font-serif text-2xl text-t-beige">Autour</h1>
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-5">
+            <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">Autour</p>
             <GazeGuide onComplete={onDone} />
           </div>
         );
 
       case "souffle":
         return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <h1 className="font-serif text-2xl text-t-beige">Souffle</h1>
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-5">
+            <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">Souffle</p>
             <BreathingGuide onComplete={onDone} />
           </div>
         );
