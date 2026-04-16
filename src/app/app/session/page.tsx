@@ -1155,13 +1155,13 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                             setAncrerMethod(courtToLong[ancrerSuggestedMethod]);
                             setAncrerAlt(false);
                           }}
-                          className="t-btn-secondary w-full justify-center"
+                          className="t-btn-secondary"
                         >
                           Oui
                         </button>
                         <button
                           onClick={() => setAncrerSuggestedMethod(null)}
-                          className="t-btn-secondary w-full justify-center opacity-60"
+                          className="t-btn-secondary opacity-60"
                         >
                           Autre chose
                         </button>
@@ -1182,19 +1182,19 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                     <div className="flex flex-col gap-3">
                       <button
                         onClick={() => { setAncrerMethod("corps"); setAncrerAlt(false); }}
-                        className="t-btn-secondary w-full justify-center"
+                        className="t-btn-secondary"
                       >
                         Sentir les appuis du corps
                       </button>
                       <button
                         onClick={() => { setAncrerMethod("regarder"); setAncrerAlt(false); }}
-                        className="t-btn-secondary w-full justify-center"
+                        className="t-btn-secondary"
                       >
                         Regarder autour de moi
                       </button>
                       <button
                         onClick={() => { setAncrerMethod("respirer"); setAncrerAlt(false); }}
-                        className="t-btn-secondary w-full justify-center"
+                        className="t-btn-secondary"
                       >
                         Expirer plus lentement
                       </button>
@@ -1329,7 +1329,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                             setAncrerFeedback("");
                             setAncrerAlt(false);
                           }}
-                          className="t-btn-secondary w-full justify-center"
+                          className="t-btn-secondary"
                         >
                           Sentir les appuis du corps
                         </button>
@@ -1341,13 +1341,13 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
                             setAncrerFeedback("");
                             setAncrerAlt(false);
                           }}
-                          className="t-btn-secondary w-full justify-center"
+                          className="t-btn-secondary"
                         >
                           Regarder autour de moi
                         </button>
                         <button
                           onClick={handleNextStep}
-                          className="t-btn-secondary w-full justify-center"
+                          className="t-btn-secondary"
                         >
                           Faire une pause quelques secondes
                         </button>

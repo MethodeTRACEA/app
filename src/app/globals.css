@@ -158,15 +158,17 @@
   }
 
   /* ── Bouton principal doré ── */
+  /* h-[58px] · radius 26px · w-full · flex centré */
   .t-btn-primary {
     background: linear-gradient(135deg, #E8C88E 0%, #DFBA7E 35%, #D6A56A 65%, #C4944E 100%);
-    border-radius: 28px;
+    border-radius: 26px;
     border: 1px solid rgba(255,255,255,0.14);
     box-shadow:
       0 4px 28px rgba(214,165,106,0.28),
       0 2px 10px rgba(0,0,0,0.14),
       0 1px 0 rgba(255,255,255,0.16) inset;
-    @apply w-full h-[58px] text-t-nuit font-inter text-base font-semibold
+    @apply w-full h-[58px] flex items-center justify-center
+           text-t-nuit font-inter text-base font-semibold
            cursor-pointer transition-all duration-[250ms];
   }
   .t-btn-primary:hover {
@@ -184,16 +186,20 @@
   }
 
   /* ── Bouton secondaire ── */
+  /* h-12 (48px) · radius 26px · w-full · même famille que primary */
   .t-btn-secondary {
     border: 1px solid rgba(232,216,199,0.18);
-    border-radius: 22px;
-    @apply h-12 bg-t-brume/20 t-text-secondary font-inter text-sm font-medium
-           cursor-pointer transition-all duration-[250ms] px-5
-           inline-flex items-center justify-center gap-1.5;
+    border-radius: 26px;
+    @apply w-full h-12 flex items-center justify-center gap-1.5
+           bg-t-brume/20 t-text-secondary font-inter text-sm font-medium
+           cursor-pointer transition-all duration-[250ms] px-5;
   }
   .t-btn-secondary:hover {
     @apply bg-t-brume/35;
     border-color: rgba(232,216,199,0.30);
+  }
+  .t-btn-secondary:disabled {
+    @apply opacity-40 cursor-not-allowed;
   }
 }
 
