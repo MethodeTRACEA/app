@@ -85,16 +85,63 @@ const ANCHOR_LABELS: Record<AnchorMethod, string> = {
   "souffle": "respirer",
 };
 
-// Actions émerger — pool complet
-const EMERGE_ACTIONS = [
-  "relâcher les épaules",
-  "poser mes pieds au sol un moment",
-  "regarder au loin 10 secondes",
-  "m'asseoir 2 minutes",
-  "enlever une stimulation",
-  "boire un verre d'eau",
-  "ouvrir une fenêtre",
-] as const;
+// ── ÉMERGER — Mapping ressenti → besoins → geste ────────────
+
+const ZONE_PREPOSITION: Record<BodyZone, string> = {
+  poitrine: "dans la poitrine",
+  ventre:   "dans le ventre",
+  gorge:    "dans la gorge",
+  tete:     "dans la tête",
+  epaules:  "dans les épaules",
+  partout:  "partout",
+  "je-ne-sais-pas": "",
+};
+
+function getNeedsForState(feeling: Feeling | null, zone: BodyZone | null): string[] {
+  if (feeling === "agite")
+    return ["ralentir", "revenir au corps", "faire une pause", "clarifier"];
+  if (feeling === "serre") {
+    if (zone === "tete" || zone === "epaules")
+      return ["ralentir", "revenir au corps", "faire une pause", "relâcher la tension"];
+    return ["ralentir", "me sentir en sécurité", "relâcher la pression", "prendre de l'espace"];
+  }
+  if (feeling === "lourd")
+    return ["être soutenu", "me reposer", "être tranquille", "me rapprocher de quelque chose de sûr"];
+  if (feeling === "vide")
+    return ["me reposer", "être tranquille", "être soutenu", "me rapprocher de quelque chose de sûr"];
+  if (feeling === "flou")
+    return ["ralentir", "revenir au simple", "me stabiliser", "y voir plus clair"];
+  if (feeling === "bloque")
+    return ["me dégager", "prendre de l'espace", "me stabiliser", "relâcher la tension"];
+  return ["ralentir", "faire une pause", "revenir au corps", "me stabiliser"];
+}
+
+type Gesture = { label: string; description: string; action: string };
+
+const NEED_GESTURE: Record<string, Gesture> = {
+  "ralentir":                              { label: "Respiration", description: "Une respiration lente. Juste une.", action: "une respiration" },
+  "revenir au corps":                      { label: "Appuis",      description: "Sens tes pieds contre le sol.", action: "revenir aux appuis" },
+  "faire une pause":                       { label: "Recul",       description: "Pose ton regard quelque part. Sans chercher.", action: "une pause visuelle" },
+  "clarifier":                             { label: "Recul",       description: "Pose ton regard quelque part. Sans chercher.", action: "un recul visuel" },
+  "me sentir en sécurité":                { label: "Appuis",      description: "Sens le contact sous toi. Ça ne bouge pas.", action: "sentir mes appuis" },
+  "relâcher la pression":                 { label: "Respiration", description: "Expire longtemps. Plus que tu n'inspires.", action: "relâcher par le souffle" },
+  "prendre de l'espace":                  { label: "Recul",       description: "Laisse ton regard partir au loin. Sans fixer.", action: "ouvrir le champ visuel" },
+  "être soutenu":                          { label: "Contact",     description: "Une main sur la poitrine ou le ventre.", action: "un contact avec soi" },
+  "me reposer":                            { label: "Respiration", description: "Ralentis le souffle. Sans forcer.", action: "ralentir le souffle" },
+  "être tranquille":                       { label: "Appuis",      description: "Sens tes pieds. Laisse le reste.", action: "sentir mes appuis" },
+  "me rapprocher de quelque chose de sûr":{ label: "Contact",     description: "Une main posée sur toi. Juste là.", action: "un contact stabilisant" },
+  "revenir au simple":                     { label: "Appuis",      description: "Sens tes pieds. C'est tout.", action: "revenir aux appuis" },
+  "me stabiliser":                         { label: "Appuis",      description: "Sol sous les pieds. Ça suffit.", action: "sentir mes appuis" },
+  "y voir plus clair":                     { label: "Recul",       description: "Pose ton regard quelque part. Sans chercher.", action: "un recul visuel" },
+  "me dégager":                            { label: "Recul",       description: "Laisse ton regard partir. Ouvre l'espace.", action: "ouvrir le champ visuel" },
+  "me protéger":                           { label: "Appuis",      description: "Sens tes pieds. Reste là où tu es.", action: "sentir mes appuis" },
+  "poser une limite":                      { label: "Respiration", description: "Expire. Prends de l'espace dans le souffle.", action: "une respiration d'espace" },
+  "relâcher la tension":                   { label: "Respiration", description: "Expire lentement. Laisse les épaules descendre.", action: "relâcher par le souffle" },
+};
+
+function getGestureForNeed(need: string): Gesture {
+  return NEED_GESTURE[need] ?? { label: "Appuis", description: "Sens tes pieds. C'est tout.", action: "sentir mes appuis" };
+}
 
 
 // ── Chip auto-advance ──────────────────────────────────────
@@ -148,7 +195,8 @@ function TraverseeCourteV2() {
   const [anchorEffect, setAnchorEffect] = useState<AnchorEffect | null>(null);
   const [nextAction, setNextAction] = useState<string | null>(null);
   const [showMoreFeelings, setShowMoreFeelings] = useState(false);
-  const [emergeOffset, setEmergeOffset] = useState(0);
+  const [emergerStep, setEmergerStep] = useState<"besoin" | "transition" | "geste">("besoin");
+  const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
 
   // Méthodes déjà essayées (pour ne jamais reproposer)
   const [triedMethods, setTriedMethods] = useState<AnchorMethod[]>([]);
@@ -157,7 +205,20 @@ function TraverseeCourteV2() {
   // Personalisation abonné — méthode dominante
   const [topMethod, setTopMethod] = useState<AnchorMethod | null>(null);
 
-  const [emergePool] = useState(() => [...EMERGE_ACTIONS]);
+  // Réinitialiser émerger à chaque entrée dans l'écran
+  useEffect(() => {
+    if (screen === "emerger") {
+      setEmergerStep("besoin");
+      setSelectedNeed(null);
+    }
+  }, [screen]);
+
+  // Timer : transition → geste (1.5 s)
+  useEffect(() => {
+    if (emergerStep !== "transition") return;
+    const t = setTimeout(() => setEmergerStep("geste"), 1500);
+    return () => clearTimeout(t);
+  }, [emergerStep]);
 
   // ── Charger méthode dominante pour abonnés ──
   useEffect(() => {
@@ -688,47 +749,87 @@ function TraverseeCourteV2() {
         );
 
       // ════════════════════════════════════════════════════
-      // ÉCRAN 7 — ÉMERGER
+      // ÉCRAN 7 — ÉMERGER  ressenti → besoin → geste
       // ════════════════════════════════════════════════════
       case "emerger": {
-        const visibleActions = emergePool.slice(emergeOffset, emergeOffset + 3);
-        const hasMore = emergeOffset + 3 < emergePool.length;
+        // ── Sous-étape : BESOIN ──────────────────────────
+        if (emergerStep === "besoin") {
+          const needs = getNeedsForState(currentFeeling, bodyZone);
+          const feelingLabel =
+            currentFeeling && currentFeeling !== "je-ne-sais-pas"
+              ? FEELING_LABELS[currentFeeling]
+              : null;
+          const zoneLabel = bodyZone ? ZONE_PREPOSITION[bodyZone] : "";
+          return (
+            <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+              {/* Rappel contextuel discret */}
+              {feelingLabel && (
+                <p className="font-inter text-xs t-text-ghost text-center italic">
+                  {zoneLabel
+                    ? `Tout à l'heure, c'était surtout ${feelingLabel} ${zoneLabel}`
+                    : `Tout à l'heure, c'était surtout ${feelingLabel}`}
+                </p>
+              )}
+              <div className="text-center">
+                <p className="font-body text-lg text-t-beige leading-relaxed">
+                  Là, ce qui aiderait un peu,<br />ce serait plutôt…
+                </p>
+              </div>
+              <div className="w-full space-y-3">
+                {needs.map((need) => (
+                  <AutoChip
+                    key={need}
+                    label={need}
+                    onClick={() => {
+                      setSelectedNeed(need);
+                      setEmergerStep("transition");
+                      trackEvent(user?.id ?? null, "step_complete", { step: "emerger", mode: "court", value: need });
+                      trackEvent(user?.id ?? null, "session_end", { mode: "court" });
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        // ── Sous-étape : TRANSITION ──────────────────────
+        if (emergerStep === "transition") {
+          return (
+            <div
+              className="flex items-center justify-center min-h-[80vh]"
+              style={{ opacity: 1, transition: "opacity 300ms ease" }}
+            >
+              <p className="font-serif text-2xl text-t-beige text-center leading-relaxed">
+                Ok… on va rester sur<br />quelque chose de simple
+              </p>
+            </div>
+          );
+        }
+
+        // ── Sous-étape : GESTE ───────────────────────────
+        const gesture = selectedNeed ? getGestureForNeed(selectedNeed) : null;
+        if (!gesture) return null;
         return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-3">
-              <h1 className="font-serif text-2xl text-t-beige">
-                Maintenant
-              </h1>
-              <p className="font-body text-lg t-text-secondary">
-                À partir de ce qui s&apos;est éclairci…
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 animate-fade-up">
+            <div className="text-center space-y-4">
+              {/* Catégorie : Respiration / Appuis / Recul / Contact */}
+              <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
+                {gesture.label}
               </p>
-              <p className="font-body text-lg t-text-secondary">
-                Qu&apos;est-ce qui est le plus simple maintenant ?
+              {/* Instruction somatic — texte unique à suivre */}
+              <p className="font-serif text-2xl text-t-beige leading-relaxed">
+                {gesture.description}
               </p>
             </div>
-            <div className="w-full space-y-3">
-              {visibleActions.map((action) => (
-                <AutoChip
-                  key={action}
-                  label={action}
-                  onClick={() => {
-                    setNextAction(action);
-                    trackEvent(user?.id ?? null, "step_complete", { step: "emerger", mode: "court", value: action });
-                    trackEvent(user?.id ?? null, "session_end", { mode: "court" });
-                    setScreen("synthese");
-                  }}
-                />
-              ))}
-            </div>
-            {hasMore && (
-              <button
-                type="button"
-                onClick={() => setEmergeOffset((o) => o + 3)}
-                className="font-inter text-[13px] t-text-secondary underline underline-offset-[3px]"
-              >
-                Autre idée
-              </button>
-            )}
+            <PrimaryButton
+              onClick={() => {
+                setNextAction(gesture.action);
+                setScreen("synthese");
+              }}
+            >
+              C&apos;est noté
+            </PrimaryButton>
           </div>
         );
       }
