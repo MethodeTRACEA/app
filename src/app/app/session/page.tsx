@@ -1113,7 +1113,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               On va juste revenir au corps, simplement.
             </p>
 
-            <StepCard className={`transition-all duration-1000 ease-in-out ${!ancrerDone && ancrerMethod ? "!bg-[rgba(50,35,28,0.08)] !border-[rgba(232,216,199,0.03)] !shadow-none !backdrop-blur-[40px]" : ""}`}>
+            <StepCard className={`transition-all duration-1000 ease-in-out ${!ancrerDone && ancrerMethod ? "!bg-[rgba(50,35,28,0.08)] !border-[rgba(232,216,199,0.03)] !shadow-none" : ""}`}>
               {/* En-tête */}
               <div className={`transition-opacity duration-1000 ${!ancrerDone && ancrerMethod ? "opacity-[0.3]" : "opacity-100"}`}>
                 <StepHeader
@@ -1395,7 +1395,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           />
 
           <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
-            <StepCard className="!bg-[rgba(50,35,28,0.32)] !backdrop-blur-[18px] !border-[rgba(232,216,199,0.11)] !shadow-[0_8px_40px_rgba(0,0,0,0.15),0_0_0_1px_rgba(232,216,199,0.05)_inset,0_0_50px_rgba(214,165,106,0.03)]">
+            <StepCard className="!bg-[rgba(50,35,28,0.32)] !border-[rgba(232,216,199,0.11)] !shadow-[0_8px_40px_rgba(0,0,0,0.15),0_0_0_1px_rgba(232,216,199,0.05)_inset,0_0_50px_rgba(214,165,106,0.03)]">
               <StepHeader
                 stepNumber={step.number}
                 stepName="Écouter"
@@ -1522,7 +1522,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           />
 
           <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
-            <StepCard className="!bg-[rgba(50,35,28,0.20)] !backdrop-blur-[14px] !border-[rgba(232,216,199,0.09)]">
+            <StepCard className="!bg-[rgba(50,35,28,0.20)] !border-[rgba(232,216,199,0.09)]">
               <StepHeader
                 stepNumber={step.number}
                 stepName={step.name}
@@ -1655,7 +1655,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         />
 
         <div className="mt-5 md:mt-6 animate-fade-up" key={currentStep}>
-          <StepCard className="!bg-[rgba(50,35,28,0.32)] !backdrop-blur-[22px] !border-[rgba(232,216,199,0.13)] !shadow-[0_6px_30px_rgba(0,0,0,0.14),0_0_0_1px_rgba(232,216,199,0.05)_inset]">
+          <StepCard className="!bg-[rgba(50,35,28,0.32)] !border-[rgba(232,216,199,0.13)] !shadow-[0_6px_30px_rgba(0,0,0,0.14),0_0_0_1px_rgba(232,216,199,0.05)_inset]">
             <StepHeader
               stepNumber={step.number}
               stepName={step.name}
