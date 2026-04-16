@@ -41,21 +41,24 @@ export function BreathingGuide({ onComplete }: BreathingGuideProps) {
   const scale = expanded ? 1 : 0.45;
 
   return (
-    <div className="flex flex-col items-center gap-10">
+    <div className="flex flex-col items-center gap-6">
+      {/* Orbe — objet de focus principal */}
       <div
         style={{
           width: 160,
           height: 160,
           borderRadius: "50%",
-          background: "rgba(214,165,106,0.08)",
-          border: "1px solid rgba(214,165,106,0.20)",
+          background: "rgba(214,165,106,0.12)",
+          border: "1px solid rgba(214,165,106,0.30)",
+          boxShadow: "0 0 40px rgba(214,165,106,0.08)",
           transform: `scale(${scale})`,
           transition: `transform ${expanded ? "4s" : "6s"} ease-in-out`,
           willChange: "transform",
         }}
       />
-      <div className="flex flex-col items-center gap-1">
-        <p className="font-body text-xl t-text-secondary italic" style={{ minHeight: "1.75rem" }}>
+      {/* Instruction — liée visuellement à l'orbe */}
+      <div className="flex flex-col items-center gap-2">
+        <p className="font-body text-2xl t-text-secondary italic" style={{ minHeight: "2rem" }}>
           {phaseText}
         </p>
         {phase !== "idle" && phase !== "done" && (
@@ -69,7 +72,7 @@ export function BreathingGuide({ onComplete }: BreathingGuideProps) {
           {phase !== "done" ? `${cycle + 1} / ${CYCLES}` : ""}
         </p>
       )}
-      <button type="button" onClick={onComplete} className="t-btn-secondary">
+      <button type="button" onClick={onComplete} className="t-btn-secondary mt-2">
         C&apos;est fait
       </button>
     </div>

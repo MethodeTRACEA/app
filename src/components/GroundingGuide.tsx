@@ -6,10 +6,9 @@ interface GroundingGuideProps {
 
 export function GroundingGuide({ onComplete }: GroundingGuideProps) {
   return (
-    <div className="flex flex-col items-center gap-10">
-      {/* Texte sobre */}
+    <div className="flex flex-col items-center gap-8">
       <div className="text-center space-y-3">
-        <p className="font-body text-lg t-text-primary">
+        <p className="font-body text-xl t-text-primary">
           Sens le contact de tes pieds au sol
         </p>
         <p className="font-inter text-sm t-text-secondary">

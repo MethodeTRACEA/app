@@ -6,9 +6,9 @@ interface GazeGuideProps {
 
 export function GazeGuide({ onComplete }: GazeGuideProps) {
   return (
-    <div className="flex flex-col items-center gap-10">
+    <div className="flex flex-col items-center gap-8">
       <div className="text-center space-y-3">
-        <p className="font-body text-lg t-text-primary">
+        <p className="font-body text-xl t-text-primary">
           Laisse ton regard quitter l&apos;écran un instant
         </p>
         <p className="font-inter text-sm t-text-secondary">

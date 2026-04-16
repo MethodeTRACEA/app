@@ -231,19 +231,25 @@ function TraverseeCourteV2() {
       case "onboarding":
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
-            <div className="text-center space-y-6">
-              <p className="font-serif text-2xl text-t-beige leading-relaxed">
-                Tu ne vas pas mal.
-              </p>
-              <p className="font-serif text-2xl text-t-beige leading-relaxed">
-                Tu es en surcharge.
-              </p>
-              <p className="font-body text-lg t-text-secondary leading-relaxed">
-                On va juste revenir au corps.
-              </p>
-              <p className="font-body text-lg t-text-secondary leading-relaxed">
-                Quelques minutes suffisent.
-              </p>
+            <div className="text-center space-y-8">
+              {/* Reframe émotionnel — les deux lignes forment une paire */}
+              <div className="space-y-1">
+                <p className="font-serif text-2xl text-t-beige leading-relaxed">
+                  Tu ne vas pas mal.
+                </p>
+                <p className="font-serif text-2xl text-t-beige leading-relaxed">
+                  Tu es en surcharge.
+                </p>
+              </div>
+              {/* Promesse — plus douce, suit naturellement */}
+              <div className="space-y-1">
+                <p className="font-body text-lg t-text-secondary leading-relaxed">
+                  On va juste revenir au corps.
+                </p>
+                <p className="font-body text-lg t-text-secondary leading-relaxed">
+                  Quelques minutes suffisent.
+                </p>
+              </div>
             </div>
             <PrimaryButton onClick={() => {
               localStorage.setItem("tracea_onboarding_seen", "true");

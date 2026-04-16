@@ -84,8 +84,9 @@ export default function PostSessionPage() {
 
         {/* ── Écran 3 — Paywall ── */}
         {screen === "paywall" && (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
-            <div className="text-center space-y-6">
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+            {/* Copy émotionnelle — rythme serré, lecture fluide */}
+            <div className="text-center space-y-4">
               <p className="font-serif text-2xl text-t-beige leading-relaxed">
                 Là, tu viens de revenir un peu.
               </p>
@@ -123,7 +124,8 @@ export default function PostSessionPage() {
               </div>
             </div>
 
-            <div className="w-full flex flex-col gap-4">
+            {/* Zone de décision — visuellement séparée */}
+            <div className="w-full flex flex-col gap-4 pt-2">
               <PrimaryButton onClick={() => router.push("/app/subscribe")}>
                 Continuer avec TRACÉA
               </PrimaryButton>
