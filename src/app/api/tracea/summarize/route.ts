@@ -237,7 +237,7 @@ export async function POST(request: NextRequest) {
 
     // Appeler Claude pour générer le résumé
     const message = await getAnthropicClient().messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 500,
       temperature: 0.3,
       system: SUMMARY_SYSTEM_PROMPT,

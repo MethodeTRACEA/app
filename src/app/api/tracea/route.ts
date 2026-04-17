@@ -62,7 +62,7 @@ function getSupabaseService() {
 // AI USAGE LOGGING
 // ===================================================================
 
-// Tarifs Claude Sonnet (claude-sonnet-4-20250514) — mai 2025
+// Tarifs Claude Sonnet (claude-sonnet-4-6) — mai 2025
 const COST_PER_INPUT_TOKEN = 3.0 / 1_000_000;      // $3 / 1M tokens
 const COST_PER_OUTPUT_TOKEN = 15.0 / 1_000_000;     // $15 / 1M tokens
 const COST_PER_CACHE_WRITE_TOKEN = 3.75 / 1_000_000; // $3.75 / 1M tokens (écriture cache)
@@ -592,7 +592,7 @@ ${sessionHistory}`;
 
   // 3. Appeler l'API (runtime prompt court + developer prompt avec cache)
   const message = await getAnthropicClient().messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 500,
     temperature: 0.4,
     system: [
@@ -610,7 +610,7 @@ ${sessionHistory}`;
     userId,
     callType: "step-mirror",
     stepId: module,
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     inputTokens: usage.input_tokens,
     outputTokens: usage.output_tokens,
     cacheCreationTokens: usage.cache_creation_input_tokens || 0,
@@ -641,7 +641,7 @@ ${sessionHistory}`;
     console.warn("[TRACEA API] Forbidden pattern detected, retrying...", validation.errors);
     try {
       const retryMessage = await getAnthropicClient().messages.create({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 500,
         temperature: 0.4,
         system: [
@@ -660,7 +660,7 @@ ${sessionHistory}`;
         userId,
         callType: "step-mirror",
         stepId: module,
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         inputTokens: retryUsage.input_tokens,
         outputTokens: retryUsage.output_tokens,
         cacheCreationTokens: retryUsage.cache_creation_input_tokens || 0,
@@ -948,7 +948,7 @@ Règles absolues :
 - L'ensemble fait 3 phrases maximum.`;
 
   const message = await getAnthropicClient().messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 400,
     temperature: 0.45,
     system: [
@@ -965,7 +965,7 @@ Règles absolues :
   logAiUsage({
     userId,
     callType: "final-analysis",
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     inputTokens: analysisUsage.input_tokens,
     outputTokens: analysisUsage.output_tokens,
     cacheCreationTokens: analysisUsage.cache_creation_input_tokens || 0,
