@@ -336,6 +336,162 @@ export async function getTopEmergerValues(userId: string, limit = 3): Promise<st
     .map(([v]) => v);
 }
 
+// ─────────────────────────────────────────────────────────
+// PREMIUM MEMORY V2 — Repères descriptifs sans interprétation
+// ─────────────────────────────────────────────────────────
+
+export type PremiumMemory = {
+  ceQuiRevient:        string | null;
+  ceQuiSembleDemandem: string | null;
+  ceQuiTAide:          string | null;
+  ceQuePeutTester:     string | null;
+};
+
+// Seuil minimum de sessions pour activer la mémoire
+const PM_MIN = 3;
+
+// Besoins connus (émerger V2 — traversée courte)
+const PM_KNOWN_NEEDS = new Set([
+  "ralentir", "revenir au corps", "faire une pause", "clarifier",
+  "me sentir en sécurité", "relâcher la pression", "prendre de l'espace",
+  "être soutenu", "me reposer", "être tranquille",
+  "me rapprocher de quelque chose de sûr", "revenir au simple",
+  "me stabiliser", "y voir plus clair", "me dégager", "me protéger",
+  "poser une limite", "relâcher la tension",
+]);
+
+// Helpers — sentence builders
+const PM_RESSENTI_LABELS: Record<string, string> = {
+  serre:  "la tension",
+  agite:  "l'agitation",
+  lourd:  "la lourdeur",
+  flou:   "le flou",
+  vide:   "le vide",
+  bloque: "le blocage",
+};
+const PM_ZONE_LABELS: Record<string, string> = {
+  poitrine: "dans la poitrine",
+  ventre:   "dans le ventre",
+  gorge:    "dans la gorge",
+  tete:     "dans la tête",
+  epaules:  "dans les épaules",
+  partout:  "partout",
+};
+const PM_NEED_SENTENCES: Record<string, string> = {
+  "ralentir":                              "Le besoin de ralentir revient souvent.",
+  "revenir au corps":                      "Le besoin de revenir au corps apparaît souvent.",
+  "faire une pause":                       "Le besoin de faire une pause revient souvent.",
+  "clarifier":                             "Le besoin de clarifier apparaît souvent.",
+  "me sentir en sécurité":               "Le besoin de sécurité revient souvent.",
+  "relâcher la pression":                "Le besoin de relâcher la pression revient souvent.",
+  "prendre de l'espace":                 "Le besoin d'espace revient souvent.",
+  "être soutenu":                          "Le besoin d'être soutenu apparaît souvent.",
+  "me reposer":                            "Le besoin de repos revient souvent.",
+  "être tranquille":                       "Le besoin de tranquillité revient souvent.",
+  "me rapprocher de quelque chose de sûr":"Le besoin de quelque chose de sûr revient souvent.",
+  "revenir au simple":                     "Le besoin de revenir au simple revient souvent.",
+  "me stabiliser":                         "Le besoin de stabilisation revient souvent.",
+  "y voir plus clair":                     "Le besoin d'y voir plus clair revient souvent.",
+  "me dégager":                            "Le besoin de se dégager revient souvent.",
+  "me protéger":                           "Le besoin de protection revient souvent.",
+  "poser une limite":                      "Le besoin de poser une limite apparaît souvent.",
+  "relâcher la tension":                   "Le besoin de relâcher la tension revient souvent.",
+};
+const PM_AIDE_SENTENCES: Record<string, string> = {
+  appuis: "Revenir aux appuis t'aide souvent.",
+  autour: "Prendre un peu de distance t'aide souvent.",
+  souffle:"Ralentir le souffle t'aide souvent.",
+};
+const PM_TESTER_BY_RESSENTI: Record<string, string> = {
+  agite:  "La prochaine fois, tu peux observer si l'agitation est déjà là avant que ça monte.",
+  serre:  "Tu peux repartir de ce point-là la prochaine fois.",
+  lourd:  "La prochaine fois, tu peux voir si ce repère est déjà là plus tôt.",
+  flou:   "Tu peux repartir de ce point-là la prochaine fois.",
+  vide:   "La prochaine fois, tu peux observer ce qui est là avant.",
+  bloque: "Tu peux tester ce repère un peu plus tôt la prochaine fois.",
+};
+
+function pmTop(counts: Record<string, number>, min: number): string | null {
+  const top = Object.entries(counts).sort(([, a], [, b]) => b - a)[0];
+  return top && top[1] >= min ? top[0] : null;
+}
+function pmCap(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+export async function getPremiumMemory(userId: string): Promise<PremiumMemory | null> {
+  try {
+    // Single query — all relevant events
+    const { data: events } = await supabase
+      .from("tracea_events")
+      .select("event, data")
+      .eq("user_id", userId)
+      .or("event.eq.session_end,event.eq.step_complete");
+
+    if (!events) return null;
+
+    // Condition d'activation : >= 3 sessions terminées
+    const sessionCount = events.filter((e) => e.event === "session_end").length;
+    if (sessionCount < PM_MIN) return null;
+
+    // Compter les valeurs par step
+    const ressentiC: Record<string, number> = {};
+    const corpsC:    Record<string, number> = {};
+    const ancrerC:   Record<string, number> = {};
+    const needC:     Record<string, number> = {};
+
+    for (const e of events) {
+      if (e.event !== "step_complete") continue;
+      const d = e.data as Record<string, unknown>;
+      const step  = d?.step  as string | undefined;
+      const value = d?.value as string | undefined;
+      if (!step || !value) continue;
+
+      if (step === "ressenti") ressentiC[value] = (ressentiC[value] || 0) + 1;
+      if (step === "corps")    corpsC[value]    = (corpsC[value]    || 0) + 1;
+      if (step === "ancrer" && ["appuis","autour","souffle"].includes(value))
+        ancrerC[value] = (ancrerC[value] || 0) + 1;
+      if (step === "emerger" && PM_KNOWN_NEEDS.has(value))
+        needC[value]   = (needC[value]   || 0) + 1;
+    }
+
+    const topRessenti = pmTop(ressentiC, PM_MIN);
+    const topZone     = pmTop(corpsC,    PM_MIN);
+    const topAncrer   = pmTop(ancrerC,   PM_MIN);
+    const topNeed     = pmTop(needC,     PM_MIN);
+
+    // ── Bloc 1 : ce qui revient ─────────────────────────────
+    const r = topRessenti ? PM_RESSENTI_LABELS[topRessenti] : null;
+    const z = topZone     ? PM_ZONE_LABELS[topZone]         : null;
+    const ceQuiRevient =
+      r && z ? `${pmCap(r)} ${z} revient souvent.`  :
+      r       ? `${pmCap(r)} revient souvent.`       :
+      null;
+
+    // ── Bloc 2 : ce qui semble demandé ─────────────────────
+    const ceQuiSembleDemandem = topNeed
+      ? (PM_NEED_SENTENCES[topNeed] ?? `Le besoin de ${topNeed} revient souvent.`)
+      : null;
+
+    // ── Bloc 3 : ce qui t'aide ──────────────────────────────
+    const ceQuiTAide = topAncrer ? (PM_AIDE_SENTENCES[topAncrer] ?? null) : null;
+
+    // ── Bloc 4 : ce que tu peux tester ─────────────────────
+    const ceQuePeutTester = (ceQuiRevient || ceQuiSembleDemandem)
+      ? (topNeed
+          ? "La prochaine fois, tu peux remarquer si ce besoin est déjà là avant que ça monte."
+          : (topRessenti && PM_TESTER_BY_RESSENTI[topRessenti])
+            ? PM_TESTER_BY_RESSENTI[topRessenti]
+            : "Tu peux repartir de ce point-là la prochaine fois."
+        )
+      : null;
+
+    return { ceQuiRevient, ceQuiSembleDemandem, ceQuiTAide, ceQuePeutTester };
+  } catch {
+    return null;
+  }
+}
+
 // --- Tracking events ---
 
 export async function trackEvent(

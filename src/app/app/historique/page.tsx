@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues, getSessionEndCount, getTopRessentiValues } from "@/lib/supabase-store";
+import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues, getSessionEndCount, getTopRessentiValues, getPremiumMemory } from "@/lib/supabase-store";
+import type { PremiumMemory } from "@/lib/supabase-store";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 
 export default function HistoriquePage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isSubscribed } = useAuth();
   const [sessions, setSessions] = useState<SessionData[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,19 +17,31 @@ export default function HistoriquePage() {
   const [topEmerger, setTopEmerger] = useState<string[]>([]);
   const [sessionEndCount, setSessionEndCount] = useState(0);
   const [topRessentis, setTopRessentis] = useState<string[]>([]);
+  const [premiumMemory, setPremiumMemory] = useState<PremiumMemory | null | undefined>(undefined);
 
   useEffect(() => {
     if (!user) return;
-    Promise.all([
+    const queries: Promise<unknown>[] = [
       getCompletedSessionsDb(user.id),
       getTopEmergerValues(user.id),
       getSessionEndCount(user.id),
       getTopRessentiValues(user.id, 12),
-    ]).then(([data, emerger, endCount, ressentis]) => {
+    ];
+    if (isSubscribed) queries.push(getPremiumMemory(user.id));
+
+    Promise.all(queries).then((results) => {
+      const [data, emerger, endCount, ressentis, pm] = results as [
+        Awaited<ReturnType<typeof getCompletedSessionsDb>>,
+        Awaited<ReturnType<typeof getTopEmergerValues>>,
+        Awaited<ReturnType<typeof getSessionEndCount>>,
+        Awaited<ReturnType<typeof getTopRessentiValues>>,
+        PremiumMemory | null | undefined,
+      ];
       setSessions(data);
       setTopEmerger(emerger);
       setSessionEndCount(endCount);
       setTopRessentis(ressentis);
+      if (isSubscribed) setPremiumMemory(pm ?? null);
       setLoading(false);
     });
   }, [user]);
@@ -83,6 +96,43 @@ export default function HistoriquePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="section-title">Traces</h1>
+
+      {/* ── Repères premium ── */}
+      {isSubscribed && (
+        <div className="mb-10">
+          {premiumMemory === undefined ? null /* chargement silencieux */ : premiumMemory === null ? (
+            <div className="card-base p-6">
+              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">Repères</p>
+              <p className="font-body text-sm text-warm-gray italic">
+                Les repères se dessineront ici avec le temps.
+              </p>
+            </div>
+          ) : (
+            <div className="card-base p-6 space-y-5">
+              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray">Repères</p>
+              {(
+                [
+                  { label: "Ce qui revient",         text: premiumMemory.ceQuiRevient },
+                  { label: "Ce qui semble demandé",  text: premiumMemory.ceQuiSembleDemandem },
+                  { label: "Ce qui t'aide",           text: premiumMemory.ceQuiTAide },
+                  { label: "Ce que tu peux tester",  text: premiumMemory.ceQuePeutTester },
+                ] as { label: string; text: string | null }[]
+              )
+                .filter((b) => b.text)
+                .map((block) => (
+                  <div key={block.label}>
+                    <p className="text-[11px] font-medium tracking-wider uppercase text-terra/60 mb-1">
+                      {block.label}
+                    </p>
+                    <p className="font-body text-base text-espresso leading-relaxed">
+                      {block.text}
+                    </p>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Bloc d'accueil */}
       <div className="mb-10">
