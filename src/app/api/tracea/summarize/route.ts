@@ -171,10 +171,10 @@ async function checkAiLimit(userId: string): Promise<boolean> {
     // TODO: replace with Stripe subscription check when payment is integrated
     const { data: profile } = await supabase
       .from("profiles")
-      .select("is_subscribed")
+      .select("is_subscribed, is_beta_tester")
       .eq("id", userId)
       .single();
-    if (profile?.is_subscribed === true) return false;
+    if (profile?.is_subscribed === true || profile?.is_beta_tester === true) return false; // subscribed or beta → unlimited
 
     const { count } = await supabase
       .from("sessions")

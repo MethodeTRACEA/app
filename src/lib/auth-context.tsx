@@ -51,11 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAdmin = useCallback(async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
-      .select("is_admin, is_subscribed")
+      .select("is_admin, is_subscribed, is_beta_tester")
       .eq("id", userId)
       .single();
     setIsAdmin(data?.is_admin ?? false);
-    setIsSubscribed(data?.is_subscribed ?? false);
+    setIsSubscribed((data?.is_subscribed || data?.is_beta_tester) ?? false);
   }, []);
 
   useEffect(() => {
