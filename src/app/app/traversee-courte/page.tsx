@@ -119,28 +119,28 @@ function getNeedsForState(feeling: Feeling | null, zone: BodyZone | null): strin
 type Gesture = { label: string; description: string; action: string };
 
 const NEED_GESTURE: Record<string, Gesture> = {
-  "ralentir":                              { label: "Respiration", description: "Une respiration lente. Juste une.", action: "une respiration" },
-  "revenir au corps":                      { label: "Appuis",      description: "Sens tes pieds contre le sol.", action: "revenir aux appuis" },
-  "faire une pause":                       { label: "Recul",       description: "Pose ton regard quelque part. Sans chercher.", action: "une pause visuelle" },
-  "clarifier":                             { label: "Recul",       description: "Pose ton regard quelque part. Sans chercher.", action: "un recul visuel" },
-  "me sentir en sécurité":                { label: "Appuis",      description: "Sens le contact sous toi. Ça ne bouge pas.", action: "sentir mes appuis" },
-  "relâcher la pression":                 { label: "Respiration", description: "Expire longtemps. Plus que tu n'inspires.", action: "relâcher par le souffle" },
-  "prendre de l'espace":                  { label: "Recul",       description: "Laisse ton regard partir au loin. Sans fixer.", action: "ouvrir le champ visuel" },
-  "être soutenu":                          { label: "Contact",     description: "Une main sur la poitrine ou le ventre.", action: "un contact avec soi" },
-  "me reposer":                            { label: "Respiration", description: "Ralentis le souffle. Sans forcer.", action: "ralentir le souffle" },
-  "être tranquille":                       { label: "Appuis",      description: "Sens tes pieds. Laisse le reste.", action: "sentir mes appuis" },
-  "me rapprocher de quelque chose de sûr":{ label: "Contact",     description: "Une main posée sur toi. Juste là.", action: "un contact stabilisant" },
-  "revenir au simple":                     { label: "Appuis",      description: "Sens tes pieds. C'est tout.", action: "revenir aux appuis" },
-  "me stabiliser":                         { label: "Appuis",      description: "Sol sous les pieds. Ça suffit.", action: "sentir mes appuis" },
-  "y voir plus clair":                     { label: "Recul",       description: "Pose ton regard quelque part. Sans chercher.", action: "un recul visuel" },
-  "me dégager":                            { label: "Recul",       description: "Laisse ton regard partir. Ouvre l'espace.", action: "ouvrir le champ visuel" },
-  "me protéger":                           { label: "Appuis",      description: "Sens tes pieds. Reste là où tu es.", action: "sentir mes appuis" },
-  "poser une limite":                      { label: "Respiration", description: "Expire. Prends de l'espace dans le souffle.", action: "une respiration d'espace" },
-  "relâcher la tension":                   { label: "Respiration", description: "Expire lentement. Laisse les épaules descendre.", action: "relâcher par le souffle" },
+  "ralentir":                              { label: "Maintenant",  description: "Ralentis ce que tu es en train de faire.", action: "ralentir ce que je fais" },
+  "revenir au corps":                      { label: "Maintenant",  description: "Assieds-toi ou pose-toi quelque part. 2 minutes.", action: "m'asseoir 2 minutes" },
+  "faire une pause":                       { label: "Maintenant",  description: "Pose ce que tu fais. Bois un verre d'eau.", action: "faire une vraie pause" },
+  "clarifier":                             { label: "Maintenant",  description: "Note une seule phrase. Choisis une seule chose.", action: "noter une phrase" },
+  "me sentir en sécurité":               { label: "Maintenant",  description: "Va dans une autre pièce ou coupe une stimulation.", action: "changer d'espace" },
+  "relâcher la pression":                { label: "Maintenant",  description: "Remets une chose à plus tard. Juste une.", action: "remettre une chose à plus tard" },
+  "prendre de l'espace":                 { label: "Maintenant",  description: "Ouvre une fenêtre ou sors 2 minutes.", action: "prendre de l'air" },
+  "être soutenu":                          { label: "Maintenant",  description: "Envoie un message à quelqu'un de sûr.", action: "contacter quelqu'un de sûr" },
+  "me reposer":                            { label: "Maintenant",  description: "Allonge-toi ou assieds-toi sans rien faire. 5 minutes.", action: "me poser 5 minutes" },
+  "être tranquille":                       { label: "Maintenant",  description: "Coupe le bruit ou mets-toi à l'écart.", action: "trouver le calme" },
+  "me rapprocher de quelque chose de sûr":{ label: "Maintenant", description: "Rapproche-toi d'un endroit ou d'une chose calme.", action: "me rapprocher de quelque chose de sûr" },
+  "revenir au simple":                     { label: "Maintenant",  description: "Choisis une seule chose. Laisse le reste.", action: "choisir une seule chose" },
+  "me stabiliser":                         { label: "Maintenant",  description: "Assieds-toi. Ne fais rien pendant 2 minutes.", action: "m'asseoir sans rien faire" },
+  "y voir plus clair":                     { label: "Maintenant",  description: "Note ce qui est flou. Une phrase suffit.", action: "noter ce qui est flou" },
+  "me dégager":                            { label: "Maintenant",  description: "Éloigne-toi de ce qui te tend. Physiquement si possible.", action: "m'éloigner de ce qui me tend" },
+  "me protéger":                           { label: "Maintenant",  description: "Ne réponds pas tout de suite. Tu peux attendre.", action: "ne pas répondre tout de suite" },
+  "poser une limite":                      { label: "Maintenant",  description: "Dis \"pas maintenant\" ou reporte la discussion.", action: "reporter la discussion" },
+  "relâcher la tension":                   { label: "Maintenant",  description: "Recule un peu. Bois quelque chose de chaud.", action: "prendre un moment pour moi" },
 };
 
 function getGestureForNeed(need: string): Gesture {
-  return NEED_GESTURE[need] ?? { label: "Appuis", description: "Sens tes pieds. C'est tout.", action: "sentir mes appuis" };
+  return NEED_GESTURE[need] ?? { label: "Maintenant", description: "Assieds-toi 2 minutes. C'est suffisant.", action: "m'asseoir 2 minutes" };
 }
 
 
