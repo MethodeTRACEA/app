@@ -178,7 +178,7 @@ export default function TraverseeCourteV2Page() {
 function TraverseeCourteV2() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isSubscribed } = useAuth();
+  const { user, hasPremiumAccess } = useAuth();
 
   // ── Detect if entered via soft-switch (skip entry screen) ──
   const skipEntree = searchParams.get("skip") === "entree";
@@ -222,15 +222,15 @@ function TraverseeCourteV2() {
 
   // ── Charger méthode dominante pour abonnés ──
   useEffect(() => {
-    if (!isSubscribed || !user?.id) return;
+    if (!hasPremiumAccess || !user?.id) return;
     getTopAnchorMethod(user.id).then((m) => {
       if (m === "appuis" || m === "autour" || m === "souffle") setTopMethod(m);
     });
-  }, [isSubscribed, user?.id]);
+  }, [hasPremiumAccess, user?.id]);
 
-  // ── Helper : aller à ancrer (ou suggestion si abonné + méthode dominante) ──
+  // ── Helper : aller à ancrer (ou suggestion si accès premium + méthode dominante) ──
   function goToAncrer() {
-    if (isSubscribed && topMethod) {
+    if (hasPremiumAccess && topMethod) {
       setScreen("ancrer-suggest");
     } else {
       setScreen("ancrer");

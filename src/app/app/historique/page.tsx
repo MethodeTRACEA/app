@@ -8,7 +8,7 @@ import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 
 export default function HistoriquePage() {
-  const { user, loading: authLoading, isSubscribed } = useAuth();
+  const { user, loading: authLoading, hasPremiumAccess } = useAuth();
   const [sessions, setSessions] = useState<SessionData[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ export default function HistoriquePage() {
       getSessionEndCount(user.id),
       getTopRessentiValues(user.id, 12),
     ];
-    if (isSubscribed) queries.push(getPremiumMemory(user.id));
+    if (hasPremiumAccess) queries.push(getPremiumMemory(user.id));
 
     Promise.all(queries).then((results) => {
       const [data, emerger, endCount, ressentis, pm] = results as [
@@ -41,7 +41,7 @@ export default function HistoriquePage() {
       setTopEmerger(emerger);
       setSessionEndCount(endCount);
       setTopRessentis(ressentis);
-      if (isSubscribed) setPremiumMemory(pm ?? null);
+      if (hasPremiumAccess) setPremiumMemory(pm ?? null);
       setLoading(false);
     });
   }, [user]);
@@ -98,7 +98,7 @@ export default function HistoriquePage() {
       <h1 className="section-title">Traces</h1>
 
       {/* ── Repères premium ── */}
-      {isSubscribed && (
+      {hasPremiumAccess && (
         <div className="mb-10">
           {premiumMemory === undefined ? null /* chargement silencieux */ : premiumMemory === null ? (
             <div className="card-base p-6">

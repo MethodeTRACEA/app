@@ -16,7 +16,12 @@ interface AuthState {
   session: Session | null;
   loading: boolean;
   isAdmin: boolean;
+  /** Vrai abonné payant (Stripe, futur) */
   isSubscribed: boolean;
+  /** Bêta testeur activé via mot de passe */
+  isBetaTester: boolean;
+  /** Accès premium = isSubscribed OU isBetaTester */
+  hasPremiumAccess: boolean;
   signInWithMagicLink: (email: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation: boolean }>;
   signInWithPassword: (email: string, password: string) => Promise<{ error: string | null }>;
@@ -32,6 +37,8 @@ const AuthContext = createContext<AuthState>({
   loading: true,
   isAdmin: false,
   isSubscribed: false,
+  isBetaTester: false,
+  hasPremiumAccess: false,
   signInWithMagicLink: async () => ({ error: null }),
   signUp: async () => ({ error: null, needsConfirmation: false }),
   signInWithPassword: async () => ({ error: null }),
@@ -47,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isBetaTester, setIsBetaTester] = useState(false);
 
   const checkAdmin = useCallback(async (userId: string) => {
     const { data } = await supabase
@@ -55,8 +63,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .eq("id", userId)
       .single();
     setIsAdmin(data?.is_admin ?? false);
-    setIsSubscribed((data?.is_subscribed || data?.is_beta_tester) ?? false);
+    setIsSubscribed(data?.is_subscribed ?? false);
+    setIsBetaTester(data?.is_beta_tester ?? false);
   }, []);
+
+  // Accès premium = abonné payant OU bêta testeur
+  const hasPremiumAccess = isSubscribed || isBetaTester;
 
   useEffect(() => {
     // Get initial session
@@ -77,6 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         checkAdmin(s.user.id);
       } else {
         setIsAdmin(false);
+        setIsSubscribed(false);
+        setIsBetaTester(false);
       }
       setLoading(false);
     });
@@ -150,6 +164,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null);
     setIsAdmin(false);
     setIsSubscribed(false);
+    setIsBetaTester(false);
   }
 
   async function refreshProfile() {
@@ -164,6 +179,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         isAdmin,
         isSubscribed,
+        isBetaTester,
+        hasPremiumAccess,
         signInWithMagicLink,
         signUp,
         signInWithPassword,

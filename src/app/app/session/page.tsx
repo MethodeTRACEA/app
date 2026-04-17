@@ -98,7 +98,7 @@ interface StepCacheEntry {
 
 function SessionContent({ userId, routerActivation }: { userId: string; routerActivation: string | null }) {
   const router = useRouter();
-  const { isSubscribed, session } = useAuth();
+  const { hasPremiumAccess, session } = useAuth();
   const [phase, setPhase] = useState<Phase>("intro");
   const [intensity, setIntensity] = useState(5);
   const [intensityAfter, setIntensityAfter] = useState(3);
@@ -153,11 +153,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [ancrerSuggestedMethod, setAncrerSuggestedMethod] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isSubscribed || !userId) return;
+    if (!hasPremiumAccess || !userId) return;
     getTopAnchorMethod(userId).then((m) => {
       if (m) setAncrerSuggestedMethod(m);
     });
-  }, [isSubscribed, userId]);
+  }, [hasPremiumAccess, userId]);
 
   // ── Étape 4 — Écouter : besoin immédiat ──
   const [ecouterChoice, setEcouterChoice] = useState("");
