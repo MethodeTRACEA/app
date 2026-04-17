@@ -97,6 +97,7 @@ create policy "Users can insert own consent logs"
 
 -- 4. Vue admin — statistiques ANONYMISEES uniquement
 -- Aucun texte, aucune emotion, aucun contenu personnel
+-- Sécurisé : la clause WHERE vérifie is_admin via auth.uid() — un non-admin reçoit zéro résultat
 create or replace view public.admin_stats as
 select
   count(distinct s.user_id) as total_users,
@@ -112,9 +113,13 @@ select
   count(s.id) filter (where s.date > now() - interval '7 days') as sessions_last_7d,
   count(s.id) filter (where s.date > now() - interval '30 days') as sessions_last_30d,
   count(distinct s.user_id) filter (where s.date > now() - interval '7 days') as active_users_7d
-from public.sessions s;
+from public.sessions s
+where (
+  select is_admin from public.profiles where id = auth.uid()
+) = true;
 
 -- Vue stats par semaine
+-- Sécurisé : même protection admin via auth.uid()
 create or replace view public.admin_weekly_stats as
 select
   date_trunc('week', s.date)::date as week,
@@ -124,11 +129,14 @@ select
   count(s.id) filter (where s.completed = true) as completed
 from public.sessions s
 where s.date > now() - interval '12 weeks'
+  and (
+    select is_admin from public.profiles where id = auth.uid()
+  ) = true
 group by date_trunc('week', s.date)
 order by week desc;
 
 -- Politique pour admin_stats : seuls les admins peuvent lire
--- (les vues n'ont pas de RLS, on gere cote app)
+-- Protégé au niveau SQL via auth.uid() — plus de dépendance à la seule vérification côté app
 
 -- 5. Index pour performance
 create index idx_sessions_user_id on public.sessions(user_id);
