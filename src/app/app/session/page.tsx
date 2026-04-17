@@ -126,7 +126,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const [integrationResponse, setIntegrationResponse] = useState<"yes" | "no" | "unsure" | null>(null);
   const [integrationMessage, setIntegrationMessage] = useState("");
   const [mirrorNote, setMirrorNote] = useState("");
-  const [mirrorNotes, setMirrorNotes] = useState<Record<string, string>>({});
 
   // ── Étape 1 — Traverser : sous-phases (ressenti → corps → texte) ──
   const [traverserPhase, setTraverserPhase] = useState<"ressenti" | "corps" | "texte">("ressenti");
@@ -415,12 +414,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       const cachedNext = stepCache[nextStepId];
       const restoredText = cachedNext?.text || steps[nextStepId as StepId] || "";
 
-      // Sauvegarder la note intermédiaire si non vide
-      const currentStepId = stepsActifs[currentStep].id;
-      if (mirrorNote.trim()) {
-        setMirrorNotes(prev => ({ ...prev, [currentStepId]: mirrorNote.trim() }));
-      }
-
       // Réinitialiser le choix émerger si le besoin (étape 4) a changé les options
       if (nextStepId === "emerger") {
         setEmergerChoice("");
@@ -433,11 +426,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       setText(restoredText);
       setPhase("session");
     } else {
-      // Sauvegarder la dernière note si non vide
-      const lastStepId = stepsActifs[currentStep].id;
-      if (mirrorNote.trim()) {
-        setMirrorNotes(prev => ({ ...prev, [lastStepId]: mirrorNote.trim() }));
-      }
       // Dernière étape → synthèse finale directe
       if (sessionId) {
         updateSessionDb(sessionId, { intensity_after: intensityAfter });
