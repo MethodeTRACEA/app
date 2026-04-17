@@ -197,6 +197,17 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
+    // --- Authentification : vérifier le token JWT ---
+    const token = request.headers.get("authorization")?.replace("Bearer ", "") ?? null;
+    if (!token) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+    const { data: { user: authUser }, error: authError } = await getSupabase().auth.getUser(token);
+    if (authError || !authUser) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+    const userId = authUser.id;
+
     const body = await request.json();
     const { type } = body;
 
@@ -205,7 +216,7 @@ export async function POST(request: NextRequest) {
     // --- Rate Limiting : vérifier AVANT tout appel IA ---
     const clientIp = getClientIp(request.headers);
     const rateLimitResult = await checkRateLimit({
-      userId: body.userId || undefined,
+      userId,
       ip: clientIp,
     });
 
@@ -218,7 +229,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (type === "final-analysis") {
-      return await handleFinalAnalysis(body);
+      return await handleFinalAnalysis(body, userId);
     }
 
     return NextResponse.json(
@@ -254,9 +265,9 @@ async function handleFinalAnalysis(body: {
   context: string;
   intensityBefore: number;
   intensityAfter: number;
-  userId: string;
-}) {
-  const { steps, context, intensityBefore, intensityAfter, userId } = body;
+  userId?: string; // ignoré — userId vient du token vérifié
+}, userId: string) {
+  const { steps, context, intensityBefore, intensityAfter } = body;
 
   // Check AI limit before any Claude call
   const aiLimited = await checkAiLimit(userId);

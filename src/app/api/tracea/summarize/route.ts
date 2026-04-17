@@ -196,9 +196,23 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
+    // --- Authentification : vérifier le token JWT ---
+    const token = request.headers.get("authorization")?.replace("Bearer ", "") ?? null;
+    if (!token) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+    const supabaseAnon = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    const { data: { user: authUser }, error: authError } = await supabaseAnon.auth.getUser(token);
+    if (authError || !authUser) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+    const userId = authUser.id;
+
     const body = await request.json();
     const {
-      userId,
       sessionId,
       steps,
       context,
@@ -207,9 +221,9 @@ export async function POST(request: NextRequest) {
       hadDoNotStore,
     } = body;
 
-    if (!userId || !sessionId) {
+    if (!sessionId) {
       return NextResponse.json(
-        { error: "userId et sessionId requis" },
+        { error: "sessionId requis" },
         { status: 400 }
       );
     }

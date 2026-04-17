@@ -98,7 +98,7 @@ interface StepCacheEntry {
 
 function SessionContent({ userId, routerActivation }: { userId: string; routerActivation: string | null }) {
   const router = useRouter();
-  const { isSubscribed } = useAuth();
+  const { isSubscribed, session } = useAuth();
   const [phase, setPhase] = useState<Phase>("intro");
   const [intensity, setIntensity] = useState(5);
   const [intensityAfter, setIntensityAfter] = useState(3);
@@ -467,7 +467,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     try {
       const res = await fetch("/api/tracea", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { "Authorization": `Bearer ${session.access_token}` } : {}),
+        },
         body: JSON.stringify({
           type: "final-analysis",
           steps,
@@ -509,7 +512,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       try {
         const res = await fetch("/api/tracea/summarize", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(session?.access_token ? { "Authorization": `Bearer ${session.access_token}` } : {}),
+          },
           signal: controller.signal,
           body: JSON.stringify({
             userId,
