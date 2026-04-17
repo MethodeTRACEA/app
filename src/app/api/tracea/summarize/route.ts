@@ -1,7 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-import { readFileSync } from "fs";
-import { join } from "path";
 import { createClient } from "@supabase/supabase-js";
 import {
   saveSessionSummary,
@@ -13,27 +11,8 @@ import {
 // API KEY
 // ===================================================================
 
-function loadApiKeyFromEnvFile(): string {
-  try {
-    const envPath = join(process.cwd(), ".env.local");
-    const content = readFileSync(envPath, "utf-8");
-    for (const line of content.split("\n")) {
-      const trimmed = line.trim();
-      if (trimmed.startsWith("ANTHROPIC_API_KEY=")) {
-        return trimmed.substring("ANTHROPIC_API_KEY=".length);
-      }
-    }
-  } catch {
-    // fallback
-  }
-  return "";
-}
-
 function getAnthropicClient() {
-  let apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    apiKey = loadApiKeyFromEnvFile();
-  }
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     throw new Error("ANTHROPIC_API_KEY manquante");
   }
