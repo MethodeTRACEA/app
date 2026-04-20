@@ -6,14 +6,13 @@ import type { AudioLevel } from "./use-exercise-audio";
 // ══════════════════════════════════════════════════════════════
 // useBreathingAudio — texture sonore synchronisée au cycle respiratoire
 //
-// Bruit rose très filtré (low-pass) dont le gain et la fréquence
-// de coupure suivent le cycle via setTargetAtTime (courbe exponentielle) :
-//   inspire (4s) → gain 0.08, filtre 850 Hz  — ouverture douce
-//   expire  (6s) → gain 0.04, filtre 600 Hz  — fermeture douce
-//   neutre       → gain 0.06, filtre 650 Hz  — base stable
+// Chaîne : source → preFilter (1 200 Hz fixe) → filter (modulé) → gain
 //
-// Écart de fréquence réduit (250 Hz vs 400 Hz avant) et Q abaissé (0.5)
-// pour éviter l'effet "soufflerie" et favoriser une texture enveloppante.
+// preFilter coupe le haut du spectre "air / hiss" avant modulation.
+// filter modulé suit le cycle via setTargetAtTime (courbe exponentielle) :
+//   inspire (4s) → gain 0.07, filtre  760 Hz  — ouverture douce
+//   expire  (6s) → gain 0.04, filtre  590 Hz  — fermeture douce
+//   neutre       → gain 0.055, filtre 620 Hz  — base stable
 //
 // setTargetAtTime donne une courbe physique (amortissement exponentiel) :
 //   départ rapide → décélération progressive → plateau naturel
@@ -32,14 +31,17 @@ const UNMOUNT_S   = 0.8;   // démontage composant
 
 // Gains par niveau — valeurs volontairement basses
 const CFG: Record<Exclude<AudioLevel, "off">, { base: number; inspire: number; expire: number }> = {
-  low:    { base: 0.030, inspire: 0.040, expire: 0.020 },
-  medium: { base: 0.060, inspire: 0.080, expire: 0.040 },
+  low:    { base: 0.028, inspire: 0.035, expire: 0.020 },
+  medium: { base: 0.055, inspire: 0.070, expire: 0.040 },
 };
 
-// Fréquences de coupure — écart réduit pour éviter l'effet "soufflerie"
-const FREQ_NEUTRAL = 650;
-const FREQ_INSPIRE = 850;
-const FREQ_EXPIRE  = 600;
+// Fréquences du filtre modulé — écart étroit pour réduire l'effet "soufflerie"
+const FREQ_NEUTRAL = 620;
+const FREQ_INSPIRE = 760;
+const FREQ_EXPIRE  = 590;
+
+// Fréquence du pre-filtre fixe — supprime le "air/hiss" haute fréquence de la source
+const FREQ_PREFILTER = 1200;
 
 // Bruit rose stéréo 4 s (approximation Voss–McCartney)
 function buildNoiseBuffer(ctx: AudioContext): AudioBuffer {
@@ -112,15 +114,23 @@ export function useBreathingAudio(phase: BreathPhase, level: AudioLevel) {
       source.buffer     = buildNoiseBuffer(ctx);
       source.loop       = true;
 
+      // Étage 1 : atténuation fixe du "hiss" haute fréquence de la source
+      const preFilter           = ctx.createBiquadFilter();
+      preFilter.type            = "lowpass";
+      preFilter.frequency.value = FREQ_PREFILTER;
+      preFilter.Q.value         = 0.3;   // très plat — juste un rolloff doux
+
+      // Étage 2 : filtre modulé qui suit le cycle respiratoire
       const filter           = ctx.createBiquadFilter();
       filter.type            = "lowpass";
       filter.frequency.value = FREQ_NEUTRAL;
-      filter.Q.value         = 0.5;   // rolloff doux, moins de résonance dans les médiums
+      filter.Q.value         = 0.5;
 
       const gain      = ctx.createGain();
       gain.gain.value = 0;
 
-      source.connect(filter);
+      source.connect(preFilter);
+      preFilter.connect(filter);
       filter.connect(gain);
       gain.connect(ctx.destination);
       source.start();
