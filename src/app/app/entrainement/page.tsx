@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { ExitLink } from "@/components/ui/ExitLink";
 import { BreathingGuide } from "@/components/BreathingGuide";
+import { GroundingGuide } from "@/components/GroundingGuide";
+import { GazeGuide } from "@/components/GazeGuide";
 
 // ════════════════════════════════════════════════════════════
 // TRACÉA — Module S'entraîner
@@ -26,27 +28,12 @@ const EXERCISES: { key: ExerciseKey; label: string; micro: string }[] = [
   { key: "regard",      label: "Se poser un moment", micro: "laisser de l'espace" },
 ];
 
-// Textes des 3 phases par exercice
-const TRAINING_TEXT: Record<ExerciseKey, [string, string, string]> = {
-  respiration: [
-    "Tu peux simplement suivre le mouvement",
-    "Laisse l'expire durer un peu plus longtemps",
-    "Ton corps enregistre ça",
-  ],
-  corps: [
-    "Sens le contact sous tes pieds",
-    "Laisse le poids descendre un peu",
-    "Tu peux revenir ici quand ça monte",
-  ],
-  regard: [
-    "Lève légèrement les yeux de l'écran",
-    "Laisse ton regard se poser quelque part",
-    "Ton corps s'oriente naturellement",
-  ],
-};
-
-// Durée d'affichage de chaque phase pour corps & regard (ms)
-const PHASE_DURATION = 5000;
+// Textes des 3 phases pour la respiration (corps & regard délégués aux composants partagés)
+const BREATHING_PHASES = [
+  "Tu peux simplement suivre le mouvement",
+  "Laisse l'expire durer un peu plus longtemps",
+  "Ton corps enregistre ça",
+] as const;
 
 export default function EntrainementPage() {
   const router = useRouter();
@@ -64,19 +51,6 @@ export default function EntrainementPage() {
     setExercise(null);
     setScreen("choose");
   }
-
-  // Auto-avance des phases pour corps & regard
-  useEffect(() => {
-    if (screen !== "practice" || !exercise || exercise === "respiration") return;
-    if (phase === "intro") {
-      const t = setTimeout(() => setPhase("active"), PHASE_DURATION);
-      return () => clearTimeout(t);
-    }
-    if (phase === "active") {
-      const t = setTimeout(() => setPhase("close"), PHASE_DURATION);
-      return () => clearTimeout(t);
-    }
-  }, [screen, exercise, phase]);
 
   // ── ÉCRAN 1 — Choisir ──────────────────────────────────────
   if (screen === "choose") {
@@ -122,7 +96,6 @@ export default function EntrainementPage() {
 
   // ── ÉCRAN 2 — Pratiquer ────────────────────────────────────
   if (screen === "practice" && exercise) {
-    const texts = TRAINING_TEXT[exercise];
 
     // Respiration — intro → BreathingGuide → close
     if (exercise === "respiration") {
@@ -142,7 +115,7 @@ export default function EntrainementPage() {
               {phase === "intro" && (
                 <>
                   <p className="font-body text-xl t-text-secondary text-center leading-relaxed">
-                    {texts[0]}
+                    {BREATHING_PHASES[0]}
                   </p>
                   <PrimaryButton onClick={() => setPhase("active")}>
                     Commencer
@@ -153,7 +126,7 @@ export default function EntrainementPage() {
               {phase === "active" && (
                 <>
                   <p className="font-inter text-sm t-text-ghost text-center">
-                    {texts[1]}
+                    {BREATHING_PHASES[1]}
                   </p>
                   <BreathingGuide onComplete={() => setPhase("close")} />
                 </>
@@ -162,7 +135,7 @@ export default function EntrainementPage() {
               {phase === "close" && (
                 <>
                   <p className="font-body text-xl t-text-secondary text-center leading-relaxed">
-                    {texts[2]}
+                    {BREATHING_PHASES[2]}
                   </p>
                   <PrimaryButton onClick={() => setScreen("done")}>
                     Terminer
@@ -176,7 +149,7 @@ export default function EntrainementPage() {
       );
     }
 
-    // Corps & Regard — 3 phases texte, auto-avance
+    // Corps & Regard — composants partagés avec phases intégrées
     return (
       <ScreenContainer overlayOpacity={45}>
         <div className="py-12">
@@ -190,22 +163,10 @@ export default function EntrainementPage() {
               ← Retour
             </button>
 
-            <div className="text-center px-2">
-              <p
-                key={phase}
-                className="font-body text-2xl t-text-primary leading-relaxed"
-              >
-                {phase === "intro"  ? texts[0]
-                 : phase === "active" ? texts[1]
-                 : texts[2]}
-              </p>
-            </div>
-
-            {phase === "close" && (
-              <PrimaryButton onClick={() => setScreen("done")}>
-                Terminer
-              </PrimaryButton>
-            )}
+            {exercise === "corps"
+              ? <GroundingGuide onComplete={() => setScreen("done")} />
+              : <GazeGuide onComplete={() => setScreen("done")} />
+            }
 
           </div>
         </div>
