@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useExerciseAudio, type AudioLevel } from "@/lib/use-exercise-audio";
+import { type AudioLevel } from "@/lib/use-exercise-audio";
+import { useBreathingAudio } from "@/lib/use-breathing-audio";
 import { AudioToggle } from "@/components/ui/AudioToggle";
 
 interface BreathingGuideProps {
@@ -25,7 +26,7 @@ export function BreathingGuide({ onComplete }: BreathingGuideProps) {
   const [cycle, setCycle] = useState(0);
   const [audioLevel, setAudioLevel] = useState<AudioLevel>(initAudioLevel);
 
-  useExerciseAudio("breathing", audioLevel);
+  useBreathingAudio(phase, audioLevel);
 
   function handleAudioChange(next: AudioLevel) {
     setAudioLevel(next);
