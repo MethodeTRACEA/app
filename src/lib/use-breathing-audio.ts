@@ -7,32 +7,39 @@ import type { AudioLevel } from "./use-exercise-audio";
 // useBreathingAudio — texture sonore synchronisée au cycle respiratoire
 //
 // Bruit rose très filtré (low-pass) dont le gain et la fréquence
-// de coupure suivent lentement l'animation :
-//   inspire (4s) → filtre s'ouvre vers 900 Hz, gain monte vers base+delta
-//   expire  (6s) → filtre se referme vers 500 Hz, gain descend vers base-delta
+// de coupure suivent le cycle via setTargetAtTime (courbe exponentielle) :
+//   inspire (4s) → gain 0.08, filtre 850 Hz  — ouverture douce
+//   expire  (6s) → gain 0.04, filtre 600 Hz  — fermeture douce
+//   neutre       → gain 0.06, filtre 650 Hz  — base stable
 //
-// Variations volontairement sub-threshold : aucune pulsation perceptible,
-// juste une légère respiration de la texture.
+// Écart de fréquence réduit (250 Hz vs 400 Hz avant) et Q abaissé (0.5)
+// pour éviter l'effet "soufflerie" et favoriser une texture enveloppante.
+//
+// setTargetAtTime donne une courbe physique (amortissement exponentiel) :
+//   départ rapide → décélération progressive → plateau naturel
 // ══════════════════════════════════════════════════════════════
 
 type BreathPhase = "pre" | "install" | "inspire" | "expire" | "close";
 
-const INSPIRE_S = 4.0;
-const EXPIRE_S  = 6.0;
-const NEUTRAL_S = 1.5;
-const FADE_IN_S = 1.2;
-const FADE_OUT_S = 1.5;
-const UNMOUNT_S  = 0.8;
+// Constantes de temps pour setTargetAtTime
+// TC = temps pour atteindre ~63 % de la cible — plus grand = plus lent
+const TC_INSPIRE  = 1.5;   // phase 4 s → atteint ~93 % à t=4 s
+const TC_EXPIRE   = 2.2;   // phase 6 s → atteint ~94 % à t=6 s
+const TC_NEUTRAL  = 1.0;   // retour neutre
+const TC_FADE_IN  = 1.2;   // première activation
+const TC_FADE_OUT = 1.5;   // coupure son
+const UNMOUNT_S   = 0.8;   // démontage composant
 
-// Gain base + variation par niveau (valeurs volontairement basses)
-const CFG: Record<Exclude<AudioLevel, "off">, { base: number; delta: number }> = {
-  low:    { base: 0.025, delta: 0.010 },
-  medium: { base: 0.050, delta: 0.020 },
+// Gains par niveau — valeurs volontairement basses
+const CFG: Record<Exclude<AudioLevel, "off">, { base: number; inspire: number; expire: number }> = {
+  low:    { base: 0.030, inspire: 0.040, expire: 0.020 },
+  medium: { base: 0.060, inspire: 0.080, expire: 0.040 },
 };
 
-const FREQ_NEUTRAL = 700;
-const FREQ_INSPIRE = 900;
-const FREQ_EXPIRE  = 500;
+// Fréquences de coupure — écart réduit pour éviter l'effet "soufflerie"
+const FREQ_NEUTRAL = 650;
+const FREQ_INSPIRE = 850;
+const FREQ_EXPIRE  = 600;
 
 // Bruit rose stéréo 4 s (approximation Voss–McCartney)
 function buildNoiseBuffer(ctx: AudioContext): AudioBuffer {
@@ -55,6 +62,19 @@ function buildNoiseBuffer(ctx: AudioContext): AudioBuffer {
   return buf;
 }
 
+// Helpers — cancel + ancre + approche exponentielle (évite les clics)
+function rampGain(gain: GainNode, target: number, tc: number, now: number) {
+  gain.gain.cancelScheduledValues(now);
+  gain.gain.setValueAtTime(gain.gain.value, now);
+  gain.gain.setTargetAtTime(target, now, tc);
+}
+
+function rampFreq(filter: BiquadFilterNode, target: number, tc: number, now: number) {
+  filter.frequency.cancelScheduledValues(now);
+  filter.frequency.setValueAtTime(filter.frequency.value, now);
+  filter.frequency.setTargetAtTime(target, now, tc);
+}
+
 export function useBreathingAudio(phase: BreathPhase, level: AudioLevel) {
   const ctxRef    = useRef<AudioContext | null>(null);
   const gainRef   = useRef<GainNode | null>(null);
@@ -68,9 +88,7 @@ export function useBreathingAudio(phase: BreathPhase, level: AudioLevel) {
       const gain = gainRef.current;
       if (!ctx || !gain || ctx.state === "closed") return;
       const now = ctx.currentTime;
-      gain.gain.cancelScheduledValues(now);
-      gain.gain.setValueAtTime(gain.gain.value, now);
-      gain.gain.linearRampToValueAtTime(0, now + UNMOUNT_S);
+      rampGain(gain, 0, TC_FADE_OUT, now);
       setTimeout(() => {
         if (ctx.state !== "closed") ctx.close();
       }, (UNMOUNT_S + 0.15) * 1000);
@@ -83,10 +101,7 @@ export function useBreathingAudio(phase: BreathPhase, level: AudioLevel) {
       const ctx  = ctxRef.current;
       const gain = gainRef.current;
       if (!ctx || !gain || ctx.state === "closed") return;
-      const now = ctx.currentTime;
-      gain.gain.cancelScheduledValues(now);
-      gain.gain.setValueAtTime(gain.gain.value, now);
-      gain.gain.linearRampToValueAtTime(0, now + FADE_OUT_S);
+      rampGain(gain, 0, TC_FADE_OUT, ctx.currentTime);
       return;
     }
 
@@ -97,10 +112,10 @@ export function useBreathingAudio(phase: BreathPhase, level: AudioLevel) {
       source.buffer     = buildNoiseBuffer(ctx);
       source.loop       = true;
 
-      const filter          = ctx.createBiquadFilter();
-      filter.type           = "lowpass";
+      const filter           = ctx.createBiquadFilter();
+      filter.type            = "lowpass";
       filter.frequency.value = FREQ_NEUTRAL;
-      filter.Q.value        = 0.7;
+      filter.Q.value         = 0.5;   // rolloff doux, moins de résonance dans les médiums
 
       const gain      = ctx.createGain();
       gain.gain.value = 0;
@@ -115,15 +130,11 @@ export function useBreathingAudio(phase: BreathPhase, level: AudioLevel) {
       filterRef.current = filter;
     }
 
-    // Fondu d'entrée vers le gain de base — la phase sync prendra le relais
+    // Fondu d'entrée — la phase sync prendra le relais au prochain effet
     const ctx  = ctxRef.current!;
     const gain = gainRef.current!;
     if (ctx.state === "closed") return;
-
-    const now = ctx.currentTime;
-    gain.gain.cancelScheduledValues(now);
-    gain.gain.setValueAtTime(gain.gain.value, now);
-    gain.gain.linearRampToValueAtTime(CFG[level].base, now + FADE_IN_S);
+    rampGain(gain, CFG[level].base, TC_FADE_IN, ctx.currentTime);
   }, [level]);
 
   // Synchronisation filtre + gain avec la phase respiratoire
@@ -134,24 +145,19 @@ export function useBreathingAudio(phase: BreathPhase, level: AudioLevel) {
     const filter = filterRef.current;
     if (!ctx || !gain || !filter || ctx.state === "closed") return;
 
-    const { base, delta } = CFG[level as "low" | "medium"];
+    const cfg = CFG[level as "low" | "medium"];
     const now = ctx.currentTime;
 
-    gain.gain.cancelScheduledValues(now);
-    gain.gain.setValueAtTime(gain.gain.value, now);
-    filter.frequency.cancelScheduledValues(now);
-    filter.frequency.setValueAtTime(filter.frequency.value, now);
-
     if (phase === "inspire") {
-      gain.gain.linearRampToValueAtTime(base + delta, now + INSPIRE_S);
-      filter.frequency.linearRampToValueAtTime(FREQ_INSPIRE, now + INSPIRE_S);
+      rampGain(gain,   cfg.inspire,  TC_INSPIRE, now);
+      rampFreq(filter, FREQ_INSPIRE, TC_INSPIRE, now);
     } else if (phase === "expire") {
-      gain.gain.linearRampToValueAtTime(base - delta, now + EXPIRE_S);
-      filter.frequency.linearRampToValueAtTime(FREQ_EXPIRE, now + EXPIRE_S);
+      rampGain(gain,   cfg.expire,   TC_EXPIRE,  now);
+      rampFreq(filter, FREQ_EXPIRE,  TC_EXPIRE,  now);
     } else {
-      // pre, install, close → retour neutre
-      gain.gain.linearRampToValueAtTime(base, now + NEUTRAL_S);
-      filter.frequency.linearRampToValueAtTime(FREQ_NEUTRAL, now + NEUTRAL_S);
+      // pre, install, close → texture neutre
+      rampGain(gain,   cfg.base,     TC_NEUTRAL, now);
+      rampFreq(filter, FREQ_NEUTRAL, TC_NEUTRAL, now);
     }
   }, [phase, level]);
 }
