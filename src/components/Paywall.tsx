@@ -11,8 +11,9 @@ export function Paywall({ onContinue }: PaywallProps) {
     <div className="flex flex-col items-center gap-10 text-center max-w-sm mx-auto px-4 py-12">
       <div className="space-y-4">
         <p className="font-body text-xl text-espresso leading-relaxed">
-          Tu peux revenir ici quand ça monte.<br /><br />
-          Et t&apos;entraîner pour que ça redescende plus vite.
+          Tu as réussi à redescendre.<br /><br />
+          Tu peux revenir ici quand ça monte,<br />
+          et t&apos;entraîner pour que ça redescende plus vite.
         </p>
         <p className="font-body text-sm text-warm-gray leading-relaxed">
           Avec l&apos;accès complet, tu peux :<br />
@@ -31,7 +32,7 @@ export function Paywall({ onContinue }: PaywallProps) {
         <button
           type="button"
           onClick={onContinue}
-          className="w-full py-4 px-6 rounded-2xl border border-warm-gray/30 text-warm-gray font-medium text-sm hover:bg-beige transition-all"
+          className="w-full py-3 px-6 rounded-2xl text-warm-gray/60 font-normal text-xs hover:text-warm-gray transition-all"
         >
           Continuer en accès limité
         </button>
