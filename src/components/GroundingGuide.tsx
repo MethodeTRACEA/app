@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useExerciseAudio, type AudioLevel } from "@/lib/use-exercise-audio";
-import { AudioToggle } from "@/components/ui/AudioToggle";
 
 interface GroundingGuideProps {
   onComplete: () => void;
@@ -102,12 +100,6 @@ const HALO: Record<Phase, { w: number; h: number; glow: number; alpha: number }>
   close:     { w: 128, h: 20, glow: 32, alpha: 0.24 },
 };
 
-function initAudioLevel(): AudioLevel {
-  if (typeof window === "undefined") return "off";
-  const saved = localStorage.getItem("tracea_audio_level") as AudioLevel | null;
-  return saved === "low" || saved === "medium" ? saved : "off";
-}
-
 function initVoice(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem("tracea_grounding_voice") === "on";
@@ -116,18 +108,10 @@ function initVoice(): boolean {
 export function GroundingGuide({ onComplete }: GroundingGuideProps) {
   const [phase,        setPhase]        = useState<Phase>("pre");
   const [expanded,     setExpanded]     = useState(false);
-  const [audioLevel,   setAudioLevel]   = useState<AudioLevel>(initAudioLevel);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
 
   const audioRef   = useRef<HTMLAudioElement | null>(null);
   const mountedRef = useRef(true);
-
-  useExerciseAudio("grounding", audioLevel);
-
-  function handleAudioChange(next: AudioLevel) {
-    setAudioLevel(next);
-    localStorage.setItem("tracea_audio_level", next);
-  }
 
   function handleVoiceToggle() {
     setVoiceEnabled((v) => {
@@ -223,19 +207,16 @@ export function GroundingGuide({ onComplete }: GroundingGuideProps) {
         }}
       />
 
-      {/* Contrôles — voix + ambiance */}
-      <div className="flex items-center gap-4">
-        <button
-          type="button"
-          onClick={handleVoiceToggle}
-          className="font-inter text-[10px] uppercase tracking-widest transition-opacity duration-300"
-          style={{ opacity: voiceEnabled ? 0.65 : 0.35 }}
-          aria-label={voiceEnabled ? "Voix activée" : "Voix désactivée"}
-        >
-          {voiceEnabled ? "Voix ·" : "Voix"}
-        </button>
-        <AudioToggle level={audioLevel} onChange={handleAudioChange} />
-      </div>
+      {/* Contrôle voix */}
+      <button
+        type="button"
+        onClick={handleVoiceToggle}
+        className="font-inter text-[10px] uppercase tracking-widest transition-opacity duration-300"
+        style={{ opacity: voiceEnabled ? 0.65 : 0.35 }}
+        aria-label={voiceEnabled ? "Voix activée" : "Voix désactivée"}
+      >
+        {voiceEnabled ? "Voix ·" : "Voix"}
+      </button>
 
     </div>
   );
