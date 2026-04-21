@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues, getSessionEndCount, getTopRessentiValues, getPremiumMemory } from "@/lib/supabase-store";
+import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues, getTopRessentiValues, getPremiumMemory } from "@/lib/supabase-store";
 import type { PremiumMemory } from "@/lib/supabase-store";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
@@ -16,7 +16,6 @@ export default function HistoriquePage() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
   const [topEmerger, setTopEmerger] = useState<string[]>([]);
-  const [sessionEndCount, setSessionEndCount] = useState(0);
   const [topRessentis, setTopRessentis] = useState<string[]>([]);
   const [premiumMemory, setPremiumMemory] = useState<PremiumMemory | null | undefined>(undefined);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -26,22 +25,19 @@ export default function HistoriquePage() {
     const queries: Promise<unknown>[] = [
       getCompletedSessionsDb(user.id),
       getTopEmergerValues(user.id),
-      getSessionEndCount(user.id),
       getTopRessentiValues(user.id, 12),
     ];
     if (hasPremiumAccess) queries.push(getPremiumMemory(user.id));
 
     Promise.all(queries).then((results) => {
-      const [data, emerger, endCount, ressentis, pm] = results as [
+      const [data, emerger, ressentis, pm] = results as [
         Awaited<ReturnType<typeof getCompletedSessionsDb>>,
         Awaited<ReturnType<typeof getTopEmergerValues>>,
-        Awaited<ReturnType<typeof getSessionEndCount>>,
         Awaited<ReturnType<typeof getTopRessentiValues>>,
         PremiumMemory | null | undefined,
       ];
       setSessions(data);
       setTopEmerger(emerger);
-      setSessionEndCount(endCount);
       setTopRessentis(ressentis);
       if (hasPremiumAccess) setPremiumMemory(pm ?? null);
       setLoading(false);
@@ -121,7 +117,7 @@ export default function HistoriquePage() {
 
   // BLOC 4 — rythme (premium, >= 10 uniquement ; >= 5 est affiché dans BLOC 1 pour tous)
   let rythmeText: string | null = null;
-  if (sessionEndCount >= 10) rythmeText = "Tu as pris l'habitude de revenir.";
+  if (sessions.length >= 10) rythmeText = "Tu as pris l'habitude de revenir.";
 
   // Observations comportementales (tous les utilisateurs, max 2)
   function exerciseLabel(raw: string): string {
@@ -137,9 +133,9 @@ export default function HistoriquePage() {
     return d >= twoWeeksAgo && d < oneWeekAgo;
   }).length;
   const observations: string[] = [];
-  if (sessionsThisWeek > 0 && sessionEndCount > sessionsThisWeek && sessionsThisWeek > sessionsLastWeek)
+  if (sessionsThisWeek > 0 && sessions.length > sessionsThisWeek && sessionsThisWeek > sessionsLastWeek)
     observations.push("Tu reviens ici plus souvent ces derniers jours");
-  if (topEmerger.length > 0 && sessionEndCount >= 3 && observations.length < 2)
+  if (topEmerger.length > 0 && sessions.length >= 3 && observations.length < 2)
     observations.push(`Tu utilises souvent ${exerciseLabel(topEmerger[0])}`);
   if (topEmerger.length > 1 && observations.length < 2)
     observations.push("Tu explores différentes façons de revenir au calme");
@@ -161,14 +157,14 @@ export default function HistoriquePage() {
       <div className="card-base p-6">
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ton parcours</p>
         <p className="font-body text-2xl text-espresso">
-          {sessionEndCount} session{sessionEndCount > 1 ? "s" : ""} complétée{sessionEndCount > 1 ? "s" : ""}
+          {sessions.length} session{sessions.length > 1 ? "s" : ""} complétée{sessions.length > 1 ? "s" : ""}
         </p>
         {sessionsThisWeek > 0 && (
           <p className="font-body text-sm text-warm-gray mt-1">
             {sessionsThisWeek} cette semaine
           </p>
         )}
-        {sessionEndCount >= 5 && (
+        {sessions.length >= 5 && (
           <p className="font-body text-sm text-warm-gray mt-2">
             Tu reviens ici régulièrement.
           </p>
@@ -203,7 +199,7 @@ export default function HistoriquePage() {
           )}
 
           {/* ── BLOC 3 — CE QUE TU UTILISES (≥ 3 sessions) ── */}
-          {topEmerger.length > 0 && sessionEndCount >= 3 && (
+          {topEmerger.length > 0 && sessions.length >= 3 && (
             <div className="card-base p-6">
               <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce que tu utilises</p>
               <p className="font-body text-base text-espresso">{emergerLabel(topEmerger[0])}</p>
@@ -240,7 +236,7 @@ export default function HistoriquePage() {
         </>
       ) : (
         /* ── CTA gratuit ── */
-        sessionEndCount >= 1 && (
+        sessions.length >= 1 && (
           <button
             type="button"
             onClick={() => setShowPaywall(true)}
