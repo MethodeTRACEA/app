@@ -39,7 +39,7 @@ export default function StartPage() {
       <div style={{ maxWidth: 440, width: "100%", textAlign: "center", position: "relative", zIndex: 1 }}>
         {/* Logo */}
         <img
-          src="/images/tracea-logo-terra-v2.png"
+          src="/images/tracea-logo-terra-sans-filigrane.png"
           alt="TRACEA"
           style={{ height: 56, margin: "0 auto 56px", objectFit: "contain" }}
         />
