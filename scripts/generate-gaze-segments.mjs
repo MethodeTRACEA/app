@@ -28,7 +28,7 @@ const API_KEY  = process.env.ELEVENLABS_API_KEY;
 const VOICE_ID = "pFZP5JQG7iQjIQuC4Bku";  // Lily (validée)
 
 const SETTINGS = {
-  stability:         0.60,
+  stability:         0.68,   // plus humain qu'à 0.60, plus naturel qu'à 0.80
   similarity_boost:  0.70,
   style:             0.00,
   use_speaker_boost: false,

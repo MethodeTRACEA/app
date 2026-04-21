@@ -10,7 +10,7 @@ interface GazeGuideProps {
 // 7 segments découpés depuis une seule génération vocale.
 // Pauses pilotées par le code entre chaque segment.
 const STEPS = [
-  { src: "/audio/gaze/gaze_1.mp3", pauseMs: 4000 },
+  { src: "/audio/gaze/gaze_1.mp3", pauseMs: 2500 },
   { src: "/audio/gaze/gaze_2.mp3", pauseMs: 4500 },
   { src: "/audio/gaze/gaze_3.mp3", pauseMs: 4500 },
   { src: "/audio/gaze/gaze_4.mp3", pauseMs: 4500 },
