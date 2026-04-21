@@ -6,13 +6,27 @@ interface GazeGuideProps {
   onComplete: () => void;
 }
 
-// Fichier audio unique — voix continue, intonation cohérente
-const AUDIO_SRC = "/audio/gaze/gaze_full.mp3";
+// ── Séquence audio ──────────────────────────────────────────
+// 7 segments découpés depuis une seule génération vocale.
+// Pauses pilotées par le code entre chaque segment.
+const STEPS = [
+  { src: "/audio/gaze/gaze_1.mp3", pauseMs: 4000 },
+  { src: "/audio/gaze/gaze_2.mp3", pauseMs: 4500 },
+  { src: "/audio/gaze/gaze_3.mp3", pauseMs: 4500 },
+  { src: "/audio/gaze/gaze_4.mp3", pauseMs: 4500 },
+  { src: "/audio/gaze/gaze_5.mp3", pauseMs: 3500 },
+  { src: "/audio/gaze/gaze_6.mp3", pauseMs: 4500 },
+  { src: "/audio/gaze/gaze_7.mp3", pauseMs: 0    }, // → close
+] as const;
 
-type Phase = "pre" | "playing" | "close";
+// Indicateur directionnel — s'efface au fil des steps
+const STEP_OPACITY = [0.80, 0.50, 0.25, 0.10, 0.03, 0.00, 0.00];
+
+type Phase = "pre" | "active" | "close";
 
 export function GazeGuide({ onComplete }: GazeGuideProps) {
   const [phase, setPhase] = useState<Phase>("pre");
+  const [step,  setStep]  = useState(0);
 
   const audioRef   = useRef<HTMLAudioElement | null>(null);
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -33,60 +47,72 @@ export function GazeGuide({ onComplete }: GazeGuideProps) {
     };
   }, []);
 
-  // ── Pre → lancement différé (1.2 s de silence avant la voix) ──
+  // ── Pre → courte pause avant le premier segment ─────────
   useEffect(() => {
     if (phase !== "pre") return;
     timerRef.current = setTimeout(() => {
-      if (mountedRef.current) setPhase("playing");
+      if (mountedRef.current) setPhase("active");
     }, 1200);
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, [phase]);
 
-  // ── Lecture du fichier unique ───────────────────────────
+  // ── Lecture séquentielle ────────────────────────────────
   useEffect(() => {
-    if (phase !== "playing") return;
+    if (phase !== "active") return;
 
-    const audio   = new Audio(AUDIO_SRC);
-    audioRef.current = audio;
+    const stepData = STEPS[step];
+    if (!stepData) return;
 
-    function onEnd() {
-      if (mountedRef.current) setPhase("close");
+    if (!audioRef.current) audioRef.current = new Audio();
+    const audio = audioRef.current;
+
+    audio.pause();
+    audio.onended = null;
+    audio.onerror = null;
+    audio.src    = stepData.src;
+    audio.volume = 1.0;
+
+    function advance() {
+      if (!mountedRef.current) return;
+      const isLast = step >= STEPS.length - 1;
+      if (isLast) {
+        setPhase("close");
+      } else {
+        timerRef.current = setTimeout(() => {
+          if (mountedRef.current) setStep((s) => s + 1);
+        }, stepData.pauseMs);
+      }
     }
-    audio.onended = onEnd;
-    audio.onerror = onEnd; // skip proprement si le fichier est absent
+
+    audio.onended = advance;
+    audio.onerror = advance;
 
     audio.play().catch(() => {
-      // Autoplay bloqué — bouton affiché après un délai raisonnable
-      timerRef.current = setTimeout(() => {
-        if (mountedRef.current) setPhase("close");
-      }, 55000);
+      timerRef.current = setTimeout(advance, 1500);
     });
 
     return () => {
-      audio.pause();
       audio.onended = null;
       audio.onerror = null;
-      audio.src    = "";
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [phase]);
+  }, [phase, step]);
 
-  // Indicateur : visible au départ pour inviter à lever les yeux,
-  // puis fondu dès que la voix prend le relais.
   const indicatorOpacity =
-    phase === "pre"     ? 0.70
-    : phase === "playing" ? 0.08
-    : 0.00;
+    phase === "pre"    ? 0.80
+    : phase === "close"  ? 0.00
+    : (STEP_OPACITY[step] ?? 0.00);
 
   return (
     <div className="flex flex-col items-center gap-8" style={{ minHeight: 200 }}>
 
-      {/* Indicateur directionnel — disparaît quand la voix guide */}
+      {/* Indicateur directionnel — disparaît progressivement */}
       <div
         style={{
           display: "flex", flexDirection: "column", alignItems: "center",
           gap: 5, height: 36, justifyContent: "flex-end",
           opacity:    indicatorOpacity,
-          transition: "opacity 4s ease",
+          transition: "opacity 3s ease",
         }}
       >
         {([0.55, 0.35, 0.16] as const).map((alpha, i) => (
