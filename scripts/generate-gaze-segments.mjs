@@ -40,8 +40,8 @@ const SENTENCES = [
   "Tu peux lever légèrement les yeux de l'écran.",
   "Regarde quelque chose de proche.",
   "Puis quelque chose un peu plus loin…",
-  "Encore un autre endroit.",
-  "Sans chercher quoi que ce soit.",
+  "Laisse ton regard se poser ailleurs.",
+  "Sans avoir besoin de chercher.",
   "Juste regarder.",
   "C'est suffisant pour maintenant.",
 ];
