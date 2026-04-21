@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useExerciseAudio, type AudioLevel } from "@/lib/use-exercise-audio";
 import { AudioToggle } from "@/components/ui/AudioToggle";
 
@@ -9,30 +9,19 @@ interface GroundingGuideProps {
 }
 
 // ── Machine d'état ──────────────────────────────────────────
-// 15 phases : 14 auto-avancées + close (manuel)
-// Chaque phrase = une phase distincte pour un rythme incarné.
+// 16 phases : 15 auto-avancées + close (manuel)
+// Chaque phrase = une phase = un segment audio optionnel.
 type Phase =
-  | "pre"      // On revient doucement dans le corps.
-  | "install"  // Si tu es assis(e), pose les pieds bien à plat au sol.
-  | "contact"  // Sens le contact sous tes pieds.
-  | "press"    // Presse légèrement tes pieds dans le sol.
-  | "tiny"     // Un tout petit peu.
-  | "release"  // Relâche.
-  | "repeat"   // Et recommence une fois.
-  | "press-2"  // Presse… puis relâche.
-  | "settle"   // Tu peux simplement rester là un instant.
-  | "ground"   // Garde les pieds en contact avec le sol.
-  | "sense"    // Sens simplement ce point d'appui.
-  | "body"     // Le reste du corps peut se poser autour.
-  | "descend"  // Ce qui est là peut descendre un peu, jusqu'aux appuis.
-  | "soft"     // Sans forcer. Juste laisser passer.
-  | "close";   // C'est suffisant pour maintenant. (manuel)
+  | "pre"      | "install"  | "contact"
+  | "press"    | "tiny"     | "release"  | "repeat"  | "press-2"
+  | "settle"   | "ground"   | "sense"    | "body"    | "descend"
+  | "soft-1"   | "soft-2"   | "close";
 
 const PHASE_SEQUENCE: Phase[] = [
   "pre", "install", "contact",
   "press", "tiny", "release", "repeat", "press-2",
   "settle", "ground", "sense", "body", "descend",
-  "soft", "close",
+  "soft-1", "soft-2", "close",
 ];
 
 const PHASE_DURATIONS: Partial<Record<Phase, number>> = {
@@ -49,8 +38,9 @@ const PHASE_DURATIONS: Partial<Record<Phase, number>> = {
   sense:     6000,
   body:      5000,
   descend:   7000,
-  soft:      5000,
-  // close → pas de durée = attente manuelle
+  "soft-1":  3500,
+  "soft-2":  4000,
+  // close → manuel
 };
 
 const PHASE_TEXT: Record<Phase, { main: string; sub?: string }> = {
@@ -64,16 +54,35 @@ const PHASE_TEXT: Record<Phase, { main: string; sub?: string }> = {
   "press-2": { main: "Presse… puis relâche." },
   settle:    { main: "Tu peux simplement rester là un instant." },
   ground:    { main: "Garde les pieds en contact avec le sol." },
-  sense:     { main: "Sens simplement ce point d'appui." },
+  sense:     { main: "Sens ce point d'appui." },
   body:      { main: "Le reste du corps peut se poser autour." },
   descend:   { main: "Ce qui est là peut descendre un peu,", sub: "jusqu'aux appuis." },
-  soft:      { main: "Sans forcer.", sub: "Juste laisser passer." },
+  "soft-1":  { main: "Sans forcer." },
+  "soft-2":  { main: "Juste laisser passer." },
   close:     { main: "C'est suffisant pour maintenant." },
 };
 
-// Halo de sol — positionné en bas, évoque l'appui sous les pieds.
-// Grandit et se stabilise au fil de l'ancrage ; se contracte légèrement
-// à "release" pour incarner le relâchement.
+// Segment audio par phase (optionnel selon toggle voix)
+const PHASE_AUDIO: Partial<Record<Phase, string>> = {
+  pre:       "/audio/grounding/grounding_1.mp3",
+  install:   "/audio/grounding/grounding_2.mp3",
+  contact:   "/audio/grounding/grounding_3.mp3",
+  press:     "/audio/grounding/grounding_4.mp3",
+  tiny:      "/audio/grounding/grounding_5.mp3",
+  release:   "/audio/grounding/grounding_6.mp3",
+  repeat:    "/audio/grounding/grounding_7.mp3",
+  "press-2": "/audio/grounding/grounding_8.mp3",
+  settle:    "/audio/grounding/grounding_9.mp3",
+  ground:    "/audio/grounding/grounding_10.mp3",
+  sense:     "/audio/grounding/grounding_11.mp3",
+  body:      "/audio/grounding/grounding_12.mp3",
+  descend:   "/audio/grounding/grounding_13.mp3",
+  "soft-1":  "/audio/grounding/grounding_14.mp3",
+  "soft-2":  "/audio/grounding/grounding_15.mp3",
+  close:     "/audio/grounding/grounding_16.mp3",
+};
+
+// Halo de sol — grandit avec l'ancrage, se contracte au relâchement
 const HALO: Record<Phase, { w: number; h: number; glow: number; alpha: number }> = {
   pre:       { w: 56,  h: 8,  glow: 12, alpha: 0.08 },
   install:   { w: 76,  h: 12, glow: 18, alpha: 0.13 },
@@ -88,7 +97,8 @@ const HALO: Record<Phase, { w: number; h: number; glow: number; alpha: number }>
   sense:     { w: 140, h: 22, glow: 40, alpha: 0.31 },
   body:      { w: 144, h: 23, glow: 42, alpha: 0.32 },
   descend:   { w: 150, h: 24, glow: 46, alpha: 0.34 },
-  soft:      { w: 140, h: 22, glow: 38, alpha: 0.28 },
+  "soft-1":  { w: 140, h: 22, glow: 38, alpha: 0.28 },
+  "soft-2":  { w: 140, h: 22, glow: 38, alpha: 0.28 },
   close:     { w: 128, h: 20, glow: 32, alpha: 0.24 },
 };
 
@@ -98,10 +108,19 @@ function initAudioLevel(): AudioLevel {
   return saved === "low" || saved === "medium" ? saved : "off";
 }
 
+function initVoice(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem("tracea_grounding_voice") === "on";
+}
+
 export function GroundingGuide({ onComplete }: GroundingGuideProps) {
-  const [phase,      setPhase]      = useState<Phase>("pre");
-  const [expanded,   setExpanded]   = useState(false);
-  const [audioLevel, setAudioLevel] = useState<AudioLevel>(initAudioLevel);
+  const [phase,        setPhase]        = useState<Phase>("pre");
+  const [expanded,     setExpanded]     = useState(false);
+  const [audioLevel,   setAudioLevel]   = useState<AudioLevel>(initAudioLevel);
+  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
+
+  const audioRef   = useRef<HTMLAudioElement | null>(null);
+  const mountedRef = useRef(true);
 
   useExerciseAudio("grounding", audioLevel);
 
@@ -110,23 +129,62 @@ export function GroundingGuide({ onComplete }: GroundingGuideProps) {
     localStorage.setItem("tracea_audio_level", next);
   }
 
-  // Pulsation lente — suggère la présence, l'appui vivant
+  function handleVoiceToggle() {
+    setVoiceEnabled((v) => {
+      const next = !v;
+      localStorage.setItem("tracea_grounding_voice", next ? "on" : "off");
+      return next;
+    });
+  }
+
+  // Nettoyage au démontage
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+      }
+    };
+  }, []);
+
+  // Pulsation lente du halo
   useEffect(() => {
     const id = setInterval(() => setExpanded((e) => !e), 4000);
     return () => clearInterval(id);
   }, []);
 
-  // Auto-avance des phases
+  // Auto-avance des phases (timer)
   useEffect(() => {
     const duration = PHASE_DURATIONS[phase];
     if (!duration) return;
     const t = setTimeout(() => {
       const idx  = PHASE_SEQUENCE.indexOf(phase);
       const next = PHASE_SEQUENCE[idx + 1];
-      if (next) setPhase(next);
+      if (next && mountedRef.current) setPhase(next);
     }, duration);
     return () => clearTimeout(t);
   }, [phase]);
+
+  // Lecture audio — synchronisée avec la phase, pilotée par le toggle
+  useEffect(() => {
+    if (!voiceEnabled) {
+      audioRef.current?.pause();
+      return;
+    }
+    const src = PHASE_AUDIO[phase];
+    if (!src) return;
+
+    if (!audioRef.current) audioRef.current = new Audio();
+    const audio = audioRef.current;
+    audio.pause();
+    audio.src    = src;
+    audio.volume = 0.85; // discret — la voix accompagne, ne domine pas
+    audio.play().catch(() => {});
+
+    return () => { audio.pause(); };
+  }, [phase, voiceEnabled]);
 
   const halo = HALO[phase];
   const text = PHASE_TEXT[phase];
@@ -165,8 +223,20 @@ export function GroundingGuide({ onComplete }: GroundingGuideProps) {
         }}
       />
 
-      {/* Contrôle audio */}
-      <AudioToggle level={audioLevel} onChange={handleAudioChange} />
+      {/* Contrôles — voix + ambiance */}
+      <div className="flex items-center gap-4">
+        <button
+          type="button"
+          onClick={handleVoiceToggle}
+          className="font-inter text-[10px] uppercase tracking-widest transition-opacity duration-300"
+          style={{ opacity: voiceEnabled ? 0.65 : 0.35 }}
+          aria-label={voiceEnabled ? "Voix activée" : "Voix désactivée"}
+        >
+          {voiceEnabled ? "Voix ·" : "Voix"}
+        </button>
+        <AudioToggle level={audioLevel} onChange={handleAudioChange} />
+      </div>
+
     </div>
   );
 }
