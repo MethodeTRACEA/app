@@ -13,7 +13,7 @@ export default function AppLayout({
       <OnboardingRedirect />
       <main className="flex-1">{children}</main>
       <footer className="bg-espresso text-beige-dark text-center py-6 md:py-8 text-sm tracking-wide px-4">
-        <img src="/images/tracea-logo-blanc-sans-filigrane.png" alt="TRACÉA" className="h-10 md:h-14 mx-auto mb-2 object-contain" />
+        <img src="/images/tracea-logo-blanc-transparent.png" alt="TRACÉA" className="h-10 md:h-14 mx-auto mb-2 object-contain" />
         <p className="mb-4 text-xs md:text-sm">
           Stabilité émotionnelle · Entraînement physiologique
         </p>

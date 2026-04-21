@@ -40,7 +40,7 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/tracea-logo-espresso-sans-filigrane.png"
+              src="/images/tracea-logo-espresso-transparent.png"
               alt="TRACÉA"
               width={120}
               height={36}
@@ -48,7 +48,7 @@ export function Navigation() {
               priority
             />
             <Image
-              src="/images/tracea-logo-blanc-sans-filigrane.png"
+              src="/images/tracea-logo-blanc-transparent.png"
               alt="TRACÉA"
               width={120}
               height={36}

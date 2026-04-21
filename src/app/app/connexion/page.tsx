@@ -461,7 +461,7 @@ function AuthHeader() {
   return (
     <div style={{ textAlign: "center", marginBottom: 36 }}>
       <img
-        src="/images/tracea-logo-terra-sans-filigrane.png"
+        src="/images/tracea-logo-terra-transparent.png"
         alt="TRACEA"
         style={{ height: 48, margin: "0 auto 14px", objectFit: "contain" }}
       />
