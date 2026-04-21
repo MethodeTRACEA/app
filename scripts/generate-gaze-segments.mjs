@@ -37,13 +37,13 @@ const SETTINGS = {
 // Les 7 phrases — séparées par un saut de ligne pour forcer une pause naturelle.
 // Les "." en fin de phrase sont les seuls points dans ce texte.
 const SENTENCES = [
-  "Tu peux lever légèrement les yeux de l'écran.",
-  "Regarde quelque chose de proche.",
-  "Puis quelque chose un peu plus loin.",
-  "Encore un autre endroit.",
-  "Sans chercher quoi que ce soit.",
-  "Juste regarder.",
-  "C'est suffisant pour maintenant.",
+  "Tu peux… lever légèrement les yeux de l'écran.",
+  "Regarde… quelque chose de proche.",
+  "Puis… quelque chose un peu plus loin.",
+  "Encore… un autre endroit.",
+  "Sans chercher… quoi que ce soit.",
+  "Juste… regarder.",
+  "C'est suffisant… pour maintenant.",
 ];
 const TEXT = SENTENCES.join("\n");
 
@@ -84,19 +84,22 @@ function generateWithTimestamps() {
 }
 
 // ── 2. Timestamps des "." de fin de phrase ──────────────────
-// Le texte ne contient pas d'autres points (les apostrophes sont ' pas .)
-// → chaque "." dans alignment.characters est une fin de phrase.
-// On prend les 6 premiers comme points de coupe (phrases 1→6).
+// Stratégie robuste : on cherche uniquement les "." suivis de "\n"
+// (ou en fin d'alignement). Cela exclut les points issus de la
+// normalisation éventuelle de "…" → "..." par ElevenLabs.
 function findSplitTimes(alignment) {
   const { characters, character_end_times_seconds } = alignment;
   const periods = [];
   for (let i = 0; i < characters.length; i++) {
     if (characters[i] === ".") {
-      // Marge de 80 ms dans le silence suivant pour couper proprement
-      periods.push(character_end_times_seconds[i] + 0.08);
+      const next = characters[i + 1];
+      // Fin de phrase = point suivi d'un saut de ligne ou en fin de texte
+      if (next === "\n" || next === undefined || next === null) {
+        periods.push(character_end_times_seconds[i] + 0.08);
+      }
     }
   }
-  if (periods.length < 7) throw new Error(`Attendu 7 points, trouvé ${periods.length}`);
+  if (periods.length < 7) throw new Error(`Attendu 7 fins de phrase, trouvé ${periods.length}`);
   console.log("  Points de coupe (s) :", periods.slice(0, 6).map(t => t.toFixed(3)).join("  |  "));
   return periods.slice(0, 6); // 6 coupures → 7 segments
 }
