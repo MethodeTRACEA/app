@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
+import { Paywall } from "@/components/Paywall";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
@@ -18,7 +20,7 @@ import { GazeGuide } from "@/components/GazeGuide";
 // Aucun appel Supabase, aucune IA, aucun score.
 // ════════════════════════════════════════════════════════════
 
-type Screen = "choose" | "practice" | "done";
+type Screen = "choose" | "practice" | "done" | "paywall";
 type ExerciseKey = "respiration" | "corps" | "regard";
 type Phase = "intro" | "active" | "close";
 
@@ -37,11 +39,18 @@ const BREATHING_PHASES = [
 
 export default function EntrainementPage() {
   const router = useRouter();
+  const { hasPremiumAccess } = useAuth();
   const [screen, setScreen] = useState<Screen>("choose");
   const [exercise, setExercise] = useState<ExerciseKey | null>(null);
   const [phase, setPhase] = useState<Phase>("intro");
 
+  const PREMIUM_EXERCISES: ExerciseKey[] = ["corps", "regard"];
+
   function startExercise(key: ExerciseKey) {
+    if (!hasPremiumAccess && PREMIUM_EXERCISES.includes(key)) {
+      setScreen("paywall");
+      return;
+    }
     setExercise(key);
     setPhase("intro");
     setScreen("practice");
@@ -50,6 +59,17 @@ export default function EntrainementPage() {
   function backToChoose() {
     setExercise(null);
     setScreen("choose");
+  }
+
+  // ── ÉCRAN PAYWALL ──────────────────────────────────────────
+  if (screen === "paywall") {
+    return (
+      <ScreenContainer overlayOpacity={45}>
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <Paywall onContinue={() => setScreen("choose")} />
+        </div>
+      </ScreenContainer>
+    );
   }
 
   // ── ÉCRAN 1 — Choisir ──────────────────────────────────────
@@ -71,21 +91,25 @@ export default function EntrainementPage() {
           </div>
 
           <div className="w-full space-y-3">
-            {EXERCISES.map((ex) => (
-              <button
-                key={ex.key}
-                type="button"
-                onClick={() => startExercise(ex.key)}
-                className="w-full rounded-[20px] border border-[rgba(232,216,199,0.18)] bg-t-brume/20 px-5 py-4 text-left cursor-pointer transition-all duration-200 hover:bg-t-brume/35 hover:border-[rgba(232,216,199,0.30)]"
-              >
-                <span className="block font-body text-lg t-text-primary">
-                  {ex.label}
-                </span>
-                <span className="block font-inter text-xs t-text-secondary mt-1">
-                  {ex.micro}
-                </span>
-              </button>
-            ))}
+            {EXERCISES.map((ex) => {
+              const locked = !hasPremiumAccess && PREMIUM_EXERCISES.includes(ex.key);
+              return (
+                <button
+                  key={ex.key}
+                  type="button"
+                  onClick={() => startExercise(ex.key)}
+                  className="w-full rounded-[20px] border border-[rgba(232,216,199,0.18)] bg-t-brume/20 px-5 py-4 text-left cursor-pointer transition-all duration-200 hover:bg-t-brume/35 hover:border-[rgba(232,216,199,0.30)]"
+                >
+                  <span className="flex items-center justify-between">
+                    <span className="font-body text-lg t-text-primary">{ex.label}</span>
+                    {locked && <span className="text-xs t-text-secondary opacity-60">Premium</span>}
+                  </span>
+                  <span className="block font-inter text-xs t-text-secondary mt-1">
+                    {ex.micro}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           <ExitLink label="Quitter" href="/app" />

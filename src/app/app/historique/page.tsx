@@ -134,6 +134,18 @@ export default function HistoriquePage() {
         </div>
       )}
 
+      {/* CTA premium pour les utilisateurs gratuits */}
+      {!hasPremiumAccess && sessions.length >= 1 && (
+        <div className="mb-10 rounded-2xl border border-beige-dark bg-beige/40 p-6 text-center">
+          <p className="font-body text-sm text-warm-gray leading-relaxed mb-4">
+            Tes repères — ce qui revient, ce qui t&apos;aide — se dessinent ici avec l&apos;accès complet.
+          </p>
+          <Link href="/app/subscribe" className="btn-primary !px-6 !py-2.5 !text-xs inline-block">
+            Accès complet
+          </Link>
+        </div>
+      )}
+
       {/* Bloc d'accueil */}
       <div className="mb-10">
         {sessionEndCount === 0 ? (

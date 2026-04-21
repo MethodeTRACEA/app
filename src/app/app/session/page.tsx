@@ -9,7 +9,9 @@ import {
   updateSessionDb,
   trackEvent,
   getTopAnchorMethod,
+  getSessionEndCount,
 } from "@/lib/supabase-store";
+import { Paywall } from "@/components/Paywall";
 import type { SessionData, StepId, TraceaAIResponse } from "@/lib/types";
 import { StepIndicator } from "@/components/StepIndicator";
 import { HelpPanel } from "@/components/HelpPanel";
@@ -42,9 +44,16 @@ export default function SessionPage() {
 }
 
 function SessionPageInner() {
-  const { user, loading } = useAuth();
+  const router = useRouter();
+  const { user, loading, hasPremiumAccess } = useAuth();
   const searchParams = useSearchParams();
-  const routerActivation = searchParams.get("activation"); // "encore" | "calme" | null
+  const routerActivation = searchParams.get("activation");
+  const [sessionCount, setSessionCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    getSessionEndCount(user.id).then(setSessionCount);
+  }, [user]);
 
   if (loading) {
     return (
@@ -74,6 +83,22 @@ function SessionPageInner() {
         <p className="font-body text-xs text-warm-gray/50 mt-4">
           Gratuit. Sans engagement.
         </p>
+      </div>
+    );
+  }
+
+  if (!hasPremiumAccess && sessionCount === null) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="font-serif text-2xl text-terra animate-pulse-gentle">Chargement...</div>
+      </div>
+    );
+  }
+
+  if (!hasPremiumAccess && sessionCount !== null && sessionCount >= 1) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Paywall onContinue={() => router.push("/app")} />
       </div>
     );
   }
