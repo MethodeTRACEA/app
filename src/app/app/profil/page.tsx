@@ -17,7 +17,6 @@ import {
   getRecentInnerTruths,
   deleteMemoryData,
   type MemoryProfile,
-  type ScoreHistoryEntry,
 } from "@/lib/memory";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -167,33 +166,6 @@ export default function ProfilPage() {
             </div>
           </div>
           <div className="card-base text-center py-6">
-            {stats.total === 0 ? (
-              <>
-                <div className="font-serif text-3xl text-warm-gray mb-1">...</div>
-                <div className="text-xs text-warm-gray">Régulation émotionnelle</div>
-              </>
-            ) : stats.avgRecovery > 0 ? (
-              <>
-                <div className="font-serif text-3xl text-sage mb-1">
-                  {stats.avgRecovery.toFixed(1)} <span className="text-lg">pts</span>
-                </div>
-                <div className="text-xs text-sage font-medium">
-                  de régulation gagnés
-                </div>
-              </>
-            ) : stats.avgRecovery === 0 ? (
-              <>
-                <div className="font-serif text-3xl text-warm-gray mb-1">~</div>
-                <div className="text-xs text-warm-gray">Stabilité maintenue</div>
-              </>
-            ) : (
-              <>
-                <div className="font-serif text-3xl text-terra mb-1">↻</div>
-                <div className="text-xs text-terra">Traversée en cours</div>
-              </>
-            )}
-          </div>
-          <div className="card-base text-center py-6">
             <div className="font-serif text-2xl text-espresso mb-1">
               {stats.topEmotions[0] || "..."}
             </div>
@@ -315,24 +287,6 @@ function MemoryProfileSection({ userId }: { userId: string }) {
 
   const hasMemory = memoryProfile && memoryProfile.total_sessions > 0;
 
-  const trendDisplay: Record<string, { text: string; icon: string; color: string }> = {
-    improving: {
-      text: "Tes sessions montrent une tendance vers plus de clarté et moins de tension.",
-      icon: "↗",
-      color: "text-sage",
-    },
-    stable: {
-      text: "Ton niveau de tension et de clarté reste stable.",
-      icon: "→",
-      color: "text-warm-gray",
-    },
-    fluctuating: {
-      text: "Tes sessions montrent des variations — c'est normal dans un processus d'exploration.",
-      icon: "↝",
-      color: "text-terra",
-    },
-  };
-
   // Couleurs des barres latérales pour les vérités intérieures
   const truthColors = ["#C4704A", "#8A9E7A", "#C4998A", "#9E8E80", "#C4704A"];
 
@@ -384,23 +338,6 @@ function MemoryProfileSection({ userId }: { userId: string }) {
         )}
       </div>
 
-      {/* Bloc 3 — Tendance */}
-      {hasMemory && memoryProfile.progress_trend && (
-        <div className="card-base mb-4 p-6">
-          <h3 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3 text-center">
-            Ta tendance
-          </h3>
-          <div className="flex items-center justify-center gap-3">
-            <span className={`font-serif text-2xl ${trendDisplay[memoryProfile.progress_trend]?.color || "text-warm-gray"}`}>
-              {trendDisplay[memoryProfile.progress_trend]?.icon || "→"}
-            </span>
-            <p className="text-sm text-espresso leading-relaxed">
-              {trendDisplay[memoryProfile.progress_trend]?.text || ""}
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Bloc 4 — Vérités intérieures */}
       {innerTruths.length > 0 && (
         <div className="card-base mb-4 p-6">
@@ -448,9 +385,6 @@ function MemoryProfileSection({ userId }: { userId: string }) {
         </div>
       )}
 
-      {/* Bloc 6 — Score de progression (Phase 3) */}
-      <ProgressionScoreSection memoryProfile={memoryProfile} />
-
       {/* Bouton de suppression RGPD */}
       <div className="text-center mt-4">
         {deleteSuccess ? (
@@ -496,164 +430,6 @@ function MemoryProfileSection({ userId }: { userId: string }) {
           Tu peux les supprimer à tout moment.
         </p>
       )}
-    </div>
-  );
-}
-
-// ===================================================================
-// SECTION SCORE DE PROGRESSION (Phase 3)
-// ===================================================================
-
-function ProgressionScoreSection({ memoryProfile }: { memoryProfile: MemoryProfile | null }) {
-  if (!memoryProfile || (memoryProfile.total_sessions || 0) < 3) {
-    return (
-      <div className="card-base mb-4 p-6 text-center">
-        <h3 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">
-          Ta progression
-        </h3>
-        <p className="text-sm text-warm-gray italic">
-          Le score de progression apparaîtra après ta 3ᵉ session.
-        </p>
-      </div>
-    );
-  }
-
-  const overall = memoryProfile.overall_score || 0;
-  const scores = [
-    { label: "Conscience émotionnelle", value: memoryProfile.emotional_awareness_score || 0 },
-    { label: "Régulation", value: memoryProfile.regulation_score || 0 },
-    { label: "Alignement action", value: memoryProfile.action_alignment_score || 0 },
-  ];
-
-  function getBarColor(score: number): string {
-    if (score <= 30) return "#D4C5B9"; // beige
-    if (score <= 60) return "#8A9E7A"; // sage
-    return "#C4704A"; // terra
-  }
-
-  function getScoreMessage(score: number): string {
-    if (score <= 20) return "Tu es au début de ton parcours. Chaque session compte.";
-    if (score <= 40) return "Des premiers repères commencent à se dessiner.";
-    if (score <= 60) return "Tu développes une vraie capacité d'observation intérieure.";
-    if (score <= 80) return "Ta conscience émotionnelle et ta régulation gagnent en finesse.";
-    return "Tu as construit une pratique solide de clarification intérieure.";
-  }
-
-  const history = (memoryProfile.score_history || []) as ScoreHistoryEntry[];
-
-  return (
-    <div className="card-base mb-4 p-6">
-      <h3 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-5 text-center">
-        Ta progression
-      </h3>
-
-      {/* Score global */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-baseline gap-1">
-          <span className="font-serif text-5xl text-terra">{overall}</span>
-          <span className="font-serif text-xl text-warm-gray">/100</span>
-        </div>
-        <p className="text-sm text-espresso/70 mt-2 leading-relaxed">
-          {getScoreMessage(overall)}
-        </p>
-      </div>
-
-      {/* Sous-scores avec jauges */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        {scores.map((s) => (
-          <div key={s.label} className="text-center">
-            <p className="text-[10px] font-medium tracking-wider uppercase text-warm-gray mb-2 leading-tight">
-              {s.label}
-            </p>
-            <p className="font-serif text-2xl text-espresso mb-2">
-              {s.value}<span className="text-xs text-warm-gray">/100</span>
-            </p>
-            {/* Jauge */}
-            <div className="w-full h-2 bg-beige rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-700"
-                style={{
-                  width: `${s.value}%`,
-                  backgroundColor: getBarColor(s.value),
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Courbe d'évolution (si 3+ entrées) */}
-      {history.length >= 3 && <ScoreEvolutionChart history={history} />}
-
-      {/* Disclaimer */}
-      <p className="text-[10px] text-warm-gray/50 text-center mt-4 leading-relaxed">
-        Ce score reflète l&apos;évolution de ta pratique TRACÉA. Il n&apos;est pas une évaluation
-        de ta santé mentale ni un indicateur clinique. Il peut varier naturellement — une baisse
-        ne signifie pas un recul.
-      </p>
-    </div>
-  );
-}
-
-// ===================================================================
-// COURBE D'ÉVOLUTION SVG (Phase 3)
-// ===================================================================
-
-function ScoreEvolutionChart({ history }: { history: ScoreHistoryEntry[] }) {
-  // Inverser pour avoir chronologique (ancien → récent)
-  const data = [...history].reverse();
-
-  const width = 300;
-  const height = 120;
-  const paddingX = 30;
-  const paddingY = 15;
-  const chartW = width - paddingX * 2;
-  const chartH = height - paddingY * 2;
-
-  const points = data.map((entry, i) => {
-    const x = paddingX + (i / (data.length - 1)) * chartW;
-    const y = paddingY + chartH - (entry.overall / 100) * chartH;
-    return { x, y, score: entry.overall, date: entry.date };
-  });
-
-  // Construire le path
-  const pathD = points
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`)
-    .join(" ");
-
-  return (
-    <div className="mb-4">
-      <p className="text-[10px] font-medium tracking-wider uppercase text-warm-gray mb-2 text-center">
-        Évolution
-      </p>
-      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto" preserveAspectRatio="xMidYMid meet">
-        {/* Lignes de grille horizontales */}
-        {[0, 25, 50, 75, 100].map((v) => {
-          const y = paddingY + chartH - (v / 100) * chartH;
-          return (
-            <g key={v}>
-              <line x1={paddingX} y1={y} x2={width - paddingX} y2={y} stroke="#D4C5B9" strokeWidth="0.5" strokeDasharray="3,3" />
-              <text x={paddingX - 5} y={y + 3} textAnchor="end" className="fill-warm-gray" fontSize="7">{v}</text>
-            </g>
-          );
-        })}
-
-        {/* Ligne du score */}
-        <path d={pathD} fill="none" stroke="#C4704A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-
-        {/* Points */}
-        {points.map((p, i) => (
-          <circle key={i} cx={p.x} cy={p.y} r="3" fill="#C4704A" stroke="white" strokeWidth="1.5" />
-        ))}
-
-        {/* Dates sur l'axe X (premier et dernier) */}
-        <text x={points[0].x} y={height - 2} textAnchor="start" className="fill-warm-gray" fontSize="6.5">
-          {new Date(data[0].date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-        </text>
-        <text x={points[points.length - 1].x} y={height - 2} textAnchor="end" className="fill-warm-gray" fontSize="6.5">
-          {new Date(data[data.length - 1].date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-        </text>
-      </svg>
     </div>
   );
 }
