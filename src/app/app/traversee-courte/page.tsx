@@ -377,7 +377,6 @@ function TraverseeCourteV2() {
                     setActivationLevel(value);
                     trackEvent(user?.id ?? null, "session_start", {
                       mode: "court",
-                      intensity: value,
                       context: null,
                     });
                     if (ACTIVATION_FLOW_MAP[value] === LONG_FLOW) {

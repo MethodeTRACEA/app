@@ -43,7 +43,7 @@ export async function getSessionDb(
 
 export async function createSessionDb(
   userId: string,
-  intensiteBefore: number,
+  intensiteBefore: number | null,
   context: SessionData["context"]
 ): Promise<SessionData | null> {
   const { data, error } = await supabase
@@ -73,7 +73,7 @@ export async function updateSessionDb(
   sessionId: string,
   updates: Partial<{
     steps: Record<StepId, string>;
-    intensity_after: number;
+    intensity_after: number | null;
     emotion_primaire: string;
     verite_interieure: string;
     action_alignee: string;

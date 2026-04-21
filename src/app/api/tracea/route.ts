@@ -244,11 +244,9 @@ export async function POST(request: NextRequest) {
 async function handleFinalAnalysis(body: {
   steps: Record<string, string>;
   context: string;
-  intensityBefore: number;
-  intensityAfter: number;
   userId?: string; // ignoré — userId vient du token vérifié
 }, userId: string) {
-  const { steps, context, intensityBefore, intensityAfter } = body;
+  const { steps, context } = body;
 
   // Check AI limit before any Claude call
   const aiLimited = await checkAiLimit(userId);
@@ -260,8 +258,6 @@ async function handleFinalAnalysis(body: {
     });
   }
 
-  const recovery = intensityBefore - intensityAfter;
-
   let stepsContent = "";
   for (const sid of STEP_ORDER) {
     if (steps[sid]) {
@@ -272,15 +268,12 @@ async function handleFinalAnalysis(body: {
   const userMessage = `Voici la traversée complète de cette personne.
 
 Contexte : ${context}
-Intensité avant : ${intensityBefore}/10
-Intensité après : ${intensityAfter}/10
-Mouvement d'intensité : ${recovery > 0 ? `baisse de ${recovery} points` : recovery === 0 ? "stable" : `hausse de ${Math.abs(recovery)} points`}
 
 --- Les étapes de cette traversée ---
 ${stepsContent}
 Génère un résumé COURT de cette traversée. Format obligatoire en 3 parties :
 
-1. LE MOUVEMENT — 1 phrase. Ce qui a changé dans le corps. Ton incarné : "La tension est descendue à ${intensityAfter}/10" pas "Niveau de tension : ${intensityAfter}/10". Utilise les mots de la personne.
+1. LE MOUVEMENT — 1 phrase. Ce qui a changé dans le corps. Ton incarné : "Quelque chose s'est posé" pas "Il y a eu une réduction de tension". Utilise les mots de la personne.
 
 2. LA VÉRITÉ — 1 phrase. Ce qui est présent. Ce que la personne a nommé ou touché. Ses mots, pas les tiens. Ton incarné : "Tu viens de faire redescendre ton corps" pas "Émotion dominante : apaisement".
 

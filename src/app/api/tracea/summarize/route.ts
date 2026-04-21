@@ -195,8 +195,6 @@ export async function POST(request: NextRequest) {
       sessionId,
       steps,
       context,
-      intensityBefore,
-      intensityAfter,
       hadDoNotStore,
     } = body;
 
@@ -217,9 +215,7 @@ export async function POST(request: NextRequest) {
     console.log("[TRACEA SUMMARIZE] Generating summary for session:", sessionId);
 
     // Construire l'historique de la session
-    let sessionHistory = `Contexte de la traversée : ${context}\n`;
-    sessionHistory += `Intensité avant : ${intensityBefore}/10\n`;
-    sessionHistory += `Intensité après : ${intensityAfter}/10\n\n`;
+    let sessionHistory = `Contexte de la traversée : ${context}\n\n`;
     sessionHistory += `Étapes de la session :\n`;
 
     for (const sid of STEP_ORDER) {

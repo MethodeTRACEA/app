@@ -11,10 +11,8 @@ import {
   getTopAnchorMethod,
 } from "@/lib/supabase-store";
 import type { SessionData, StepId, TraceaAIResponse } from "@/lib/types";
-import { IntensitySlider } from "@/components/IntensitySlider";
 import { StepIndicator } from "@/components/StepIndicator";
 import { HelpPanel } from "@/components/HelpPanel";
-import { SafetyBanner } from "@/components/SafetyBanner";
 import { SafetyResources } from "@/components/SafetyResources";
 import { PatternObservation } from "@/components/PatternObservation";
 import { ConsentGate } from "@/components/ConsentGate";
@@ -100,9 +98,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const router = useRouter();
   const { hasPremiumAccess, session } = useAuth();
   const [phase, setPhase] = useState<Phase>("intro");
-  const [intensity, setIntensity] = useState(5);
-  const [intensityAfter, setIntensityAfter] = useState(3);
-  const [intensityAfterTouched, setIntensityAfterTouched] = useState(false);
   const [context, setContext] = useState<SessionData["context"] | "">("");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [steps, setSteps] = useState<Record<StepId, string>>({
@@ -201,17 +196,14 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   useEffect(() => {
     if (routerActivation && !routedFromActivation) {
       setRoutedFromActivation(true);
-      const intensityMap: Record<string, number> = { encore: 4, calme: 2 };
-      setIntensity(intensityMap[routerActivation] || 4);
       setModeTraversee("complet");
       // Create session directly, then go to first step
-      createSessionDb(userId, intensityMap[routerActivation] || 4, context || "autre").then(s => {
+      createSessionDb(userId, null, context || "autre").then(s => {
         if (s) {
           setSessionId(s.id);
           setPhase("session");
           trackEvent(userId, "session_start", {
             mode: "complet",
-            intensity: intensityMap[routerActivation] || 4,
             context: context || null,
           });
         }
@@ -304,13 +296,12 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   }
 
   async function handleStartSession() {
-    const s = await createSessionDb(userId, intensity, context || "autre");
+    const s = await createSessionDb(userId, null, context || "autre");
     if (s) {
       setSessionId(s.id);
       setPhase("session");
       trackEvent(userId, "session_start", {
         mode: modeTraversee,
-        intensity,
         context: context || null,
       });
     }
@@ -427,9 +418,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       setPhase("session");
     } else {
       // Dernière étape → synthèse finale directe
-      if (sessionId) {
-        updateSessionDb(sessionId, { intensity_after: intensityAfter });
-      }
       setPhase("analysis");
       generateAnalysis();
     }
@@ -450,10 +438,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
   function handleIntegrationChoice(choice: "yes" | "no" | "unsure") {
     setIntegrationResponse(choice);
-    // Passage direct à l'analyse sans écran de métriques
-    if (sessionId) {
-      updateSessionDb(sessionId, { intensity_after: intensityAfter });
-    }
     setPhase("analysis");
     generateAnalysis();
   }
@@ -475,8 +459,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
           type: "final-analysis",
           steps,
           context,
-          intensityBefore: intensity,
-          intensityAfter,
           userId,
         }),
       });
@@ -496,7 +478,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     await updateSessionDb(sessionId!, {
       analysis: analysisText,
       completed: true,
-      intensity_after: intensityAfter,
     });
 
     // IMPORTANT : afficher l'analyse AVANT de lancer le résumé mémoire
@@ -522,8 +503,6 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
             sessionId,
             steps,
             context,
-            intensityBefore: intensity,
-            intensityAfter,
             hadDoNotStore,
           }),
         });
@@ -564,12 +543,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
 
   // --- INTRO ---
   if (phase === "intro") {
-    const activationOptions = [
-      { label: "Très chargé", value: 8 },
-      { label: "Assez chargé", value: 6 },
-      { label: "Un peu chargé", value: 4 },
-      { label: "Plutôt calme", value: 2 },
-    ];
+    const activationOptions = ["Très chargé", "Assez chargé", "Un peu chargé", "Plutôt calme"];
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         <h1 className="section-title !text-2xl md:!text-4xl">Avant de commencer</h1>
@@ -578,13 +552,13 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         </p>
 
         <div className="space-y-3 mb-8">
-          {activationOptions.map((opt) => (
+          {activationOptions.map((label) => (
             <button
-              key={opt.value}
-              onClick={() => { setIntensity(opt.value); setPhase("intro-context"); }}
+              key={label}
+              onClick={() => setPhase("intro-context")}
               className="w-full py-4 md:py-3.5 px-6 rounded-2xl bg-beige text-espresso font-medium text-base md:text-sm hover:bg-beige-dark transition-all text-center"
             >
-              {opt.label}
+              {label}
             </button>
           ))}
         </div>
