@@ -15,7 +15,7 @@ const STEPS = [
   { src: "/audio/gaze/gaze_3.mp3", pauseMs: 4500 },
   { src: "/audio/gaze/gaze_4.mp3", pauseMs: 4500 },
   { src: "/audio/gaze/gaze_5.mp3", pauseMs: 3500 },
-  { src: "/audio/gaze/gaze_6.mp3", pauseMs: 4500 },
+  { src: "/audio/gaze/gaze_6.mp3", pauseMs: 7000 },
   { src: "/audio/gaze/gaze_7.mp3", pauseMs: 0    }, // → close
 ] as const;
 
