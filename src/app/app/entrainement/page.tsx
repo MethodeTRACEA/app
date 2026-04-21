@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { Paywall } from "@/components/Paywall";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
@@ -38,7 +38,16 @@ const BREATHING_PHASES = [
 ] as const;
 
 export default function EntrainementPage() {
+  return (
+    <Suspense>
+      <EntrainementInner />
+    </Suspense>
+  );
+}
+
+function EntrainementInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { hasPremiumAccess } = useAuth();
   const [screen, setScreen] = useState<Screen>("choose");
   const [exercise, setExercise] = useState<ExerciseKey | null>(null);
@@ -61,8 +70,8 @@ export default function EntrainementPage() {
     setScreen("choose");
   }
 
-  // ── ÉCRAN PAYWALL ──────────────────────────────────────────
-  if (screen === "paywall") {
+  // ── APERÇU PAYWALL (mode preview via ?previewPaywall=1) ────
+  if (searchParams.get("previewPaywall") === "1" || screen === "paywall") {
     return (
       <ScreenContainer overlayOpacity={45}>
         <div className="flex items-center justify-center min-h-[80vh]">

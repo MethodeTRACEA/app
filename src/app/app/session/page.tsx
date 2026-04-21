@@ -87,6 +87,16 @@ function SessionPageInner() {
     );
   }
 
+  const previewPaywall = searchParams.get("previewPaywall") === "1";
+
+  if (previewPaywall) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Paywall onContinue={() => router.push("/app/session")} />
+      </div>
+    );
+  }
+
   if (!hasPremiumAccess && sessionCount === null) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
