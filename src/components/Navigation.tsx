@@ -13,10 +13,10 @@ const publicLinks = [
 
 const authLinks = [
   { href: "/", label: "Accueil" },
-  { href: "/session", label: "Session" },
-  { href: "/historique", label: "Historique" },
-  { href: "/ressources", label: "Ressources" },
-  { href: "/profil", label: "Profil" },
+  { href: "/app/session", label: "Session" },
+  { href: "/app/historique", label: "Historique" },
+  { href: "/app/ressources", label: "Ressources" },
+  { href: "/app/profil", label: "Profil" },
 ];
 
 export function Navigation() {
@@ -70,9 +70,9 @@ export function Navigation() {
               {user && isAdmin && (
                 <li>
                   <Link
-                    href="/admin"
+                    href="/app/admin"
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-200 ${
-                      pathname === "/admin"
+                      pathname === "/app/admin"
                         ? "bg-espresso text-cream"
                         : "text-warm-gray hover:text-espresso hover:bg-beige"
                     }`}
@@ -133,9 +133,9 @@ export function Navigation() {
             {user && isAdmin && (
               <li>
                 <Link
-                  href="/admin"
+                  href="/app/admin"
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-200 ${
-                    pathname === "/admin"
+                    pathname === "/app/admin"
                       ? "bg-espresso text-cream"
                       : "text-warm-gray hover:text-espresso hover:bg-beige"
                   }`}
