@@ -50,7 +50,14 @@ const SENTENCES = [
   "Juste laisser passer.",
   "C'est suffisant pour maintenant.",
 ];
-const TEXT = SENTENCES.join("\n");
+// Nettoyage pour l'audio : supprime les formes inclusives entre parenthèses
+// "(e)" → "" pour éviter que la voix lise "euh".
+// Le texte UI dans GroundingGuide.tsx reste inchangé.
+function cleanForAudio(text) {
+  return text.replace(/\([a-z]\)/gi, "");
+}
+
+const TEXT = SENTENCES.map(cleanForAudio).join("\n");
 
 const OUT_DIR = path.join(__dirname, "..", "public", "audio", "grounding");
 
