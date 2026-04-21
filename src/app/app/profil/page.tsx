@@ -248,10 +248,25 @@ function MemoryProfileSection({
   if (memoryLoading) return null;
 
   const hasMemory = memoryProfile && memoryProfile.total_sessions > 0;
-  const effectiveActions = (memoryProfile?.effective_actions ?? []).slice(0, 3);
+
+  function normalizeAction(raw: string): string | null {
+    const v = raw.toLowerCase();
+    if (v.includes("respir")) return "Respirer lentement";
+    if (v.includes("corps") || v.includes("appui") || v.includes("ancr")) return "Revenir au corps";
+    if (v.includes("regard") || v.includes("pose")) return "Se poser un moment";
+    return null;
+  }
+
+  const effectiveActions = Array.from(
+    new Set(
+      (memoryProfile?.effective_actions ?? [])
+        .map(normalizeAction)
+        .filter((a): a is string => a !== null)
+    )
+  ).slice(0, 3);
 
   return (
-    <div className="mb-8 space-y-4">
+    <div className="mb-8 space-y-6">
       {/* Ce qui revient souvent */}
       {topEmotions.length > 0 && (
         <div className="card-base p-6">
@@ -262,10 +277,10 @@ function MemoryProfileSection({
             {topEmotions.map((e, i) => (
               <span
                 key={e}
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
+                className={`px-4 py-2 rounded-full font-medium ${
                   i === 0
-                    ? "bg-terra-light text-terra-dark"
-                    : "bg-beige text-warm-gray"
+                    ? "text-base font-semibold bg-terra-light text-terra-dark"
+                    : "text-sm bg-beige text-warm-gray"
                 }`}
               >
                 {e}
