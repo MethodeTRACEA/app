@@ -119,10 +119,30 @@ export default function HistoriquePage() {
     return `Tu reviens souvent par : ${value}`;
   }
 
-  // BLOC 4 — rythme factuel (seuils uniquement, aucune interprétation)
+  // BLOC 4 — rythme (premium, >= 10 uniquement ; >= 5 est affiché dans BLOC 1 pour tous)
   let rythmeText: string | null = null;
   if (sessionEndCount >= 10) rythmeText = "Tu as pris l'habitude de revenir.";
-  else if (sessionEndCount >= 5) rythmeText = "Tu reviens ici régulièrement.";
+
+  // Observations comportementales (tous les utilisateurs, max 2)
+  function exerciseLabel(raw: string): string {
+    const v = raw.toLowerCase();
+    if (v.includes("respir")) return "Respirer lentement";
+    if (v.includes("corps") || v.includes("appui") || v.includes("ancr")) return "Revenir au corps";
+    if (v.includes("regard") || v.includes("pose")) return "Se poser un moment";
+    return raw;
+  }
+  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+  const sessionsLastWeek = sessions.filter(s => {
+    const d = new Date(s.date);
+    return d >= twoWeeksAgo && d < oneWeekAgo;
+  }).length;
+  const observations: string[] = [];
+  if (sessionsThisWeek > 0 && sessionEndCount > sessionsThisWeek && sessionsThisWeek > sessionsLastWeek)
+    observations.push("Tu reviens ici plus souvent ces derniers jours");
+  if (topEmerger.length > 0 && sessionEndCount >= 3 && observations.length < 2)
+    observations.push(`Tu utilises souvent ${exerciseLabel(topEmerger[0])}`);
+  if (topEmerger.length > 1 && observations.length < 2)
+    observations.push("Tu explores différentes façons de revenir au calme");
 
   // ── Paywall inline ────────────────────────────────────────
   if (showPaywall) {
@@ -148,7 +168,23 @@ export default function HistoriquePage() {
             {sessionsThisWeek} cette semaine
           </p>
         )}
+        {sessionEndCount >= 5 && (
+          <p className="font-body text-sm text-warm-gray mt-2">
+            Tu reviens ici régulièrement.
+          </p>
+        )}
       </div>
+
+      {/* ── OBSERVATIONS COMPORTEMENTALES (tous les utilisateurs) ── */}
+      {observations.length > 0 && (
+        <div className="card-base p-6 space-y-2">
+          {observations.map((obs, i) => (
+            <p key={i} className="font-body text-sm text-espresso">
+              {obs}
+            </p>
+          ))}
+        </div>
+      )}
 
       {hasPremiumAccess ? (
         <>
