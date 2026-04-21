@@ -37,13 +37,13 @@ const SETTINGS = {
 // Les 7 phrases — séparées par un saut de ligne pour forcer une pause naturelle.
 // Les "." en fin de phrase sont les seuls points dans ce texte.
 const SENTENCES = [
-  "Tu peux… lever légèrement les yeux de l'écran.",
-  "Regarde… quelque chose de proche.",
-  "Puis… quelque chose un peu plus loin.",
-  "Encore… un autre endroit.",
-  "Sans chercher… quoi que ce soit.",
-  "Juste… regarder.",
-  "C'est suffisant… pour maintenant.",
+  "Tu peux lever légèrement les yeux de l'écran.",
+  "Regarde quelque chose de proche.",
+  "Puis quelque chose un peu plus loin…",
+  "Encore un autre endroit.",
+  "Sans chercher quoi que ce soit.",
+  "Juste regarder.",
+  "C'est suffisant pour maintenant.",
 ];
 const TEXT = SENTENCES.join("\n");
 
@@ -91,12 +91,13 @@ function findSplitTimes(alignment) {
   const { characters, character_end_times_seconds } = alignment;
   const periods = [];
   for (let i = 0; i < characters.length; i++) {
-    if (characters[i] === ".") {
-      const next = characters[i + 1];
-      // Fin de phrase = point suivi d'un saut de ligne ou en fin de texte
-      if (next === "\n" || next === undefined || next === null) {
-        periods.push(character_end_times_seconds[i] + 0.08);
-      }
+    const c    = characters[i];
+    const next = characters[i + 1];
+    const isEOL = next === "\n" || next === undefined || next === null;
+    // Fin de phrase = "." ou "…" (U+2026) avant un saut de ligne ou fin de texte.
+    // Gère aussi la normalisation éventuelle de "…" → "..." par ElevenLabs.
+    if (isEOL && (c === "." || c === "\u2026")) {
+      periods.push(character_end_times_seconds[i] + 0.08);
     }
   }
   if (periods.length < 7) throw new Error(`Attendu 7 fins de phrase, trouvé ${periods.length}`);
