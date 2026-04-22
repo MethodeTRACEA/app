@@ -148,15 +148,17 @@ function getGestureForNeed(need: string): Gesture {
 function AutoChip({
   label,
   onClick,
+  className,
 }: {
   label: string;
   onClick: () => void;
+  className?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="t-chip w-full text-center"
+      className={`t-chip w-full text-center${className ? ` ${className}` : ""}`}
     >
       {label}
     </button>
@@ -354,25 +356,21 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-2">
-              {/* Label discret — contexte procédural */}
-              <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
-                Avant de commencer
-              </p>
-              {/* Question principale — élément dominant */}
               <p className="font-serif text-2xl text-t-beige">
                 Qu&apos;est-ce qui se passe pour toi ?
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
-                ["deborde", "Ça monte"],
-                ["charge", "Je vais répondre à quelqu'un"],
-                ["encore", "Je dois voir quelqu'un"],
-                ["calme", "J'ai besoin de me poser"],
-              ] as [ActivationLevel, string][]).map(([value, label]) => (
+                ["deborde", "Je sens que je vais réagir trop fort"],
+                ["charge", "Je vais répondre à quelqu'un et je pourrais le regretter"],
+                ["encore", "Je vais voir quelqu'un et je ne suis pas bien"],
+                ["calme", "Je me sens trop chargé(e)"],
+              ] as [ActivationLevel, string][]).map(([value, label], index) => (
                 <AutoChip
                   key={value}
                   label={label}
+                  className={index === 0 ? "ring-1 ring-t-beige/40" : undefined}
                   onClick={() => {
                     setActivationLevel(value);
                     trackEvent(user?.id ?? null, "session_start", {
@@ -388,9 +386,6 @@ function TraverseeCourteV2() {
                 />
               ))}
             </div>
-            <p className="font-inter text-xs t-text-secondary text-center">
-              Choisis le plus proche maintenant.
-            </p>
             <div className="mt-4">
               <ExitLink label="Quitter" href="/app" />
             </div>
