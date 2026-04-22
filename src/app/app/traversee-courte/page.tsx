@@ -26,6 +26,13 @@ const ACTIVATION_FLOW_MAP: Record<string, FlowRoute> = {
   calme: LONG_FLOW,
 };
 
+const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
+  deborde: "Ok. On va ralentir ça ensemble.",
+  charge: "Ok. On va ralentir avant de répondre.",
+  encore: "Ok. On va se poser un instant avant d'y aller.",
+  calme: "Ok. On va laisser redescendre un peu.",
+};
+
 // ═══════════════════════════════════════════════════════════
 // TRACÉA — Traversée courte V2 (3 étapes, ultra-optimisée)
 // Flow : Entrée → Ressenti → Corps → Bascule → Ancrer →
@@ -202,6 +209,7 @@ function TraverseeCourteV2() {
 
   // Méthodes déjà essayées (pour ne jamais reproposer)
   const [triedMethods, setTriedMethods] = useState<AnchorMethod[]>([]);
+  const [selectedEntryMessage, setSelectedEntryMessage] = useState<string | null>(null);
   // Branche pareil: méthode alternative
   const [altMethod, setAltMethod] = useState<AnchorMethod | null>(null);
   // Personalisation abonné — méthode dominante
@@ -353,6 +361,15 @@ function TraverseeCourteV2() {
       // ÉCRAN 0 — ENTRÉE
       // ════════════════════════════════════════════════════
       case "entree":
+        if (selectedEntryMessage) {
+          return (
+            <div className="flex flex-col items-center justify-center min-h-[80vh]">
+              <p className="font-serif text-2xl text-t-beige text-center">
+                {selectedEntryMessage}
+              </p>
+            </div>
+          );
+        }
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-2">
@@ -373,15 +390,18 @@ function TraverseeCourteV2() {
                   className={index === 0 ? "ring-1 ring-t-beige/40" : undefined}
                   onClick={() => {
                     setActivationLevel(value);
+                    setSelectedEntryMessage(ENTRY_MESSAGES[value]);
                     trackEvent(user?.id ?? null, "session_start", {
                       mode: "court",
                       context: null,
                     });
-                    if (ACTIVATION_FLOW_MAP[value] === LONG_FLOW) {
-                      setScreen("propose-long");
-                    } else {
-                      setScreen("ressenti");
-                    }
+                    setTimeout(() => {
+                      if (ACTIVATION_FLOW_MAP[value] === LONG_FLOW) {
+                        setScreen("propose-long");
+                      } else {
+                        setScreen("ressenti");
+                      }
+                    }, 1000);
                   }}
                 />
               ))}
