@@ -196,27 +196,27 @@ function UrgenceInner() {
     );
   }
 
-  // ── ÉCRAN 3 — Clôture ──────────────────────────────────────
+  // ── ÉCRAN 3 — Sortie douce ─────────────────────────────────
   return (
     <ScreenContainer overlayOpacity={45}>
       <div className="py-12">
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
 
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-2">
             <p className="font-body text-xl t-text-primary leading-relaxed">
-              C&apos;est déjà quelque chose.
+              Tu peux t&apos;arrêter ici
             </p>
             <p className="font-inter text-sm t-text-ghost">
-              Tu peux t&apos;arrêter là.
+              ou continuer si tu en ressens le besoin.
             </p>
           </div>
 
           <div className="w-full space-y-3">
-            <PrimaryButton onClick={() => router.push("/app")}>
-              Retour à l&apos;accueil
+            <PrimaryButton onClick={backToChoose}>
+              Continuer
             </PrimaryButton>
-            <SecondaryButton onClick={backToChoose}>
-              Refaire
+            <SecondaryButton onClick={() => router.push("/app/traversee-courte")}>
+              Faire une travers&eacute;e
             </SecondaryButton>
           </div>
 
