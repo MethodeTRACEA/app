@@ -33,6 +33,13 @@ const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
   calme: "Ok. On va laisser redescendre un peu.",
 };
 
+const RESSENTI_INTRO: Record<ActivationLevel, string> = {
+  deborde: "Là, dans ton corps, c'est surtout :",
+  charge: "Avant de répondre, là, c'est surtout :",
+  encore: "Avant d'y aller, là, c'est surtout :",
+  calme: "Là, ce qui prend le plus de place :",
+};
+
 // ═══════════════════════════════════════════════════════════
 // TRACÉA — Traversée courte V2 (3 étapes, ultra-optimisée)
 // Flow : Entrée → Ressenti → Corps → Bascule → Ancrer →
@@ -439,11 +446,8 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
-              <h1 className="font-serif text-2xl text-t-beige">
-                Là
-              </h1>
               <p className="font-body text-lg t-text-secondary">
-                Là, c&apos;est surtout :
+                {activationLevel ? RESSENTI_INTRO[activationLevel] : "Là, c'est surtout :"}
               </p>
             </div>
             <div className="w-full space-y-3">
