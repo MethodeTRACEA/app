@@ -34,10 +34,10 @@ const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
 };
 
 const RESSENTI_INTRO: Record<ActivationLevel, string> = {
-  deborde: "Là, dans ton corps, c'est surtout :",
-  charge: "Avant de répondre, là, c'est surtout :",
-  encore: "Avant d'y aller, là, c'est surtout :",
-  calme: "Là, ce qui prend le plus de place :",
+  deborde: "On ralentit juste un instant.",
+  charge: "Avant de répondre, on ralentit juste un instant.",
+  encore: "Reviens d'abord dans tes appuis.",
+  calme: "On va laisser un peu d'espace.",
 };
 
 // ═══════════════════════════════════════════════════════════
