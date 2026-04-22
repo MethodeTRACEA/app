@@ -360,15 +360,15 @@ function TraverseeCourteV2() {
               </p>
               {/* Question principale — élément dominant */}
               <p className="font-serif text-2xl text-t-beige">
-                Là, c&apos;est plutôt :
+                Qu&apos;est-ce qui se passe pour toi ?
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
-                ["deborde", "Très chargé"],
-                ["charge", "Assez chargé"],
-                ["encore", "Un peu chargé"],
-                ["calme", "Plutôt calme"],
+                ["deborde", "Ça monte"],
+                ["charge", "Je vais répondre à quelqu'un"],
+                ["encore", "Je dois voir quelqu'un"],
+                ["calme", "J'ai besoin de me poser"],
               ] as [ActivationLevel, string][]).map(([value, label]) => (
                 <AutoChip
                   key={value}
