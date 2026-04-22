@@ -364,7 +364,7 @@ function TraverseeCourteV2() {
               {([
                 ["deborde", "Je sens que je vais réagir trop fort"],
                 ["charge", "Je vais répondre à quelqu'un et je pourrais le regretter"],
-                ["encore", "Je vais voir quelqu'un et je ne suis pas bien"],
+                ["encore", "Je vais voir quelqu'un et je me sens tendu(e)"],
                 ["calme", "Je me sens trop chargé(e)"],
               ] as [ActivationLevel, string][]).map(([value, label], index) => (
                 <AutoChip
