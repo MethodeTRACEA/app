@@ -85,7 +85,7 @@ export function Navigation() {
               )}
             </ul>
             {!loading && !user && (
-              <Link href="/connexion" className="btn-primary !px-4 !py-1.5 !text-xs">
+              <Link href="/app/connexion" className="btn-primary !px-4 !py-1.5 !text-xs">
                 Connexion
               </Link>
             )}
@@ -151,7 +151,7 @@ export function Navigation() {
           {!loading && !user && (
             <div className="mt-3 pt-3 border-t border-beige-dark">
               <Link
-                href="/connexion"
+                href="/app/connexion"
                 className="btn-primary !px-4 !py-2 !text-xs w-full text-center block"
                 onClick={() => setMenuOpen(false)}
               >
