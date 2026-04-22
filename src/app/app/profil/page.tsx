@@ -167,8 +167,13 @@ export default function ProfilPage() {
         </div>
       </div>
 
-      {/* Ce qui revient souvent + Ce que tu utilises le plus */}
-      <MemoryProfileSection userId={user.id} topEmotions={stats.topEmotions} />
+      {/* Ce qui se met en place + Ce qui revient souvent + Ce que tu utilises le plus */}
+      <MemoryProfileSection
+        userId={user.id}
+        topEmotions={stats.topEmotions}
+        totalSessions={stats.total}
+        lastWeekCount={stats.lastWeekCount}
+      />
 
       {/* Consentement RGPD */}
       <ConsentSection userId={user.id} />
@@ -217,9 +222,13 @@ export default function ProfilPage() {
 function MemoryProfileSection({
   userId,
   topEmotions,
+  totalSessions,
+  lastWeekCount,
 }: {
   userId: string;
   topEmotions: string[];
+  totalSessions: number;
+  lastWeekCount: number;
 }) {
   const [memoryProfile, setMemoryProfile] = useState<MemoryProfile | null>(null);
   const [memoryLoading, setMemoryLoading] = useState(true);
@@ -265,8 +274,29 @@ function MemoryProfileSection({
     )
   ).slice(0, 3);
 
+  // Continuité — 1 phrase comportementale (conservatrice)
+  const topAction = effectiveActions[0] ?? null;
+  function continuitePhraseProfile(): string | null {
+    if (totalSessions < 3) return null;
+    if (topAction === "Revenir au corps") return "Tu passes par le corps plus souvent.";
+    if (effectiveActions.length > 1 && totalSessions >= 5) return "Tu trouves peu à peu ce qui t'apaise.";
+    if (lastWeekCount >= 2) return "Tu prends un moment avant de réagir.";
+    return "Tu reviens ici quand ça monte.";
+  }
+  const continuite = continuitePhraseProfile();
+
   return (
     <div className="mb-8 space-y-6">
+      {/* Ce qui se met en place */}
+      {continuite && (
+        <div className="card-base p-6">
+          <h3 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3 text-center">
+            Ce qui se met en place
+          </h3>
+          <p className="font-body text-base text-espresso text-center">{continuite}</p>
+        </div>
+      )}
+
       {/* Ce qui revient souvent */}
       {topEmotions.length > 0 && (
         <div className="card-base p-6">

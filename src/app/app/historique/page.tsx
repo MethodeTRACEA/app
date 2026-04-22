@@ -113,19 +113,33 @@ export default function HistoriquePage() {
     sessions.length >= 3  ? "Tu es déjà revenu(e) plusieurs fois." :
     null;
 
-  // Observations exercices (tous les utilisateurs, max 2)
-  function exerciseLabel(raw: string): string {
-    const v = raw.toLowerCase();
-    if (v.includes("respir")) return "Respirer lentement";
-    if (v.includes("corps") || v.includes("appui") || v.includes("ancr")) return "Revenir au corps";
-    if (v.includes("regard") || v.includes("pose")) return "Se poser un moment";
-    return raw;
+  // Continuité — 1 phrase comportementale (premium, conservateur)
+  function continuitePhrase(): string | null {
+    if (sessions.length < 3) return null;
+    if (topEmerger.length > 0) {
+      const v = topEmerger[0].toLowerCase();
+      if (v.includes("corps") || v.includes("appui") || v.includes("ancr"))
+        return "Tu passes par le corps plus souvent.";
+    }
+    if (topEmerger.length > 1 && sessions.length >= 5)
+      return "Tu trouves peu à peu ce qui t'apaise.";
+    if (sessionsThisWeek >= 2)
+      return "Tu prends un moment avant de réagir.";
+    return "Tu reviens ici quand ça monte.";
   }
-  const observations: string[] = [];
-  if (topEmerger.length > 0 && sessions.length >= 3)
-    observations.push(`Tu utilises souvent ${exerciseLabel(topEmerger[0])}`);
-  if (topEmerger.length > 1 && observations.length < 2)
-    observations.push("Tu explores différentes façons de revenir au calme");
+  const continuite = continuitePhrase();
+
+  // Patterns exercices — 1 phrase (premium)
+  function patternPhrase(): string | null {
+    if (topEmerger.length === 0 || sessions.length < 3) return null;
+    const v = topEmerger[0].toLowerCase();
+    if (v.includes("respir")) return "Tu utilises souvent Respirer lentement";
+    if (v.includes("corps") || v.includes("appui") || v.includes("ancr")) return "Tu reviens souvent au corps";
+    if (v.includes("regard") || v.includes("pose")) return "Tu choisis souvent de te poser un moment";
+    if (topEmerger.length > 1) return "Tu explores différentes façons de revenir au calme";
+    return null;
+  }
+  const patternInsight = patternPhrase();
 
   // ── Paywall inline ────────────────────────────────────────
   if (showPaywall) {
@@ -158,20 +172,17 @@ export default function HistoriquePage() {
         )}
       </div>
 
-      {/* ── OBSERVATIONS COMPORTEMENTALES (tous les utilisateurs) ── */}
-      {observations.length > 0 && (
-        <div className="card-base p-6 space-y-2">
-          {observations.map((obs, i) => (
-            <p key={i} className="font-body text-sm text-espresso">
-              {obs}
-            </p>
-          ))}
-        </div>
-      )}
-
       {hasPremiumAccess ? (
         <>
-          {/* ── BLOC 2 — TES RÉCURRENCES ── */}
+          {/* ── Ce qui se met en place ── */}
+          {continuite && (
+            <div className="card-base p-6">
+              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce qui se met en place</p>
+              <p className="font-body text-base text-espresso">{continuite}</p>
+            </div>
+          )}
+
+          {/* ── Ce qui revient souvent — émotions ── */}
           {topEmotions.length > 0 && (
             <div className="card-base p-6">
               <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ce qui revient souvent</p>
@@ -182,6 +193,14 @@ export default function HistoriquePage() {
                   </span>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* ── Ce que tu utilises le plus — patterns ── */}
+          {patternInsight && (
+            <div className="card-base p-6">
+              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce que tu utilises le plus</p>
+              <p className="font-body text-base text-espresso">{patternInsight}</p>
             </div>
           )}
 
