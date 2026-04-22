@@ -47,6 +47,12 @@ export default function Accueil() {
         >
           Commencer une travers&eacute;e
         </Link>
+        <Link
+          href="/app/urgence"
+          className="block text-center font-inter text-sm text-espresso/50 mt-4 underline underline-offset-4 hover:text-espresso/70 transition-colors"
+        >
+          Besoin d&apos;aide maintenant
+        </Link>
       </section>
 
       {/* Dernière session (si existe) */}
