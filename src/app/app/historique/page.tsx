@@ -106,20 +106,14 @@ export default function HistoriquePage() {
     .sort((a, b) => emotionCounts[b] - emotionCounts[a])
     .slice(0, 8);
 
-  // BLOC 3 — label exercice le plus utilisé
-  function emergerLabel(value: string): string {
-    const v = value.toLowerCase();
-    if (v.includes("regard")) return "Tu reviens souvent par le regard";
-    if (v.includes("respir")) return "Tu utilises souvent la respiration";
-    if (v.includes("corps") || v.includes("appui") || v.includes("ancr")) return "Tu utilises souvent les appuis";
-    return `Tu reviens souvent par : ${value}`;
-  }
+  // Progression rythme (tous les utilisateurs, 1 phrase max)
+  const rythmePhrase =
+    sessions.length >= 10 ? "Tu as pris l'habitude de revenir." :
+    sessions.length >= 5  ? "Tu reviens ici régulièrement." :
+    sessions.length >= 3  ? "Tu es déjà revenu(e) plusieurs fois." :
+    null;
 
-  // BLOC 4 — rythme (premium, >= 10 uniquement ; >= 5 est affiché dans BLOC 1 pour tous)
-  let rythmeText: string | null = null;
-  if (sessions.length >= 10) rythmeText = "Tu as pris l'habitude de revenir.";
-
-  // Observations comportementales (tous les utilisateurs, max 2)
+  // Observations exercices (tous les utilisateurs, max 2)
   function exerciseLabel(raw: string): string {
     const v = raw.toLowerCase();
     if (v.includes("respir")) return "Respirer lentement";
@@ -127,15 +121,8 @@ export default function HistoriquePage() {
     if (v.includes("regard") || v.includes("pose")) return "Se poser un moment";
     return raw;
   }
-  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-  const sessionsLastWeek = sessions.filter(s => {
-    const d = new Date(s.date);
-    return d >= twoWeeksAgo && d < oneWeekAgo;
-  }).length;
   const observations: string[] = [];
-  if (sessionsThisWeek > 0 && sessions.length > sessionsThisWeek && sessionsThisWeek > sessionsLastWeek)
-    observations.push("Tu reviens ici plus souvent ces derniers jours");
-  if (topEmerger.length > 0 && sessions.length >= 3 && observations.length < 2)
+  if (topEmerger.length > 0 && sessions.length >= 3)
     observations.push(`Tu utilises souvent ${exerciseLabel(topEmerger[0])}`);
   if (topEmerger.length > 1 && observations.length < 2)
     observations.push("Tu explores différentes façons de revenir au calme");
@@ -164,9 +151,9 @@ export default function HistoriquePage() {
             {sessionsThisWeek} cette semaine
           </p>
         )}
-        {sessions.length >= 5 && (
+        {rythmePhrase && (
           <p className="font-body text-sm text-warm-gray mt-2">
-            Tu reviens ici régulièrement.
+            {rythmePhrase}
           </p>
         )}
       </div>
@@ -195,22 +182,6 @@ export default function HistoriquePage() {
                   </span>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* ── BLOC 3 — CE QUE TU UTILISES (≥ 3 sessions) ── */}
-          {topEmerger.length > 0 && sessions.length >= 3 && (
-            <div className="card-base p-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce que tu utilises</p>
-              <p className="font-body text-base text-espresso">{emergerLabel(topEmerger[0])}</p>
-            </div>
-          )}
-
-          {/* ── BLOC 4 — TON RYTHME (≥ 5 sessions) ── */}
-          {rythmeText && (
-            <div className="card-base p-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ton rythme</p>
-              <p className="font-body text-base text-espresso">{rythmeText}</p>
             </div>
           )}
 
@@ -287,36 +258,26 @@ export default function HistoriquePage() {
 
                   {isExpanded && (
                     <div className="px-5 pb-4 pt-2 border-t border-beige-dark animate-fade-up">
-                      {s.veriteInterieure && (
+                      {/* Émotion principale */}
+                      {s.veriteInterieure ? (
                         <div className="border-l-[3px] border-terra/40 pl-4 py-2 mb-4">
                           <p className="font-body text-base italic text-espresso">
                             &ldquo;{s.veriteInterieure}&rdquo;
                           </p>
                         </div>
-                      )}
+                      ) : s.emotionPrimaire ? (
+                        <p className="font-body text-sm text-warm-gray italic mb-4">{s.emotionPrimaire}</p>
+                      ) : null}
 
-                      <div className="space-y-3">
-                        {["traverser","reconnaitre","ancrer","conscientiser","emerger","aligner"].map((stepId) => {
-                          const content = s.steps[stepId as keyof typeof s.steps];
-                          if (!content) return null;
-                          const stepNames: Record<string, string> = {
-                            traverser: "Traverser",
-                            reconnaitre: "Reconnaître",
-                            ancrer: "Ancrer",
-                            conscientiser: "Écouter",
-                            emerger: "Émerger",
-                            aligner: "Aligner",
-                          };
-                          return (
-                            <div key={stepId}>
-                              <h4 className="text-xs font-medium tracking-widest uppercase text-terra/70 mb-1">
-                                {stepNames[stepId] || stepId}
-                              </h4>
-                              <p className="font-body text-sm text-espresso leading-relaxed">{content}</p>
-                            </div>
-                          );
-                        })}
-                      </div>
+                      {/* Action finale */}
+                      {s.steps.aligner && (
+                        <div className="mb-1">
+                          <h4 className="text-xs font-medium tracking-widest uppercase text-terra/70 mb-1">
+                            Action
+                          </h4>
+                          <p className="font-body text-sm text-espresso leading-relaxed">{s.steps.aligner}</p>
+                        </div>
+                      )}
 
                       {/* Note entre sessions */}
                       <div className="mt-4 pt-3 border-t border-beige-dark">
