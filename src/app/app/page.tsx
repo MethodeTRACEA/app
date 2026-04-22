@@ -49,9 +49,10 @@ export default function Accueil() {
         </Link>
         <Link
           href="/app/urgence"
-          className="block text-center font-inter text-sm text-espresso/50 mt-4 underline underline-offset-4 hover:text-espresso/70 transition-colors"
+          className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-2xl border border-espresso/30 bg-transparent px-6 py-4 font-inter text-base text-espresso/80 transition-all duration-150 hover:bg-espresso/10 active:scale-[0.98]"
         >
-          Besoin d&apos;aide maintenant
+          <span>⚡</span>
+          <span>Besoin d&apos;aide maintenant</span>
         </Link>
       </section>
 
