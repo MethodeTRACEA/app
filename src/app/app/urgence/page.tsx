@@ -151,18 +151,7 @@ function UrgenceInner() {
                   <p className="font-inter text-sm t-text-ghost text-center">
                     {BREATHING_PHASES[1]}
                   </p>
-                  <BreathingGuide onComplete={() => setPhase("close")} />
-                </>
-              )}
-
-              {phase === "close" && (
-                <>
-                  <p className="font-body text-xl t-text-secondary text-center leading-relaxed">
-                    {BREATHING_PHASES[2]}
-                  </p>
-                  <PrimaryButton onClick={() => setScreen("done")}>
-                    Terminer
-                  </PrimaryButton>
+                  <BreathingGuide onComplete={() => setScreen("done")} />
                 </>
               )}
 
