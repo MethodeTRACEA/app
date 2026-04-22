@@ -258,16 +258,19 @@ export default function HistoriquePage() {
 
                   {isExpanded && (
                     <div className="px-5 pb-4 pt-2 border-t border-beige-dark animate-fade-up">
-                      {/* Texte principal — une seule fois, sans label */}
-                      {(s.steps.aligner || s.veriteInterieure) && (
-                        <p className="font-body text-base text-espresso leading-relaxed mb-3">
-                          {s.steps.aligner || s.veriteInterieure}
-                        </p>
-                      )}
-
                       {/* Émotion dominante */}
                       {s.emotionPrimaire && (
-                        <p className="font-body text-sm text-warm-gray mb-4">{s.emotionPrimaire}</p>
+                        <p className="font-body text-sm text-warm-gray italic mb-3">{s.emotionPrimaire}</p>
+                      )}
+
+                      {/* Lien émotion → action */}
+                      {(s.steps.aligner || s.veriteInterieure) && (
+                        <div className="mb-4">
+                          <p className="text-xs text-warm-gray/60 mb-1">Tu as choisi :</p>
+                          <p className="font-body text-base text-espresso leading-relaxed">
+                            {s.steps.aligner || s.veriteInterieure}
+                          </p>
+                        </div>
                       )}
 
                       {/* Note entre sessions */}
