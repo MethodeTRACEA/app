@@ -32,7 +32,7 @@ const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
   charge: "Ok. On va ralentir avant de répondre.",
   encore: "Ok. On va se poser un instant avant d'y aller.",
   calme: "Ok. On va laisser redescendre un peu.",
-  stop: "Ok. On va juste souffler un instant.",
+  stop: "Ok. On ralentit juste un instant.",
 };
 
 const RESSENTI_INTRO: Record<ActivationLevel, string> = {
@@ -40,7 +40,7 @@ const RESSENTI_INTRO: Record<ActivationLevel, string> = {
   charge: "Avant de répondre, on ralentit juste un instant.",
   encore: "Reviens d'abord dans tes appuis.",
   calme: "On va laisser un peu d'espace.",
-  stop: "On va juste souffler.",
+  stop: "On ralentit juste un instant.",
 };
 
 // ═══════════════════════════════════════════════════════════
