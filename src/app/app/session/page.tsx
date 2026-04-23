@@ -611,6 +611,10 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         <h1 className="section-title !text-2xl md:!text-4xl">Traversée complète</h1>
 
+        <p className="font-inter text-sm text-warm-gray mb-4">
+          On ralentit juste un instant.
+        </p>
+
         <p className="font-body text-base text-espresso/80 leading-relaxed mb-3">
           6 étapes pour clarifier ce qui se passe, revenir au corps, et repartir avec un geste juste.
         </p>
@@ -1112,6 +1116,9 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
               {/* Phase 2 — Feedback post-ancrage (auto-advance) */}
               {ancrerDone && !ancrerPostPhase && (
                 <>
+                  <p className="font-inter text-xs t-text-ghost mb-2">
+                    Même 30 secondes suffisent.
+                  </p>
                   <p className="font-inter text-lg text-t-beige leading-relaxed mb-2">
                     Maintenant
                   </p>
@@ -1684,8 +1691,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         <p className="font-body text-base text-espresso/80 leading-relaxed mb-4">
           Tu as pris un moment pour toi.
         </p>
-        <p className="font-body text-base text-espresso/50 leading-relaxed mb-10">
+        <p className="font-body text-base text-espresso/50 leading-relaxed mb-4">
           C&apos;est suffisant pour maintenant.
+        </p>
+        <p className="font-inter text-xs text-espresso/40 leading-relaxed mb-10 text-center">
+          Tu peux revenir ici à chaque fois.
         </p>
         <button
           onClick={() => {

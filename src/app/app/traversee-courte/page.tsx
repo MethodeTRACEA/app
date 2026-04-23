@@ -634,6 +634,9 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
+              <p className="font-inter text-xs t-text-ghost">
+                Même 30 secondes suffisent.
+              </p>
               <p className="font-body text-sm t-text-secondary">
                 Prends juste une seconde.
               </p>
@@ -888,6 +891,9 @@ function TraverseeCourteV2() {
             {/* Clôture émotionnelle — doit être lue, pas effacée */}
             <p className="font-body text-lg text-t-beige text-center">
               C&apos;est suffisant pour maintenant.
+            </p>
+            <p className="font-inter text-xs t-text-ghost text-center">
+              Tu peux revenir ici à chaque fois.
             </p>
             <PrimaryButton onClick={() => setScreen("exit-transition")}>
               Retour à l&apos;accueil

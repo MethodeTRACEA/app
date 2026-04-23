@@ -191,14 +191,23 @@ function UrgenceInner() {
       <div className="py-12">
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
 
-          <div className="text-center space-y-2">
-            <p className="font-body text-xl t-text-primary leading-relaxed">
-              Tu peux t&apos;arrêter ici
+          <div className="text-center space-y-4">
+            <p className="font-serif text-lg text-t-beige">
+              Quand ça monte, ouvre ici.
             </p>
-            <p className="font-inter text-sm t-text-ghost">
-              ou continuer si tu en ressens le besoin.
-            </p>
+            <div className="space-y-2">
+              <p className="font-body text-xl t-text-primary leading-relaxed">
+                Tu peux t&apos;arrêter ici
+              </p>
+              <p className="font-inter text-sm t-text-ghost">
+                ou continuer si tu en ressens le besoin.
+              </p>
+            </div>
           </div>
+
+          <p className="font-inter text-xs t-text-ghost text-center">
+            Même 30 secondes suffisent.
+          </p>
 
           <div className="w-full space-y-3">
             <PrimaryButton onClick={backToChoose}>
