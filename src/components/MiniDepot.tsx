@@ -15,7 +15,7 @@ export function MiniDepot({ onContinue }: { onContinue: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 px-2">
       <p className="font-serif text-2xl text-t-beige text-center leading-relaxed">
-        Tu peux poser ça ici si tu veux.
+        Si tu veux, tu peux écrire ce qui se passe pour toi en ce moment.
       </p>
 
       <textarea
