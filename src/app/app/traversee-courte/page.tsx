@@ -24,6 +24,7 @@ const ACTIVATION_FLOW_MAP: Record<string, FlowRoute> = {
   charge: SHORT_FLOW_V2,
   encore: LONG_FLOW,
   calme: LONG_FLOW,
+  stop: SHORT_FLOW_V2,
 };
 
 const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
@@ -31,6 +32,7 @@ const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
   charge: "Ok. On va ralentir avant de répondre.",
   encore: "Ok. On va se poser un instant avant d'y aller.",
   calme: "Ok. On va laisser redescendre un peu.",
+  stop: "Ok. On va juste souffler un instant.",
 };
 
 const RESSENTI_INTRO: Record<ActivationLevel, string> = {
@@ -38,6 +40,7 @@ const RESSENTI_INTRO: Record<ActivationLevel, string> = {
   charge: "Avant de répondre, on ralentit juste un instant.",
   encore: "Reviens d'abord dans tes appuis.",
   calme: "On va laisser un peu d'espace.",
+  stop: "On va juste souffler.",
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -67,7 +70,7 @@ type Screen =
   | "emerger"
   | "synthese";
 
-type ActivationLevel = "deborde" | "charge" | "encore" | "calme";
+type ActivationLevel = "deborde" | "charge" | "encore" | "calme" | "stop";
 type Feeling = "serre" | "agite" | "lourd" | "flou" | "vide" | "bloque" | "je-ne-sais-pas";
 type BodyZone = "poitrine" | "ventre" | "gorge" | "tete" | "epaules" | "partout" | "je-ne-sais-pas";
 type AnchorMethod = "appuis" | "autour" | "souffle";
@@ -390,6 +393,7 @@ function TraverseeCourteV2() {
                 ["charge", "Je vais répondre à quelqu'un et je pourrais le regretter"],
                 ["encore", "Je vais voir quelqu'un et je me sens tendu(e)"],
                 ["calme", "Je me sens trop chargé(e)"],
+                ["stop", "J'ai besoin que ça s'arrête"],
               ] as [ActivationLevel, string][]).map(([value, label], index) => (
                 <AutoChip
                   key={value}
