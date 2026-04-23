@@ -8,6 +8,7 @@ import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { ExitLink } from "@/components/ui/ExitLink";
+import { MiniDepot } from "@/components/MiniDepot";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
@@ -51,6 +52,7 @@ const RESSENTI_INTRO: Record<ActivationLevel, string> = {
 // ═══════════════════════════════════════════════════════════
 
 type Screen =
+  | "depot"
   | "onboarding"
   | "transition"
   | "exit-transition"
@@ -204,7 +206,7 @@ function TraverseeCourteV2() {
   const onboardingSeen = typeof window !== "undefined" && localStorage.getItem("tracea_onboarding_seen") === "true";
 
   // ── State ──
-  const [screen, setScreen] = useState<Screen>(skipEntree ? "ressenti" : onboardingSeen ? "entree" : "onboarding");
+  const [screen, setScreen] = useState<Screen>(skipEntree ? "ressenti" : "depot");
   const [transitionOpacity, setTransitionOpacity] = useState(0);
   const [exitOpacity, setExitOpacity] = useState(0);
   const [activationLevel, setActivationLevel] = useState<ActivationLevel | null>(null);
@@ -307,6 +309,15 @@ function TraverseeCourteV2() {
   const renderScreen = () => {
     switch (screen) {
       // ════════════════════════════════════════════════════
+      // DÉPÔT — Micro-dépôt facultatif avant le flow
+      // ════════════════════════════════════════════════════
+      case "depot":
+        return (
+          <MiniDepot
+            onContinue={() => setScreen(onboardingSeen ? "entree" : "onboarding")}
+          />
+        );
+
       // ONBOARDING — Écran d'accueil
       // ════════════════════════════════════════════════════
       case "onboarding":

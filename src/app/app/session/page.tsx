@@ -21,6 +21,7 @@ import { ConsentGate } from "@/components/ConsentGate";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
+import { MiniDepot } from "@/components/MiniDepot";
 import Link from "next/link";
 import {
   ScreenContainer,
@@ -133,6 +134,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const router = useRouter();
   const { hasPremiumAccess, session } = useAuth();
   const [phase, setPhase] = useState<Phase>("intro");
+  const [showDepot, setShowDepot] = useState(true);
   const [context, setContext] = useState<SessionData["context"] | "">("");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [steps, setSteps] = useState<Record<StepId, string>>({
@@ -577,6 +579,14 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   );
 
   // --- INTRO ---
+  if (showDepot && phase === "intro") {
+    return (
+      <div className="max-w-2xl mx-auto px-4">
+        <MiniDepot onContinue={() => setShowDepot(false)} />
+      </div>
+    );
+  }
+
   if (phase === "intro") {
     const activationOptions = ["Très chargé", "Assez chargé", "Un peu chargé", "Plutôt calme"];
     return (

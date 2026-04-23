@@ -11,6 +11,7 @@ import { ExitLink } from "@/components/ui/ExitLink";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
+import { MiniDepot } from "@/components/MiniDepot";
 
 // ════════════════════════════════════════════════════════════
 // TRACÉA — Accès immédiat aux exercices
@@ -19,7 +20,7 @@ import { GazeGuide } from "@/components/GazeGuide";
 // Réutilise les exercices de S'entraîner, gating premium identique.
 // ════════════════════════════════════════════════════════════
 
-type Screen = "choose" | "practice" | "done" | "paywall";
+type Screen = "depot" | "choose" | "practice" | "done" | "paywall";
 type ExerciseKey = "respiration" | "corps" | "regard";
 type Phase = "intro" | "active" | "close";
 
@@ -48,7 +49,7 @@ export default function UrgencePage() {
 function UrgenceInner() {
   const router = useRouter();
   const { hasPremiumAccess } = useAuth();
-  const [screen, setScreen] = useState<Screen>("choose");
+  const [screen, setScreen] = useState<Screen>("depot");
   const [exercise, setExercise] = useState<ExerciseKey | null>(null);
   const [phase, setPhase] = useState<Phase>("intro");
 
@@ -65,6 +66,15 @@ function UrgenceInner() {
   function backToChoose() {
     setExercise(null);
     setScreen("choose");
+  }
+
+  // ── DÉPÔT ─────────────────────────────────────────────────
+  if (screen === "depot") {
+    return (
+      <ScreenContainer overlayOpacity={45}>
+        <MiniDepot onContinue={() => setScreen("choose")} />
+      </ScreenContainer>
+    );
   }
 
   // ── PAYWALL ────────────────────────────────────────────────
