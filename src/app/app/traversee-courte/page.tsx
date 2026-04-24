@@ -155,10 +155,10 @@ function getNeedsForState(feeling: Feeling | null, zone: BodyZone | null): strin
 type Gesture = { label: string; description: string; action: string };
 
 const NEED_GESTURE: Record<string, Gesture> = {
-  "ralentir":                              { label: "Maintenant",  description: "Ralentis ce que tu es en train de faire.", action: "ralentir ce que je fais" },
-  "revenir au corps":                      { label: "Maintenant",  description: "Assieds-toi ou pose-toi quelque part. 2 minutes.", action: "m'asseoir 2 minutes" },
-  "faire une pause":                       { label: "Maintenant",  description: "Pose ce que tu fais. Bois un verre d'eau.", action: "faire une vraie pause" },
-  "clarifier":                             { label: "Maintenant",  description: "Note une seule phrase. Choisis une seule chose.", action: "noter une phrase" },
+  "ralentir":       { label: "Maintenant", description: "Ok.\n\nTu peux ralentir.\n\nJuste ce que tu es en train de faire.\nUn tout petit peu.", action: "ralentir ce que je fais" },
+  "revenir au corps": { label: "Maintenant", description: "Là…\n\nReviens dans ton corps.\n\nAssieds-toi.\nOu pose-toi quelque part.\n\nJuste deux minutes.", action: "m'asseoir 2 minutes" },
+  "faire une pause":  { label: "Maintenant", description: "Stop.\n\nPose ce que tu fais.\n\nVa boire un verre d'eau.", action: "faire une vraie pause" },
+  "clarifier":        { label: "Maintenant", description: "Prends une seconde.\n\nNote une seule phrase.\n\nJuste ce qui est important.", action: "noter une phrase" },
   "me sentir en sécurité":               { label: "Maintenant",  description: "Va dans une autre pièce ou coupe une stimulation.", action: "changer d'espace" },
   "relâcher la pression":                { label: "Maintenant",  description: "Remets une chose à plus tard. Juste une.", action: "remettre une chose à plus tard" },
   "prendre de l'espace":                 { label: "Maintenant",  description: "Ouvre une fenêtre ou sors 2 minutes.", action: "prendre de l'air" },
@@ -916,7 +916,7 @@ function TraverseeCourteV2() {
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
                 {gesture.label}
               </p>
-              <p className="font-serif text-2xl text-t-beige leading-relaxed">
+              <p className="font-serif text-xl text-t-beige leading-relaxed whitespace-pre-line">
                 {gesture.description}
               </p>
             </div>
