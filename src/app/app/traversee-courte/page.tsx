@@ -179,6 +179,18 @@ function getGestureForNeed(need: string): Gesture {
   return NEED_GESTURE[need] ?? { label: "Maintenant", description: "Assieds-toi 2 minutes. C'est suffisant.", action: "m'asseoir 2 minutes" };
 }
 
+function getToneContext(level: ActivationLevel | null): string | null {
+  if (!level) return null;
+  const map: Record<ActivationLevel, string> = {
+    charge:  "Avant d'agir, on ralentit.",
+    deborde: "Là, on évite de laisser l'émotion conduire.",
+    stop:    "Là, on fait juste tenir ce moment.",
+    calme:   "On enlève un peu de poids.",
+    encore:  "Avant l'extérieur, on revient à toi.",
+  };
+  return map[level];
+}
+
 
 // ── Chip auto-advance ──────────────────────────────────────
 function AutoChip({
@@ -839,6 +851,11 @@ function TraverseeCourteV2() {
                     : `Tout à l'heure, c'était surtout ${feelingLabel}`}
                 </p>
               )}
+              {getToneContext(activationLevel) && (
+                <p className="font-inter text-xs t-text-ghost text-center opacity-70">
+                  {getToneContext(activationLevel)}
+                </p>
+              )}
               <div className="text-center space-y-2">
                 <p className="font-body text-lg text-t-beige leading-relaxed">
                   Là, pour continuer, ce qui te ferait du bien :
@@ -910,32 +927,18 @@ function TraverseeCourteV2() {
       case "geste-display": {
         const gesture = selectedNeed ? getGestureForNeed(selectedNeed) : null;
         if (!gesture) return null;
-        const isInteraction = activationLevel === "charge";
-        const isOverwhelmed = activationLevel === "deborde";
-        const isShutdown    = activationLevel === "stop";
-        const GESTE_CONTEXT_LINE: Record<string, string> = {
-          "ralentir":         "Avant d'agir…",
-          "revenir au corps": "Avant de répondre…",
-          "faire une pause":  "Avant de répondre…",
-          "clarifier":        "Avant de répondre…",
-        };
-        const contextBlock = (() => {
-          const s = "font-inter text-sm t-text-ghost italic";
-          if (isInteraction && selectedNeed && GESTE_CONTEXT_LINE[selectedNeed])
-            return <p className={s}>{GESTE_CONTEXT_LINE[selectedNeed]}</p>;
-          if (isOverwhelmed)
-            return <div className="space-y-0.5"><p className={s}>Là, c&apos;est beaucoup.</p><p className={s}>On va juste revenir doucement.</p></div>;
-          if (isShutdown)
-            return <div className="space-y-0.5"><p className={s}>On va relancer un peu.</p><p className={s}>Juste un petit mouvement.</p></div>;
-          return null;
-        })();
+        const toneContext = getToneContext(activationLevel);
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 animate-fade-up">
             <div className="text-center space-y-4">
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
                 {gesture.label}
               </p>
-              {contextBlock}
+              {toneContext && (
+                <p className="font-inter text-xs t-text-ghost opacity-70 italic">
+                  {toneContext}
+                </p>
+              )}
               <p className="font-serif text-xl text-t-beige leading-relaxed whitespace-pre-line">
                 {gesture.description}
               </p>
