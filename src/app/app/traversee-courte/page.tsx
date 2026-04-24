@@ -71,6 +71,8 @@ type Screen =
   | "branche-agite"
   | "branche-agite-exercice"
   | "emerger"
+  | "choix-geste"
+  | "geste-display"
   | "synthese";
 
 type ActivationLevel = "deborde" | "charge" | "encore" | "calme" | "stop";
@@ -852,9 +854,8 @@ function TraverseeCourteV2() {
                     label={need}
                     onClick={() => {
                       setSelectedNeed(need);
-                      setEmergerStep("transition");
                       trackEvent(user?.id ?? null, "step_complete", { step: "emerger", mode: "court", value: need });
-                      trackEvent(user?.id ?? null, "session_end", { mode: "court" });
+                      setScreen("choix-geste");
                     }}
                   />
                 ))}
@@ -863,31 +864,58 @@ function TraverseeCourteV2() {
           );
         }
 
-        // ── Sous-étape : TRANSITION ──────────────────────
-        if (emergerStep === "transition") {
-          return (
-            <div
-              className="flex items-center justify-center min-h-[80vh]"
-              style={{ opacity: 1, transition: "opacity 300ms ease" }}
-            >
-              <p className="font-serif text-2xl text-t-beige text-center leading-relaxed">
-                Ok… on va rester sur<br />quelque chose de simple
+        return null;
+      }
+
+      // ════════════════════════════════════════════════════
+      // ÉCRAN — CHOIX GESTE
+      // ════════════════════════════════════════════════════
+      case "choix-geste": {
+        const GESTE_CHIPS: { label: string; need: string }[] = [
+          { label: "ralentir ce que je fais",  need: "ralentir" },
+          { label: "revenir dans mon corps",   need: "revenir au corps" },
+          { label: "faire une pause",          need: "faire une pause" },
+          { label: "clarifier",                need: "clarifier" },
+        ];
+        return (
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+            <div className="text-center space-y-2">
+              <p className="font-body text-lg text-t-beige">
+                Choisis un geste simple.
+              </p>
+              <p className="font-inter text-sm t-text-ghost">
+                Celui qui te parle le plus.
               </p>
             </div>
-          );
-        }
+            <div className="w-full space-y-3">
+              {GESTE_CHIPS.map(({ label, need }) => (
+                <AutoChip
+                  key={need}
+                  label={label}
+                  onClick={() => {
+                    setSelectedNeed(need);
+                    trackEvent(user?.id ?? null, "session_end", { mode: "court" });
+                    setScreen("geste-display");
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      }
 
-        // ── Sous-étape : GESTE ───────────────────────────
+      // ════════════════════════════════════════════════════
+      // ÉCRAN — GESTE
+      // ════════════════════════════════════════════════════
+      case "geste-display": {
         const gesture = selectedNeed ? getGestureForNeed(selectedNeed) : null;
         if (!gesture) return null;
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 animate-fade-up">
             <div className="text-center space-y-4">
-              {/* Catégorie : Respiration / Appuis / Recul / Contact */}
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
                 {gesture.label}
               </p>
-              {/* Instruction somatic — texte unique à suivre */}
               <p className="font-serif text-2xl text-t-beige leading-relaxed">
                 {gesture.description}
               </p>
