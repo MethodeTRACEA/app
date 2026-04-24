@@ -43,7 +43,7 @@ export default function BienvenuePage() {
     }
 
     localStorage.setItem("tracea_onboarding_done", "true");
-    router.push("/app/session");
+    router.push("/app/traversee-courte");
   }
 
   if (authLoading || !ready) {

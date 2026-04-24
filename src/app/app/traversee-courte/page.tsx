@@ -490,14 +490,11 @@ function TraverseeCourteV2() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-4">
               <p className="font-body text-lg t-text-secondary leading-relaxed">
-                On peut prendre un peu plus de temps pour aller plus loin.
-              </p>
-              <p className="font-body text-base t-text-secondary">
-                Environ 5 à 6 minutes.
+                Pour l&apos;instant, on reste sur cette traversée.
               </p>
             </div>
-            <PrimaryButton onClick={() => router.push(`/app/session?activation=${activationLevel}`)}>
-              Continuer
+            <PrimaryButton onClick={() => setScreen("ressenti")}>
+              Continuer ici
             </PrimaryButton>
           </div>
         );
@@ -995,13 +992,6 @@ function TraverseeCourteV2() {
             <PrimaryButton onClick={() => setScreen("exit-transition")}>
               Retour à l&apos;accueil
             </PrimaryButton>
-            <button
-              type="button"
-              onClick={() => router.push("/app/session")}
-              className="font-inter text-[13px] t-text-secondary underline underline-offset-[3px]"
-            >
-              Aller plus loin
-            </button>
           </div>
         );
     }
