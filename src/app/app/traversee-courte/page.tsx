@@ -683,9 +683,6 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
-              <h1 className="font-serif text-2xl text-t-beige">
-                Là
-              </h1>
               <p className="font-body text-lg text-t-beige">
                 Là, c&apos;est comment ?
               </p>
@@ -696,7 +693,7 @@ function TraverseeCourteV2() {
             <div className="w-full space-y-3">
               {([
                 ["pareil", "pareil"],
-                ["un-peu", "un peu"],
+                ["un-peu", "un peu mieux"],
                 ["plus-agite", "plus agité"],
                 ["je-ne-sais-pas", "je ne sais pas trop"],
               ] as [AnchorEffect, string][]).map(([value, label]) => (
