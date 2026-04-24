@@ -837,9 +837,12 @@ function TraverseeCourteV2() {
                     : `Tout à l'heure, c'était surtout ${feelingLabel}`}
                 </p>
               )}
-              <div className="text-center">
+              <div className="text-center space-y-2">
                 <p className="font-body text-lg text-t-beige leading-relaxed">
-                  Là, ce qui aiderait un peu,<br />ce serait plutôt…
+                  Là, pour continuer, ce qui te ferait du bien :
+                </p>
+                <p className="font-inter text-sm t-text-ghost">
+                  Sans trop réfléchir.
                 </p>
               </div>
               <div className="w-full space-y-3">
