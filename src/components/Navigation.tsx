@@ -13,7 +13,6 @@ const publicLinks = [
 
 const authLinks = [
   { href: "/", label: "Accueil" },
-  { href: "/app/session", label: "Session" },
   { href: "/app/entrainement", label: "S'entraîner" },
   { href: "/app/historique", label: "Historique" },
   { href: "/app/ressources", label: "Ressources" },
