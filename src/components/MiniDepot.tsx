@@ -6,10 +6,11 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 // ════════════════════════════════════════════════════════════
 // MiniDepot — dépôt facultatif avant l'entrée dans un flow.
 // Le texte n'est pas analysé, pas envoyé, pas stocké.
-// onContinue est appelé identiquement que le champ soit rempli ou non.
+// onContinue(text) transmet le texte brut au parent pour
+// un matching local optionnel — sans IA, sans API.
 // ════════════════════════════════════════════════════════════
 
-export function MiniDepot({ onContinue }: { onContinue: () => void }) {
+export function MiniDepot({ onContinue }: { onContinue: (text: string) => void }) {
   const [text, setText] = useState("");
 
   return (
@@ -27,12 +28,12 @@ export function MiniDepot({ onContinue }: { onContinue: () => void }) {
       />
 
       <div className="w-full space-y-3">
-        <PrimaryButton onClick={onContinue}>
+        <PrimaryButton onClick={() => onContinue(text)}>
           Continuer
         </PrimaryButton>
         <button
           type="button"
-          onClick={onContinue}
+          onClick={() => onContinue(text)}
           className="w-full text-center font-inter text-sm t-text-ghost py-2"
         >
           Passer cette étape

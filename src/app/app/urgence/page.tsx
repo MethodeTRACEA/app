@@ -24,6 +24,14 @@ type Screen = "depot" | "choose" | "practice" | "done" | "paywall";
 type ExerciseKey = "respiration" | "corps" | "regard";
 type Phase = "intro" | "active" | "close";
 
+function matchDepotToExercise(text: string): ExerciseKey | null {
+  const t = text.toLowerCase();
+  if (/respir|souffle|breath|coeur|rythme|cardiaque|palpitation/.test(t)) return "respiration";
+  if (/corps|tension|contracté|appuis|muscles|physique|serré/.test(t)) return "corps";
+  if (/regard|yeux|fixe|tête|pensées|spirale|mental|tourner/.test(t)) return "regard";
+  return null;
+}
+
 const EXERCISES: { key: ExerciseKey; label: string; micro: string }[] = [
   { key: "respiration", label: "Respirer lentement", micro: "ralentir un peu" },
   { key: "corps",       label: "Revenir au corps",   micro: "revenir aux appuis" },
@@ -52,6 +60,7 @@ function UrgenceInner() {
   const [screen, setScreen] = useState<Screen>("depot");
   const [exercise, setExercise] = useState<ExerciseKey | null>(null);
   const [phase, setPhase] = useState<Phase>("intro");
+  const [suggestedExercise, setSuggestedExercise] = useState<ExerciseKey | null>(null);
 
   function startExercise(key: ExerciseKey) {
     if (!hasPremiumAccess && PREMIUM_EXERCISES.includes(key)) {
@@ -72,7 +81,7 @@ function UrgenceInner() {
   if (screen === "depot") {
     return (
       <ScreenContainer overlayOpacity={45}>
-        <MiniDepot onContinue={() => setScreen("choose")} />
+        <MiniDepot onContinue={(text) => { setSuggestedExercise(matchDepotToExercise(text)); setScreen("choose"); }} />
       </ScreenContainer>
     );
   }
@@ -108,7 +117,7 @@ function UrgenceInner() {
                   key={ex.key}
                   type="button"
                   onClick={() => startExercise(ex.key)}
-                  className="w-full rounded-[20px] border border-[rgba(232,216,199,0.18)] bg-t-brume/20 px-5 py-4 text-left cursor-pointer transition-all duration-200 hover:bg-t-brume/35 hover:border-[rgba(232,216,199,0.30)]"
+                  className={`w-full rounded-[20px] border px-5 py-4 text-left cursor-pointer transition-all duration-200 hover:bg-t-brume/35 hover:border-[rgba(232,216,199,0.30)] ${suggestedExercise === ex.key ? "border-[rgba(232,216,199,0.40)] bg-white/8 ring-1 ring-t-beige/50" : "border-[rgba(232,216,199,0.18)] bg-t-brume/20"}`}
                 >
                   <span className="flex items-center justify-between">
                     <span className="font-body text-lg t-text-primary">{ex.label}</span>

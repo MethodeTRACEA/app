@@ -222,6 +222,7 @@ function TraverseeCourteV2() {
   // Méthodes déjà essayées (pour ne jamais reproposer)
   const [triedMethods, setTriedMethods] = useState<AnchorMethod[]>([]);
   const [selectedEntryMessage, setSelectedEntryMessage] = useState<string | null>(null);
+  const [suggestedEntry, setSuggestedEntry] = useState<ActivationLevel | null>(null);
   // Branche pareil: méthode alternative
   const [altMethod, setAltMethod] = useState<AnchorMethod | null>(null);
   // Personalisation abonné — méthode dominante
@@ -304,6 +305,17 @@ function TraverseeCourteV2() {
     []
   );
 
+  // ── Matching dépôt → entrée (mots-clés, sans IA) ─────────
+  function matchDepotToEntry(text: string): ActivationLevel | null {
+    const t = text.toLowerCase();
+    if (/colère|énerver|exploser|réagir trop fort|m.emporter/.test(t)) return "deborde";
+    if (/répondre|message|sms|mail|regretter/.test(t)) return "charge";
+    if (/voir|rendez-vous|rencontrer|tendu|stressé avant/.test(t)) return "encore";
+    if (/stop|s.arrête|craquer|boire|consommer|fuite|anesthésier|tiens plus/.test(t)) return "stop";
+    if (/trop|submergé|chargé|épuisé|j.en peux plus|débordé/.test(t)) return "calme";
+    return null;
+  }
+
   // ── Rendu par écran ──────────────────────────────────────
 
   const renderScreen = () => {
@@ -314,7 +326,10 @@ function TraverseeCourteV2() {
       case "depot":
         return (
           <MiniDepot
-            onContinue={() => setScreen(onboardingSeen ? "entree" : "onboarding")}
+            onContinue={(text) => {
+              setSuggestedEntry(matchDepotToEntry(text));
+              setScreen(onboardingSeen ? "entree" : "onboarding");
+            }}
           />
         );
 
@@ -409,7 +424,11 @@ function TraverseeCourteV2() {
                 <AutoChip
                   key={value}
                   label={label}
-                  className={index === 0 ? "ring-1 ring-t-beige/40" : undefined}
+                  className={
+                    suggestedEntry
+                      ? value === suggestedEntry ? "ring-1 ring-t-beige/60 bg-white/8" : undefined
+                      : index === 0 ? "ring-1 ring-t-beige/40" : undefined
+                  }
                   onClick={() => {
                     setActivationLevel(value);
                     setSelectedEntryMessage(ENTRY_MESSAGES[value]);

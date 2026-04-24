@@ -135,6 +135,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   const { hasPremiumAccess, session } = useAuth();
   const [phase, setPhase] = useState<Phase>("intro");
   const [showDepot, setShowDepot] = useState(true);
+  const [depotHasText, setDepotHasText] = useState(false);
   const [context, setContext] = useState<SessionData["context"] | "">("");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [steps, setSteps] = useState<Record<StepId, string>>({
@@ -582,7 +583,7 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
   if (showDepot && phase === "intro") {
     return (
       <div className="max-w-2xl mx-auto px-4">
-        <MiniDepot onContinue={() => setShowDepot(false)} />
+        <MiniDepot onContinue={(text) => { setDepotHasText(text.trim().length > 0); setShowDepot(false); }} />
       </div>
     );
   }
@@ -592,6 +593,11 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         <h1 className="section-title !text-2xl md:!text-4xl">Avant de commencer</h1>
+        {depotHasText && (
+          <p className="font-serif text-base text-espresso/60 mb-3 leading-relaxed">
+            D&apos;accord. On part de là.
+          </p>
+        )}
         <p className="text-warm-gray mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
           Là, c&apos;est plutôt :
         </p>
