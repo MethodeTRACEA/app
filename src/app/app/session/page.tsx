@@ -22,6 +22,7 @@ import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
 import { MiniDepot } from "@/components/MiniDepot";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import Link from "next/link";
 import {
   ScreenContainer,
@@ -1710,9 +1711,12 @@ function SessionContent({ userId, routerActivation }: { userId: string; routerAc
         <p className="font-body text-base text-espresso/50 leading-relaxed mb-4">
           C&apos;est suffisant pour maintenant.
         </p>
-        <p className="font-inter text-xs text-espresso/40 leading-relaxed mb-10 text-center">
+        <p className="font-inter text-xs text-espresso/40 leading-relaxed mb-6 text-center">
           Tu peux revenir ici à chaque fois.
         </p>
+        <div className="mb-6">
+          <InstallPrompt />
+        </div>
         <button
           onClick={() => {
             const seen = localStorage.getItem("tracea_post_session_seen") === "true";

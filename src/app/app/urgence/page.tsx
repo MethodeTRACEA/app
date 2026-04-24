@@ -12,6 +12,7 @@ import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
 import { MiniDepot } from "@/components/MiniDepot";
+import { InstallPrompt } from "@/components/InstallPrompt";
 
 // ════════════════════════════════════════════════════════════
 // TRACÉA — Accès immédiat aux exercices
@@ -227,6 +228,8 @@ function UrgenceInner() {
           <p className="font-inter text-xs t-text-ghost text-center">
             Même 30 secondes suffisent.
           </p>
+
+          <InstallPrompt />
 
           <div className="w-full space-y-3">
             <PrimaryButton onClick={backToChoose}>

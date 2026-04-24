@@ -9,6 +9,7 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { ExitLink } from "@/components/ui/ExitLink";
 import { MiniDepot } from "@/components/MiniDepot";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
@@ -925,6 +926,7 @@ function TraverseeCourteV2() {
             <p className="font-inter text-xs t-text-ghost text-center">
               Tu peux revenir ici à chaque fois.
             </p>
+            <InstallPrompt />
             <PrimaryButton onClick={() => setScreen("exit-transition")}>
               Retour à l&apos;accueil
             </PrimaryButton>
