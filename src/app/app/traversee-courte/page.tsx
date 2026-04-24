@@ -683,18 +683,14 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-3">
-              <p className="font-inter text-xs t-text-ghost">
-                Même 30 secondes suffisent.
-              </p>
-              <p className="font-body text-sm t-text-secondary">
-                Prends juste une seconde.
-              </p>
               <h1 className="font-serif text-2xl text-t-beige">
                 Là
               </h1>
-              {/* Question visible — oriente le choix de chip */}
               <p className="font-body text-lg text-t-beige">
                 Là, c&apos;est comment ?
+              </p>
+              <p className="font-inter text-sm t-text-ghost">
+                Dans ton corps, surtout.
               </p>
             </div>
             <div className="w-full space-y-3">
