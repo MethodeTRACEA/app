@@ -780,7 +780,7 @@ function TraverseeCourteV2() {
                   onClick={() => {
                     setAnchorEffect(value);
                     if (value === "un-peu" || value === "je-ne-sais-pas") {
-                      setScreen("emerger");
+                      setScreen("choix-geste");
                     } else if (value === "pareil") {
                       const alt = getAlternativeMethod(triedMethods, false);
                       setAltMethod(alt);
@@ -844,7 +844,7 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setAnchorEffect(value);
-                    setScreen("emerger");
+                    setScreen("choix-geste");
                   }}
                 />
               ))}
@@ -889,7 +889,7 @@ function TraverseeCourteV2() {
       case "branche-agite-exercice":
         return renderExercise(
           altMethod || getAlternativeMethod(triedMethods.slice(0, -1), true),
-          () => setScreen("emerger")
+          () => setScreen("choix-geste")
         );
 
       // ════════════════════════════════════════════════════
