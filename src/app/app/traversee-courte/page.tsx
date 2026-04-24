@@ -105,6 +105,12 @@ const ANCHOR_LABELS: Record<AnchorMethod, string> = {
   "souffle": "Respirer lentement",
 };
 
+const ANCHOR_SUBTEXTS: Record<AnchorMethod, string> = {
+  "appuis": "revenir aux appuis",
+  "autour": "laisser de l'espace",
+  "souffle": "ralentir un peu",
+};
+
 // ── ÉMERGER — Mapping ressenti → besoins → geste ────────────
 
 const ZONE_PREPOSITION: Record<BodyZone, string> = {
@@ -645,7 +651,8 @@ function TraverseeCourteV2() {
                   }}
                   className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-t-brume/30 text-t-beige border border-[rgba(232,216,199,0.45)] hover:bg-t-brume/55 hover:border-[rgba(232,216,199,0.70)] hover:text-white"
                 >
-                  {ANCHOR_LABELS[m]}
+                  <span className="block">{ANCHOR_LABELS[m]}</span>
+                  <span className="block font-inter text-xs t-text-ghost opacity-70 mt-0.5">{ANCHOR_SUBTEXTS[m]}</span>
                 </button>
               ))}
             </div>
