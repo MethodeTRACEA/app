@@ -179,6 +179,62 @@ function getGestureForNeed(need: string): Gesture {
   return NEED_GESTURE[need] ?? { label: "Maintenant", description: "Assieds-toi 2 minutes. C'est suffisant.", action: "m'asseoir 2 minutes" };
 }
 
+// ── GESTES PAR NIVEAU D'ACTIVATION ──────────────────────────
+
+type ActivationGeste = { id: string; label: string; text: string };
+
+const GESTES_BY_ACTIVATION: Record<ActivationLevel, ActivationGeste[]> = {
+  charge: [
+    { id: "charge-1", label: "ne pas envoyer",      text: "Attends.\n\nN'envoie rien.\n\nPose ton téléphone." },
+    { id: "charge-2", label: "écrire sans envoyer",  text: "Écris ton message.\n\nMais ne l'envoie pas.\n\nGarde-le pour toi." },
+    { id: "charge-3", label: "attendre 10 minutes",  text: "Attends 10 minutes.\n\nJuste 10.\n\nTu verras après." },
+    { id: "charge-4", label: "changer de pièce",     text: "Éloigne-toi.\n\nChange de pièce.\n\nJuste un moment." },
+  ],
+  deborde: [
+    { id: "deborde-1", label: "poser les pieds",     text: "Pose tes pieds.\n\nAppuie fort.\n\nSens le sol." },
+    { id: "deborde-2", label: "rester immobile",     text: "Ne bouge plus.\n\nJuste quelques secondes.\n\nLaisse passer." },
+    { id: "deborde-3", label: "prendre distance",    text: "Recule.\n\nPrends de la distance.\n\nTu reviendras après." },
+    { id: "deborde-4", label: "eau sur les mains",   text: "Passe de l'eau sur tes mains.\n\nSens le froid.\n\nReste là." },
+  ],
+  stop: [
+    { id: "stop-1", label: "rester là",              text: "Reste là.\n\nÇa va passer.\n\nTu n'as rien à faire." },
+    { id: "stop-2", label: "serrer relâcher",        text: "Serre les poings.\n\nRelâche.\n\nEncore 5 fois." },
+    { id: "stop-3", label: "boire de l'eau",         text: "Bois un verre d'eau.\n\nLentement.\n\nJuste ça." },
+    { id: "stop-4", label: "faire 10 pas",           text: "Fais 10 pas.\n\nTrès lentement.\n\nReste présent." },
+  ],
+  calme: [
+    { id: "calme-1", label: "écrire tout",           text: "Écris tout.\n\nSans trier.\n\nJuste sortir." },
+    { id: "calme-2", label: "une seule chose",       text: "Choisis une seule chose.\n\nUne.\n\nLe reste attend." },
+    { id: "calme-3", label: "couper les écrans",     text: "Coupe les écrans.\n\nJuste 2 minutes.\n\nRien d'autre." },
+    { id: "calme-4", label: "relâcher épaules",      text: "Relâche tes épaules.\n\nLaisse tomber.\n\nEncore." },
+  ],
+  encore: [
+    { id: "encore-1", label: "main sur soi",         text: "Pose une main sur toi.\n\nReste là.\n\nRespire normalement." },
+    { id: "encore-2", label: "poser une intention",  text: "Choisis une intention.\n\nUne seule.\n\nGarde-la." },
+    { id: "encore-3", label: "ralentir gestes",      text: "Ralentis tes gestes.\n\nJuste un peu.\n\nAvant d'y aller." },
+    { id: "encore-4", label: "nommer le ressenti",   text: "Qu'est-ce que tu ressens ?\n\nJuste ça.\n\nSans changer." },
+  ],
+};
+
+const GESTES_FALLBACK: ActivationGeste[] = [
+  { id: "fallback-1", label: "ne pas envoyer",       text: "Attends.\n\nN'envoie rien.\n\nPose ton téléphone." },
+  { id: "fallback-2", label: "poser les pieds",      text: "Pose tes pieds.\n\nAppuie fort.\n\nSens le sol." },
+  { id: "fallback-3", label: "boire de l'eau",       text: "Bois un verre d'eau.\n\nLentement.\n\nJuste ça." },
+];
+
+function getActivationGestes(level: ActivationLevel | null): ActivationGeste[] {
+  if (!level) return GESTES_FALLBACK;
+  return GESTES_BY_ACTIVATION[level];
+}
+
+function getGesteById(id: string): ActivationGeste | null {
+  for (const gestes of Object.values(GESTES_BY_ACTIVATION)) {
+    const found = gestes.find((g) => g.id === id);
+    if (found) return found;
+  }
+  return GESTES_FALLBACK.find((g) => g.id === id) ?? null;
+}
+
 function getToneContext(level: ActivationLevel | null): string | null {
   if (!level) return null;
   const map: Record<ActivationLevel, string> = {
@@ -885,12 +941,7 @@ function TraverseeCourteV2() {
       // ÉCRAN — CHOIX GESTE
       // ════════════════════════════════════════════════════
       case "choix-geste": {
-        const GESTE_CHIPS: { label: string; need: string }[] = [
-          { label: "ralentir ce que je fais",  need: "ralentir" },
-          { label: "revenir dans mon corps",   need: "revenir au corps" },
-          { label: "faire une pause",          need: "faire une pause" },
-          { label: "clarifier",                need: "clarifier" },
-        ];
+        const gestes = getActivationGestes(activationLevel);
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-2">
@@ -902,12 +953,12 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <div className="w-full space-y-3">
-              {GESTE_CHIPS.map(({ label, need }) => (
+              {gestes.map(({ id, label }) => (
                 <AutoChip
-                  key={need}
+                  key={id}
                   label={label}
                   onClick={() => {
-                    setSelectedNeed(need);
+                    setSelectedNeed(id);
                     trackEvent(user?.id ?? null, "session_end", { mode: "court" });
                     setScreen("geste-display");
                   }}
@@ -922,27 +973,24 @@ function TraverseeCourteV2() {
       // ÉCRAN — GESTE
       // ════════════════════════════════════════════════════
       case "geste-display": {
-        const gesture = selectedNeed ? getGestureForNeed(selectedNeed) : null;
-        if (!gesture) return null;
+        const geste = selectedNeed ? getGesteById(selectedNeed) : null;
+        if (!geste) return null;
         const toneContext = getToneContext(activationLevel);
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 animate-fade-up">
             <div className="text-center space-y-4">
-              <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
-                {gesture.label}
-              </p>
               {toneContext && (
                 <p className="font-inter text-xs t-text-ghost opacity-70 italic">
                   {toneContext}
                 </p>
               )}
               <p className="font-serif text-xl text-t-beige leading-relaxed whitespace-pre-line">
-                {gesture.description}
+                {geste.text}
               </p>
             </div>
             <PrimaryButton
               onClick={() => {
-                setNextAction(gesture.action);
+                setNextAction(geste.label);
                 setScreen("synthese");
               }}
             >
