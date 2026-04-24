@@ -235,6 +235,16 @@ function getGesteById(id: string): ActivationGeste | null {
   return GESTES_FALLBACK.find((g) => g.id === id) ?? null;
 }
 
+// ── Intro choix-geste selon activationLevel ──────────────────
+// [hook situationnel, ...instructions, soft-close]
+const GESTURE_INTRO_BY_ACTIVATION: Record<ActivationLevel, string[]> = {
+  charge:  ["Avant d'agir,", "choisis un geste simple.", "Celui qui te ferait du bien.", "Sans trop réfléchir."],
+  deborde: ["Là,", "reste simple.", "Choisis un geste.", "Celui qui te ferait du bien.", "Sans trop réfléchir."],
+  stop:    ["Là,", "juste un petit pas.", "Choisis un geste simple.", "Sans trop réfléchir."],
+  calme:   ["Pour continuer,", "choisis un geste simple.", "Celui qui te ferait du bien.", "Sans trop réfléchir."],
+  encore:  ["Avant d'y aller,", "choisis un geste simple.", "Celui qui te ferait du bien.", "Sans trop réfléchir."],
+};
+
 function getToneContext(level: ActivationLevel | null): string | null {
   if (!level) return null;
   const map: Record<ActivationLevel, string> = {
@@ -942,14 +952,25 @@ function TraverseeCourteV2() {
       // ════════════════════════════════════════════════════
       case "choix-geste": {
         const gestes = getActivationGestes(activationLevel);
+        const introLines = activationLevel
+          ? GESTURE_INTRO_BY_ACTIVATION[activationLevel]
+          : GESTURE_INTRO_BY_ACTIVATION.charge;
+        const [hookLine, ...restLines] = introLines;
+        const softClose = restLines[restLines.length - 1];
+        const bodyLines = restLines.slice(0, -1);
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <div className="text-center space-y-2">
-              <p className="font-body text-lg text-t-beige">
-                Choisis un geste simple.
+              <p className="font-serif text-xl text-t-beige">
+                {hookLine}
               </p>
-              <p className="font-inter text-sm t-text-ghost">
-                Celui qui te parle le plus.
+              {bodyLines.map((line, i) => (
+                <p key={i} className="font-body text-lg t-text-secondary leading-relaxed">
+                  {line}
+                </p>
+              ))}
+              <p className="font-inter text-xs t-text-ghost opacity-70">
+                {softClose}
               </p>
             </div>
             <div className="w-full space-y-3">
