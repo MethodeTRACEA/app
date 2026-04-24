@@ -100,9 +100,9 @@ const BODY_LABELS: Record<BodyZone, string> = {
 };
 
 const ANCHOR_LABELS: Record<AnchorMethod, string> = {
-  "appuis": "sentir mes pieds",
-  "autour": "regarder autour",
-  "souffle": "respirer",
+  "appuis": "Revenir au corps",
+  "autour": "Se poser un moment",
+  "souffle": "Respirer lentement",
 };
 
 // ── ÉMERGER — Mapping ressenti → besoins → geste ────────────
