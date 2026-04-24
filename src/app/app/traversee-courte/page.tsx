@@ -911,24 +911,31 @@ function TraverseeCourteV2() {
         const gesture = selectedNeed ? getGestureForNeed(selectedNeed) : null;
         if (!gesture) return null;
         const isInteraction = activationLevel === "charge";
+        const isOverwhelmed = activationLevel === "deborde";
+        const isShutdown    = activationLevel === "stop";
         const GESTE_CONTEXT_LINE: Record<string, string> = {
           "ralentir":         "Avant d'agir…",
           "revenir au corps": "Avant de répondre…",
           "faire une pause":  "Avant de répondre…",
           "clarifier":        "Avant de répondre…",
         };
-        const contextLine = isInteraction && selectedNeed ? (GESTE_CONTEXT_LINE[selectedNeed] ?? null) : null;
+        const contextBlock = (() => {
+          const s = "font-inter text-sm t-text-ghost italic";
+          if (isInteraction && selectedNeed && GESTE_CONTEXT_LINE[selectedNeed])
+            return <p className={s}>{GESTE_CONTEXT_LINE[selectedNeed]}</p>;
+          if (isOverwhelmed)
+            return <div className="space-y-0.5"><p className={s}>Là, c&apos;est beaucoup.</p><p className={s}>On va juste revenir doucement.</p></div>;
+          if (isShutdown)
+            return <div className="space-y-0.5"><p className={s}>On va relancer un peu.</p><p className={s}>Juste un petit mouvement.</p></div>;
+          return null;
+        })();
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 animate-fade-up">
             <div className="text-center space-y-4">
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
                 {gesture.label}
               </p>
-              {contextLine && (
-                <p className="font-inter text-sm t-text-ghost italic">
-                  {contextLine}
-                </p>
-              )}
+              {contextBlock}
               <p className="font-serif text-xl text-t-beige leading-relaxed whitespace-pre-line">
                 {gesture.description}
               </p>
