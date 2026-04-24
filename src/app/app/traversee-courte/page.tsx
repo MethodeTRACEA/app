@@ -111,6 +111,14 @@ const ANCHOR_SUBTEXTS: Record<AnchorMethod, string> = {
   "souffle": "ralentir un peu",
 };
 
+const ANCHOR_ORDER_BY_FEELING: Partial<Record<Feeling, AnchorMethod[]>> = {
+  "agite":          ["souffle", "appuis", "autour"],
+  "serre":          ["souffle", "appuis", "autour"],
+  "lourd":          ["appuis", "autour", "souffle"],
+  "flou":           ["appuis", "autour", "souffle"],
+  "je-ne-sais-pas": ["autour", "appuis", "souffle"],
+};
+
 // ── ÉMERGER — Mapping ressenti → besoins → geste ────────────
 
 const ZONE_PREPOSITION: Record<BodyZone, string> = {
@@ -639,7 +647,7 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <div className="w-full space-y-3">
-              {(["appuis", "autour", "souffle"] as AnchorMethod[]).map((m) => (
+              {(currentFeeling && ANCHOR_ORDER_BY_FEELING[currentFeeling] ? ANCHOR_ORDER_BY_FEELING[currentFeeling]! : (["appuis", "autour", "souffle"] as AnchorMethod[])).map((m) => (
                 <button
                   key={m}
                   type="button"
