@@ -181,45 +181,45 @@ function getGestureForNeed(need: string): Gesture {
 
 // ── GESTES PAR NIVEAU D'ACTIVATION ──────────────────────────
 
-type ActivationGeste = { id: string; label: string; text: string };
+type ActivationGeste = { id: string; label: string; summaryLabel?: string; text: string };
 
 const GESTES_BY_ACTIVATION: Record<ActivationLevel, ActivationGeste[]> = {
   charge: [
-    { id: "charge-1", label: "ne pas envoyer",      text: "Attends.\n\nN'envoie rien.\n\nPose ton téléphone." },
-    { id: "charge-2", label: "écrire sans envoyer",  text: "Écris ton message.\n\nMais ne l'envoie pas.\n\nGarde-le pour toi." },
-    { id: "charge-3", label: "attendre 10 minutes",  text: "Attends 10 minutes.\n\nJuste 10.\n\nTu verras après." },
-    { id: "charge-4", label: "changer de pièce",     text: "Éloigne-toi.\n\nChange de pièce.\n\nJuste un moment." },
+    { id: "charge-1", label: "ne pas envoyer",      summaryLabel: "ne rien envoyer pour l'instant",    text: "Attends.\n\nN'envoie rien.\n\nPose ton téléphone." },
+    { id: "charge-2", label: "écrire sans envoyer",  summaryLabel: "écrire sans envoyer",               text: "Écris ton message.\n\nMais ne l'envoie pas.\n\nGarde-le pour toi." },
+    { id: "charge-3", label: "attendre 10 minutes",  summaryLabel: "attendre dix minutes",              text: "Attends 10 minutes.\n\nJuste 10.\n\nTu verras après." },
+    { id: "charge-4", label: "changer de pièce",     summaryLabel: "changer de pièce quelques instants", text: "Éloigne-toi.\n\nChange de pièce.\n\nJuste un moment." },
   ],
   deborde: [
-    { id: "deborde-1", label: "poser les pieds",     text: "Pose tes pieds.\n\nAppuie fort.\n\nSens le sol." },
-    { id: "deborde-2", label: "rester immobile",     text: "Ne bouge plus.\n\nJuste quelques secondes.\n\nLaisse passer." },
-    { id: "deborde-3", label: "prendre distance",    text: "Recule.\n\nPrends de la distance.\n\nTu reviendras après." },
-    { id: "deborde-4", label: "eau sur les mains",   text: "Passe de l'eau sur tes mains.\n\nSens le froid.\n\nReste là." },
+    { id: "deborde-1", label: "poser les pieds",     summaryLabel: "poser les pieds au sol",            text: "Pose tes pieds.\n\nAppuie fort.\n\nSens le sol." },
+    { id: "deborde-2", label: "rester immobile",     summaryLabel: "rester immobile quelques secondes", text: "Ne bouge plus.\n\nJuste quelques secondes.\n\nLaisse passer." },
+    { id: "deborde-3", label: "prendre distance",    summaryLabel: "prendre un peu de distance",        text: "Recule.\n\nPrends de la distance.\n\nTu reviendras après." },
+    { id: "deborde-4", label: "eau sur les mains",   summaryLabel: "passer de l'eau sur mes mains",     text: "Passe de l'eau sur tes mains.\n\nSens le froid.\n\nReste là." },
   ],
   stop: [
-    { id: "stop-1", label: "rester là",              text: "Reste là.\n\nÇa va passer.\n\nTu n'as rien à faire." },
-    { id: "stop-2", label: "serrer relâcher",        text: "Serre les poings.\n\nRelâche.\n\nEncore 5 fois." },
-    { id: "stop-3", label: "boire de l'eau",         text: "Bois un verre d'eau.\n\nLentement.\n\nJuste ça." },
-    { id: "stop-4", label: "faire 10 pas",           text: "Fais 10 pas.\n\nTrès lentement.\n\nReste présent." },
+    { id: "stop-1", label: "rester là",              summaryLabel: "rester là, sans rien faire de plus", text: "Reste là.\n\nÇa va passer.\n\nTu n'as rien à faire." },
+    { id: "stop-2", label: "serrer relâcher",        summaryLabel: "serrer puis relâcher les poings",    text: "Serre les poings.\n\nRelâche.\n\nEncore 5 fois." },
+    { id: "stop-3", label: "boire de l'eau",         summaryLabel: "boire un verre d'eau lentement",     text: "Bois un verre d'eau.\n\nLentement.\n\nJuste ça." },
+    { id: "stop-4", label: "faire 10 pas",           summaryLabel: "faire dix pas lentement",            text: "Fais 10 pas.\n\nTrès lentement.\n\nReste présent." },
   ],
   calme: [
-    { id: "calme-1", label: "écrire tout",           text: "Écris tout.\n\nSans trier.\n\nJuste sortir." },
-    { id: "calme-2", label: "une seule chose",       text: "Choisis une seule chose.\n\nUne.\n\nLe reste attend." },
-    { id: "calme-3", label: "couper les écrans",     text: "Coupe les écrans.\n\nJuste 2 minutes.\n\nRien d'autre." },
-    { id: "calme-4", label: "relâcher épaules",      text: "Relâche tes épaules.\n\nLaisse tomber.\n\nEncore." },
+    { id: "calme-1", label: "écrire tout",           summaryLabel: "écrire ce qui déborde",             text: "Écris tout.\n\nSans trier.\n\nJuste sortir." },
+    { id: "calme-2", label: "une seule chose",       summaryLabel: "choisir une seule chose",           text: "Choisis une seule chose.\n\nUne.\n\nLe reste attend." },
+    { id: "calme-3", label: "couper les écrans",     summaryLabel: "couper les écrans deux minutes",    text: "Coupe les écrans.\n\nJuste 2 minutes.\n\nRien d'autre." },
+    { id: "calme-4", label: "relâcher épaules",      summaryLabel: "relâcher les épaules",              text: "Relâche tes épaules.\n\nLaisse tomber.\n\nEncore." },
   ],
   encore: [
-    { id: "encore-1", label: "main sur soi",         text: "Pose une main sur toi.\n\nReste là.\n\nRespire normalement." },
-    { id: "encore-2", label: "poser une intention",  text: "Choisis une intention.\n\nUne seule.\n\nGarde-la." },
-    { id: "encore-3", label: "ralentir gestes",      text: "Ralentis tes gestes.\n\nJuste un peu.\n\nAvant d'y aller." },
-    { id: "encore-4", label: "nommer le ressenti",   text: "Qu'est-ce que tu ressens ?\n\nJuste ça.\n\nSans changer." },
+    { id: "encore-1", label: "main sur soi",         summaryLabel: "poser une main sur moi",            text: "Pose une main sur toi.\n\nReste là.\n\nRespire normalement." },
+    { id: "encore-2", label: "poser une intention",  summaryLabel: "poser une intention simple",        text: "Choisis une intention.\n\nUne seule.\n\nGarde-la." },
+    { id: "encore-3", label: "ralentir gestes",      summaryLabel: "ralentir mes gestes",               text: "Ralentis tes gestes.\n\nJuste un peu.\n\nAvant d'y aller." },
+    { id: "encore-4", label: "nommer le ressenti",   summaryLabel: "nommer simplement ce que je ressens", text: "Qu'est-ce que tu ressens ?\n\nJuste ça.\n\nSans changer." },
   ],
 };
 
 const GESTES_FALLBACK: ActivationGeste[] = [
-  { id: "fallback-1", label: "ne pas envoyer",       text: "Attends.\n\nN'envoie rien.\n\nPose ton téléphone." },
-  { id: "fallback-2", label: "poser les pieds",      text: "Pose tes pieds.\n\nAppuie fort.\n\nSens le sol." },
-  { id: "fallback-3", label: "boire de l'eau",       text: "Bois un verre d'eau.\n\nLentement.\n\nJuste ça." },
+  { id: "fallback-1", label: "ne pas envoyer",       summaryLabel: "ne rien envoyer pour l'instant",   text: "Attends.\n\nN'envoie rien.\n\nPose ton téléphone." },
+  { id: "fallback-2", label: "poser les pieds",      summaryLabel: "poser les pieds au sol",            text: "Pose tes pieds.\n\nAppuie fort.\n\nSens le sol." },
+  { id: "fallback-3", label: "boire de l'eau",       summaryLabel: "boire un verre d'eau lentement",    text: "Bois un verre d'eau.\n\nLentement.\n\nJuste ça." },
 ];
 
 function getActivationGestes(level: ActivationLevel | null): ActivationGeste[] {
@@ -990,7 +990,7 @@ function TraverseeCourteV2() {
             </div>
             <PrimaryButton
               onClick={() => {
-                setNextAction(geste.label);
+                setNextAction(geste.summaryLabel ?? geste.label);
                 setScreen("synthese");
               }}
             >
