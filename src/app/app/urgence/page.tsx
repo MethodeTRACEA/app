@@ -26,9 +26,9 @@ type Phase = "intro" | "active" | "close";
 
 function matchDepotToExercise(text: string): ExerciseKey | null {
   const t = text.toLowerCase();
-  if (/respir|souffle|breath|coeur|rythme|cardiaque|palpitation/.test(t)) return "respiration";
-  if (/corps|tension|contracté|appuis|muscles|physique|serré/.test(t)) return "corps";
-  if (/regard|yeux|fixe|tête|pensées|spirale|mental|tourner/.test(t)) return "regard";
+  if (/boire|consommer|craquer|stop|s.arr[eê]te|j.en peux plus|tiens plus|anesthésier|fuite/.test(t)) return "regard";
+  if (/message|r[eé]pondre|sms|mail|regretter|envoyer|texto/.test(t)) return "respiration";
+  if (/voir|rendez-vous|rencontrer|tendu|stressé|avant de/.test(t)) return "corps";
   return null;
 }
 
