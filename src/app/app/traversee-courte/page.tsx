@@ -484,6 +484,9 @@ function TraverseeCourteV2() {
               <p className="font-body text-lg t-text-secondary">
                 {activationLevel ? RESSENTI_INTRO[activationLevel] : "Là, c'est surtout :"}
               </p>
+              <p className="font-inter text-sm t-text-ghost">
+                Là, dans ton corps, c&apos;est plutôt :
+              </p>
             </div>
             <div className="w-full space-y-3">
               {(["serre", "agite", "lourd", "flou"] as Feeling[]).map((f) => (
