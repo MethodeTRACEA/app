@@ -910,12 +910,25 @@ function TraverseeCourteV2() {
       case "geste-display": {
         const gesture = selectedNeed ? getGestureForNeed(selectedNeed) : null;
         if (!gesture) return null;
+        const isInteraction = activationLevel === "charge";
+        const GESTE_CONTEXT_LINE: Record<string, string> = {
+          "ralentir":         "Avant d'agir…",
+          "revenir au corps": "Avant de répondre…",
+          "faire une pause":  "Avant de répondre…",
+          "clarifier":        "Avant de répondre…",
+        };
+        const contextLine = isInteraction && selectedNeed ? (GESTE_CONTEXT_LINE[selectedNeed] ?? null) : null;
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 animate-fade-up">
             <div className="text-center space-y-4">
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
                 {gesture.label}
               </p>
+              {contextLine && (
+                <p className="font-inter text-sm t-text-ghost italic">
+                  {contextLine}
+                </p>
+              )}
               <p className="font-serif text-xl text-t-beige leading-relaxed whitespace-pre-line">
                 {gesture.description}
               </p>
