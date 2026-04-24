@@ -1011,7 +1011,7 @@ function TraverseeCourteV2() {
             </div>
             <PrimaryButton
               onClick={() => {
-                setNextAction(geste.summaryLabel ?? geste.label);
+                setNextAction(geste.label);
                 setScreen("synthese");
               }}
             >
@@ -1051,9 +1051,14 @@ function TraverseeCourteV2() {
             </div>
 
             {/* Clôture émotionnelle — doit être lue, pas effacée */}
-            <p className="font-body text-lg text-t-beige text-center">
-              C&apos;est suffisant pour maintenant.
-            </p>
+            <div className="text-center space-y-2">
+              <p className="font-body text-lg text-t-beige">
+                C&apos;est suffisant pour maintenant.
+              </p>
+              <p className="font-body text-base t-text-secondary">
+                Tu peux t&apos;arrêter là.
+              </p>
+            </div>
             <p className="font-inter text-xs t-text-ghost text-center">
               Tu peux revenir ici à chaque fois.
             </p>
