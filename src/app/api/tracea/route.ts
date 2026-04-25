@@ -171,34 +171,48 @@ Mots et tournures interdits :
 - "alors tu as choisi de"
 - toute phrase qui explique une cause ou une intention
 - toute métaphore forte ou imagée ("ça a mis le feu", "ça a explosé", etc.)
+- reformuler ou transformer ce que l'utilisateur a écrit
+- répéter le besoin s'il est déjà affiché ailleurs
+- fusionner émotion et situation dans une même phrase
 
 ---
 
-Formulations autorisées à la place :
+Formulations autorisées à la place des métaphores :
 
 - "ça a réveillé quelque chose en toi"
 - "ça a touché quelque chose en toi"
 
 ---
 
-Structure stricte :
+Règle absolue de fidélité :
 
-- phrase 1 : le vécu (situation)
-- phrase 2 : l'émotion ou l'impact
-- phrase 3 : l'action choisie, sans interprétation
-- phrase 4 (optionnelle) : validation simple ("Ça compte." / "C'est suffisant.")
+Reprends EXACTEMENT les mots choisis par l'utilisateur.
+Ne reformule jamais une action ou un besoin.
+Si l'utilisateur a écrit "mettre au clair ce que je ressens",
+tu écris "mettre au clair ce que tu ressens" — pas "dire ce que tu ressens", pas "clarifier".
+
+---
+
+Structure stricte — 4 phrases, dans cet ordre :
+
+1. situation (ce qui s'est passé)
+2. émotion (ce qu'elle a ressenti)
+3. action choisie — mots EXACTS de l'utilisateur, précédés de "Tu as choisi de"
+4. validation courte ("Ça compte." / "C'est important." / "Tu es resté(e) là." / "Ça aide à y voir plus clair.")
+
+Ne pas mélanger les lignes. Ne pas fusionner deux phrases en une.
 
 ---
 
 Exemple de ton attendu :
 
-"Tu t'es senti(e) incompris(e).
+"Quelque chose t'a blessé.
 
-Ça a touché quelque chose en toi.
+Tu as ressenti de la tristesse.
 
-Tu as choisi de dire ce qui t'avait touché.
+Tu as choisi de mettre au clair ce que tu ressens.
 
-Ça compte."
+C'est important."
 
 ---
 
@@ -390,10 +404,9 @@ async function handleFinalAnalysis(body: {
 
   const userMessage = `Voici ce que la personne a vécu :
 
-Ce qui s'est passé : "${steps.traverser || ""}"
-Ce qu'elle a ressenti : "${steps.reconnaitre || ""}"
-Ce dont elle avait besoin : "${steps.conscientiser || ""}"
-Ce qu'elle a décidé : "${steps.emerger || ""}"
+Situation : "${steps.traverser || ""}"
+Émotion : "${steps.reconnaitre || ""}"
+Action choisie (à reprendre MOT POUR MOT) : "${steps.emerger || ""}"
 
 ---
 
@@ -401,10 +414,13 @@ ${toneDirective}
 
 ---
 
-Écris 2 à 4 phrases courtes.
-Pas de structure. Pas de titres. Pas de séparation.
-Juste un miroir humain et direct.
-Texte brut uniquement.`;
+Écris exactement 4 phrases courtes, dans cet ordre :
+1. la situation
+2. l'émotion
+3. "Tu as choisi de [action mot pour mot]."
+4. une validation courte
+
+Pas de titres. Pas de séparation. Texte brut uniquement.`;
 
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-6",
