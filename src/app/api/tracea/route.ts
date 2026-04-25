@@ -1,8 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync } from "fs";
-import { join } from "path";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 // ===================================================================
@@ -107,14 +105,75 @@ async function logAiUsage(params: {
 }
 
 // ===================================================================
-// SECTION 1 — SYSTEM PROMPTS
+// SECTION 1 — SYSTEM PROMPT — MIROIR HUMAIN
 // ===================================================================
 
-// Master prompt (complet) — utilisé pour final-analysis
-const SYSTEM_PROMPT = readFileSync(
-  join(process.cwd(), "docs", "IA_TRACEA_SYSTEM_PROMPT.md"),
-  "utf-8"
-);
+const MIRROR_SYSTEM_PROMPT = `Tu es TRACÉA.
+
+Tu ne donnes pas de conseils.
+Tu ne fais pas d'analyse.
+Tu ne cherches pas à expliquer.
+
+Tu fais une seule chose :
+tu aides la personne à reconnaître ce qu'elle vit.
+
+---
+
+Règles absolues :
+
+- tu parles simplement
+- tu utilises des phrases courtes
+- tu restes concret
+- tu ne théorises jamais
+- tu ne donnes aucune instruction
+- tu ne proposes aucune solution
+
+---
+
+Tu écris comme quelqu'un qui comprend,
+pas comme quelqu'un qui explique.
+
+---
+
+Structure attendue :
+
+- 2 à 4 phrases maximum
+- phrases courtes
+- ton humain, doux, direct
+
+---
+
+Tu peux :
+
+- reformuler ce qui s'est passé
+- relier émotion + besoin
+- nommer ce qui compte pour la personne
+
+---
+
+Tu ne peux jamais :
+
+- dire "tu devrais"
+- dire "il faut"
+- analyser
+- interpréter en profondeur
+- faire de psychologie
+- utiliser des mots abstraits
+
+---
+
+Exemple de ton attendu :
+
+"Tu t'es senti(e) incompris(e).
+Et ça t'a mis en colère.
+
+Ce que tu voulais, c'était juste être entendu(e)."
+
+---
+
+Ta réponse doit donner à la personne cette sensation :
+
+"oui… c'est exactement ça."`;
 
 // ===================================================================
 // STEP_ORDER pour le contexte de session
@@ -253,55 +312,35 @@ async function handleFinalAnalysis(body: {
   if (aiLimited) {
     console.log("[TRACEA API] final-analysis: AI limited for user:", userId?.slice(0, 8));
     return NextResponse.json({
-      analysis: "Tu as pris un moment pour revenir au corps.\nQuelque chose s'est un peu posé.\nEt tu repars avec un geste.",
+      text: "Tu as pris le temps de mettre des mots sur ce qui se passe.\nC'est déjà quelque chose.",
       ai_limited: true,
     });
   }
 
-  let stepsContent = "";
-  for (const sid of STEP_ORDER) {
-    if (steps[sid]) {
-      stepsContent += `${STEP_LABELS[sid] || sid} :\n"${steps[sid]}"\n\n`;
-    }
-  }
+  const userMessage = `Voici ce que la personne a vécu :
 
-  const userMessage = `Voici la traversée complète de cette personne.
+Ce qui s'est passé : "${steps.traverser || ""}"
+Ce qu'elle a ressenti : "${steps.reconnaitre || ""}"
+Ce dont elle avait besoin : "${steps.conscientiser || ""}"
+Ce qu'elle a décidé : "${steps.emerger || ""}"
 
-Contexte : ${context}
-
---- Les étapes de cette traversée ---
-${stepsContent}
-Génère un résumé COURT de cette traversée. Format obligatoire en 3 parties :
-
-1. LE MOUVEMENT — 1 phrase. Ce qui a changé dans le corps. Ton incarné : "Quelque chose s'est posé" pas "Il y a eu une réduction de tension". Utilise les mots de la personne.
-
-2. LA VÉRITÉ — 1 phrase. Ce qui est présent. Ce que la personne a nommé ou touché. Ses mots, pas les tiens. Ton incarné : "Tu viens de faire redescendre ton corps" pas "Émotion dominante : apaisement".
-
-3. LE GESTE — 1 phrase. L'action choisie. Simple et concrète.
-
-Règles absolues :
-- Court. Simple. Incarné.
-- Pas de narration longue. 3 phrases, c'est tout.
-- Pas d'analyse psychologique. Pas de diagnostic. Pas de jargon.
-- Pas de "bravo", pas de jugement.
-- Pas de projection dans le futur.
-- Pas de comparaison avec des sessions précédentes.
-- Ton direct, sensoriel, humain. Les mots de la personne.
-- Reprendre au moins 1 expression exacte utilisée par la personne dans ses réponses.
-- L'ensemble fait 3 phrases maximum.`;
+Écris 2 à 4 phrases courtes.
+Pas de structure. Pas de titres. Pas de séparation.
+Juste un miroir humain et direct.
+Texte brut uniquement.`;
 
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 400,
-    temperature: 0.45,
+    max_tokens: 300,
+    temperature: 0.5,
     system: [
-      { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
+      { type: "text", text: MIRROR_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
     ],
     messages: [{ role: "user", content: userMessage }],
   });
 
   const text =
-    message.content[0].type === "text" ? message.content[0].text : "";
+    message.content[0].type === "text" ? message.content[0].text.trim() : "";
 
   // Logger l'usage (fire-and-forget)
   const analysisUsage = message.usage as unknown as Record<string, number>;
@@ -315,5 +354,5 @@ Règles absolues :
     cacheReadTokens: analysisUsage.cache_read_input_tokens || 0,
   }).catch(() => {});
 
-  return NextResponse.json({ analysis: text });
+  return NextResponse.json({ text });
 }

@@ -301,7 +301,7 @@ function SessionContent({ userId }: { userId: string }) {
         }),
       });
       const data = await res.json();
-      setAnalysis(data.analysis || generateFallbackAnalysis());
+      setAnalysis(data.text || generateFallbackAnalysis());
     } catch {
       setAnalysis(generateFallbackAnalysis());
     }
@@ -745,13 +745,13 @@ function SessionContent({ userId }: { userId: string }) {
             <SynthRow label="Ce qui te semble juste"   value={action} />
           </div>
 
-          {/* Bloc IA */}
+          {/* Miroir IA */}
           {analysis && (
-            <div className="w-full rounded-[20px] border border-[rgba(232,216,199,0.12)] bg-white/4 px-5 py-4 space-y-2">
+            <div className="w-full rounded-[20px] border border-[rgba(232,216,199,0.12)] bg-white/5 px-5 py-4 space-y-2">
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
-                Ce que TRACÉA retient
+                Ce que tu viens de traverser
               </p>
-              <p className="font-body text-sm t-text-secondary leading-relaxed whitespace-pre-line">
+              <p className="font-body text-base t-text-secondary leading-relaxed whitespace-pre-line">
                 {analysis}
               </p>
             </div>
