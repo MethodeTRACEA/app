@@ -203,6 +203,47 @@ function buildBlocks(
 }
 
 // ===================================================================
+// ÉCRÊTAGE PAR PRIORITÉ SÉMANTIQUE
+// ===================================================================
+//
+// Ordre de suppression quand > 4 paragraphes visuels (plus haute = supprimé en premier) :
+//   5 → micro injecté (phrase courte, non critique)
+//   4 → paragraphes de situation surnuméraires (au-delà du premier)
+//   3 → validations connues
+//   2 → émotion ou contenu non classifié
+//   0 → direction + premier bloc de situation (jamais supprimés)
+
+function trimByPriority(
+  paragraphs: string[],
+  direction: string,
+  sitParagraphs: string[],
+  micro: string | null,
+  max: number
+): string[] {
+  const assignPriority = (p: string): number => {
+    if (p === direction) return 0;
+    if (sitParagraphs[0] && p === sitParagraphs[0]) return 0;
+    if (micro && p === micro) return 5;
+    if (sitParagraphs.slice(1).includes(p)) return 4;
+    if (ALL_VALIDATIONS.has(p)) return 3;
+    return 2;
+  };
+
+  const result = [...paragraphs];
+  while (result.length > max) {
+    const maxPri = Math.max(...result.map(assignPriority));
+    if (maxPri === 0) break; // ne peut plus supprimer sans toucher les éléments protégés
+    for (let i = result.length - 1; i >= 0; i--) {
+      if (assignPriority(result[i]) === maxPri) {
+        result.splice(i, 1);
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+// ===================================================================
 // FONCTION PRINCIPALE
 // ===================================================================
 
@@ -237,8 +278,50 @@ export function applyTraceaV3(text: string, emotion: string): string {
   if (blocks.filter(Boolean).length < 2) {
     const fallback = buildBlocks("A", parts, null, finalValidation);
     if (fallback.filter(Boolean).length < 2) return text;
-    return fallback.join("\n\n");
+    return fallback.slice(0, 4).join("\n\n");
   }
 
-  return blocks.join("\n\n");
+  // ── Expansion visuelle ────────────────────────────────────────
+  // situation.join("\n\n") peut contenir plusieurs sous-paragraphes.
+  // On travaille sur les paragraphes visuels individuels pour les étapes suivantes.
+  let visual = blocks.join("\n\n").split(/\n\n+/).filter(Boolean);
+
+  // ── 1. Déduplication des paragraphes consécutifs identiques ──
+  // Ex : micro injecté identique à un paragraphe de situation → garder 1 seul.
+  visual = visual.filter(
+    (p, i) => i === 0 || p.trim() !== visual[i - 1].trim()
+  );
+
+  // ── 2. Garantie de présence minimale ─────────────────────────
+  // Si direction ou premier bloc de situation ont disparu (cas extrême),
+  // repli sur variante A qui garantit les deux.
+  const hasDirection = visual.some((p) => p === parts.direction);
+  const hasSituation =
+    parts.situation.length === 0 ||
+    visual.some((p) => parts.situation.includes(p));
+
+  if (!hasDirection || !hasSituation) {
+    const fb = buildBlocks("A", parts, null, finalValidation);
+    if (fb.filter(Boolean).length >= 2) {
+      visual = fb.join("\n\n").split(/\n\n+/).filter(Boolean);
+      visual = visual.filter(
+        (p, i) => i === 0 || p.trim() !== visual[i - 1].trim()
+      );
+    }
+  }
+
+  // ── 3. Écrêtage à 4 avec priorité sémantique ─────────────────
+  // Supprime micro en premier, puis sit surnuméraires, validation, émotion.
+  // Ne supprime jamais direction ni premier bloc de situation.
+  if (visual.length > 4) {
+    visual = trimByPriority(
+      visual,
+      parts.direction,
+      parts.situation,
+      micro,
+      4
+    );
+  }
+
+  return visual.join("\n\n");
 }
