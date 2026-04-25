@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { Paywall } from "@/components/Paywall";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
@@ -119,6 +120,38 @@ function EntrainementInner() {
                 </button>
               );
             })}
+          </div>
+
+          {/* Traversée approfondie */}
+          <div className="w-full">
+            <div className="w-full h-px bg-[rgba(232,216,199,0.12)] mb-3" />
+            {hasPremiumAccess ? (
+              <Link
+                href="/app/session"
+                className="w-full rounded-[20px] border border-[rgba(232,216,199,0.18)] bg-t-brume/20 px-5 py-4 text-left cursor-pointer transition-all duration-200 hover:bg-t-brume/35 hover:border-[rgba(232,216,199,0.30)] block"
+              >
+                <span className="font-body text-lg t-text-primary block">
+                  Traversée approfondie
+                </span>
+                <span className="block font-inter text-xs t-text-secondary mt-1">
+                  Comprendre ce que tu vis et avancer plus consciemment
+                </span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setScreen("paywall")}
+                className="w-full rounded-[20px] border border-[rgba(232,216,199,0.18)] bg-t-brume/20 px-5 py-4 text-left cursor-pointer transition-all duration-200 hover:bg-t-brume/35 hover:border-[rgba(232,216,199,0.30)]"
+              >
+                <span className="flex items-center justify-between">
+                  <span className="font-body text-lg t-text-primary">Traversée approfondie</span>
+                  <span className="text-xs t-text-secondary opacity-60">Premium</span>
+                </span>
+                <span className="block font-inter text-xs t-text-secondary mt-1">
+                  Comprendre ce que tu vis et avancer plus consciemment
+                </span>
+              </button>
+            )}
           </div>
 
           <ExitLink label="Quitter" href="/app" />

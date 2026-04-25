@@ -1066,6 +1066,18 @@ function TraverseeCourteV2() {
             <PrimaryButton onClick={() => setScreen("exit-transition")}>
               Retour à l&apos;accueil
             </PrimaryButton>
+            <div className="text-center space-y-1.5">
+              <button
+                type="button"
+                onClick={() => router.push("/app/session")}
+                className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
+              >
+                Comprendre ce qui s&apos;est passé
+              </button>
+              <p className="font-inter text-xs t-text-ghost opacity-70">
+                Prendre un moment pour y voir plus clair et repartir autrement
+              </p>
+            </div>
           </div>
         );
     }
