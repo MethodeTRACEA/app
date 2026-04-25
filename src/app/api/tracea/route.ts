@@ -136,33 +136,57 @@ function getToneDirective(emotion: string): string {
   const e = emotion.toLowerCase().trim();
 
   if (e === "colère") {
-    return `Ton attendu pour cette réponse : direct, ancré, stabilisant.
-Phrases courtes. Pas d'intensification. Pas de dramatisation.
-Exemple de clôture : "Ça compte."`;
+    return `Signature émotionnelle : COLÈRE
+Ton : direct, ancré.
+Rythme : court, peu d'espace entre les phrases.
+Micro-phrase optionnelle (1 seule, si pertinent) : "Ça pousse." ou "Il y a quelque chose."
+Validation finale — choisir UNE parmi : "Tu peux t'écouter." / "Tu peux t'appuyer là-dessus."`;
   }
 
   if (e === "tristesse") {
-    return `Ton attendu pour cette réponse : doux, contenant, rassurant.
-Rythme plus lent. Laisse de l'espace entre les idées.
-Exemple de clôture : "C'est important."`;
+    return `Signature émotionnelle : TRISTESSE
+Ton : doux, lent.
+Rythme : avec respiration — sauts de ligne possibles.
+Micro-phrase optionnelle (1 seule, si pertinent) : "C'est lourd." ou "Ça touche."
+Validation finale — choisir UNE parmi : "Tu peux prendre ce temps." / "Tu peux rester avec ça."`;
   }
 
   if (e === "peur") {
-    return `Ton attendu pour cette réponse : sécurisant, concret, simple.
-Pas de mots abstraits. Ancre dans le présent et dans ce qui s'est passé.
-Exemple de clôture : "Tu es resté(e) là."`;
+    return `Signature émotionnelle : PEUR
+Ton : stable, sécurisant.
+Rythme : régulier.
+Micro-phrase optionnelle (1 seule, si pertinent) : "Il y a une tension." ou "Ton corps réagit."
+Validation finale — choisir UNE parmi : "Tu peux ralentir." / "Tu peux rester là."`;
   }
 
   if (e === "confusion") {
-    return `Ton attendu pour cette réponse : clarifiant, lent, structurant.
-Aide la personne à voir ce qui était flou. Phrases simples, dans l'ordre.
-Exemple de clôture : "Ça aide à y voir plus clair."`;
+    return `Signature émotionnelle : CONFUSION
+Ton : ouvert, non défini.
+Rythme : légèrement flottant.
+Micro-phrase optionnelle (1 seule, si pertinent) : "C'est flou." ou "Quelque chose échappe."
+Validation finale — choisir UNE parmi : "Ça peut rester comme ça." / "Tu n'as pas besoin de savoir tout de suite."`;
+  }
+
+  if (e === "honte") {
+    return `Signature émotionnelle : HONTE
+Ton : très délicat, minimal.
+Rythme : lent, épuré.
+Micro-phrase optionnelle (1 seule, si pertinent) : "Ça se referme." ou "C'est difficile à montrer."
+Validation finale — choisir UNE parmi : "Tu peux y aller doucement." / "Tu peux rester avec toi."`;
+  }
+
+  if (e === "frustration") {
+    return `Signature émotionnelle : FRUSTRATION
+Ton : lucide, posé.
+Rythme : légèrement haché.
+Micro-phrase optionnelle (1 seule, si pertinent) : "Ça bloque." ou "Quelque chose résiste."
+Validation finale — choisir UNE parmi : "Tu peux le voir." / "C'est là."`;
   }
 
   // Défaut — ton neutre miroir
   return `Ton attendu pour cette réponse : neutre, humain, direct.
 Miroir simple. Pas de surcharge émotionnelle.
-Exemple de clôture : "Ça compte."`;
+Validation finale — choisir UNE parmi : "Ça compte." / "Ça a du sens." / "Ça a sa place."`;
 }
 
 // ===================================================================
