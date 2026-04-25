@@ -265,7 +265,7 @@ function SessionContent({ userId }: { userId: string }) {
 
   // ── Démarrer session en DB ───────────────────────────────────
   async function startSession() {
-    const s = await createSessionDb(userId, null, "approfondi");
+    const s = await createSessionDb(userId, null, "autre");
     if (s) {
       setSessionId(s.id);
       trackEvent(userId, "session_start", { mode: "approfondi" });
@@ -275,11 +275,13 @@ function SessionContent({ userId }: { userId: string }) {
 
   // ── Générer analyse IA ───────────────────────────────────────
   async function generateAnalysis() {
-    const steps = {
+    const steps: Record<import("@/lib/types").StepId, string> = {
       traverser: situationLabel,
       reconnaitre: emotionLabel,
+      ancrer: "",
       conscientiser: besoinLabel,
       emerger: action,
+      aligner: "",
     };
 
     try {
@@ -311,7 +313,7 @@ function SessionContent({ userId }: { userId: string }) {
         verite_interieure: besoinLabel.slice(0, 200),
         action_alignee: action.slice(0, 200),
         completed: true,
-      } as Parameters<typeof updateSessionDb>[1]);
+      });
     }
 
     trackEvent(userId, "session_end", { mode: "approfondi" });
