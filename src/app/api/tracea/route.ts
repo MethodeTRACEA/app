@@ -322,6 +322,22 @@ async function handleFinalAnalysis(body: {
     });
   }
 
+  // ── TEST_LOCAL : bypass Anthropic, retourne un texte simulé ──
+  if (process.env.TEST_LOCAL === "true") {
+    const input = buildCleanInput(steps);
+    const rawText = [
+      input.situation,
+      `Tu as ressenti de la ${input.emotion}.`,
+      `Ce qui te semble juste, c'est ${input.action}.`,
+      "Ça compte.",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+    const text = applyTraceaV3(rawText, steps.reconnaitre || "");
+    console.log("[TRACEA API] TEST_LOCAL — simulation active, aucun appel Anthropic");
+    return NextResponse.json({ text });
+  }
+
   const toneDirective = getToneDirective(steps.reconnaitre || "");
   const input = buildCleanInput(steps);
 
