@@ -229,6 +229,44 @@ const STEP_LABELS: Record<string, string> = {
 };
 
 // ===================================================================
+// TON SELON ÉMOTION — injecté dans le message utilisateur
+// (pas dans le system prompt pour conserver le cache Anthropic)
+// ===================================================================
+
+function getToneDirective(emotion: string): string {
+  const e = emotion.toLowerCase().trim();
+
+  if (e === "colère") {
+    return `Ton attendu pour cette réponse : direct, ancré, stabilisant.
+Phrases courtes. Pas d'intensification. Pas de dramatisation.
+Exemple de clôture : "Ça compte."`;
+  }
+
+  if (e === "tristesse") {
+    return `Ton attendu pour cette réponse : doux, contenant, rassurant.
+Rythme plus lent. Laisse de l'espace entre les idées.
+Exemple de clôture : "C'est important."`;
+  }
+
+  if (e === "peur") {
+    return `Ton attendu pour cette réponse : sécurisant, concret, simple.
+Pas de mots abstraits. Ancre dans le présent et dans ce qui s'est passé.
+Exemple de clôture : "Tu es resté(e) là."`;
+  }
+
+  if (e === "confusion") {
+    return `Ton attendu pour cette réponse : clarifiant, lent, structurant.
+Aide la personne à voir ce qui était flou. Phrases simples, dans l'ordre.
+Exemple de clôture : "Ça aide à y voir plus clair."`;
+  }
+
+  // Défaut — ton neutre miroir
+  return `Ton attendu pour cette réponse : neutre, humain, direct.
+Miroir simple. Pas de surcharge émotionnelle.
+Exemple de clôture : "Ça compte."`;
+}
+
+// ===================================================================
 // AI LIMIT — free tier: 1 session with AI, unlimited for subscribers
 // ===================================================================
 
@@ -336,7 +374,7 @@ async function handleFinalAnalysis(body: {
   context: string;
   userId?: string; // ignoré — userId vient du token vérifié
 }, userId: string) {
-  const { steps, context } = body;
+  const { steps } = body;
 
   // Check AI limit before any Claude call
   const aiLimited = await checkAiLimit(userId);
@@ -348,12 +386,20 @@ async function handleFinalAnalysis(body: {
     });
   }
 
+  const toneDirective = getToneDirective(steps.reconnaitre || "");
+
   const userMessage = `Voici ce que la personne a vécu :
 
 Ce qui s'est passé : "${steps.traverser || ""}"
 Ce qu'elle a ressenti : "${steps.reconnaitre || ""}"
 Ce dont elle avait besoin : "${steps.conscientiser || ""}"
 Ce qu'elle a décidé : "${steps.emerger || ""}"
+
+---
+
+${toneDirective}
+
+---
 
 Écris 2 à 4 phrases courtes.
 Pas de structure. Pas de titres. Pas de séparation.
