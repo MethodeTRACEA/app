@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { MIRROR_SYSTEM_PROMPT } from "@/lib/ai/traceaMirrorPrompt";
+import { applyTraceaV3 } from "@/lib/ai/applyTraceaV3";
 
 // ===================================================================
 // API KEY & CLIENTS
@@ -342,8 +343,11 @@ Pas de titres. Pas de séparation. Texte brut uniquement.`;
     messages: [{ role: "user", content: userMessage }],
   });
 
-  const text =
+  const rawText =
     message.content[0].type === "text" ? message.content[0].text.trim() : "";
+
+  // ── Post-traitement V3 ─────────────────────────────────────────
+  const text = applyTraceaV3(rawText, steps.reconnaitre || "");
 
   // Logger l'usage (fire-and-forget)
   const analysisUsage = message.usage as unknown as Record<string, number>;
