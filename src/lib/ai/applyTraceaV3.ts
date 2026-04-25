@@ -46,6 +46,29 @@ const MICRO_PHRASES: Record<EmotionKey, [string, string]> = {
   "frustration": ["Ça bloque.", "Quelque chose résiste."],
 };
 
+const HUMAN_TOUCH: Record<string, [string, string]> = {
+  "colère":       ["Ça a touché quelque chose.", "Ça ne passe pas."],
+  "tristesse":    ["Ça compte pour toi.", "Ça fait quelque chose."],
+  "peur":         ["Il y a une tension là.", "Ça serre un peu."],
+  "honte":        ["C'est sensible.", "Ça te touche."],
+  "culpabilité":  ["Ça pèse un peu.", "Tu le vois."],
+  "confusion":    ["C'est flou.", "Ça ne se pose pas encore."],
+  "frustration":  ["Ça bloque.", "Ça frotte."],
+  "solitude":     ["C'est seul là.", "Il manque quelque chose."],
+};
+
+// Phrase de lien insérée entre situation et émotion (variante A uniquement)
+const LINK_PHRASES: Record<string, [string, string]> = {
+  "colère":       ["Ça ne passe pas.", "Ça touche quelque chose."],
+  "tristesse":    ["Ça compte pour toi.", "Ça fait quelque chose."],
+  "peur":         ["Il y a une tension là.", "Ça serre un peu."],
+  "honte":        ["C'est sensible.", "C'est difficile à montrer."],
+  "culpabilité":  ["Ça pèse un peu.", "Tu le vois."],
+  "confusion":    ["C'est flou.", "Ça ne se pose pas encore."],
+  "frustration":  ["Ça bloque.", "Ça frotte."],
+  "solitude":     ["C'est seul là.", "Il manque quelque chose."],
+};
+
 // Toutes les validations connues (pour détection dans le texte IA)
 const ALL_VALIDATIONS = new Set([
   "Tu peux t'appuyer là-dessus.", "Tu peux t'écouter.",
@@ -152,7 +175,7 @@ function selectVariant(seed: string): Variant {
 
 // ── Construction par variante ────────────────────────────────────
 //
-// A — miroir classique     : sit | emo | dir | valid           (4 blocs)
+// A — miroir classique     : sit | [lien] | emo | dir | valid  (max 4, lien si sit+emo présents)
 // B — émotion d'abord      : emo | sit | dir | valid           (4 blocs)
 // C — fusion douce         : sit, et emo | dir | valid         (3 blocs)
 // D — avec micro-phrase    : sit | micro | dir | valid         (4 blocs, micro remplace emo)
@@ -162,7 +185,9 @@ function buildBlocks(
   variant: Variant,
   parts: IaParts,
   micro: string | null,
-  validation: string
+  validation: string,
+  humanTouch: string | null = null,
+  link: string | null = null
 ): string[] {
   const { situation, emotion, direction } = parts;
   const sit = situation.join("\n\n");
@@ -171,6 +196,7 @@ function buildBlocks(
 
   switch (variant) {
     case "A":
+      if (link && emo) return [sit, link, emo, dir, validation].filter(Boolean);
       return [sit, emo, dir, validation].filter(Boolean);
 
     case "B":
@@ -193,6 +219,7 @@ function buildBlocks(
     case "D":
       // Micro-phrase remplace l'émotion distincte pour rester à 4 blocs max
       if (!micro) return [sit, emo, dir, validation].filter(Boolean);
+      if (humanTouch) return [sit, micro, humanTouch, dir, validation].filter(Boolean);
       return [sit, micro, dir, validation].filter(Boolean);
 
     case "E":
@@ -208,9 +235,10 @@ function buildBlocks(
 //
 // Ordre de suppression quand > 4 paragraphes visuels (plus haute = supprimé en premier) :
 //   5 → micro injecté (phrase courte, non critique)
-//   4 → paragraphes de situation surnuméraires (au-delà du premier)
+//   4 → paragraphes de situation surnuméraires / humanTouch
 //   3 → validations connues
 //   2 → émotion ou contenu non classifié
+//   1 → phrase de lien (protégée après validation et émotion)
 //   0 → direction + premier bloc de situation (jamais supprimés)
 
 function trimByPriority(
@@ -218,13 +246,17 @@ function trimByPriority(
   direction: string,
   sitParagraphs: string[],
   micro: string | null,
+  humanTouch: string | null,
+  link: string | null,
   max: number
 ): string[] {
   const assignPriority = (p: string): number => {
     if (p === direction) return 0;
     if (sitParagraphs[0] && p === sitParagraphs[0]) return 0;
+    if (link && p === link) return 1;
     if (micro && p === micro) return 5;
     if (sitParagraphs.slice(1).includes(p)) return 4;
+    if (humanTouch && p === humanTouch) return 4;
     if (ALL_VALIDATIONS.has(p)) return 3;
     return 2;
   };
@@ -270,8 +302,24 @@ export function applyTraceaV3(text: string, emotion: string): string {
       ? pickFrom(microOptions, text + "micro")
       : null;
 
+  // ── Human touch (variante D, 30% déterministe) ───────────────
+  // Injecté après micro — priorité 4, retiré avant micro si >4 blocs.
+  const humanTouchOptions = HUMAN_TOUCH[e] ?? null;
+  const humanTouch =
+    variant === "D" && humanTouchOptions && hashString(text + e + "humantouch") % 10 < 3
+      ? pickFrom(humanTouchOptions, text + "humantouch")
+      : null;
+
+  // ── Phrase de lien sit→emo (variante A uniquement) ───────────
+  // Insérée entre situation et émotion — priorité 1, retirée en dernier.
+  const linkOptions = LINK_PHRASES[e] ?? null;
+  const link =
+    variant === "A" && parts.situation.length > 0 && parts.emotion !== null && linkOptions
+      ? pickFrom(linkOptions, text + "link")
+      : null;
+
   // ── Construction ─────────────────────────────────────────────
-  const blocks = buildBlocks(variant, parts, micro, finalValidation);
+  const blocks = buildBlocks(variant, parts, micro, finalValidation, humanTouch, link);
 
   // Sécurité : si résultat trop court (parsing trop agressif),
   // repli sur variante A avec la validation émotionnelle uniquement
@@ -319,6 +367,8 @@ export function applyTraceaV3(text: string, emotion: string): string {
       parts.direction,
       parts.situation,
       micro,
+      humanTouch,
+      link,
       4
     );
   }

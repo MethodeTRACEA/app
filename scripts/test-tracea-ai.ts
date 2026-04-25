@@ -59,7 +59,7 @@ const { MIRROR_SYSTEM_PROMPT } = require("../src/lib/ai/traceaMirrorPrompt") as 
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-interface TestCase {
+export interface TestCase {
   id: number;
   category: string;
   situation: string;
@@ -87,7 +87,7 @@ interface TestResult {
 
 // ── 30 cas de test ───────────────────────────────────────────────────────────
 
-const TEST_CASES: TestCase[] = [
+export const TEST_CASES: TestCase[] = [
   // ── colère (2) ──────────────────────────────────────────────────────────
   {
     id: 1,
@@ -391,9 +391,9 @@ const TEST_CASES: TestCase[] = [
   },
 ];
 
-// ── Directive de ton (réplique de route.ts — non exportée) ───────────────────
+// ── Directive de ton (réplique de route.ts) ──────────────────────────────────
 
-function getToneDirective(emotion: string): string {
+export function getToneDirective(emotion: string): string {
   const e = emotion.toLowerCase().trim();
 
   if (e === "colère") {
@@ -446,7 +446,7 @@ Validation finale — choisir UNE parmi : "Ça a du sens." / "Ça compte."`;
 
 // ── Construction du message utilisateur (miroir de route.ts) ─────────────────
 
-function buildUserMessage(tc: TestCase): string {
+export function buildUserMessage(tc: TestCase): string {
   const toneDirective = getToneDirective(tc.emotion);
   const besoin = tc.besoin.trim();
 
@@ -908,7 +908,12 @@ async function main(): Promise<void> {
   process.exit(failed > 0 ? 1 : 0);
 }
 
-main().catch((err) => {
-  console.error("FATAL:", err);
-  process.exit(1);
-});
+// Guard : n'exécuter main() que lorsque ce fichier est le point d'entrée direct.
+// Permet l'import des exports (TestCase, TEST_CASES, buildUserMessage…) sans
+// déclencher la suite de tests.
+if (require.main === module) {
+  main().catch((err) => {
+    console.error("FATAL:", err);
+    process.exit(1);
+  });
+}
