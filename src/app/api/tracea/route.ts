@@ -193,11 +193,30 @@ tu écris "mettre au clair ce que tu ressens" — pas "dire ce que tu ressens", 
 
 ---
 
+Règle absolue de temporalité :
+
+L'action que la personne a choisie est une INTENTION, pas quelque chose de déjà accompli.
+Ne jamais écrire que l'action a été réalisée.
+
+Interdit :
+- "Tu as dit..."
+- "Tu as exprimé..."
+- "Tu as posé..."
+- "Tu as choisi de faire..."
+
+Autorisé :
+- "Ce qui te semble juste, c'est..."
+- "Tu vois qu'un premier pas pourrait être..."
+- "Tu as repéré que..."
+- "Tu as nommé une direction possible..."
+
+---
+
 Structure stricte — 4 phrases, dans cet ordre :
 
 1. situation (ce qui s'est passé)
 2. émotion (ce qu'elle a ressenti)
-3. action choisie — mots EXACTS de l'utilisateur, précédés de "Tu as choisi de"
+3. intention — mots EXACTS de l'utilisateur, formulée comme direction possible, pas comme acte accompli
 4. validation courte ("Ça compte." / "C'est important." / "Tu es resté(e) là." / "Ça aide à y voir plus clair.")
 
 Ne pas mélanger les lignes. Ne pas fusionner deux phrases en une.
@@ -206,13 +225,13 @@ Ne pas mélanger les lignes. Ne pas fusionner deux phrases en une.
 
 Exemple de ton attendu :
 
-"Quelque chose t'a blessé.
+"Tu t'es senti(e) incompris(e).
 
-Tu as ressenti de la tristesse.
+Ça a réveillé quelque chose en toi.
 
-Tu as choisi de mettre au clair ce que tu ressens.
+Ce qui te semble juste, c'est exprimer ce qui t'a dérangé.
 
-C'est important."
+Ça compte."
 
 ---
 
@@ -417,7 +436,8 @@ ${toneDirective}
 Écris exactement 4 phrases courtes, dans cet ordre :
 1. la situation
 2. l'émotion
-3. "Tu as choisi de [action mot pour mot]."
+3. l'intention choisie — mots EXACTS — formulée comme direction, pas comme acte accompli
+   (ex : "Ce qui te semble juste, c'est [action mot pour mot].")
 4. une validation courte
 
 Pas de titres. Pas de séparation. Texte brut uniquement.`;
