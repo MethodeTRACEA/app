@@ -70,34 +70,34 @@ const BESOIN_CHIPS = [
 
 const ACTION_SUGGESTIONS: Record<string, string[]> = {
   "être compris(e)": [
-    "mettre au clair ce que je ressens",
-    "exprimer ce qui m'a touché",
-    "trouver les bons mots",
+    "écrire ce que j'aurais voulu dire",
+    "noter ce qui m'a affecté dans cette situation",
+    "trouver à qui en parler",
   ],
   "poser une limite": [
-    "nommer ce qui me dérange",
-    "poser une limite simple",
-    "reformuler ce que je refuse",
+    "nommer ce que je ne veux plus",
+    "décider ce que je vais dire et comment",
+    "écrire ce que je refuse clairement",
   ],
   "clarifier quelque chose": [
-    "écrire ce qui compte pour moi",
-    "mettre au clair la situation",
-    "nommer ce qui est flou",
+    "noter ce qui m'échappe encore",
+    "écrire les deux côtés de la situation",
+    "nommer ce qui reste flou pour moi",
   ],
   "exprimer ce que j'ai ressenti": [
-    "mettre au clair ce que je ressens",
-    "exprimer ce qui m'a dérangé",
-    "écrire pour moi d'abord",
+    "écrire ce qui s'est passé pour moi",
+    "trouver les mots exacts pour le dire",
+    "dire ce que j'ai gardé pour moi",
   ],
   "prendre du recul": [
-    "observer depuis un autre angle",
-    "écrire pour y voir plus clair",
-    "mettre de la distance consciente",
+    "écrire la situation depuis l'extérieur",
+    "noter ce que je ferais autrement",
+    "laisser passer avant de réagir",
   ],
   "me rapprocher de quelqu'un": [
-    "exprimer ce qui compte pour moi",
-    "choisir le bon moment pour en parler",
-    "trouver comment m'approcher",
+    "choisir quand et comment en parler",
+    "écrire ce que j'ai envie de partager",
+    "trouver ce qui me retient de le faire",
   ],
 };
 
@@ -241,6 +241,7 @@ function SessionContent({ userId }: { userId: string }) {
   // Données collectées
   const [situation, setSituation] = useState("");
   const [situationOther, setSituationOther] = useState("");
+  const [situationComplement, setSituationComplement] = useState("");
   const [emotion, setEmotion] = useState("");
   const [emotionOther, setEmotionOther] = useState("");
   const [besoin, setBesoin] = useState("");
@@ -255,8 +256,12 @@ function SessionContent({ userId }: { userId: string }) {
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   // ── Labels affichés ─────────────────────────────────────────
-  const situationLabel = situation === "autre" && situationOther.trim()
-    ? situationOther.trim() : situation;
+  const situationLabel =
+    situation === "autre"
+      ? situationOther.trim()
+      : situationComplement.trim()
+      ? `${situation} — ${situationComplement.trim()}`
+      : situation;
   const emotionLabel = emotion === "autre" && emotionOther.trim()
     ? emotionOther.trim() : emotion;
   const besoinLabel = besoin === "autre" && besoinOther.trim()
@@ -388,7 +393,7 @@ function SessionContent({ userId }: { userId: string }) {
                 Qu&apos;est-ce qui s&apos;est passé ?
               </p>
               <p className="font-inter text-xs t-text-ghost">
-                En gros, sans détail.
+                Même une phrase suffit.
               </p>
             </div>
 
@@ -398,13 +403,13 @@ function SessionContent({ userId }: { userId: string }) {
                   key={chip}
                   label={chip}
                   selected={situation === chip}
-                  onClick={() => { setSituation(chip); setSituationOther(""); }}
+                  onClick={() => { setSituation(chip); setSituationOther(""); setSituationComplement(""); }}
                 />
               ))}
               <Chip
                 label="autre"
                 selected={situation === "autre"}
-                onClick={() => setSituation("autre")}
+                onClick={() => { setSituation("autre"); setSituationComplement(""); }}
               />
               {situation === "autre" && (
                 <textarea
@@ -414,6 +419,15 @@ function SessionContent({ userId }: { userId: string }) {
                   className={textareaClass}
                   rows={2}
                   autoFocus
+                />
+              )}
+              {situation && situation !== "autre" && (
+                <textarea
+                  value={situationComplement}
+                  onChange={(e) => setSituationComplement(e.target.value)}
+                  placeholder="En quelques mots, ce qui s'est passé exactement : (optionnel)"
+                  className={textareaClass}
+                  rows={2}
                 />
               )}
             </div>

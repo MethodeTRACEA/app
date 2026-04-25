@@ -1,7 +1,7 @@
 # Rapport d'évaluation qualitative IA TRACÉA
 
-**Généré le :** 2026-04-25 14:50:59 UTC
-**Durée totale :** 246.0s
+**Généré le :** 2026-04-25 16:50:48 UTC
+**Durée totale :** 250.1s
 **Juge :** claude-sonnet-4-6 (température 0)
 **Cas évalués :** 30/30
 
@@ -11,9 +11,9 @@
 
 | Dimension | Score moyen | Visualisation |
 |-----------|-------------|---------------|
-| Justesse émotionnelle | **6.6/10** | `███████░░░  6.6` |
-| Impact | **6.6/10** | `███████░░░  6.6` |
-| Lisibilité | **7.5/10** | `████████░░  7.5` |
+| Justesse émotionnelle | **6.7/10** | `███████░░░  6.7` |
+| Impact | **6.5/10** | `███████░░░  6.5` |
+| Lisibilité | **7.4/10** | `███████░░░  7.4` |
 | **Score global** | **6.9/10** | `███████░░░  6.9` |
 
 ### Distribution des scores globaux
@@ -21,23 +21,23 @@
 | Plage | Cas | Proportion |
 |-------|-----|------------|
 | < 6 | 3 | ███░░░░░░░ 10% |
-| 6–7 | 7 | ███████░░░ 23% |
-| 7–8 | 16 | ████████████████ 53% |
-| 8–9 | 3 | ███░░░░░░░ 10% |
+| 6–7 | 9 | █████████░ 30% |
+| 7–8 | 12 | ████████████ 40% |
+| 8–9 | 5 | █████░░░░░ 17% |
 | ≥ 9 | 1 | █░░░░░░░░░ 3% |
 
 ### Scores par émotion
 
 | Émotion | Score moyen | Cas |
 |---------|-------------|-----|
-| peur | 6.4/10 | 4 |
-| solitude | 6.5/10 | 2 |
-| colère | 6.7/10 | 4 |
-| culpabilité | 6.7/10 | 2 |
-| tristesse | 6.8/10 | 6 |
-| frustration | 6.9/10 | 5 |
+| culpabilité | 6.2/10 | 2 |
+| tristesse | 6.4/10 | 6 |
+| colère | 6.6/10 | 4 |
+| frustration | 6.7/10 | 5 |
+| solitude | 7/10 | 2 |
+| peur | 7.1/10 | 4 |
 | honte | 7.5/10 | 2 |
-| confusion | 7.6/10 | 5 |
+| confusion | 7.7/10 | 5 |
 
 ---
 
@@ -45,87 +45,65 @@
 
 | Problème | Occurrences | Fréquence |
 |----------|-------------|-----------|
-| `[object Object]` | 55 | 183% des cas |
-| `ton_plat` | 5 | 17% des cas |
-| `perte_information` | 3 | 10% des cas |
-| `phrase_inutile` | 3 | 10% des cas |
-| `manque_précision` | 1 | 3% des cas |
+| `phrase_inutile` | 24 | 80% des cas |
+| `ton_plat` | 22 | 73% des cas |
+| `perte_information` | 10 | 33% des cas |
+| `manque_précision` | 10 | 33% des cas |
+| `répétition` | 2 | 7% des cas |
 
 ---
 
-## Cas faibles — score < 7/10 (10)
+## Cas faibles — score < 7/10 (12)
 
-### Cas 28 — situation longue | **5/10**
+### Cas 4 — tristesse | **5/10**
 
-**Situation :** Ma relation de couple traverse une phase très difficile depuis un an. Nous vivons ensemble mais nous nous éloignons de plus en plus. Chaque tentative de communication finit en dispute. Les silences sont devenus la norme. Je ne dors plus bien. Je pense parfois à la séparation mais j'ai aussi peur de faire une erreur irréparable. Nous partageons un appartement, des amis communs, des projets. Je ne sais plus vraiment ce que je veux.
-
-**Réponse TRACÉA :**
-
-> Ta relation traverse une phase très difficile depuis un an, et tu ne sais plus vraiment ce que tu veux.
-> 
-> Tu ressens de la confusion.
-> 
-> Ce qui te semble juste, c'est consulter un thérapeute de couple pour y voir plus clair.
-> 
-> Ça peut rester comme ça.
-
-| Dimension | Score | Commentaire |
-|-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | Confusion nommée mais ton trop neutre pour l'ampleur du vécu |
-| Impact | 4/10 | Peu de reconnaissance réelle, miroir trop superficiel et distant |
-| Lisibilité | 6/10 | Phrases courtes mais structure mécanique et froide |
-
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`, `[object Object]`
-
----
-
-### Cas 29 — contradiction émotion/besoin | **5.3/10**
-
-**Situation :** J'ai enfin reçu la promotion que je demandais depuis deux ans
+**Situation :** J'ai raté une opportunité professionnelle importante sur laquelle je comptais vraiment
 
 **Réponse TRACÉA :**
 
-> Tu as enfin reçu la promotion que tu demandais depuis deux ans.
-> 
-> Ce qui te semble juste, c'est dresser une liste de tes forces et de tes premiers objectifs.
-> 
-> Tu peux ralentir.
-
-| Dimension | Score | Commentaire |
-|-----------|-------|-------------|
-| Justesse émotionnelle | 4/10 | La peur n'est pas nommée ni reflétée dans le ton. |
-| Impact | 5/10 | Le besoin de prouver est absent, reconnaissance incomplète. |
-| Lisibilité | 7/10 | Phrases courtes, fluides, structure claire et légère. |
-
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`, `[object Object]`
-
----
-
-### Cas 3 — tristesse | **5.7/10**
-
-**Situation :** Mon meilleur ami a déménagé à l'autre bout de la France ce week-end
-
-**Réponse TRACÉA :**
-
-> Ton meilleur ami a déménagé à l'autre bout de la France ce week-end.
+> Tu as raté une opportunité professionnelle importante sur laquelle tu comptais vraiment.
 > 
 > Tu ressens de la tristesse.
 > 
-> Ce qui te semble juste, c'est lui envoyer un message ce soir.
+> Ce qui te semble juste, c'est prendre du temps pour toi ce week-end.
 > 
-> Ça a sa place.
+> Tu peux prendre ce temps.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | Tristesse nommée mais non incarnée, ton trop neutre et distant |
-| Impact | 5/10 | Besoin de maintenir le lien absent, reconnaissance trop superficielle |
-| Lisibilité | 7/10 | Phrases courtes et claires, mais structure répétitive et mécanique |
+| Justesse émotionnelle | 5/10 | Tristesse nommée mais ton trop neutre, aucune douceur ressentie |
+| Impact | 4/10 | Besoin de reconnexion absent, miroir incomplet et peu ancrant |
+| Lisibilité | 6/10 | Phrases courtes mais structure mécanique et répétitive |
 
-**Problèmes :** `ton_plat`, `perte_information`, `phrase_inutile`
+**Problèmes :** `ton_plat`, `perte_information`, `phrase_inutile`, `manque_précision`
 
 ---
 
-### Cas 10 — culpabilité | **6/10**
+### Cas 1 — colère | **5.3/10**
+
+**Situation :** Mon chef a annulé ma présentation au dernier moment devant toute l'équipe
+
+**Réponse TRACÉA :**
+
+> Ton chef a annulé ta présentation au dernier moment devant toute l'équipe.
+> 
+> Ça a touché quelque chose.
+> 
+> Ce qui te semble juste, c'est en parler directement avec lui demain.
+> 
+> Tu peux t'appuyer là-dessus.
+
+| Dimension | Score | Commentaire |
+|-----------|-------|-------------|
+| Justesse émotionnelle | 4/10 | La colère est absente, ton trop neutre et flottant |
+| Impact | 5/10 | Reconnaissance partielle, besoin de respect non reflété |
+| Lisibilité | 7/10 | Phrases courtes, rythme correct, pas de lourdeur |
+
+**Problèmes :** `ton_plat`, `perte_information`, `manque_précision`, `phrase_inutile`
+
+---
+
+### Cas 10 — culpabilité | **5.7/10**
 
 **Situation :** J'ai accepté une mission que je savais ne pas pouvoir honorer dans les délais
 
@@ -133,111 +111,115 @@
 
 > Tu as accepté une mission que tu savais ne pas pouvoir honorer dans les délais.
 > 
+> Ça pèse un peu.
+> 
 > Tu as ressenti de la culpabilité.
 > 
 > Ce qui te semble juste, c'est être honnête avec ton manager sur tes limites réelles.
-> 
-> Ça a du sens.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Culpabilité nommée mais ton trop neutre pour cette émotion |
-| Impact | 5/10 | Action bien formulée comme direction mais reconnaissance trop faible |
-| Lisibilité | 7/10 | Phrases courtes et claires, structure lisible mais mécanique |
+| Justesse émotionnelle | 4/10 | Culpabilité minimisée par 'ça pèse un peu', ton trop léger |
+| Impact | 6/10 | Direction bien formulée, mais reconnaissance émotionnelle trop faible |
+| Lisibilité | 7/10 | Phrases courtes, fluides, structure claire et sans lourdeur |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `phrase_inutile`, `manque_précision`
 
 ---
 
-### Cas 15 — solitude | **6/10**
+### Cas 19 — action ambiguë | **6/10**
 
-**Situation :** Je suis dans une nouvelle ville depuis 6 mois et je n'ai toujours pas de vrais amis
+**Situation :** Ma relation avec mon collègue est tendue depuis une semaine sans raison claire
 
 **Réponse TRACÉA :**
 
-> Tu es dans une nouvelle ville depuis 6 mois et tu n'as toujours pas de vrais amis.
+> Ta relation avec ton collègue est tendue depuis une semaine sans raison claire.
 > 
-> Tu ressens de la solitude, et tu as besoin de créer des liens authentiques.
+> Tu ressens de la frustration, et tu as besoin de clarifier la situation.
 > 
-> Ce qui te semble juste, c'est t'inscrire à une activité de groupe cette semaine.
+> Ce qui te semble juste, c'est lui parler directement ou attendre que ça se tasse.
 > 
-> Ça a du sens.
+> C'est là.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | Solitude nommée mais non incarnée, ton trop neutre et plat |
-| Impact | 6/10 | Action bien formulée comme direction, reconnaissance trop mécanique |
-| Lisibilité | 7/10 | Phrases courtes et claires, structure lisible mais répétitive |
+| Justesse émotionnelle | 5/10 | Frustration nommée mais ton trop neutre, pas ancré émotionnellement |
+| Impact | 6/10 | Reconnaissance présente mais action formulée sans direction claire |
+| Lisibilité | 7/10 | Phrases courtes, fluides, mais structure répétitive et prévisible |
+
+**Problèmes :** `ton_plat`, `phrase_inutile`, `manque_précision`
+
+---
+
+### Cas 23 — action formulée avec je | **6/10**
+
+**Situation :** Mon ami m'a exclu d'un projet commun sans aucune explication
+
+**Réponse TRACÉA :**
+
+> Ton ami t'a exclu d'un projet commun sans aucune explication.
+> 
+> Ça fait quelque chose.
+> 
+> Tu as ressenti de la tristesse, et tu as besoin de comprendre ce qui s'est passé entre vous.
+> 
+> Ce qui te semble juste, c'est lui envoyer un message pour qu'on se retrouve.
+
+| Dimension | Score | Commentaire |
+|-----------|-------|-------------|
+| Justesse émotionnelle | 6/10 | Tristesse nommée mais ton trop neutre, manque de douceur |
+| Impact | 5/10 | Action bien formulée en direction, mais reconnaissance trop faible |
+| Lisibilité | 7/10 | Phrases courtes, fluides, mais deuxième phrase trop vague |
+
+**Problèmes :** `phrase_inutile`, `ton_plat`, `manque_précision`
+
+---
+
+### Cas 25 — situation très courte | **6/10**
+
+**Situation :** Dispute.
+
+**Réponse TRACÉA :**
+
+> Il y a eu une dispute.
+> 
+> Ça touche quelque chose.
+> 
+> Tu as ressenti de la colère, et tu as besoin d'être entendu.
+> 
+> Ce qui te semble juste, c'est en parler.
+
+| Dimension | Score | Commentaire |
+|-----------|-------|-------------|
+| Justesse émotionnelle | 5/10 | Colère nommée mais ton trop doux, pas assez ancré. |
+| Impact | 6/10 | Besoin et direction présents, mais reconnaissance trop légère. |
+| Lisibilité | 7/10 | Phrases courtes, fluides, mais deuxième phrase vague. |
 
 **Problèmes :** `ton_plat`, `phrase_inutile`
 
 ---
 
-### Cas 2 — colère | **6.3/10**
+### Cas 28 — situation longue | **6/10**
 
-**Situation :** J'ai découvert que mon colocataire avait utilisé mes affaires sans demander
-
-**Réponse TRACÉA :**
-
-> Tu as découvert que ton colocataire avait utilisé tes affaires sans demander.
-> 
-> Ce qui te semble juste, c'est poser tes limites clairement.
-> 
-> Tu peux t'écouter.
-
-| Dimension | Score | Commentaire |
-|-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | La colère est absente, ton trop neutre pour cette émotion |
-| Impact | 6/10 | Action bien formulée comme direction, besoin non reflété |
-| Lisibilité | 8/10 | Phrases courtes et fluides, structure claire |
-
-**Problèmes :** `ton_plat`, `perte_information`
-
----
-
-### Cas 6 — peur | **6.3/10**
-
-**Situation :** J'ai reçu des résultats médicaux inquiétants à discuter avec mon médecin
+**Situation :** Ma relation de couple traverse une phase très difficile depuis un an. Nous vivons ensemble mais nous nous éloignons de plus en plus. Chaque tentative de communication finit en dispute. Les silences sont devenus la norme. Je ne dors plus bien. Je pense parfois à la séparation mais j'ai aussi peur de faire une erreur irréparable. Nous partageons un appartement, des amis communs, des projets. Je ne sais plus vraiment ce que je veux.
 
 **Réponse TRACÉA :**
 
-> Tu as reçu des résultats médicaux inquiétants à discuter avec ton médecin.
+> Ta relation de couple traverse une phase très difficile depuis un an, et tu ne sais plus vraiment ce que tu veux.
 > 
-> Ce qui te semble juste, c'est appeler le cabinet médical ce matin.
+> Tu ressens de la confusion.
 > 
-> Tu peux ralentir.
+> Ce qui te semble juste, c'est consulter un thérapeute de couple pour y voir plus clair.
+> 
+> Tu n'as pas besoin de savoir tout de suite.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | La peur est absente, le mot n'est jamais reflété |
-| Impact | 6/10 | Action bien ancrée comme direction, mais reconnaissance émotionnelle faible |
-| Lisibilité | 8/10 | Phrases courtes, fluides, rythme adapté à la peur |
+| Justesse émotionnelle | 6/10 | Confusion nommée mais ton trop neutre pour l'intensité vécue |
+| Impact | 5/10 | Action bien ancrée mais vécu complexe réduit à sa surface |
+| Lisibilité | 7/10 | Phrases courtes et fluides, structure claire et lisible |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
-
----
-
-### Cas 14 — frustration | **6.3/10**
-
-**Situation :** Je prépare ce projet depuis des mois et il est constamment repoussé sans explication
-
-**Réponse TRACÉA :**
-
-> Tu prépares ce projet depuis des mois et il est constamment repoussé sans explication.
-> 
-> Tu ressens de la frustration — que ton travail soit reconnu à sa juste valeur.
-> 
-> Ce qui te semble juste, c'est exprimer clairement ce que cette situation te coûte.
-> 
-> Tu peux le voir.
-
-| Dimension | Score | Commentaire |
-|-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Frustration nommée mais ton trop neutre, manque de mordant lucide |
-| Impact | 7/10 | Action bien formulée comme direction, reconnaissance présente mais faible |
-| Lisibilité | 6/10 | Phrase finale trop courte et creuse, structure un peu mécanique |
-
-**Problèmes :** `ton_plat`, `phrase_inutile`
+**Problèmes :** `perte_information`, `ton_plat`, `phrase_inutile`
 
 ---
 
@@ -255,41 +237,111 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | La colère est absente, ton trop neutre pour cette émotion |
-| Impact | 6/10 | Action bien ancrée comme direction, besoin réel non reflété |
-| Lisibilité | 8/10 | Phrases courtes, fluides, structure claire et légère |
+| Justesse émotionnelle | 5/10 | La colère est absente, le ton est trop neutre et apaisé. |
+| Impact | 6/10 | Action bien ancrée comme direction, mais besoin ignoré. |
+| Lisibilité | 8/10 | Phrases courtes, fluides, sans répétition visible. |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `perte_information`
 
 ---
 
-### Cas 4 — tristesse | **6.7/10**
+### Cas 27 — situation longue | **6.3/10**
 
-**Situation :** J'ai raté une opportunité professionnelle importante sur laquelle je comptais vraiment
+**Situation :** Cela fait maintenant trois mois que je gère un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route. Chaque semaine de nouveaux obstacles surgissent. J'ai l'impression de nager à contre-courant en permanence, de devoir justifier chaque décision et de n'avoir aucun soutien réel. Ce matin on m'a encore demandé de faire plus avec moins.
 
 **Réponse TRACÉA :**
 
-> Tu as raté une opportunité professionnelle importante sur laquelle tu comptais vraiment.
+> Depuis trois mois, tu gères un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route — et ce matin on t'a encore demandé de faire plus avec moins.
 > 
-> Tu ressens de la tristesse, et le besoin de te reconnecter à ce qui compte vraiment pour toi.
+> Tu ressens de la frustration, et ce qui manque, c'est être reconnu pour ce que tu accomplis réellement.
 > 
-> Ce qui te semble juste, c'est prendre du temps pour toi ce week-end.
+> Ce qui te semble juste, c'est demander un entretien formel avec ta direction cette semaine.
 > 
-> Ça a sa place.
+> Tu peux le voir.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Tristesse nommée mais ton trop neutre, peu de douceur ressentie |
-| Impact | 7/10 | Vécu bien reflété, direction posée sans acte accompli |
-| Lisibilité | 7/10 | Phrases courtes, structure claire, légère répétition visible |
+| Justesse émotionnelle | 7/10 | Frustration présente mais ton reste neutre, peu ancré émotionnellement. |
+| Impact | 6/10 | Action bien formulée comme direction, reconnaissance peu mise en valeur. |
+| Lisibilité | 6/10 | Première phrase trop longue, répétition visible de la situation initiale. |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `répétition`, `ton_plat`, `phrase_inutile`
 
 ---
 
-## Cas excellents — score > 8.5/10 (2)
+### Cas 29 — contradiction émotion/besoin | **6.3/10**
 
-### Cas 12 — confusion | **9.3/10**
+**Situation :** J'ai enfin reçu la promotion que je demandais depuis deux ans
+
+**Réponse TRACÉA :**
+
+> Tu as enfin reçu la promotion que tu demandais depuis deux ans.
+> 
+> Il y a une tension là.
+> 
+> Tu as ressenti de la peur, et le besoin de prouver que tu mérites cette promotion.
+> 
+> Ce qui te semble juste, c'est dresser une liste de tes forces et de tes premiers objectifs.
+
+| Dimension | Score | Commentaire |
+|-----------|-------|-------------|
+| Justesse émotionnelle | 6/10 | Peur mentionnée mais ton pas assez stable ni sécurisant |
+| Impact | 7/10 | Reconnaissance présente, action bien formulée comme direction |
+| Lisibilité | 6/10 | Phrase isolée trop courte crée rupture, légère lourdeur finale |
+
+**Problèmes :** `ton_plat`, `phrase_inutile`, `manque_précision`
+
+---
+
+### Cas 30 — contradiction émotion/besoin | **6.3/10**
+
+**Situation :** La personne que j'aime m'a dit pour la première fois qu'elle m'aimait
+
+**Réponse TRACÉA :**
+
+> La personne que tu aimes t'a dit pour la première fois qu'elle t'aimait.
+> 
+> Ce qui te semble juste, c'est lui dire à ton tour ce que tu ressens vraiment.
+> 
+> Tu peux prendre ce temps.
+
+| Dimension | Score | Commentaire |
+|-----------|-------|-------------|
+| Justesse émotionnelle | 5/10 | La tristesse est absente, ton neutre ne reflète pas l'émotion déclarée. |
+| Impact | 6/10 | Action bien formulée comme direction, mais besoin de durabilité ignoré. |
+| Lisibilité | 8/10 | Phrases courtes, fluides, structure claire et légère. |
+
+**Problèmes :** `ton_plat`, `perte_information`
+
+---
+
+### Cas 9 — culpabilité | **6.7/10**
+
+**Situation :** J'ai complètement oublié l'anniversaire de ma sœur cette année
+
+**Réponse TRACÉA :**
+
+> Tu as complètement oublié l'anniversaire de ta sœur cette année.
+> 
+> Tu ressens de la culpabilité, et tu vois qu'il y a quelque chose à réparer.
+> 
+> Ce qui te semble juste, c'est l'appeler aujourd'hui et lui offrir quelque chose de sincère.
+> 
+> Tu peux rester avec toi.
+
+| Dimension | Score | Commentaire |
+|-----------|-------|-------------|
+| Justesse émotionnelle | 7/10 | Culpabilité présente mais ton trop neutre pour cette émotion lourde |
+| Impact | 6/10 | Action bien ancrée comme direction, reconnaissance un peu froide |
+| Lisibilité | 7/10 | Phrases fluides, dernière phrase flotte sans ancrage concret |
+
+**Problèmes :** `ton_plat`, `phrase_inutile`
+
+---
+
+## Cas excellents — score > 8.5/10 (3)
+
+### Cas 12 — confusion | **9/10**
 
 **Situation :** Je ne sais plus si je veux vraiment rester dans cette relation
 
@@ -305,9 +357,29 @@
 
 **Pourquoi ça fonctionne :**
 
-- Justesse : Ton flottant et ouvert, parfaitement adapté à la confusion déclarée.
-- Impact : Vécu reconnu, direction ancrée sans acte accompli, espace préservé.
-- Lisibilité : Phrases courtes, rythme fluide, aucune lourdeur ni répétition.
+- Justesse : Ton flottant et ouvert, parfaitement adapté à la confusion.
+- Impact : Besoin et direction bien ancrés, sentiment de reconnaissance fort.
+- Lisibilité : Phrases courtes, rythme fluide, aucune lourdeur perceptible.
+
+### Cas 2 — colère | **8.7/10**
+
+**Situation :** J'ai découvert que mon colocataire avait utilisé mes affaires sans demander
+
+**Réponse TRACÉA :**
+
+> Tu as découvert que ton colocataire avait utilisé tes affaires sans demander.
+> 
+> Ça ne passe pas.
+> 
+> Ce qui te semble juste, c'est poser tes limites clairement.
+> 
+> Tu peux t'écouter.
+
+**Pourquoi ça fonctionne :**
+
+- Justesse : Ton direct et ancré, colère bien présente sans surcharge
+- Impact : Action formulée comme direction, reconnaissance claire du vécu
+- Lisibilité : Phrases courtes, rythme efficace, aucune lourdeur visible
 
 ### Cas 18 — besoin flou | **8.7/10**
 
@@ -325,8 +397,8 @@
 
 **Pourquoi ça fonctionne :**
 
-- Justesse : Ton flottant et ouvert, parfaitement adapté à la confusion.
-- Impact : Reconnaissance claire, direction bien posée comme intention.
+- Justesse : Ton flottant et ouvert, parfaitement adapté à la confusion déclarée.
+- Impact : Reconnaissance claire, direction ancrée sans acte accompli.
 - Lisibilité : Phrases courtes, rythme lent et fluide, aucune lourdeur.
 
 ---
@@ -335,53 +407,52 @@
 
 ### Ce qui fonctionne
 
-- **Lisibilité** (7.5/10)
 - **2 cas sans problème** (7% des évaluations)
-- **2 cas excellents** (score > 8.5) — le modèle miroir fonctionne bien sur ces profils
+- **3 cas excellents** (score > 8.5) — le modèle miroir fonctionne bien sur ces profils
 
 ### Ce qui doit être amélioré
 
-- **peur** : score moyen 6.4/10 — catégorie à surveiller
-- **solitude** : score moyen 6.5/10 — catégorie à surveiller
-- **colère** : score moyen 6.7/10 — catégorie à surveiller
-- **culpabilité** : score moyen 6.7/10 — catégorie à surveiller
-- **tristesse** : score moyen 6.8/10 — catégorie à surveiller
-- **frustration** : score moyen 6.9/10 — catégorie à surveiller
-- Problème le plus fréquent : `[object Object]` (55 cas, 183%)
-- Dimension la plus faible : **Impact** (6.6/10) — axe d'amélioration prioritaire
-- **10 cas faibles** — voir détail section "Cas faibles" pour les axes d'amélioration spécifiques
+- **culpabilité** : score moyen 6.2/10 — catégorie à surveiller
+- **tristesse** : score moyen 6.4/10 — catégorie à surveiller
+- **colère** : score moyen 6.6/10 — catégorie à surveiller
+- **frustration** : score moyen 6.7/10 — catégorie à surveiller
+- **solitude** : score moyen 7/10 — catégorie à surveiller
+- **peur** : score moyen 7.1/10 — catégorie à surveiller
+- Problème le plus fréquent : `phrase_inutile` (24 cas, 80%)
+- Dimension la plus faible : **Impact** (6.5/10) — axe d'amélioration prioritaire
+- **12 cas faibles** — voir détail section "Cas faibles" pour les axes d'amélioration spécifiques
 
 ---
 
 ## Détail complet — tous les cas
 
 <details>
-<summary><strong>Cas 1 — colère</strong> &nbsp; ✅ 7/10</summary>
+<summary><strong>Cas 1 — colère</strong> &nbsp; ❌ 5.3/10</summary>
 
 **Émotion :** colère &nbsp;|&nbsp; **Besoin :** être respecté dans mon travail
 
 **Réponse TRACÉA :**
 
-> Tu as ressenti de la colère — tu veux être respecté dans ton travail.
-> 
 > Ton chef a annulé ta présentation au dernier moment devant toute l'équipe.
+> 
+> Ça a touché quelque chose.
 > 
 > Ce qui te semble juste, c'est en parler directement avec lui demain.
 > 
-> Tu peux t'écouter.
+> Tu peux t'appuyer là-dessus.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Colère nommée mais ton trop neutre, pas assez ancré |
-| Impact | 7/10 | Reconnaissance présente, action bien formulée comme direction |
-| Lisibilité | 8/10 | Phrases courtes, fluides, structure claire et lisible |
+| Justesse émotionnelle | 4/10 | La colère est absente, ton trop neutre et flottant |
+| Impact | 5/10 | Reconnaissance partielle, besoin de respect non reflété |
+| Lisibilité | 7/10 | Phrases courtes, rythme correct, pas de lourdeur |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `perte_information`, `manque_précision`, `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 2 — colère</strong> &nbsp; ❌ 6.3/10</summary>
+<summary><strong>Cas 2 — colère</strong> &nbsp; ⭐ 8.7/10</summary>
 
 **Émotion :** colère &nbsp;|&nbsp; **Besoin :** que mon espace personnel soit respecté
 
@@ -389,22 +460,24 @@
 
 > Tu as découvert que ton colocataire avait utilisé tes affaires sans demander.
 > 
+> Ça ne passe pas.
+> 
 > Ce qui te semble juste, c'est poser tes limites clairement.
 > 
 > Tu peux t'écouter.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | La colère est absente, ton trop neutre pour cette émotion |
-| Impact | 6/10 | Action bien formulée comme direction, besoin non reflété |
-| Lisibilité | 8/10 | Phrases courtes et fluides, structure claire |
+| Justesse émotionnelle | 9/10 | Ton direct et ancré, colère bien présente sans surcharge |
+| Impact | 8/10 | Action formulée comme direction, reconnaissance claire du vécu |
+| Lisibilité | 9/10 | Phrases courtes, rythme efficace, aucune lourdeur visible |
 
-**Problèmes :** `ton_plat`, `perte_information`
+**Problèmes :** `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 3 — tristesse</strong> &nbsp; ❌ 5.7/10</summary>
+<summary><strong>Cas 3 — tristesse</strong> &nbsp; ✅ 7/10</summary>
 
 **Émotion :** tristesse &nbsp;|&nbsp; **Besoin :** maintenir ce lien malgré la distance
 
@@ -412,24 +485,24 @@
 
 > Ton meilleur ami a déménagé à l'autre bout de la France ce week-end.
 > 
-> Tu ressens de la tristesse.
+> Ça fait quelque chose.
+> 
+> Tu as ressenti de la tristesse.
 > 
 > Ce qui te semble juste, c'est lui envoyer un message ce soir.
-> 
-> Ça a sa place.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | Tristesse nommée mais non incarnée, ton trop neutre et distant |
-| Impact | 5/10 | Besoin de maintenir le lien absent, reconnaissance trop superficielle |
-| Lisibilité | 7/10 | Phrases courtes et claires, mais structure répétitive et mécanique |
+| Justesse émotionnelle | 7/10 | Tristesse présente mais effleurée, pas vraiment incarnée |
+| Impact | 6/10 | Reconnaissance faible, action bien posée comme direction |
+| Lisibilité | 8/10 | Phrases courtes, rythme fluide, structure claire |
 
-**Problèmes :** `ton_plat`, `perte_information`, `phrase_inutile`
+**Problèmes :** `ton_plat`, `phrase_inutile`, `perte_information`
 
 </details>
 
 <details>
-<summary><strong>Cas 4 — tristesse</strong> &nbsp; ❌ 6.7/10</summary>
+<summary><strong>Cas 4 — tristesse</strong> &nbsp; ❌ 5/10</summary>
 
 **Émotion :** tristesse &nbsp;|&nbsp; **Besoin :** me reconnecter à ce qui compte vraiment pour moi
 
@@ -437,19 +510,19 @@
 
 > Tu as raté une opportunité professionnelle importante sur laquelle tu comptais vraiment.
 > 
-> Tu ressens de la tristesse, et le besoin de te reconnecter à ce qui compte vraiment pour toi.
+> Tu ressens de la tristesse.
 > 
 > Ce qui te semble juste, c'est prendre du temps pour toi ce week-end.
 > 
-> Ça a sa place.
+> Tu peux prendre ce temps.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Tristesse nommée mais ton trop neutre, peu de douceur ressentie |
-| Impact | 7/10 | Vécu bien reflété, direction posée sans acte accompli |
-| Lisibilité | 7/10 | Phrases courtes, structure claire, légère répétition visible |
+| Justesse émotionnelle | 5/10 | Tristesse nommée mais ton trop neutre, aucune douceur ressentie |
+| Impact | 4/10 | Besoin de reconnexion absent, miroir incomplet et peu ancrant |
+| Lisibilité | 6/10 | Phrases courtes mais structure mécanique et répétitive |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `perte_information`, `phrase_inutile`, `manque_précision`
 
 </details>
 
@@ -474,12 +547,12 @@
 | Impact | 7/10 | Action bien reflétée comme direction, reconnaissance correcte |
 | Lisibilité | 8/10 | Phrases courtes et fluides, structure claire et légère |
 
-**Problèmes :** `ton_plat`
+**Problèmes :** `ton_plat`, `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 6 — peur</strong> &nbsp; ❌ 6.3/10</summary>
+<summary><strong>Cas 6 — peur</strong> &nbsp; ✅ 7/10</summary>
 
 **Émotion :** peur &nbsp;|&nbsp; **Besoin :** comprendre ce qui se passe vraiment
 
@@ -487,17 +560,19 @@
 
 > Tu as reçu des résultats médicaux inquiétants à discuter avec ton médecin.
 > 
+> Il y a une tension là.
+> 
 > Ce qui te semble juste, c'est appeler le cabinet médical ce matin.
 > 
 > Tu peux ralentir.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | La peur est absente, le mot n'est jamais reflété |
-| Impact | 6/10 | Action bien ancrée comme direction, mais reconnaissance émotionnelle faible |
-| Lisibilité | 8/10 | Phrases courtes, fluides, rythme adapté à la peur |
+| Justesse émotionnelle | 7/10 | Peur présente mais nommée indirectement, ton stable adapté |
+| Impact | 6/10 | Besoin de comprendre absent, action bien ancrée comme direction |
+| Lisibilité | 8/10 | Phrases courtes, rythme lent adapté, légère sécheresse |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `perte_information`, `phrase_inutile`, `manque_précision`
 
 </details>
 
@@ -519,10 +594,10 @@
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
 | Justesse émotionnelle | 7/10 | Honte nommée mais ton trop neutre pour cette émotion délicate |
-| Impact | 6/10 | Dernière phrase abstraite, affaiblit l'ancrage de l'action |
-| Lisibilité | 8/10 | Phrases courtes et fluides, structure claire et lisible |
+| Impact | 6/10 | Reconnaissance présente mais dernière phrase affaiblit l'ancrage |
+| Lisibilité | 8/10 | Phrases courtes et fluides, structure claire et légère |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `phrase_inutile`
 
 </details>
 
@@ -544,15 +619,15 @@
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
 | Justesse émotionnelle | 8/10 | Ton délicat et minimal, bien adapté à la honte. |
-| Impact | 7/10 | Besoin reflété, mais action reste très vague et flottante. |
-| Lisibilité | 9/10 | Phrases courtes, fluides, aucune lourdeur perceptible. |
+| Impact | 7/10 | Reconnaissance présente mais besoin des autres peu ancré. |
+| Lisibilité | 9/10 | Phrases courtes, fluides, rythme lent et juste. |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `perte_information`, `manque_précision`
 
 </details>
 
 <details>
-<summary><strong>Cas 9 — culpabilité</strong> &nbsp; ✅ 7.3/10</summary>
+<summary><strong>Cas 9 — culpabilité</strong> &nbsp; ❌ 6.7/10</summary>
 
 **Émotion :** culpabilité &nbsp;|&nbsp; **Besoin :** réparer ce que j'ai négligé
 
@@ -560,24 +635,24 @@
 
 > Tu as complètement oublié l'anniversaire de ta sœur cette année.
 > 
-> Tu ressens de la culpabilité, et tu veux réparer ce que tu as négligé.
+> Tu ressens de la culpabilité, et tu vois qu'il y a quelque chose à réparer.
 > 
 > Ce qui te semble juste, c'est l'appeler aujourd'hui et lui offrir quelque chose de sincère.
 > 
-> Ça compte.
+> Tu peux rester avec toi.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 8/10 | Culpabilité bien présente, ton délicat et adapté à l'émotion. |
-| Impact | 7/10 | Action ancrée comme direction, reconnaissance claire mais finale faible. |
-| Lisibilité | 7/10 | Fluide et court, mais structure répétitive visible entre les phrases. |
+| Justesse émotionnelle | 7/10 | Culpabilité présente mais ton trop neutre pour cette émotion lourde |
+| Impact | 6/10 | Action bien ancrée comme direction, reconnaissance un peu froide |
+| Lisibilité | 7/10 | Phrases fluides, dernière phrase flotte sans ancrage concret |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 10 — culpabilité</strong> &nbsp; ❌ 6/10</summary>
+<summary><strong>Cas 10 — culpabilité</strong> &nbsp; ❌ 5.7/10</summary>
 
 **Émotion :** culpabilité &nbsp;|&nbsp; **Besoin :** agir en accord avec mes valeurs
 
@@ -585,19 +660,19 @@
 
 > Tu as accepté une mission que tu savais ne pas pouvoir honorer dans les délais.
 > 
+> Ça pèse un peu.
+> 
 > Tu as ressenti de la culpabilité.
 > 
 > Ce qui te semble juste, c'est être honnête avec ton manager sur tes limites réelles.
-> 
-> Ça a du sens.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Culpabilité nommée mais ton trop neutre pour cette émotion |
-| Impact | 5/10 | Action bien formulée comme direction mais reconnaissance trop faible |
-| Lisibilité | 7/10 | Phrases courtes et claires, structure lisible mais mécanique |
+| Justesse émotionnelle | 4/10 | Culpabilité minimisée par 'ça pèse un peu', ton trop léger |
+| Impact | 6/10 | Direction bien formulée, mais reconnaissance émotionnelle trop faible |
+| Lisibilité | 7/10 | Phrases courtes, fluides, structure claire et sans lourdeur |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `phrase_inutile`, `manque_précision`
 
 </details>
 
@@ -620,14 +695,14 @@
 |-----------|-------|-------------|
 | Justesse émotionnelle | 8/10 | Ton flottant bien adapté à la confusion, vécu respecté. |
 | Impact | 7/10 | Action ancrée comme intention, mais dernière phrase dilue l'ancrage. |
-| Lisibilité | 9/10 | Phrases courtes, rythme fluide, aucune lourdeur visible. |
+| Lisibilité | 9/10 | Phrases courtes, rythme fluide, aucune répétition visible. |
 
-**Problèmes :** `[object Object]`
+**Problèmes :** `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 12 — confusion</strong> &nbsp; ⭐ 9.3/10</summary>
+<summary><strong>Cas 12 — confusion</strong> &nbsp; ⭐ 9/10</summary>
 
 **Émotion :** confusion &nbsp;|&nbsp; **Besoin :** du temps et de l'espace pour y voir plus clair
 
@@ -643,9 +718,9 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 9/10 | Ton flottant et ouvert, parfaitement adapté à la confusion déclarée. |
-| Impact | 9/10 | Vécu reconnu, direction ancrée sans acte accompli, espace préservé. |
-| Lisibilité | 10/10 | Phrases courtes, rythme fluide, aucune lourdeur ni répétition. |
+| Justesse émotionnelle | 9/10 | Ton flottant et ouvert, parfaitement adapté à la confusion. |
+| Impact | 9/10 | Besoin et direction bien ancrés, sentiment de reconnaissance fort. |
+| Lisibilité | 9/10 | Phrases courtes, rythme fluide, aucune lourdeur perceptible. |
 
 </details>
 
@@ -668,14 +743,14 @@
 |-----------|-------|-------------|
 | Justesse émotionnelle | 7/10 | Frustration nommée mais ton trop neutre pour l'émotion déclarée |
 | Impact | 8/10 | Action bien formulée comme direction, besoin clairement reflété |
-| Lisibilité | 6/10 | Phrase finale trop courte et cryptique, rupture de fluidité |
+| Lisibilité | 6/10 | Dernière phrase trop courte et cryptique, rupture de fluidité |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 14 — frustration</strong> &nbsp; ❌ 6.3/10</summary>
+<summary><strong>Cas 14 — frustration</strong> &nbsp; ✅ 7/10</summary>
 
 **Émotion :** frustration &nbsp;|&nbsp; **Besoin :** que mon travail soit reconnu à sa juste valeur
 
@@ -683,24 +758,24 @@
 
 > Tu prépares ce projet depuis des mois et il est constamment repoussé sans explication.
 > 
-> Tu ressens de la frustration — que ton travail soit reconnu à sa juste valeur.
+> Tu ressens de la frustration — et tu as besoin que ton travail soit reconnu à sa juste valeur.
 > 
 > Ce qui te semble juste, c'est exprimer clairement ce que cette situation te coûte.
 > 
-> Tu peux le voir.
+> C'est là.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Frustration nommée mais ton trop neutre, manque de mordant lucide |
-| Impact | 7/10 | Action bien formulée comme direction, reconnaissance présente mais faible |
-| Lisibilité | 6/10 | Phrase finale trop courte et creuse, structure un peu mécanique |
+| Justesse émotionnelle | 8/10 | Frustration bien présente, ton lucide et posé adapté. |
+| Impact | 7/10 | Action formulée comme direction, reconnaissance bien ancrée. |
+| Lisibilité | 6/10 | Clôture trop courte, légère lourdeur dans la structure répétitive. |
 
-**Problèmes :** `ton_plat`, `phrase_inutile`
+**Problèmes :** `phrase_inutile`, `ton_plat`
 
 </details>
 
 <details>
-<summary><strong>Cas 15 — solitude</strong> &nbsp; ❌ 6/10</summary>
+<summary><strong>Cas 15 — solitude</strong> &nbsp; ✅ 7/10</summary>
 
 **Émotion :** solitude &nbsp;|&nbsp; **Besoin :** créer des liens authentiques
 
@@ -712,15 +787,15 @@
 > 
 > Ce qui te semble juste, c'est t'inscrire à une activité de groupe cette semaine.
 > 
-> Ça a du sens.
+> Ça a sa place.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | Solitude nommée mais non incarnée, ton trop neutre et plat |
-| Impact | 6/10 | Action bien formulée comme direction, reconnaissance trop mécanique |
-| Lisibilité | 7/10 | Phrases courtes et claires, structure lisible mais répétitive |
+| Justesse émotionnelle | 6/10 | Solitude nommée mais non incarnée, ton trop neutre et plat |
+| Impact | 7/10 | Action bien formulée comme direction, reconnaissance présente mais froide |
+| Lisibilité | 8/10 | Phrases courtes et fluides, structure claire sans lourdeur |
 
-**Problèmes :** `ton_plat`, `phrase_inutile`
+**Problèmes :** `ton_plat`, `phrase_inutile`, `manque_précision`
 
 </details>
 
@@ -737,20 +812,20 @@
 > 
 > Ce qui te semble juste, c'est avoir une vraie conversation avec une personne de confiance.
 > 
-> Ça compte.
+> Tu peux t'appuyer là-dessus.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
 | Justesse émotionnelle | 8/10 | Solitude bien présente, ton doux adapté, aucune déformation. |
-| Impact | 7/10 | Action bien formulée comme direction, reconnaissance claire mais sobre. |
-| Lisibilité | 6/10 | Structure en trois phrases parallèles crée une légère lourdeur visible. |
+| Impact | 7/10 | Reconnaissance claire, action formulée comme direction, ancrage faible. |
+| Lisibilité | 6/10 | Structure répétitive visible, quatrième phrase trop générique. |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `phrase_inutile`, `ton_plat`
 
 </details>
 
 <details>
-<summary><strong>Cas 17 — besoin flou</strong> &nbsp; ✅ 7.3/10</summary>
+<summary><strong>Cas 17 — besoin flou</strong> &nbsp; ✅ 7/10</summary>
 
 **Émotion :** tristesse &nbsp;|&nbsp; **Besoin :** je ne sais pas vraiment ce dont j'ai besoin
 
@@ -758,7 +833,7 @@
 
 > Quelque chose ne va pas depuis quelques jours, mais tu n'arrives pas à mettre le doigt dessus.
 > 
-> Tu ressens de la tristesse, sans savoir vraiment ce dont tu as besoin.
+> Tu ressens de la tristesse, et tu ne sais pas vraiment ce dont tu as besoin.
 > 
 > Ce qui te semble juste, c'est t'asseoir avec ce sentiment sans chercher à le résoudre tout de suite.
 > 
@@ -766,11 +841,11 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 8/10 | Ton doux et lent, adapté à la tristesse floue déclarée. |
-| Impact | 7/10 | Action bien formulée comme intention, reconnaissance présente mais légère. |
-| Lisibilité | 7/10 | Phrases courtes, mais dernière phrase trop vague et peu ancrée. |
+| Justesse émotionnelle | 8/10 | Ton doux adapté, tristesse présente, vécu bien reflété. |
+| Impact | 7/10 | Reconnaissance claire, direction bien posée, clôture un peu légère. |
+| Lisibilité | 6/10 | Structure en trois blocs crée une répétition visible et mécanique. |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `répétition`, `ton_plat`
 
 </details>
 
@@ -791,14 +866,14 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 9/10 | Ton flottant et ouvert, parfaitement adapté à la confusion. |
-| Impact | 8/10 | Reconnaissance claire, direction bien posée comme intention. |
+| Justesse émotionnelle | 9/10 | Ton flottant et ouvert, parfaitement adapté à la confusion déclarée. |
+| Impact | 8/10 | Reconnaissance claire, direction ancrée sans acte accompli. |
 | Lisibilité | 9/10 | Phrases courtes, rythme lent et fluide, aucune lourdeur. |
 
 </details>
 
 <details>
-<summary><strong>Cas 19 — action ambiguë</strong> &nbsp; ✅ 7/10</summary>
+<summary><strong>Cas 19 — action ambiguë</strong> &nbsp; ❌ 6/10</summary>
 
 **Émotion :** frustration &nbsp;|&nbsp; **Besoin :** clarifier la situation
 
@@ -806,7 +881,7 @@
 
 > Ta relation avec ton collègue est tendue depuis une semaine sans raison claire.
 > 
-> Tu ressens de la frustration, et tu veux clarifier la situation.
+> Tu ressens de la frustration, et tu as besoin de clarifier la situation.
 > 
 > Ce qui te semble juste, c'est lui parler directement ou attendre que ça se tasse.
 > 
@@ -814,11 +889,11 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Frustration nommée mais ton trop neutre, peu incarné |
-| Impact | 7/10 | Reconnaissance présente, action bien formulée comme direction |
-| Lisibilité | 8/10 | Phrases courtes, fluides, structure claire et lisible |
+| Justesse émotionnelle | 5/10 | Frustration nommée mais ton trop neutre, pas ancré émotionnellement |
+| Impact | 6/10 | Reconnaissance présente mais action formulée sans direction claire |
+| Lisibilité | 7/10 | Phrases courtes, fluides, mais structure répétitive et prévisible |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `phrase_inutile`, `manque_précision`
 
 </details>
 
@@ -831,7 +906,7 @@
 
 > Tu dois choisir entre deux offres d'emploi très différentes avant vendredi.
 > 
-> C'est flou — tu ressens de la confusion face à ce que serait la bonne décision pour toi.
+> C'est flou.
 > 
 > Ce qui te semble juste, c'est faire une liste de critères ou en parler à quelqu'un de confiance.
 > 
@@ -839,11 +914,11 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 7/10 | Confusion présente mais ton trop neutre, manque de flottement réel |
-| Impact | 6/10 | Action bien formulée comme direction, reconnaissance un peu faible |
-| Lisibilité | 8/10 | Phrases courtes et fluides, bonne structure générale |
+| Justesse émotionnelle | 7/10 | Ton flottant adapté à la confusion, mais émotion peu incarnée |
+| Impact | 6/10 | Action bien formulée en direction, reconnaissance du vécu trop légère |
+| Lisibilité | 8/10 | Phrases courtes et fluides, rythme minimal efficace |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `phrase_inutile`, `ton_plat`, `perte_information`
 
 </details>
 
@@ -862,16 +937,16 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | La colère est absente, ton trop neutre pour cette émotion |
-| Impact | 6/10 | Action bien ancrée comme direction, besoin réel non reflété |
-| Lisibilité | 8/10 | Phrases courtes, fluides, structure claire et légère |
+| Justesse émotionnelle | 5/10 | La colère est absente, le ton est trop neutre et apaisé. |
+| Impact | 6/10 | Action bien ancrée comme direction, mais besoin ignoré. |
+| Lisibilité | 8/10 | Phrases courtes, fluides, sans répétition visible. |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `perte_information`
 
 </details>
 
 <details>
-<summary><strong>Cas 22 — action au futur</strong> &nbsp; ✅ 7/10</summary>
+<summary><strong>Cas 22 — action au futur</strong> &nbsp; ✅ 8/10</summary>
 
 **Émotion :** peur &nbsp;|&nbsp; **Besoin :** trouver une direction qui correspond à qui je suis
 
@@ -879,24 +954,24 @@
 
 > Tu traverses une période de transition professionnelle difficile et incertaine.
 > 
+> Ça serre un peu.
+> 
 > Tu as ressenti de la peur, et tu cherches à trouver une direction qui correspond à qui tu es.
 > 
 > Ce qui te semble juste, c'est contacter un coach professionnel la semaine prochaine.
-> 
-> Tu peux rester là.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Peur nommée mais ton trop neutre pour une émotion intense |
-| Impact | 7/10 | Action bien formulée comme direction, reconnaissance présente mais froide |
-| Lisibilité | 8/10 | Phrases courtes, fluides, structure claire et sans lourdeur |
+| Justesse émotionnelle | 8/10 | Ton stable et sécurisant, adapté à la peur déclarée. |
+| Impact | 7/10 | Action bien formulée comme direction, reconnaissance présente mais légère. |
+| Lisibilité | 9/10 | Phrases courtes, fluides, aucune lourdeur visible. |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `phrase_inutile`, `manque_précision`
 
 </details>
 
 <details>
-<summary><strong>Cas 23 — action formulée avec je</strong> &nbsp; ✅ 7/10</summary>
+<summary><strong>Cas 23 — action formulée avec je</strong> &nbsp; ❌ 6/10</summary>
 
 **Émotion :** tristesse &nbsp;|&nbsp; **Besoin :** comprendre ce qui s'est passé entre nous
 
@@ -904,19 +979,19 @@
 
 > Ton ami t'a exclu d'un projet commun sans aucune explication.
 > 
+> Ça fait quelque chose.
+> 
 > Tu as ressenti de la tristesse, et tu as besoin de comprendre ce qui s'est passé entre vous.
 > 
 > Ce qui te semble juste, c'est lui envoyer un message pour qu'on se retrouve.
-> 
-> Ça a sa place.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Tristesse nommée mais ton trop neutre, peu de douceur ressentie |
-| Impact | 7/10 | Action bien formulée comme direction, reconnaissance présente mais froide |
-| Lisibilité | 8/10 | Phrases courtes et fluides, structure claire et lisible |
+| Justesse émotionnelle | 6/10 | Tristesse nommée mais ton trop neutre, manque de douceur |
+| Impact | 5/10 | Action bien formulée en direction, mais reconnaissance trop faible |
+| Lisibilité | 7/10 | Phrases courtes, fluides, mais deuxième phrase trop vague |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `phrase_inutile`, `ton_plat`, `manque_précision`
 
 </details>
 
@@ -939,14 +1014,14 @@
 |-----------|-------|-------------|
 | Justesse émotionnelle | 7/10 | Frustration nommée mais ton trop neutre pour cette émotion |
 | Impact | 6/10 | Action bien ancrée comme direction, reconnaissance un peu froide |
-| Lisibilité | 8/10 | Phrases courtes et fluides, structure claire et lisible |
+| Lisibilité | 8/10 | Phrases courtes et fluides, structure claire et légère |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 25 — situation très courte</strong> &nbsp; ✅ 7/10</summary>
+<summary><strong>Cas 25 — situation très courte</strong> &nbsp; ❌ 6/10</summary>
 
 **Émotion :** colère &nbsp;|&nbsp; **Besoin :** être entendu
 
@@ -954,19 +1029,19 @@
 
 > Il y a eu une dispute.
 > 
-> Ça pousse.
+> Ça touche quelque chose.
+> 
+> Tu as ressenti de la colère, et tu as besoin d'être entendu.
 > 
 > Ce qui te semble juste, c'est en parler.
-> 
-> Tu peux t'appuyer là-dessus.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 7/10 | Ton direct présent mais émotion colère peu incarnée |
-| Impact | 6/10 | Besoin d'être entendu absent, action ancrée mais flottante |
-| Lisibilité | 8/10 | Phrases courtes, rythme fluide, aucune répétition visible |
+| Justesse émotionnelle | 5/10 | Colère nommée mais ton trop doux, pas assez ancré. |
+| Impact | 6/10 | Besoin et direction présents, mais reconnaissance trop légère. |
+| Lisibilité | 7/10 | Phrases courtes, fluides, mais deuxième phrase vague. |
 
-**Problèmes :** `perte_information`, `manque_précision`
+**Problèmes :** `ton_plat`, `phrase_inutile`
 
 </details>
 
@@ -987,22 +1062,22 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 8/10 | Ton doux et lent, adapté à la tristesse, sans surcharge. |
-| Impact | 7/10 | Reconnaissance présente, action bien formulée comme intention. |
-| Lisibilité | 6/10 | Phrases très courtes mais 'Ça a sa place' reste vague et flottant. |
+| Justesse émotionnelle | 8/10 | Ton doux et lent, adapté à la tristesse déclarée. |
+| Impact | 7/10 | Action bien formulée comme direction, reconnaissance présente mais légère. |
+| Lisibilité | 6/10 | Phrases très courtes, mais 'Ça a sa place' reste vague et flottant. |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `phrase_inutile`, `perte_information`
 
 </details>
 
 <details>
-<summary><strong>Cas 27 — situation longue</strong> &nbsp; ✅ 7/10</summary>
+<summary><strong>Cas 27 — situation longue</strong> &nbsp; ❌ 6.3/10</summary>
 
 **Émotion :** frustration &nbsp;|&nbsp; **Besoin :** être reconnu pour ce que j'accomplis réellement
 
 **Réponse TRACÉA :**
 
-> Tu nages à contre-courant depuis trois mois, avec des délais impossibles, des demandes contradictoires et un budget réduit de moitié en cours de route — et ce matin, on t'a encore demandé de faire plus avec moins.
+> Depuis trois mois, tu gères un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route — et ce matin on t'a encore demandé de faire plus avec moins.
 > 
 > Tu ressens de la frustration, et ce qui manque, c'est être reconnu pour ce que tu accomplis réellement.
 > 
@@ -1012,41 +1087,41 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 8/10 | Frustration bien présente, ton lucide et posé, ancré dans le réel. |
-| Impact | 7/10 | Action formulée comme direction, besoin de reconnaissance clairement reflété. |
-| Lisibilité | 6/10 | Répétition visible de la phrase budget/délais, dernière phrase trop courte. |
+| Justesse émotionnelle | 7/10 | Frustration présente mais ton reste neutre, peu ancré émotionnellement. |
+| Impact | 6/10 | Action bien formulée comme direction, reconnaissance peu mise en valeur. |
+| Lisibilité | 6/10 | Première phrase trop longue, répétition visible de la situation initiale. |
 
-**Problèmes :** `[object Object]`, `[object Object]`
+**Problèmes :** `répétition`, `ton_plat`, `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 28 — situation longue</strong> &nbsp; ❌ 5/10</summary>
+<summary><strong>Cas 28 — situation longue</strong> &nbsp; ❌ 6/10</summary>
 
 **Émotion :** confusion &nbsp;|&nbsp; **Besoin :** retrouver de la clarté sur ce que je veux vraiment
 
 **Réponse TRACÉA :**
 
-> Ta relation traverse une phase très difficile depuis un an, et tu ne sais plus vraiment ce que tu veux.
+> Ta relation de couple traverse une phase très difficile depuis un an, et tu ne sais plus vraiment ce que tu veux.
 > 
 > Tu ressens de la confusion.
 > 
 > Ce qui te semble juste, c'est consulter un thérapeute de couple pour y voir plus clair.
 > 
-> Ça peut rester comme ça.
+> Tu n'as pas besoin de savoir tout de suite.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 5/10 | Confusion nommée mais ton trop neutre pour l'ampleur du vécu |
-| Impact | 4/10 | Peu de reconnaissance réelle, miroir trop superficiel et distant |
-| Lisibilité | 6/10 | Phrases courtes mais structure mécanique et froide |
+| Justesse émotionnelle | 6/10 | Confusion nommée mais ton trop neutre pour l'intensité vécue |
+| Impact | 5/10 | Action bien ancrée mais vécu complexe réduit à sa surface |
+| Lisibilité | 7/10 | Phrases courtes et fluides, structure claire et lisible |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `perte_information`, `ton_plat`, `phrase_inutile`
 
 </details>
 
 <details>
-<summary><strong>Cas 29 — contradiction émotion/besoin</strong> &nbsp; ❌ 5.3/10</summary>
+<summary><strong>Cas 29 — contradiction émotion/besoin</strong> &nbsp; ❌ 6.3/10</summary>
 
 **Émotion :** peur &nbsp;|&nbsp; **Besoin :** prouver que je mérite cette promotion
 
@@ -1054,29 +1129,29 @@
 
 > Tu as enfin reçu la promotion que tu demandais depuis deux ans.
 > 
-> Ce qui te semble juste, c'est dresser une liste de tes forces et de tes premiers objectifs.
+> Il y a une tension là.
 > 
-> Tu peux ralentir.
+> Tu as ressenti de la peur, et le besoin de prouver que tu mérites cette promotion.
+> 
+> Ce qui te semble juste, c'est dresser une liste de tes forces et de tes premiers objectifs.
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 4/10 | La peur n'est pas nommée ni reflétée dans le ton. |
-| Impact | 5/10 | Le besoin de prouver est absent, reconnaissance incomplète. |
-| Lisibilité | 7/10 | Phrases courtes, fluides, structure claire et légère. |
+| Justesse émotionnelle | 6/10 | Peur mentionnée mais ton pas assez stable ni sécurisant |
+| Impact | 7/10 | Reconnaissance présente, action bien formulée comme direction |
+| Lisibilité | 6/10 | Phrase isolée trop courte crée rupture, légère lourdeur finale |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `phrase_inutile`, `manque_précision`
 
 </details>
 
 <details>
-<summary><strong>Cas 30 — contradiction émotion/besoin</strong> &nbsp; ✅ 7/10</summary>
+<summary><strong>Cas 30 — contradiction émotion/besoin</strong> &nbsp; ❌ 6.3/10</summary>
 
 **Émotion :** tristesse &nbsp;|&nbsp; **Besoin :** m'assurer que c'est réel et que ça va durer
 
 **Réponse TRACÉA :**
 
-> Tu as ressenti de la tristesse, et tu as besoin de t'assurer que c'est réel et que ça va durer.
-> 
 > La personne que tu aimes t'a dit pour la première fois qu'elle t'aimait.
 > 
 > Ce qui te semble juste, c'est lui dire à ton tour ce que tu ressens vraiment.
@@ -1085,11 +1160,11 @@
 
 | Dimension | Score | Commentaire |
 |-----------|-------|-------------|
-| Justesse émotionnelle | 6/10 | Tristesse nommée mais ton trop neutre pour cette émotion |
-| Impact | 7/10 | Action bien formulée comme direction, reconnaissance présente |
-| Lisibilité | 8/10 | Phrases courtes, fluides, structure claire et aérée |
+| Justesse émotionnelle | 5/10 | La tristesse est absente, ton neutre ne reflète pas l'émotion déclarée. |
+| Impact | 6/10 | Action bien formulée comme direction, mais besoin de durabilité ignoré. |
+| Lisibilité | 8/10 | Phrases courtes, fluides, structure claire et légère. |
 
-**Problèmes :** `[object Object]`, `[object Object]`, `[object Object]`
+**Problèmes :** `ton_plat`, `perte_information`
 
 </details>
 

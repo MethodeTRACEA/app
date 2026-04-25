@@ -141,6 +141,12 @@ Réponds uniquement avec ce JSON (pas de markdown autour) :
 
   const parsed = JSON.parse(cleaned) as HumanEvaluation;
 
+  // Normalise problemes : le juge renvoie parfois des objets {type, description}
+  // au lieu de strings simples — on extrait la clé "type" ou on stringify.
+  parsed.problemes = (parsed.problemes ?? []).map((p: unknown) =>
+    typeof p === "string" ? p : String((p as { type?: string }).type ?? p)
+  );
+
   // Recalcul du score global pour garantir la cohérence
   parsed.score_global =
     Math.round(

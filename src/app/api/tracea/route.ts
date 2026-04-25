@@ -191,6 +191,18 @@ Validation finale — choisir UNE parmi : "Ça a du sens." / "Ça compte."`;
 }
 
 // ===================================================================
+// INPUT STRUCTURÉ — prépare les champs bruts pour l'IA
+// ===================================================================
+
+function buildCleanInput(steps: Record<string, string>) {
+  const situation = steps.traverser?.trim() || "";
+  const emotion   = steps.reconnaitre?.trim() || "";
+  const besoin    = steps.conscientiser?.trim() || "";
+  const action    = steps.emerger?.trim() || "";
+  return { situation, emotion, besoin, action };
+}
+
+// ===================================================================
 // AI LIMIT — free tier: 1 session with AI, unlimited for subscribers
 // ===================================================================
 
@@ -311,14 +323,19 @@ async function handleFinalAnalysis(body: {
   }
 
   const toneDirective = getToneDirective(steps.reconnaitre || "");
+  const input = buildCleanInput(steps);
 
-  const besoin = steps.conscientiser?.trim() || "";
+  const userMessage = `Situation :
+${input.situation}
 
-  const userMessage = `Voici ce que la personne a vécu :
+Émotion :
+${input.emotion}
 
-Situation : "${steps.traverser || ""}"
-Émotion : "${steps.reconnaitre || ""}"${besoin ? `\nBesoin : "${besoin}"` : ""}
-Action choisie (à reprendre MOT POUR MOT) : "${steps.emerger || ""}"
+Besoin :
+${input.besoin || "non précisé"}
+
+Direction envisagée :
+${input.action}
 
 ---
 
@@ -326,14 +343,12 @@ ${toneDirective}
 
 ---
 
-Écris 2 à 4 phrases maximum, dans cet ordre :
-1. la situation
-2. l'émotion${besoin ? ` — tu peux intégrer le besoin dans cette phrase si c'est naturel, sans l'ajouter séparément` : ""}
-3. l'intention choisie — mots EXACTS — formulée comme direction, pas comme acte accompli
-   (ex : "Ce qui te semble juste, c'est [action mot pour mot].")
-4. une validation courte
-
-Si un champ est vide, ne pas le mentionner. Pas de titres. Pas de séparation. Texte brut uniquement.`;
+Règle :
+- utilise TOUS les éléments
+- ne supprime pas l'émotion
+- ne supprime pas la situation
+- ne transforme pas l'intention en action réalisée
+- 4 phrases maximum`;
 
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-6",

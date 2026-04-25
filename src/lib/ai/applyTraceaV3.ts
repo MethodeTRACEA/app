@@ -20,7 +20,9 @@ type EmotionKey =
   | "peur"
   | "confusion"
   | "honte"
-  | "frustration";
+  | "frustration"
+  | "culpabilité"
+  | "solitude";
 
 type Variant = "A" | "B" | "C" | "D" | "E";
 
@@ -33,6 +35,8 @@ const VALIDATIONS: Record<EmotionKey, [string, string]> = {
   "confusion":   ["Ça peut rester comme ça.", "Tu n'as pas besoin de savoir tout de suite."],
   "honte":       ["Tu peux y aller doucement.", "Tu peux rester avec toi."],
   "frustration": ["Tu peux le voir.", "C'est là."],
+  "culpabilité": ["Tu peux y aller doucement.", "Tu peux rester avec toi."],
+  "solitude":    ["Ça a sa place.", "Tu peux t'appuyer là-dessus."],
 };
 
 const VALIDATION_FALLBACK: [string, string] = ["Ça a du sens.", "Ça compte."];
@@ -44,6 +48,8 @@ const MICRO_PHRASES: Record<EmotionKey, [string, string]> = {
   "confusion":   ["C'est flou.", "Quelque chose échappe."],
   "honte":       ["Ça se referme.", "C'est difficile à montrer."],
   "frustration": ["Ça bloque.", "Quelque chose résiste."],
+  "culpabilité": ["Ça pèse.", "Tu le vois."],
+  "solitude":    ["C'est seul là.", "Il manque quelque chose."],
 };
 
 const HUMAN_TOUCH: Record<string, [string, string]> = {
@@ -68,6 +74,13 @@ const LINK_PHRASES: Record<string, [string, string]> = {
   "frustration":  ["Ça bloque.", "Ça frotte."],
   "solitude":     ["C'est seul là.", "Il manque quelque chose."],
 };
+
+// Toutes les phrases somatiques injectées (pour filtre doublons consécutifs — Rule C)
+const ALL_SOMATIC_PHRASES = new Set<string>([
+  ...Object.values(LINK_PHRASES).flat(),
+  ...Object.values(HUMAN_TOUCH).flat(),
+  ...Object.values(MICRO_PHRASES).flat(),
+]);
 
 // Toutes les validations connues (pour détection dans le texte IA)
 const ALL_VALIDATIONS = new Set([
@@ -202,6 +215,7 @@ function buildBlocks(
     case "B":
       // Si pas d'émotion distincte, repli sur A
       if (!emo) return [sit, dir, validation].filter(Boolean);
+      if (link) return [emo, sit, link, dir, validation].filter(Boolean);
       return [emo, sit, dir, validation].filter(Boolean);
 
     case "C": {
@@ -225,6 +239,7 @@ function buildBlocks(
     case "E":
       // Sobre : supprime la phrase d'émotion si une situation existe
       if (!sit) return [emo, dir, validation].filter(Boolean);
+      if (humanTouch) return [sit, humanTouch, dir, validation].filter(Boolean);
       return [sit, dir, validation].filter(Boolean);
   }
 }
@@ -258,6 +273,8 @@ function trimByPriority(
     if (sitParagraphs.slice(1).includes(p)) return 4;
     if (humanTouch && p === humanTouch) return 4;
     if (ALL_VALIDATIONS.has(p)) return 3;
+    // Rule A: analytical emotion phrase ("Tu ressens de la X.") — lower priority than default content
+    if (/^tu (as ressenti|ressens) de (la |le |du |l')\S+[.,]?\s*$/i.test(p)) return 3;
     return 2;
   };
 
@@ -302,19 +319,26 @@ export function applyTraceaV3(text: string, emotion: string): string {
       ? pickFrom(microOptions, text + "micro")
       : null;
 
-  // ── Human touch (variante D, 30% déterministe) ───────────────
-  // Injecté après micro — priorité 4, retiré avant micro si >4 blocs.
+  // ── Human touch (variantes D et E, 30% déterministe) ────────
+  // D : après micro. E : après situation (si émotion connue).
+  // Priorité 4, retiré avant micro si >4 blocs.
   const humanTouchOptions = HUMAN_TOUCH[e] ?? null;
   const humanTouch =
-    variant === "D" && humanTouchOptions && hashString(text + e + "humantouch") % 10 < 3
+    humanTouchOptions &&
+    (variant === "D" || (variant === "E" && parts.situation.length > 0)) &&
+    hashString(text + e + "humantouch") % 10 < 3
       ? pickFrom(humanTouchOptions, text + "humantouch")
       : null;
 
-  // ── Phrase de lien sit→emo (variante A uniquement) ───────────
-  // Insérée entre situation et émotion — priorité 1, retirée en dernier.
+  // ── Phrase de lien (variantes A et B) ────────────────────────
+  // A : entre situation et émotion. B : entre situation et direction.
+  // Priorité 1, retirée en dernier (après validation et émotion).
   const linkOptions = LINK_PHRASES[e] ?? null;
   const link =
-    variant === "A" && parts.situation.length > 0 && parts.emotion !== null && linkOptions
+    linkOptions && (
+      (variant === "A" && parts.situation.length > 0 && parts.emotion !== null) ||
+      (variant === "B" && parts.situation.length > 0)
+    )
       ? pickFrom(linkOptions, text + "link")
       : null;
 
@@ -338,6 +362,14 @@ export function applyTraceaV3(text: string, emotion: string): string {
   // Ex : micro injecté identique à un paragraphe de situation → garder 1 seul.
   visual = visual.filter(
     (p, i) => i === 0 || p.trim() !== visual[i - 1].trim()
+  );
+
+  // ── 1b. Rule C : pas deux phrases somatiques consécutives ────
+  // Évite LINK + MICRO ou MICRO + HUMAN_TOUCH côte à côte (surchauffe sensorielle).
+  visual = visual.filter(
+    (p, i) =>
+      i === 0 ||
+      !(ALL_SOMATIC_PHRASES.has(p) && ALL_SOMATIC_PHRASES.has(visual[i - 1]))
   );
 
   // ── 2. Garantie de présence minimale ─────────────────────────
