@@ -289,6 +289,7 @@ function SessionContent({ userId }: { userId: string }) {
       aligner: "",
     };
 
+    let analysisText = "";
     try {
       const res = await fetch("/api/tracea", {
         method: "POST",
@@ -306,9 +307,11 @@ function SessionContent({ userId }: { userId: string }) {
         }),
       });
       const data = await res.json();
-      setAnalysis(data.text || generateFallbackAnalysis());
+      analysisText = data.text || generateFallbackAnalysis();
+      setAnalysis(analysisText);
     } catch {
-      setAnalysis(generateFallbackAnalysis());
+      analysisText = generateFallbackAnalysis();
+      setAnalysis(analysisText);
     }
 
     if (sessionId) {
@@ -317,6 +320,7 @@ function SessionContent({ userId }: { userId: string }) {
         emotion_primaire: emotionLabel.slice(0, 100),
         verite_interieure: besoinLabel.slice(0, 200),
         action_alignee: action.slice(0, 200),
+        analysis: analysisText,
         completed: true,
       });
     }
@@ -786,6 +790,14 @@ function SessionContent({ userId }: { userId: string }) {
           <PrimaryButton onClick={() => router.push("/app")}>
             Terminer
           </PrimaryButton>
+
+          <button
+            type="button"
+            onClick={() => router.push("/app/historique")}
+            className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
+          >
+            Voir mes traces →
+          </button>
 
         </div>
       </div>

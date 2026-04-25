@@ -282,12 +282,22 @@ export default function HistoriquePage() {
                         <p className="font-body text-sm text-warm-gray italic mb-3">{s.emotionPrimaire}</p>
                       )}
 
-                      {/* Lien émotion → action */}
-                      {(s.steps.aligner || s.veriteInterieure) && (
+                      {/* Action ou intention */}
+                      {(s.actionAlignee || s.steps.emerger || s.steps.aligner || s.veriteInterieure) && (
                         <div className="mb-4">
-                          <p className="text-xs text-warm-gray/60 mb-1">Tu as choisi :</p>
+                          <p className="text-xs text-warm-gray/60 mb-1">Ce qui te semblait juste :</p>
                           <p className="font-body text-base text-espresso leading-relaxed">
-                            {s.steps.aligner || s.veriteInterieure}
+                            {s.actionAlignee || s.steps.emerger || s.steps.aligner || s.veriteInterieure}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Miroir IA */}
+                      {s.analysis && (
+                        <div className="mb-4">
+                          <p className="text-xs text-warm-gray/60 mb-1">Ce que tu viens de traverser</p>
+                          <p className="font-body text-sm text-espresso leading-relaxed whitespace-pre-line">
+                            {s.analysis}
                           </p>
                         </div>
                       )}
