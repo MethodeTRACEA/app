@@ -9,7 +9,7 @@
 //   - Injecte éventuellement une micro-phrase (variante D uniquement)
 //
 // Jamais : ajout d'idée, interprétation, enrichissement.
-// Max : 5 phrases. Si le parsing échoue, retour du texte original.
+// Max : 4 phrases. Si le parsing échoue, retour du texte original.
 // ===================================================================
 
 // ── Types ───────────────────────────────────────────────────────
@@ -152,11 +152,11 @@ function selectVariant(seed: string): Variant {
 
 // ── Construction par variante ────────────────────────────────────
 //
-// A — miroir classique     : sit | emo | dir | valid
-// B — émotion d'abord      : emo | sit | dir | valid
-// C — fusion douce         : sit, et emo | dir | valid
-// D — avec micro-phrase    : sit | emo | micro | dir | valid
-// E — très sobre           : sit | dir | valid   (sans emo)
+// A — miroir classique     : sit | emo | dir | valid           (4 blocs)
+// B — émotion d'abord      : emo | sit | dir | valid           (4 blocs)
+// C — fusion douce         : sit, et emo | dir | valid         (3 blocs)
+// D — avec micro-phrase    : sit | micro | dir | valid         (4 blocs, micro remplace emo)
+// E — très sobre           : sit | dir | valid                 (3 blocs, sans emo)
 
 function buildBlocks(
   variant: Variant,
@@ -191,9 +191,9 @@ function buildBlocks(
     }
 
     case "D":
-      // Micro-phrase entre émotion et direction (max 5 blocs)
+      // Micro-phrase remplace l'émotion distincte pour rester à 4 blocs max
       if (!micro) return [sit, emo, dir, validation].filter(Boolean);
-      return [sit, emo, micro, dir, validation].filter(Boolean);
+      return [sit, micro, dir, validation].filter(Boolean);
 
     case "E":
       // Sobre : supprime la phrase d'émotion si une situation existe

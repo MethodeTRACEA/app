@@ -149,7 +149,7 @@ Validation finale — choisir UNE parmi : "Tu peux t'écouter." / "Tu peux t'app
 Ton : doux, lent.
 Rythme : avec respiration — sauts de ligne possibles.
 Micro-phrase optionnelle (1 seule, si pertinent) : "C'est lourd." ou "Ça touche."
-Validation finale — choisir UNE parmi : "Tu peux prendre ce temps." / "Tu peux rester avec ça."`;
+Validation finale — choisir UNE parmi : "Tu peux prendre ce temps." / "Ça a sa place."`;
   }
 
   if (e === "peur") {
@@ -187,7 +187,7 @@ Validation finale — choisir UNE parmi : "Tu peux le voir." / "C'est là."`;
   // Défaut — ton neutre miroir
   return `Ton attendu pour cette réponse : neutre, humain, direct.
 Miroir simple. Pas de surcharge émotionnelle.
-Validation finale — choisir UNE parmi : "Ça compte." / "Ça a du sens." / "Ça a sa place."`;
+Validation finale — choisir UNE parmi : "Ça a du sens." / "Ça compte."`;
 }
 
 // ===================================================================
@@ -312,10 +312,12 @@ async function handleFinalAnalysis(body: {
 
   const toneDirective = getToneDirective(steps.reconnaitre || "");
 
+  const besoin = steps.conscientiser?.trim() || "";
+
   const userMessage = `Voici ce que la personne a vécu :
 
 Situation : "${steps.traverser || ""}"
-Émotion : "${steps.reconnaitre || ""}"
+Émotion : "${steps.reconnaitre || ""}"${besoin ? `\nBesoin : "${besoin}"` : ""}
 Action choisie (à reprendre MOT POUR MOT) : "${steps.emerger || ""}"
 
 ---
@@ -324,14 +326,14 @@ ${toneDirective}
 
 ---
 
-Écris exactement 4 phrases courtes, dans cet ordre :
+Écris 2 à 4 phrases maximum, dans cet ordre :
 1. la situation
-2. l'émotion
+2. l'émotion${besoin ? ` — tu peux intégrer le besoin dans cette phrase si c'est naturel, sans l'ajouter séparément` : ""}
 3. l'intention choisie — mots EXACTS — formulée comme direction, pas comme acte accompli
    (ex : "Ce qui te semble juste, c'est [action mot pour mot].")
 4. une validation courte
 
-Pas de titres. Pas de séparation. Texte brut uniquement.`;
+Si un champ est vide, ne pas le mentionner. Pas de titres. Pas de séparation. Texte brut uniquement.`;
 
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-6",
