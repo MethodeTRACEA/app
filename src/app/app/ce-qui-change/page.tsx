@@ -157,50 +157,26 @@ export default function CeQuiChangePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
-      <h1 className="section-title">Ce qui change</h1>
+      <h1 className="section-title">Si ça revient</h1>
 
-      {/* ── CE QUI BOUGE ── */}
+      {/* ── QUAND ÇA MONTE ── */}
       <div className="card-base p-6">
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          Ce qui bouge
-        </p>
-        {bouge.main || bouge.secondary ? (
-          <>
-            {bouge.main && (
-              <p className="font-body text-base text-espresso leading-relaxed">
-                {bouge.main}
-              </p>
-            )}
-            {bouge.secondary && (
-              <p
-                className={`font-body text-base text-espresso leading-relaxed${
-                  bouge.main ? " mt-3" : ""
-                }`}
-              >
-                {bouge.secondary}
-              </p>
-            )}
-          </>
-        ) : (
-          <p className="font-body text-sm text-warm-gray italic">
-            Pas encore assez de traversées pour voir ce qui bouge.
-          </p>
-        )}
-      </div>
-
-      {/* ── TON RYTHME ── */}
-      <div className="card-base p-6">
-        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          Ton rythme
+          Quand ça monte
         </p>
         <p className="font-body text-base text-espresso leading-relaxed">
-          {rythme.main}
+          Tu reviens ici quand ça devient trop chargé.
         </p>
-        {(rythme.span || rythme.active) && (
-          <p className="font-body text-sm text-warm-gray mt-3">
-            {[rythme.span, rythme.active].filter(Boolean).join(" ")}
-          </p>
-        )}
+      </div>
+
+      {/* ── CE QUI AIDE CHEZ TOI ── */}
+      <div className="card-base p-6">
+        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
+          Ce qui aide chez toi
+        </p>
+        <p className="font-body text-base text-espresso leading-relaxed">
+          Quand tu vas jusqu'au bout d'une traversée, ton intensité redescend souvent.
+        </p>
       </div>
 
       {/* ── TES APPUIS ── */}
@@ -216,16 +192,26 @@ export default function CeQuiChangePage() {
           </p>
         ) : appuis.length === 1 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Tu reviens souvent à :{" "}
+            Tu t'appuies souvent sur :{" "}
             <span className="italic">« {appuis[0]} »</span>.
           </p>
         ) : (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Dans tes dernières traversées, tu as choisi :{" "}
+            Tu t'appuies souvent sur :{" "}
             <span className="italic">« {appuis[0]} »</span> et{" "}
             <span className="italic">« {appuis[1]} »</span>.
           </p>
         )}
+      </div>
+
+      {/* ── À GARDER EN TÊTE ── */}
+      <div className="card-base p-6">
+        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
+          À garder en tête
+        </p>
+        <p className="font-body text-base text-espresso leading-relaxed">
+          Revenir au corps avant de répondre peut t'aider à ne pas réagir trop vite.
+        </p>
       </div>
     </div>
   );
