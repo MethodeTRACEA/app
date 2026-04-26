@@ -79,13 +79,13 @@ export default function CeQuiChangePage() {
   const recentActionSessions = sessions
     .filter((s) => s.actionAlignee?.trim())
     .slice(0, 3);
-  const recentActionCounts = new Map<string, number>();
+  const recentActionCounts: Record<string, number> = {};
   for (const s of recentActionSessions) {
     const key = s.actionAlignee!.trim().toLowerCase();
-    recentActionCounts.set(key, (recentActionCounts.get(key) ?? 0) + 1);
+    recentActionCounts[key] = (recentActionCounts[key] ?? 0) + 1;
   }
   const recentRepeatedAction =
-    [...recentActionCounts.entries()].find(([, count]) => count >= 2)?.[0] ?? null;
+    Object.entries(recentActionCounts).find(([, count]) => count >= 2)?.[0] ?? null;
 
   let evolutionText: string | null = null;
   if (n >= 3 && recentCount >= 2) {
