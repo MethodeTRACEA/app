@@ -76,8 +76,10 @@ export default function CeQuiChangePage() {
     : n <= 5 ? "Tu reviens. C'est déjà un mouvement."
     : "Un rythme commence à se dessiner.";
 
+  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000);
   const recentActionSessions = sessions
     .filter((s) => s.actionAlignee?.trim())
+    .filter((s) => new Date(s.date) >= sixtyDaysAgo)
     .slice(0, 3);
   const recentActionCounts: Record<string, number> = {};
   for (const s of recentActionSessions) {
@@ -88,9 +90,11 @@ export default function CeQuiChangePage() {
     Object.entries(recentActionCounts).find(([, count]) => count >= 2)?.[0] ?? null;
 
   let evolutionText: string | null = null;
-  if (n >= 3 && recentCount >= 2) {
+  if (n >= 3 && recentCount >= 2 && (n - recentCount) >= 1) {
     evolutionText = "Tu t'arrêtes plus souvent qu'avant.";
-  } else if (n >= 2) {
+  } else if (n >= 3 && recentCount >= 2) {
+    evolutionText = "Tu reviens régulièrement.";
+  } else if (n >= 2 && recentCount >= 1) {
     evolutionText = "Tu reviens quand ça s'active.";
   } else if (n === 1) {
     evolutionText = "Tu as commencé à t'arrêter.";
@@ -154,7 +158,7 @@ export default function CeQuiChangePage() {
       </div>
 
       {/* ── CE QUI SE STABILISE ── */}
-      {sessions.length > 0 && (
+      {sessions.length >= 2 && (
         <div className="card-base p-6">
           <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
             Ce qui se stabilise
