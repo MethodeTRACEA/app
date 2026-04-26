@@ -117,7 +117,7 @@ export default function CeQuiChangePage() {
   } else if (n >= 3 && recentCount >= 2) {
     transformationLines = [
       "Tu ne laisses plus tout passer comme avant.",
-      "Tu reviens, même quand ça s'active.",
+      "Tu commences à faire autrement.",
     ];
   }
 
