@@ -110,12 +110,13 @@ export default function HistoriquePage() {
   // Insight longitudinal déterministe (traversées approfondies uniquement)
   const historyInsight = buildHistoryInsight(sessions);
 
-  // Progression rythme (tous les utilisateurs, 1 phrase max)
-  const rythmePhrase =
-    sessions.length >= 10 ? "Tu as pris l'habitude de revenir." :
-    sessions.length >= 5  ? "Tu reviens ici régulièrement." :
-    sessions.length >= 3  ? "Tu es déjà revenu(e) plusieurs fois." :
-    null;
+  // Bloc "Ce qui se transforme"
+  const transformeText =
+    sessions.length >= 10
+      ? "Tu reviens souvent quand quelque chose t'active.\n\nTu ne laisses plus passer sans t'arrêter."
+      : sessions.length >= 3
+      ? "Tu commences à revenir vers toi quand quelque chose bouge.\n\nC'est déjà une trace."
+      : null;
 
   // Continuité — 1 phrase comportementale (premium, conservateur)
   function continuitePhrase(): string | null {
@@ -166,23 +167,13 @@ export default function HistoriquePage() {
         </div>
       )}
 
-      {/* ── BLOC 1 — TON PARCOURS (tous les utilisateurs) ── */}
-      <div className="card-base p-6">
-        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ton parcours</p>
-        <p className="font-body text-2xl text-espresso">
-          {sessions.length} session{sessions.length > 1 ? "s" : ""} complétée{sessions.length > 1 ? "s" : ""}
-        </p>
-        {sessionsThisWeek > 0 && (
-          <p className="font-body text-sm text-warm-gray mt-1">
-            {sessionsThisWeek} cette semaine
-          </p>
-        )}
-        {rythmePhrase && (
-          <p className="font-body text-sm text-warm-gray mt-2">
-            {rythmePhrase}
-          </p>
-        )}
-      </div>
+      {/* ── CE QUI SE TRANSFORME ── */}
+      {transformeText && (
+        <div className="card-base p-6">
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ce qui se transforme</p>
+          <p className="font-body text-base text-espresso leading-relaxed whitespace-pre-line">{transformeText}</p>
+        </div>
+      )}
 
       {hasPremiumAccess ? (
         <>
@@ -191,20 +182,6 @@ export default function HistoriquePage() {
             <div className="card-base p-6">
               <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce qui se met en place</p>
               <p className="font-body text-base text-espresso">{continuite}</p>
-            </div>
-          )}
-
-          {/* ── Ce qui revient souvent — émotions ── */}
-          {topEmotions.length > 0 && (
-            <div className="card-base p-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ce qui revient souvent</p>
-              <div className="flex flex-wrap gap-2">
-                {topEmotions.map((emotion) => (
-                  <span key={emotion} className="px-3 py-1.5 rounded-full text-sm font-medium bg-beige text-espresso">
-                    {emotion}
-                  </span>
-                ))}
-              </div>
             </div>
           )}
 
