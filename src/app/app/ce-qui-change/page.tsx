@@ -220,6 +220,15 @@ export default function CeQuiChangePage() {
       <p className="font-body text-sm text-warm-gray text-center pb-4">
         C'est suffisant pour maintenant.
       </p>
+
+      <div className="flex flex-col items-center gap-3 pb-6">
+        <p className="font-body text-sm text-warm-gray">
+          Si ça revient, tu peux revenir ici.
+        </p>
+        <Link href="/app/traversee-courte" className="btn-secondary !px-8 !py-2.5 !text-sm">
+          Revenir maintenant
+        </Link>
+      </div>
     </div>
   );
 }
