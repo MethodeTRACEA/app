@@ -7,6 +7,7 @@ import type { PremiumMemory } from "@/lib/supabase-store";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 import { Paywall } from "@/components/Paywall";
+import { buildHistoryInsight } from "@/lib/history-insight";
 
 export default function HistoriquePage() {
   const { user, loading: authLoading, hasPremiumAccess } = useAuth();
@@ -106,13 +107,8 @@ export default function HistoriquePage() {
     .sort((a, b) => emotionCounts[b] - emotionCounts[a])
     .slice(0, 8);
 
-  // Insights V1 — action la plus fréquente (tous utilisateurs)
-  const actionCounts: Record<string, number> = {};
-  sessions.forEach((s) => {
-    const a = (s.actionAlignee || s.steps.emerger || "").toLowerCase().trim().slice(0, 60);
-    if (a) actionCounts[a] = (actionCounts[a] || 0) + 1;
-  });
-  const topAction = Object.keys(actionCounts).sort((a, b) => actionCounts[b] - actionCounts[a])[0] ?? null;
+  // Insight longitudinal déterministe (traversées approfondies uniquement)
+  const historyInsight = buildHistoryInsight(sessions);
 
   // Progression rythme (tous les utilisateurs, 1 phrase max)
   const rythmePhrase =
@@ -162,19 +158,11 @@ export default function HistoriquePage() {
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
       <h1 className="section-title">Traces</h1>
 
-      {/* ── INSIGHTS V1 — Ce qui revient souvent (>= 3 sessions) ── */}
-      {sessions.length >= 3 && (
+      {/* ── INSIGHT LONGITUDINAL — miroir déterministe (>= 5 traversées approfondies) ── */}
+      {historyInsight && (
         <div className="card-base p-6">
           <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ce qui revient souvent</p>
-          <div className="space-y-2 font-body text-base text-espresso">
-            <p>Tu as traversé {sessions.length} moments.</p>
-            {topEmotions[0] && (
-              <p>L&apos;émotion la plus présente : {topEmotions[0]}.</p>
-            )}
-            {topAction && (
-              <p>Tu reviens souvent vers : {topAction}.</p>
-            )}
-          </div>
+          <p className="font-body text-base text-espresso leading-relaxed whitespace-pre-line">{historyInsight}</p>
         </div>
       )}
 
