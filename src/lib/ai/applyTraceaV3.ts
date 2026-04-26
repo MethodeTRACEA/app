@@ -405,5 +405,13 @@ export function applyTraceaV3(text: string, emotion: string): string {
     );
   }
 
+  // ── 4. Rule D : pas deux validations consécutives ────────────
+  // Si une validation suit immédiatement une autre, supprimer la seconde.
+  visual = visual.filter(
+    (p, i) =>
+      i === 0 ||
+      !(ALL_VALIDATIONS.has(p) && ALL_VALIDATIONS.has(visual[i - 1]))
+  );
+
   return visual.join("\n\n");
 }
