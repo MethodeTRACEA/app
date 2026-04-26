@@ -66,27 +66,29 @@ function dominant<T extends string>(
 // ── Templates ────────────────────────────────────────────────────
 
 const EMOTION_LINES: Record<EmotionFamily, string> = {
-  tension:     "Tu te retrouves souvent dans des situations où quelque chose coince…",
-  retrait:     "Tu traverses souvent des moments où quelque chose te touche plus profondément que tu ne le montres.",
-  incertitude: "Tu traverses souvent des moments où tout n'est pas encore clair.",
-  culpabilite: "Tu reviens souvent vers des situations où quelque chose pèse en toi.",
+  tension:     "Tu te retrouves souvent dans des situations où quelque chose ne circule pas vraiment…",
+  retrait:     "Tu traverses souvent des moments où quelque chose se referme ou se retire…",
+  incertitude: "Tu passes souvent par des moments où tu ne sais pas encore clairement…",
+  culpabilite: "Tu te retrouves souvent avec quelque chose qui pèse intérieurement…",
 };
 
 const NEED_LINES: Record<NeedFamily, string> = {
-  lien:       "Et le lien compte beaucoup dans ce que tu essaies de préserver.",
-  limite:     "Et poser une limite semble revenir comme un point important.",
-  clarte:     "Et tu cherches souvent à remettre de la clarté dans ce que tu vis.",
-  expression: "Et quelque chose cherche souvent à être exprimé plus justement.",
+  lien:       "Et le lien avec l'autre reste important pour toi, même quand c'est compliqué.",
+  limite:     "Et tu sens souvent que quelque chose dépasse ce que tu peux accepter.",
+  clarte:     "Et tu cherches à remettre de la clarté dans ce que tu vis.",
+  expression: "Et quelque chose en toi cherche à être dit ou exprimé.",
 };
 
 const ACTION_LINES: Record<ActionFamily, string> = {
-  expression:    "Tu cherches souvent à mettre des mots dessus.",
-  recul:         "Tu reviens souvent vers le besoin de prendre du recul avant d'agir.",
-  lien:          "Tu cherches souvent à recréer du lien, même quand c'est compliqué.",
-  clarification: "Tu essaies souvent d'y voir plus clair avant de choisir.",
+  expression:    "Tu cherches souvent à mettre des mots dessus pour que ça bouge.",
+  recul:         "Tu prends souvent un temps pour ne pas réagir immédiatement.",
+  lien:          "Tu fais souvent un pas vers l'autre, même quand ce n'est pas simple.",
+  clarification: "Tu essaies souvent de nommer ce qui se passe pour y voir plus clair.",
 };
 
-const CLOSING = "Tu fais beaucoup pour retrouver un appui juste.";
+const FALLBACK_EMOTION = "Tu traverses des choses qui te demandent de t'arrêter un peu.";
+const FALLBACK_NEED    = "Et quelque chose en toi cherche à s'ajuster.";
+const FALLBACK_ACTION  = "Tu fais déjà des mouvements pour essayer d'y voir plus clair.";
 
 // ── Fonction principale ──────────────────────────────────────────
 
@@ -134,12 +136,16 @@ export function buildHistoryInsight(sessions: SessionData[]): string | null {
   const topNeed   = dominant(needCounts,   needTotal,   0.5);
   const topAction = dominant(actionCounts, actionTotal, 0.5);
 
-  const lines: string[] = [EMOTION_LINES[topEmotion]];
-  if (topNeed)   lines.push(NEED_LINES[topNeed]);
-  if (topAction) lines.push(ACTION_LINES[topAction]);
+  const emotionLine = EMOTION_LINES[topEmotion];
+  const needLine    = topNeed   ? NEED_LINES[topNeed]
+                    : needTotal > 0 ? FALLBACK_NEED
+                    : null;
+  const actionLine  = topAction   ? ACTION_LINES[topAction]
+                    : actionTotal > 0 ? FALLBACK_ACTION
+                    : null;
 
-  // Clôture douce si le texte est court (1 ou 2 lignes)
-  if (lines.length <= 2) lines.push(CLOSING);
+  // Supprime le FALLBACK_EMOTION (défini, non utilisé dans ce build — réservé)
+  void FALLBACK_EMOTION;
 
-  return lines.join("\n\n");
+  return [emotionLine, needLine, actionLine].filter(Boolean).join("\n\n");
 }
