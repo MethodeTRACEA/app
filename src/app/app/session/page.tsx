@@ -348,7 +348,7 @@ function SessionPageInner() {
 
 function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSession: boolean }) {
   const router = useRouter();
-  const { session: authSession } = useAuth();
+  const { session: authSession, hasPremiumAccess } = useAuth();
 
   const [phase, setPhase] = useState<Phase>("intro");
   const [paywallDismissed, setPaywallDismissed] = useState(false);
@@ -908,7 +908,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
 
           <InstallPrompt />
 
-          {isFirstSession && !paywallDismissed ? (
+          {isFirstSession && !paywallDismissed && !hasPremiumAccess ? (
             <PaywallSection onDismiss={() => setPaywallDismissed(true)} />
           ) : (
             <>

@@ -36,7 +36,7 @@ export function MiniDepot({ onContinue }: { onContinue: (text: string) => void }
           onClick={() => onContinue(text)}
           className="w-full text-center font-inter text-sm t-text-ghost py-2"
         >
-          Passer cette étape
+          Passer directement
         </button>
       </div>
     </div>
