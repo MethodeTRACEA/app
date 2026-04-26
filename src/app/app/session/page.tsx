@@ -36,6 +36,25 @@ type Phase =
 
 // ── Chips ──────────────────────────────────────────────────────
 
+const SAFE_ENDING_PHRASES = [
+  "Tu peux t'appuyer là-dessus.",
+  "C'est déjà un pas.",
+  "Tu viens de poser quelque chose.",
+  "Tu as pris un moment pour traverser.",
+  "Tu peux rester avec ça un instant.",
+  "Quelque chose a été déposé.",
+  "Tu n'as pas laissé ça passer sans t'arrêter.",
+  "Tu peux revenir à ça si ça revient.",
+  "Tu viens de faire un mouvement.",
+  "Ça peut rester simple comme ça pour l'instant.",
+];
+
+function getSafeEnding() {
+  return SAFE_ENDING_PHRASES[
+    Math.floor(Math.random() * SAFE_ENDING_PHRASES.length)
+  ];
+}
+
 const SITUATION_CHIPS = [
   "une tension avec quelqu'un",
   "une décision difficile",
@@ -879,10 +898,7 @@ function SessionContent({ userId }: { userId: string }) {
           {/* Clôture */}
           <div className="text-center space-y-2">
             <p className="font-body text-base text-t-beige">
-              Tu as pris le temps d&apos;y voir plus clair.
-            </p>
-            <p className="font-inter text-xs t-text-ghost">
-              C&apos;est déjà un pas.
+              {getSafeEnding()}
             </p>
           </div>
 
