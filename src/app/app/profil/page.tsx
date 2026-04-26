@@ -148,23 +148,14 @@ export default function ProfilPage() {
         )}
       </div>
 
-      {/* Ton parcours */}
-      <div className="mb-8">
-        <p className="section-label text-center mb-5">Ton parcours</p>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="card-base text-center py-6">
-            <div className="font-serif text-4xl text-terra mb-1">{stats.total}</div>
-            <div className="text-xs text-warm-gray tracking-wide uppercase">
-              Sessions complétées
-            </div>
-          </div>
-          <div className="card-base text-center py-6">
-            <div className="font-serif text-4xl text-sage mb-1">{stats.lastWeekCount}</div>
-            <div className="text-xs text-warm-gray tracking-wide uppercase">
-              Cette semaine
-            </div>
-          </div>
-        </div>
+      {/* Mon espace */}
+      <div className="card-base p-6 mb-8">
+        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4 text-center">Mon espace</p>
+        <p className="font-body text-base text-espresso leading-relaxed whitespace-pre-line text-center">
+          {stats.total >= 3
+            ? "Tu as déjà laissé plusieurs traces ici.\n\nTu peux revenir à ton rythme."
+            : "Ton espace TRACÉA se construit au fil de tes traversées."}
+        </p>
       </div>
 
       {/* Ce qui se met en place + Ce qui revient souvent + Ce que tu utilises le plus */}
@@ -286,59 +277,7 @@ function MemoryProfileSection({
   const continuite = continuitePhraseProfile();
 
   return (
-    <div className="mb-8 space-y-6">
-      {/* Ce qui se met en place */}
-      {continuite && (
-        <div className="card-base p-6">
-          <h3 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3 text-center">
-            Ce qui se met en place
-          </h3>
-          <p className="font-body text-base text-espresso text-center">{continuite}</p>
-        </div>
-      )}
-
-      {/* Ce qui revient souvent */}
-      {topEmotions.length > 0 && (
-        <div className="card-base p-6">
-          <h3 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4 text-center">
-            Ce qui revient souvent
-          </h3>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {topEmotions.map((e, i) => (
-              <span
-                key={e}
-                className={`px-4 py-2 rounded-full font-medium ${
-                  i === 0
-                    ? "text-base font-semibold bg-terra-light text-terra-dark"
-                    : "text-sm bg-beige text-warm-gray"
-                }`}
-              >
-                {e}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Ce que tu utilises le plus */}
-      {hasMemory && effectiveActions.length > 0 && (
-        <div className="card-base p-6">
-          <h3 className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4 text-center">
-            Ce que tu utilises le plus
-          </h3>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {effectiveActions.map((action, i) => (
-              <span
-                key={i}
-                className="px-4 py-2 rounded-full text-sm font-medium bg-terra-light/30 text-terra-dark"
-              >
-                {action}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
+    <div className="mb-8">
       {/* Suppression mémoire RGPD */}
       {hasMemory && (
         <div className="text-center">
