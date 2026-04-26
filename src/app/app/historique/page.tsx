@@ -111,19 +111,6 @@ export default function HistoriquePage() {
   }
   const topActions = topActionsFn();
 
-  // Vérité intérieure récurrente (premium)
-  function topVeriteFn(): string | null {
-    const counts: Record<string, number> = {};
-    for (const s of sessions) {
-      if (!s.veriteInterieure) continue;
-      const key = s.veriteInterieure.toLowerCase().trim();
-      counts[key] = (counts[key] ?? 0) + 1;
-    }
-    const top = Object.entries(counts).sort(([, a], [, b]) => b - a)[0];
-    return top && top[1] >= 2 ? top[0] : null;
-  }
-  const topVerite = topVeriteFn();
-
   // Patterns exercices — 1 phrase (premium)
   function patternPhrase(): string | null {
     if (topEmerger.length === 0 || sessions.length < 3) return null;
@@ -147,7 +134,7 @@ export default function HistoriquePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
-      <h1 className="section-title">Traces</h1>
+      <h1 className="section-title">Tes traces</h1>
       <p className="font-body text-sm text-warm-gray">
         Ce qui est revenu dans tes traversées.
       </p>
@@ -188,15 +175,6 @@ export default function HistoriquePage() {
                   <p key={a} className="font-body text-base text-espresso">« {a} »</p>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* ── Ce qui revient ── */}
-          {topVerite && (
-            <div className="card-base p-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce qui revient</p>
-              <p className="font-body text-sm text-warm-gray mb-2">Tu es revenu(e) à :</p>
-              <p className="font-body text-base text-espresso">« {topVerite} »</p>
             </div>
           )}
 

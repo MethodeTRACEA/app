@@ -34,7 +34,7 @@ export function Paywall({ onContinue }: PaywallProps) {
           onClick={onContinue}
           className="w-full py-3 px-6 rounded-2xl text-warm-gray/60 font-normal text-xs hover:text-warm-gray transition-all"
         >
-          Continuer en accès limité
+          Repartir sans m&apos;abonner
         </button>
       </div>
     </div>

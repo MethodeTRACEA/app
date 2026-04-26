@@ -1072,7 +1072,7 @@ function TraverseeCourteV2() {
                 onClick={() => router.push("/app/session")}
                 className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
               >
-                Comprendre ce qui s&apos;est passé
+                Approfondir ce que tu viens de vivre
               </button>
               <p className="font-inter text-xs t-text-ghost opacity-70">
                 Prendre un moment pour y voir plus clair et repartir autrement
