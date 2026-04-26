@@ -52,7 +52,7 @@ export default function Accueil() {
           className="w-full mt-4 flex items-center justify-center gap-3 rounded-[28px] px-6 py-5 text-[18px] font-semibold text-white bg-white/20 border border-white/35 shadow-[0_0_20px_rgba(255,255,255,0.15)] backdrop-blur-sm transition active:scale-[0.98]"
         >
           <span className="text-[#F6C94A] text-xl">⚡</span>
-          <span>M&apos;aider maintenant</span>
+          <span>Redescendre, maintenant</span>
         </Link>
       </section>
 
