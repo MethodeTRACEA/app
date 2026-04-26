@@ -101,11 +101,6 @@ export default function CeQuiChangePage() {
       "Tu ne laisses plus tout passer comme avant.",
       "Tu reviens, même quand ça s'active.",
     ];
-    if (recentRepeatedAction) {
-      transformationLines.push(
-        `Tu t'appuies sur quelque chose de concret : ${recentRepeatedAction}.`
-      );
-    }
   }
 
   return (
@@ -139,25 +134,37 @@ export default function CeQuiChangePage() {
         </div>
       )}
 
-      {/* ── TES APPUIS ── */}
-      <div className="card-base p-6">
-        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          Tes appuis
+      {/* ── TON CHEMIN DE RETOUR ── */}
+      <div className="card-base p-6 space-y-4">
+        <p className="text-xs uppercase tracking-wider opacity-60">
+          Ton chemin de retour
         </p>
-        {appuis.length === 0 ? (
+
+        {recentRepeatedAction ? (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Tes appuis se dessinent traversée après traversée.
+            Quand ça s'active, tu reviens à :
+            <br />
+            <em>« {recentRepeatedAction} »</em>.
+          </p>
+        ) : recentActionSessions.length >= 2 ? (
+          <>
+            <p className="font-body text-base text-espresso leading-relaxed">Tu explores encore plusieurs façons de revenir.</p>
+            <p className="font-body text-base text-espresso leading-relaxed">Rien n'est figé, mais tu reviens.</p>
+          </>
+        ) : appuis.length === 0 ? (
+          <p className="font-body text-base text-espresso leading-relaxed">
+            Ton chemin de retour se dessine traversée après traversée.
           </p>
         ) : appuis.length === 1 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
             Tu reviens souvent à :{" "}
-            <span className="italic">« {appuis[0]} »</span>.
+            <em>« {appuis[0]} »</em>.
           </p>
         ) : (
           <p className="font-body text-base text-espresso leading-relaxed">
             Tu reviens souvent à :{" "}
-            <span className="italic">« {appuis[0]} »</span> et{" "}
-            <span className="italic">« {appuis[1]} »</span>.
+            <em>« {appuis[0]} »</em> et{" "}
+            <em>« {appuis[1]} »</em>.
           </p>
         )}
       </div>
