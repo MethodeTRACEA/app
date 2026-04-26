@@ -63,6 +63,23 @@ function dominant<T extends string>(
   return count / total >= threshold ? top : null;
 }
 
+// ── Détection de redondance lexicale ────────────────────────────
+// Compare les mots significatifs (> 4 lettres) entre deux phrases.
+// Retourne true si ≥ 2 mots sont partagés (risque de répétition perçue).
+
+function hasTooMuchOverlap(a: string, b: string): boolean {
+  const sig = (s: string): Set<string> =>
+    new Set(
+      s.toLowerCase()
+        .split(/\s+/)
+        .map((w) => w.replace(/[.,…!?'"«»]/g, ""))
+        .filter((w) => w.length > 4)
+    );
+  const wa = sig(a);
+  const shared = Array.from(sig(b)).filter((w) => wa.has(w)).length;
+  return shared >= 2;
+}
+
 // ── Templates ────────────────────────────────────────────────────
 
 const EMOTION_LINES: Record<EmotionFamily, string> = {
@@ -73,22 +90,22 @@ const EMOTION_LINES: Record<EmotionFamily, string> = {
 };
 
 const NEED_LINES: Record<NeedFamily, string> = {
-  lien:       "Et le lien avec l'autre reste important pour toi, même quand c'est compliqué.",
-  limite:     "Et tu sens souvent que quelque chose dépasse ce que tu peux accepter.",
-  clarte:     "Et tu cherches à remettre de la clarté dans ce que tu vis.",
-  expression: "Et quelque chose en toi cherche à être dit ou exprimé.",
+  lien:       "Et le lien compte pour toi, même quand ça ne passe pas.",
+  limite:     "Et ce qui est acceptable pour toi revient comme un point important.",
+  clarte:     "Et comprendre ce que tu vis semble compter pour toi.",
+  expression: "Et pouvoir dire les choses avec justesse semble important.",
 };
 
 const ACTION_LINES: Record<ActionFamily, string> = {
-  expression:    "Tu cherches souvent à mettre des mots dessus pour que ça bouge.",
-  recul:         "Tu prends souvent un temps pour ne pas réagir immédiatement.",
+  expression:    "Tu cherches souvent à mettre des mots dessus pour essayer de faire bouger les choses.",
+  recul:         "Tu prends souvent un temps avant de répondre ou d'agir.",
   lien:          "Tu fais souvent un pas vers l'autre, même quand ce n'est pas simple.",
   clarification: "Tu essaies souvent de nommer ce qui se passe pour y voir plus clair.",
 };
 
 const FALLBACK_EMOTION = "Tu traverses des choses qui te demandent de t'arrêter un peu.";
-const FALLBACK_NEED    = "Et quelque chose en toi cherche à s'ajuster.";
-const FALLBACK_ACTION  = "Tu fais déjà des mouvements pour essayer d'y voir plus clair.";
+const FALLBACK_NEED    = "Et quelque chose semble compter suffisamment pour que tu t'y arrêtes.";
+const FALLBACK_ACTION  = "Tu cherches souvent une façon plus juste d'avancer.";
 
 // ── Fonction principale ──────────────────────────────────────────
 
@@ -136,15 +153,24 @@ export function buildHistoryInsight(sessions: SessionData[]): string | null {
   const topNeed   = dominant(needCounts,   needTotal,   0.5);
   const topAction = dominant(actionCounts, actionTotal, 0.5);
 
-  const emotionLine = EMOTION_LINES[topEmotion];
-  const needLine    = topNeed   ? NEED_LINES[topNeed]
-                    : needTotal > 0 ? FALLBACK_NEED
-                    : null;
-  const actionLine  = topAction   ? ACTION_LINES[topAction]
-                    : actionTotal > 0 ? FALLBACK_ACTION
-                    : null;
+  const emotionLine  = EMOTION_LINES[topEmotion];
+  const actionLine   = topAction   ? ACTION_LINES[topAction]
+                     : actionTotal > 0 ? FALLBACK_ACTION
+                     : null;
 
-  // Supprime le FALLBACK_EMOTION (défini, non utilisé dans ce build — réservé)
+  const needLineRaw  = topNeed   ? NEED_LINES[topNeed]
+                     : needTotal > 0 ? FALLBACK_NEED
+                     : null;
+
+  // Remplace needLine par le fallback si elle répète trop emotionLine ou actionLine
+  const needLine =
+    needLineRaw !== null &&
+    (hasTooMuchOverlap(emotionLine, needLineRaw) ||
+     (actionLine !== null && hasTooMuchOverlap(actionLine, needLineRaw)))
+      ? FALLBACK_NEED
+      : needLineRaw;
+
+  // FALLBACK_EMOTION défini, réservé pour usage futur
   void FALLBACK_EMOTION;
 
   return [emotionLine, needLine, actionLine].filter(Boolean).join("\n\n");
