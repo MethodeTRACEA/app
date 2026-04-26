@@ -34,6 +34,7 @@ export interface SessionData {
   emotionPrimaire: string | null;
   veriteInterieure: string | null;
   actionAlignee: string | null;
+  noteEntreSession?: string;
 }
 
 export interface UserProfile {

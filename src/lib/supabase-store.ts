@@ -539,5 +539,6 @@ function mapDbToSession(row: Record<string, unknown>): SessionData {
     emotionPrimaire: (row.emotion_primaire as string) ?? null,
     veriteInterieure: (row.verite_interieure as string) ?? null,
     actionAlignee: (row.action_alignee as string) ?? null,
+    noteEntreSession: (row.note_entre_sessions as string) ?? undefined,
   };
 }

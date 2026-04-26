@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues, getTopRessentiValues, getPremiumMemory } from "@/lib/supabase-store";
+import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues, getPremiumMemory } from "@/lib/supabase-store";
 import type { PremiumMemory } from "@/lib/supabase-store";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
@@ -17,7 +17,6 @@ export default function HistoriquePage() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
   const [topEmerger, setTopEmerger] = useState<string[]>([]);
-  const [topRessentis, setTopRessentis] = useState<string[]>([]);
   const [premiumMemory, setPremiumMemory] = useState<PremiumMemory | null | undefined>(undefined);
   const [showPaywall, setShowPaywall] = useState(false);
 
@@ -26,20 +25,17 @@ export default function HistoriquePage() {
     const queries: Promise<unknown>[] = [
       getCompletedSessionsDb(user.id),
       getTopEmergerValues(user.id),
-      getTopRessentiValues(user.id, 12),
     ];
     if (hasPremiumAccess) queries.push(getPremiumMemory(user.id));
 
     Promise.all(queries).then((results) => {
-      const [data, emerger, ressentis, pm] = results as [
+      const [data, emerger, pm] = results as [
         Awaited<ReturnType<typeof getCompletedSessionsDb>>,
         Awaited<ReturnType<typeof getTopEmergerValues>>,
-        Awaited<ReturnType<typeof getTopRessentiValues>>,
         PremiumMemory | null | undefined,
       ];
       setSessions(data);
       setTopEmerger(emerger);
-      setTopRessentis(ressentis);
       if (hasPremiumAccess) setPremiumMemory(pm ?? null);
       setLoading(false);
     });
@@ -88,25 +84,6 @@ export default function HistoriquePage() {
 
   // ── Données calculées ─────────────────────────────────────
 
-  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  const sessionsThisWeek = sessions.filter(s => new Date(s.date) >= oneWeekAgo).length;
-
-  // BLOC 2 — émotions (agrégation sessions + ressentis tracking)
-  const emotionCounts: Record<string, number> = {};
-  sessions.forEach((s) => {
-    if (s.emotionPrimaire) {
-      const e = s.emotionPrimaire.toLowerCase().trim().slice(0, 30);
-      emotionCounts[e] = (emotionCounts[e] || 0) + 1;
-    }
-  });
-  topRessentis.forEach((r) => {
-    const e = r.toLowerCase().trim().slice(0, 30);
-    emotionCounts[e] = (emotionCounts[e] || 0) + 1;
-  });
-  const topEmotions = Object.keys(emotionCounts)
-    .sort((a, b) => emotionCounts[b] - emotionCounts[a])
-    .slice(0, 8);
-
   // Insight longitudinal déterministe (traversées approfondies uniquement)
   const historyInsight = buildHistoryInsight(sessions);
 
@@ -117,22 +94,6 @@ export default function HistoriquePage() {
       : sessions.length >= 3
       ? "Tu commences à revenir vers toi quand quelque chose bouge.\n\nC'est déjà une trace."
       : null;
-
-  // Continuité — 1 phrase comportementale (premium, conservateur)
-  function continuitePhrase(): string | null {
-    if (sessions.length < 3) return null;
-    if (topEmerger.length > 0) {
-      const v = topEmerger[0].toLowerCase();
-      if (v.includes("corps") || v.includes("appui") || v.includes("ancr"))
-        return "Tu passes par le corps plus souvent.";
-    }
-    if (topEmerger.length > 1 && sessions.length >= 5)
-      return "Tu trouves peu à peu ce qui t'apaise.";
-    if (sessionsThisWeek >= 2)
-      return "Tu prends un moment avant de réagir.";
-    return "Tu reviens ici quand ça monte.";
-  }
-  const continuite = continuitePhrase();
 
   // Patterns exercices — 1 phrase (premium)
   function patternPhrase(): string | null {
@@ -315,12 +276,12 @@ export default function HistoriquePage() {
                           </div>
                         ) : (
                           <div
-                            onClick={() => { setEditingNoteId(s.id); setNoteText((s as any).noteEntreSession || ""); }}
+                            onClick={() => { setEditingNoteId(s.id); setNoteText(s.noteEntreSession || ""); }}
                             className="cursor-pointer group"
                           >
-                            {(s as any).noteEntreSession ? (
+                            {s.noteEntreSession ? (
                               <p className="font-body text-sm text-espresso italic leading-relaxed group-hover:text-terra transition-colors">
-                                {(s as any).noteEntreSession}
+                                {s.noteEntreSession}
                               </p>
                             ) : (
                               <p className="text-sm text-warm-gray/60 italic group-hover:text-warm-gray transition-colors">
