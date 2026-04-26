@@ -157,15 +157,18 @@ export default function CeQuiChangePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
-      <h1 className="section-title">Si ça revient</h1>
+      <h1 className="section-title">Quand ça monte</h1>
+      <p className="font-body text-sm text-warm-gray">
+        Si ça revient maintenant, tu sais déjà où revenir.
+      </p>
 
       {/* ── QUAND ÇA MONTE ── */}
       <div className="card-base p-6">
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          Quand ça monte
+          Ce moment-là
         </p>
         <p className="font-body text-base text-espresso leading-relaxed">
-          Tu ouvres TRACÉA quand ça devient trop chargé pour rester seul avec.
+          Quand ça devient trop chargé, tu reviens ici pour ne pas rester seul avec.
         </p>
       </div>
 
@@ -210,7 +213,7 @@ export default function CeQuiChangePage() {
           À garder en tête
         </p>
         <p className="font-body text-base text-espresso leading-relaxed">
-          Revenir au corps te permet de ne pas réagir trop vite.
+          Revenir au corps t'aide à ne pas réagir trop vite.
         </p>
       </div>
 
