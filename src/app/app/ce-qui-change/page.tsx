@@ -144,12 +144,7 @@ export default function CeQuiChangePage() {
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
           Tes appuis
         </p>
-        {recentRepeatedAction ? (
-          <p className="font-body text-base text-espresso leading-relaxed">
-            Ces derniers temps, tu reviens souvent à :{" "}
-            <span className="italic">« {recentRepeatedAction} »</span>.
-          </p>
-        ) : appuis.length === 0 ? (
+        {appuis.length === 0 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
             Tes appuis se dessinent traversée après traversée.
           </p>
