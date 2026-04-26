@@ -98,12 +98,12 @@ export default function CeQuiChangePage() {
     transformationLines = ["Tu reviens quand ça s'active."];
   } else if (n >= 3 && recentCount >= 2) {
     transformationLines = [
-      "Tu ne laisses plus tout passer.",
+      "Tu ne laisses plus tout passer comme avant.",
       "Tu reviens, même quand ça s'active.",
     ];
     if (recentRepeatedAction) {
       transformationLines.push(
-        `Tu as trouvé un appui qui revient : ${recentRepeatedAction}.`
+        `Tu t'appuies sur quelque chose de concret : ${recentRepeatedAction}.`
       );
     }
   }
@@ -150,12 +150,12 @@ export default function CeQuiChangePage() {
           </p>
         ) : appuis.length === 1 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Certains appuis reviennent dans tes traversées :{" "}
+            Tu reviens souvent à :{" "}
             <span className="italic">« {appuis[0]} »</span>.
           </p>
         ) : (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Certains appuis reviennent dans tes traversées :{" "}
+            Tu reviens souvent à :{" "}
             <span className="italic">« {appuis[0]} »</span> et{" "}
             <span className="italic">« {appuis[1]} »</span>.
           </p>
