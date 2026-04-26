@@ -47,17 +47,17 @@ const SITUATION_CHIPS = [
 
 const SITUATION_DETAIL_PLACEHOLDERS: Record<string, string> = {
   "une tension avec quelqu'un":
-    "ex : il m'a coupé la parole / il ne m'a pas répondu / j'ai dû tout gérer seule…",
+    "ex : il ne m'a pas répondu…",
   "une décision difficile":
-    "ex : j'ai dû choisir sans être vraiment soutenu(e) / je ne savais plus quoi faire…",
+    "ex : j'ai dû choisir seule…",
   "quelque chose m'a blessé":
-    "ex : une phrase m'est restée / je me suis senti(e) mis(e) de côté…",
+    "ex : une phrase m'est restée…",
   "je me suis senti(e) incompris(e)":
-    "ex : j'ai essayé d'expliquer mais l'autre n'a pas entendu / mes mots n'ont pas été reçus…",
+    "ex : mes mots n'ont pas été reçus…",
   "une situation m'a dépassé(e)":
-    "ex : tout est arrivé en même temps / j'ai senti que je n'y arrivais plus…",
+    "ex : tout est arrivé en même temps…",
   "je ne sais pas exactement":
-    "ex : je sens juste que quelque chose ne va pas / c'est flou mais ça me travaille…",
+    "ex : c'est flou mais ça me travaille…",
 };
 
 const EMOTION_CHIPS = [
@@ -450,7 +450,7 @@ function SessionContent({ userId }: { userId: string }) {
                     onChange={(e) => setSituationComplement(e.target.value)}
                     placeholder={SITUATION_DETAIL_PLACEHOLDERS[situation] ?? "ex : ce qui t'a marqué en une phrase…"}
                     className={textareaClass}
-                    rows={1}
+                    rows={2}
                     autoFocus
                   />
                   <p className="font-inter text-[10px] t-text-ghost px-1">
