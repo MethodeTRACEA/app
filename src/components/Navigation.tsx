@@ -15,6 +15,7 @@ const authLinks = [
   { href: "/", label: "Accueil" },
   { href: "/app/entrainement", label: "S'entraîner" },
   { href: "/app/historique", label: "Historique" },
+  { href: "/app/ce-qui-change", label: "Ce qui change" },
   { href: "/app/ressources", label: "Ressources" },
   { href: "/app/profil", label: "Profil" },
 ];
