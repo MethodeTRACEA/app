@@ -77,7 +77,7 @@ function hasTooMuchOverlap(a: string, b: string): boolean {
     );
   const wa = sig(a);
   const shared = Array.from(sig(b)).filter((w) => wa.has(w)).length;
-  return shared >= 2;
+  return shared >= 3;
 }
 
 // ── Templates ────────────────────────────────────────────────────
@@ -94,6 +94,33 @@ const NEED_LINES: Record<NeedFamily, string> = {
   limite:     "Et ce qui est acceptable pour toi revient comme un point important.",
   clarte:     "Et comprendre ce que tu vis semble compter pour toi.",
   expression: "Et pouvoir dire les choses avec justesse semble important.",
+};
+
+const NEED_LINES_BY_EMOTION: Record<string, Record<string, string>> = {
+  tension: {
+    lien:       "Et le lien reste important pour toi, même quand ça coince.",
+    limite:     "Et tu sembles revenir vers ce que tu ne veux plus porter.",
+    clarte:     "Et comprendre ce qui bloque semble compter pour toi.",
+    expression: "Et ça compte suffisamment pour que tu cherches à le dire.",
+  },
+  retrait: {
+    lien:       "Et le lien reste important, même quand tu te sens plus loin.",
+    limite:     "Et poser une limite semble t'aider à ne pas t'effacer.",
+    clarte:     "Et comprendre ce que ça touche en toi semble important.",
+    expression: "Et quelque chose reste difficile à dire, mais cherche une place.",
+  },
+  incertitude: {
+    lien:       "Et le lien compte encore, même quand tu ne sais pas comment t'y prendre.",
+    limite:     "Et poser une limite semble t'aider à retrouver un bord clair.",
+    clarte:     "Et comprendre ce qui se passe compte vraiment pour toi.",
+    expression: "Et trouver les mots semble t'aider à remettre un peu d'ordre.",
+  },
+  culpabilite: {
+    lien:       "Et le lien reste important, même quand quelque chose pèse.",
+    limite:     "Et poser une limite semble t'aider à ne pas tout prendre sur toi.",
+    clarte:     "Et comprendre ta part sans tout porter semble important.",
+    expression: "Et dire les choses avec justesse semble compter pour toi.",
+  },
 };
 
 const ACTION_LINES: Record<ActionFamily, string> = {
@@ -158,9 +185,10 @@ export function buildHistoryInsight(sessions: SessionData[]): string | null {
                      : actionTotal > 0 ? FALLBACK_ACTION
                      : null;
 
-  const needLineRaw  = topNeed   ? NEED_LINES[topNeed]
-                     : needTotal > 0 ? FALLBACK_NEED
-                     : null;
+  const needLineRaw  = topNeed
+    ? (NEED_LINES_BY_EMOTION[topEmotion]?.[topNeed] ?? NEED_LINES[topNeed])
+    : needTotal > 0 ? FALLBACK_NEED
+    : null;
 
   // Remplace needLine par le fallback si elle répète trop emotionLine ou actionLine
   const needLine =
