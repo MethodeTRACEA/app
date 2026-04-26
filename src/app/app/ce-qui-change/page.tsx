@@ -165,7 +165,7 @@ export default function CeQuiChangePage() {
           Quand ça monte
         </p>
         <p className="font-body text-base text-espresso leading-relaxed">
-          Tu reviens ici quand ça devient trop chargé.
+          Tu ouvres TRACÉA quand ça devient trop chargé pour rester seul avec.
         </p>
       </div>
 
@@ -175,7 +175,7 @@ export default function CeQuiChangePage() {
           Ce qui aide chez toi
         </p>
         <p className="font-body text-base text-espresso leading-relaxed">
-          Quand tu vas jusqu'au bout d'une traversée, ton intensité redescend souvent.
+          Aller jusqu'au bout de la traversée t'aide à redescendre.
         </p>
       </div>
 
@@ -210,9 +210,13 @@ export default function CeQuiChangePage() {
           À garder en tête
         </p>
         <p className="font-body text-base text-espresso leading-relaxed">
-          Revenir au corps avant de répondre peut t'aider à ne pas réagir trop vite.
+          Revenir au corps te permet de ne pas réagir trop vite.
         </p>
       </div>
+
+      <p className="font-body text-sm text-warm-gray text-center pb-4">
+        C'est suffisant pour maintenant.
+      </p>
     </div>
   );
 }
