@@ -12,7 +12,7 @@ function bougePhraseFor(avgDelta: number): string {
   if (avgDelta >= 3)
     return "La traversée t'aide à redescendre. C'est souvent comme ça que ça se passe pour toi.";
   if (avgDelta >= 1.5)
-    return "Quelque chose se détend souvent après que tu traverses.";
+    return "Ton intensité baisse souvent entre le début et la fin.";
   return "Tu traverses, et quelque chose se repose — même légèrement.";
 }
 
@@ -45,7 +45,7 @@ function computeBougeBlock(sessions: SessionData[]): {
     const avgRecent = recent3.reduce((a, b) => a + b, 0) / 3;
     const avgEarly = early3.reduce((a, b) => a + b, 0) / 3;
     if (avgEarly - avgRecent >= 1.5) {
-      secondary = "Tu sembles arriver avec moins d'intensité qu'au début.";
+      secondary = "Les dernières traversées montrent une intensité d'entrée plus basse qu'avant.";
     }
   }
 
@@ -67,7 +67,7 @@ function computeRythmeBlock(sessions: SessionData[]): {
   else if (n <= 5) main = "Tu reviens. C'est déjà quelque chose.";
   else if (n <= 9) main = "Tu as trouvé un rythme — même irrégulier, tu continues.";
   else if (n <= 19) main = "Tu reviens depuis un moment. Ce chemin t'appartient.";
-  else main = "Tu traverses depuis longtemps. Il y a quelque chose de régulier ici.";
+  else main = "Tu reviens à TRACÉA depuis plusieurs traversées.";
 
   let span: string | null = null;
   if (sessions.length >= 2) {
@@ -87,7 +87,7 @@ function computeRythmeBlock(sessions: SessionData[]): {
     (s) => new Date(s.date) >= cutoff14
   ).length;
   if (recentCount >= 3) {
-    active = "Tu es dans une période active en ce moment.";
+    active = "Tu as utilisé TRACÉA plusieurs fois récemment.";
   }
 
   return { main, span, active };
@@ -221,7 +221,7 @@ export default function CeQuiChangePage() {
           </p>
         ) : (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Tu reviens souvent à deux choses :{" "}
+            Dans tes dernières traversées, tu as choisi :{" "}
             <span className="italic">« {appuis[0]} »</span> et{" "}
             <span className="italic">« {appuis[1]} »</span>.
           </p>
