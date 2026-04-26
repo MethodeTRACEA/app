@@ -153,7 +153,7 @@ export default function ProfilPage() {
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4 text-center">Mon espace</p>
         <p className="font-body text-base text-espresso leading-relaxed whitespace-pre-line text-center">
           {stats.total >= 3
-            ? "Tu as déjà laissé plusieurs traces ici.\n\nTu peux revenir à ton rythme."
+            ? "Tu es déjà revenu ici plusieurs fois.\n\nEt quelque chose en toi commence à bouger."
             : "Ton espace TRACÉA se construit au fil de tes traversées."}
         </p>
       </div>
