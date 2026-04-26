@@ -433,11 +433,14 @@ function SessionContent({ userId }: { userId: string }) {
                   <textarea
                     value={situationComplement}
                     onChange={(e) => setSituationComplement(e.target.value)}
-                    placeholder="une phrase suffit…"
+                    placeholder="ex : il m'a coupé la parole / il ne m'a pas répondu / j'ai dû tout gérer seule…"
                     className={textareaClass}
                     rows={1}
                     autoFocus
                   />
+                  <p className="font-inter text-[10px] t-text-ghost px-1">
+                    (ce qui t&apos;a marqué)
+                  </p>
                 </div>
               )}
             </div>
