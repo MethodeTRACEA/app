@@ -101,6 +101,11 @@ export default function CeQuiChangePage() {
       "Tu ne laisses plus tout passer.",
       "Tu reviens, même quand ça s'active.",
     ];
+    if (recentRepeatedAction) {
+      transformationLines.push(
+        `Tu as trouvé un appui qui revient : ${recentRepeatedAction}.`
+      );
+    }
   }
 
   return (
