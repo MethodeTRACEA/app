@@ -83,37 +83,111 @@ const BESOIN_CHIPS = [
 // Interdit : gestes du flow court (respirer, boire, pause, ancrer…)
 // Autorisé : clarification, communication, introspection, ajustement relationnel
 
-const ACTION_SUGGESTIONS: Record<string, string[]> = {
-  "être compris(e)": [
-    "trouver comment l'exprimer simplement",
-    "écrire ce que j'aurais voulu dire",
-    "choisir à qui en parler",
-  ],
-  "poser une limite": [
-    "dire ce que je n'accepte plus",
-    "écrire ce que je suis prêt(e) à poser clairement",
-    "décider ce que je vais dire et quand",
-  ],
-  "clarifier quelque chose": [
-    "écrire les deux côtés de la situation",
-    "noter ce qui reste flou pour moi",
-    "mettre au clair ce que je veux vraiment",
-  ],
-  "exprimer ce que j'ai ressenti": [
-    "écrire ce que j'aurais voulu dire",
-    "trouver les mots justes pour le nommer",
-    "dire ce que j'ai gardé pour moi",
-  ],
-  "prendre du recul": [
-    "laisser passer avant de répondre",
-    "écrire la situation depuis l'extérieur",
-    "noter ce que je ferais autrement",
-  ],
-  "me rapprocher de quelqu'un": [
-    "envoyer un message simple",
-    "choisir le bon moment pour en parler",
-    "écrire ce que j'ai envie de partager",
-  ],
+type ActionEntry = { default: string[]; [emotion: string]: string[] };
+
+const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
+  "être compris(e)": {
+    default: [
+      "trouver comment l'exprimer simplement",
+      "écrire ce que j'aurais voulu dire",
+      "choisir à qui en parler",
+    ],
+    "solitude": [
+      "envoyer un message simple à quelqu'un",
+      "choisir une personne à qui parler",
+      "écrire ce que j'aurais besoin qu'on entende",
+    ],
+    "tristesse": [
+      "choisir à qui en parler",
+      "écrire ce que j'aurais aimé entendre",
+      "demander une présence simple",
+    ],
+  },
+  "poser une limite": {
+    default: [
+      "dire ce que je n'accepte plus",
+      "écrire ce que je suis prêt(e) à poser clairement",
+      "décider ce que je vais dire et quand",
+    ],
+    "colère": [
+      "dire ce que je n'accepte plus",
+      "nommer ce que je refuse de porter",
+      "écrire ma limite avant de la poser",
+    ],
+    "peur": [
+      "choisir la limite la plus simple à poser",
+      "écrire ce que je peux dire sans me justifier",
+      "attendre d'être plus stable avant d'en parler",
+    ],
+  },
+  "clarifier quelque chose": {
+    default: [
+      "écrire les deux côtés de la situation",
+      "noter ce qui reste flou pour moi",
+      "mettre au clair ce que je veux vraiment",
+    ],
+    "confusion": [
+      "écrire les deux côtés de la situation",
+      "noter ce qui est clair et ce qui ne l'est pas",
+      "nommer ce qui reste flou",
+    ],
+    "peur": [
+      "noter ce que je sais et ce que j'ignore encore",
+      "écrire ce qui dépend de moi",
+      "attendre avant de conclure",
+    ],
+  },
+  "exprimer ce que j'ai ressenti": {
+    default: [
+      "écrire ce que j'aurais voulu dire",
+      "trouver les mots justes pour le nommer",
+      "dire ce que j'ai gardé pour moi",
+    ],
+    "colère": [
+      "écrire ce que j'aurais voulu dire",
+      "nommer ce qui m'a touché sans exploser",
+      "poser les mots avant de parler",
+    ],
+    "honte": [
+      "écrire ça juste pour moi",
+      "nommer ce que je ressens sans me juger",
+      "garder ça pour moi le temps d'y voir clair",
+    ],
+  },
+  "prendre du recul": {
+    default: [
+      "laisser passer avant de répondre",
+      "écrire la situation depuis l'extérieur",
+      "noter ce que je ferais autrement",
+    ],
+    "colère": [
+      "laisser passer avant de répondre",
+      "écrire ce qui m'a touché avant d'agir",
+      "choisir de ne pas répondre tout de suite",
+    ],
+    "peur": [
+      "noter ce qui me fait peur là-dedans",
+      "séparer ce que je sais de ce que j'imagine",
+      "attendre avant de décider",
+    ],
+    "tristesse": [
+      "noter ce que j'aurais besoin d'entendre",
+      "me laisser un moment avant de répondre",
+      "écrire ce que ça a réveillé en moi",
+    ],
+  },
+  "me rapprocher de quelqu'un": {
+    default: [
+      "envoyer un message simple",
+      "choisir le bon moment pour en parler",
+      "écrire ce que j'ai envie de partager",
+    ],
+    "solitude": [
+      "envoyer un message simple",
+      "proposer un moment sans trop expliquer",
+      "dire que j'aimerais ne pas rester seul(e)",
+    ],
+  },
 };
 
 const ACTION_FALLBACK = [
@@ -122,8 +196,11 @@ const ACTION_FALLBACK = [
   "trouver comment l'exprimer simplement",
 ];
 
-function getActionSuggestions(besoin: string): string[] {
-  return ACTION_SUGGESTIONS[besoin] ?? ACTION_FALLBACK;
+function getActionSuggestions(besoin: string, emotion?: string): string[] {
+  const entry = ACTION_SUGGESTIONS[besoin];
+  if (!entry) return ACTION_FALLBACK;
+  if (emotion && entry[emotion]) return entry[emotion];
+  return entry.default;
 }
 
 // ── Chip interne ───────────────────────────────────────────────
@@ -281,7 +358,7 @@ function SessionContent({ userId }: { userId: string }) {
     ? emotionOther.trim() : emotion;
   const besoinLabel = besoin === "autre" && besoinOther.trim()
     ? besoinOther.trim() : besoin;
-  const suggestions = getActionSuggestions(besoinLabel);
+  const suggestions = getActionSuggestions(besoinLabel, emotionLabel);
 
   // ── Démarrer session en DB ───────────────────────────────────
   async function startSession() {
