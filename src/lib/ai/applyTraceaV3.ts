@@ -33,9 +33,9 @@ const VALIDATIONS: Record<EmotionKey, [string, string]> = {
   "tristesse":   ["Tu peux prendre ce temps.", "Ça a sa place."],
   "peur":        ["Tu peux ralentir.", "Tu peux rester là."],
   "confusion":   ["Ça peut rester comme ça.", "Tu n'as pas besoin de savoir tout de suite."],
-  "honte":       ["Tu peux y aller doucement.", "Tu peux rester avec toi."],
+  "honte":       ["Tu peux y aller doucement.", "Tu peux t'appuyer là-dessus."],
   "frustration": ["Tu peux le voir.", "C'est là."],
-  "culpabilité": ["Tu peux y aller doucement.", "Tu peux rester avec toi."],
+  "culpabilité": ["Tu peux y aller doucement.", "Tu peux t'appuyer là-dessus."],
   "solitude":    ["Ça a sa place.", "Tu peux t'appuyer là-dessus."],
 };
 
@@ -88,7 +88,7 @@ const ALL_VALIDATIONS = new Set([
   "Tu peux prendre ce temps.", "Ça a sa place.",
   "Tu peux ralentir.", "Tu peux rester là.",
   "Ça peut rester comme ça.", "Tu n'as pas besoin de savoir tout de suite.",
-  "Tu peux y aller doucement.", "Tu peux rester avec toi.",
+  "Tu peux y aller doucement.",
   "Tu peux le voir.", "C'est là.",
   "Ça a du sens.", "Ça compte.", "Ça compte vraiment.",
   "C'est important.", "Tu l'as vu.", "Tu ne l'as pas laissé passer.",

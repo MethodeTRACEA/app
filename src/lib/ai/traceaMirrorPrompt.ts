@@ -481,7 +481,7 @@ HONTE
 - ton : très délicat, minimal
 - rythme : lent, épuré
 - micro-phrase optionnelle : "Ça se referme." / "C'est difficile à montrer."
-- validation : "Tu peux y aller doucement." / "Tu peux rester avec toi."
+- validation : "Tu peux y aller doucement." / "Tu peux t'appuyer là-dessus."
 
 FRUSTRATION
 - ton : lucide, posé

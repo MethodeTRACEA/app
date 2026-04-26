@@ -173,7 +173,7 @@ Validation finale — choisir UNE parmi : "Ça peut rester comme ça." / "Tu n'a
 Ton : très délicat, minimal.
 Rythme : lent, épuré.
 Micro-phrase optionnelle (1 seule, si pertinent) : "Ça se referme." ou "C'est difficile à montrer."
-Validation finale — choisir UNE parmi : "Tu peux y aller doucement." / "Tu peux rester avec toi."`;
+Validation finale — choisir UNE parmi : "Tu peux y aller doucement." / "Tu peux t'appuyer là-dessus."`;
   }
 
   if (e === "frustration") {
