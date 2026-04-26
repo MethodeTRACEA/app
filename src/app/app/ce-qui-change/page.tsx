@@ -64,32 +64,28 @@ export default function CeQuiChangePage() {
   }
 
   const appuis = computeAppuisBlock(sessions);
-  const hasActionsData = sessions.filter((s) => s.actionAlignee).length >= 2;
+
+  const n = sessions.length;
+  const rythmeText =
+    n === 0 ? "Ta première traversée ouvrira le chemin."
+    : n <= 2 ? "Tu commences à laisser une trace."
+    : n <= 5 ? "Tu reviens. C'est déjà un mouvement."
+    : "Un rythme commence à se dessiner.";
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
-      <h1 className="section-title">Quand ça monte</h1>
+      <h1 className="section-title">Ce qui change</h1>
       <p className="font-body text-sm text-warm-gray">
-        Si ça revient maintenant, tu sais déjà où revenir.
+        Un regard simple sur ce qui se stabilise dans ta manière de traverser.
       </p>
 
-      {/* ── QUAND ÇA MONTE ── */}
+      {/* ── TON RYTHME ── */}
       <div className="card-base p-6">
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          Ce moment-là
+          Ton rythme
         </p>
         <p className="font-body text-base text-espresso leading-relaxed">
-          Quand ça devient trop chargé, tu reviens ici pour ne pas rester seul avec.
-        </p>
-      </div>
-
-      {/* ── CE QUI AIDE CHEZ TOI ── */}
-      <div className="card-base p-6">
-        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          Ce qui aide chez toi
-        </p>
-        <p className="font-body text-base text-espresso leading-relaxed">
-          Aller jusqu'au bout de la traversée t'aide à redescendre.
+          {rythmeText}
         </p>
       </div>
 
@@ -100,45 +96,30 @@ export default function CeQuiChangePage() {
         </p>
         {appuis.length === 0 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
-            {hasActionsData
-              ? "Tu explores différentes façons d'avancer. Rien de fixé encore — c'est déjà quelque chose."
-              : "Les appuis se dessinent traversée après traversée."}
+            Tes appuis se dessinent traversée après traversée.
           </p>
         ) : appuis.length === 1 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Tu t'appuies souvent sur :{" "}
+            Certains appuis reviennent dans tes traversées :{" "}
             <span className="italic">« {appuis[0]} »</span>.
           </p>
         ) : (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Tu t'appuies souvent sur :{" "}
+            Certains appuis reviennent dans tes traversées :{" "}
             <span className="italic">« {appuis[0]} »</span> et{" "}
             <span className="italic">« {appuis[1]} »</span>.
           </p>
         )}
       </div>
 
-      {/* ── À GARDER EN TÊTE ── */}
+      {/* ── CE QUI SE STABILISE ── */}
       <div className="card-base p-6">
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          À garder en tête
+          Ce qui se stabilise
         </p>
         <p className="font-body text-base text-espresso leading-relaxed">
-          Revenir au corps t'aide à ne pas réagir trop vite.
+          Tu ne cherches pas à tout régler d&apos;un coup. Tu reviens, tu traverses, tu poses un geste.
         </p>
-      </div>
-
-      <p className="font-body text-sm text-warm-gray text-center pb-4">
-        C'est suffisant pour maintenant.
-      </p>
-
-      <div className="flex flex-col items-center gap-3 pb-6">
-        <p className="font-body text-sm text-warm-gray">
-          Si ça revient, tu peux revenir ici.
-        </p>
-        <Link href="/app/traversee-courte" className="btn-secondary !px-8 !py-2.5 !text-sm">
-          Revenir maintenant
-        </Link>
       </div>
     </div>
   );

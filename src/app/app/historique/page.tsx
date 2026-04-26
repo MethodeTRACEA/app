@@ -148,6 +148,9 @@ export default function HistoriquePage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
       <h1 className="section-title">Traces</h1>
+      <p className="font-body text-sm text-warm-gray">
+        Ce qui est revenu dans tes traversées.
+      </p>
 
       {/* ── INSIGHT LONGITUDINAL — miroir déterministe (>= 5 traversées approfondies) ── */}
       {historyInsight && (
