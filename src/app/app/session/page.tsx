@@ -941,16 +941,16 @@ function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
         Tu viens de redescendre un peu.
       </p>
       <div className="font-body text-base t-text-secondary leading-relaxed space-y-3">
-        <p>La prochaine fois, tu ne repartiras pas de zéro.</p>
         <p>
-          Tu pourras t&apos;appuyer sur ce qui t&apos;aide déjà,<br />
-          au lieu de chercher à nouveau.
+          La prochaine fois, tu pourras revenir plus vite.<br />
+          Sans repartir de zéro.
         </p>
         <p>
-          Et avec le temps,<br />
-          tu verras ce qui revient,<br />
-          et ce qui change en toi.
+          Tu verras ce qui revient.<br />
+          Et ce qui change en toi.
         </p>
+        <p>Tu avances, même quand ça revient.</p>
+        <p className="t-text-ghost text-sm">Sinon, tu repartiras de zéro la prochaine fois.</p>
       </div>
       <PrimaryButton onClick={() => router.push("/app/subscribe")}>
         Continuer avec TRACÉA
