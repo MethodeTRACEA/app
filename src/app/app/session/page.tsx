@@ -334,7 +334,10 @@ function SessionPageInner() {
 
   return (
     <ConsentGate>
-      <SessionContent userId={user.id} />
+      <SessionContent
+        userId={user.id}
+        isFirstSession={!hasPremiumAccess && sessionCount === 0}
+      />
     </ConsentGate>
   );
 }
@@ -343,11 +346,12 @@ function SessionPageInner() {
 // CONTENU PRINCIPAL
 // ════════════════════════════════════════════════════════════
 
-function SessionContent({ userId }: { userId: string }) {
+function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSession: boolean }) {
   const router = useRouter();
   const { session: authSession } = useAuth();
 
   const [phase, setPhase] = useState<Phase>("intro");
+  const [paywallDismissed, setPaywallDismissed] = useState(false);
 
   // Données collectées
   const [situation, setSituation] = useState("");
@@ -904,21 +908,61 @@ function SessionContent({ userId }: { userId: string }) {
 
           <InstallPrompt />
 
-          <PrimaryButton onClick={() => router.push("/app")}>
-            Terminer
-          </PrimaryButton>
+          {isFirstSession && !paywallDismissed ? (
+            <PaywallSection onDismiss={() => setPaywallDismissed(true)} />
+          ) : (
+            <>
+              <PrimaryButton onClick={() => router.push("/app")}>
+                Terminer
+              </PrimaryButton>
 
-          <button
-            type="button"
-            onClick={() => router.push("/app/historique")}
-            className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
-          >
-            Voir mes traces →
-          </button>
+              <button
+                type="button"
+                onClick={() => router.push("/app/historique")}
+                className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
+              >
+                Voir mes traces →
+              </button>
+            </>
+          )}
 
         </div>
       </div>
     </ScreenContainer>
+  );
+}
+
+// ── Paywall post-session ────────────────────────────────────────
+function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
+  const router = useRouter();
+  return (
+    <div className="w-full space-y-5 text-center">
+      <div className="font-body text-base t-text-secondary leading-relaxed space-y-3">
+        <p>La prochaine fois, tu ne repartiras pas de zéro.</p>
+        <p>
+          Tu pourras t&apos;appuyer sur ce qui t&apos;aide déjà,<br />
+          au lieu de chercher à nouveau.
+        </p>
+        <p>
+          Et avec le temps,<br />
+          tu verras ce qui revient,<br />
+          et ce qui change en toi.
+        </p>
+      </div>
+      <PrimaryButton onClick={() => router.push("/app/subscribe")}>
+        Continuer avec TRACÉA
+      </PrimaryButton>
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors underline"
+      >
+        Repartir de zéro
+      </button>
+      <p className="font-inter text-[10px] t-text-ghost">
+        Tu peux arrêter quand tu veux.
+      </p>
+    </div>
   );
 }
 
