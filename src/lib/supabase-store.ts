@@ -264,6 +264,16 @@ export async function getSessionEndCount(userId: string): Promise<number> {
   return count ?? 0;
 }
 
+export async function getApprofondiSessionEndCount(userId: string): Promise<number> {
+  const { count } = await supabase
+    .from("tracea_events")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("event", "session_end")
+    .filter("data->>mode", "eq", "approfondi");
+  return count ?? 0;
+}
+
 export async function getTopAnchorMethod(userId: string): Promise<string | null> {
   const { data } = await supabase
     .from("tracea_events")

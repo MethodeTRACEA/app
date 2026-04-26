@@ -8,7 +8,7 @@ import {
   createSessionDb,
   updateSessionDb,
   trackEvent,
-  getSessionEndCount,
+  getApprofondiSessionEndCount,
 } from "@/lib/supabase-store";
 import { Paywall } from "@/components/Paywall";
 import { ConsentGate } from "@/components/ConsentGate";
@@ -262,7 +262,7 @@ function SessionPageInner() {
 
   useEffect(() => {
     if (!user) return;
-    getSessionEndCount(user.id).then(setSessionCount);
+    getApprofondiSessionEndCount(user.id).then(setSessionCount);
   }, [user]);
 
   if (loading) {
