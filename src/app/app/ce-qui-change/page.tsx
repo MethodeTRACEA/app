@@ -129,7 +129,7 @@ export default function CeQuiChangePage() {
             Tu traverses.
           </p>
           <p className="font-body text-base text-espresso leading-relaxed mt-2">
-            Tu poses un geste.
+            Tu fais un pas.
           </p>
         </div>
       )}
