@@ -89,6 +89,20 @@ export default function CeQuiChangePage() {
   const recentRepeatedAction =
     Object.entries(recentActionCounts).find(([, count]) => count >= 2)?.[0] ?? null;
 
+  let transformationLines: string[] = [];
+  if (n === 1) {
+    transformationLines = ["Tu as commencé à t'arrêter."];
+  } else if (n >= 2 && recentCount === 0) {
+    transformationLines = ["Tu es déjà revenu(e) plusieurs fois."];
+  } else if (n >= 2 && recentCount >= 1 && recentCount < 2) {
+    transformationLines = ["Tu reviens quand ça s'active."];
+  } else if (n >= 3 && recentCount >= 2) {
+    transformationLines = [
+      "Tu ne laisses plus tout passer.",
+      "Tu reviens, même quand ça s'active.",
+    ];
+  }
+
   let evolutionText: string | null = null;
   if (n >= 3 && recentCount >= 2 && (n - recentCount) >= 1) {
     evolutionText = "Tu t'arrêtes plus souvent qu'avant.";
@@ -116,6 +130,20 @@ export default function CeQuiChangePage() {
           {rythmeText}
         </p>
       </div>
+
+      {/* ── CE QUI BOUGE EN TOI ── */}
+      {transformationLines.length > 0 && (
+        <div className="card-base p-6">
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
+            Ce qui bouge en toi
+          </p>
+          <div className="font-body text-base text-espresso leading-loose space-y-3">
+            {transformationLines.map((line, index) => (
+              <p key={index}>{line}</p>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── CE QUE ÇA CHANGE CONCRÈTEMENT ── */}
       {evolutionText && (
