@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
@@ -12,6 +13,7 @@ const LS_KEY = "tracea_post_session_seen";
 
 export default function PostSessionPage() {
   const router = useRouter();
+  const { hasPremiumAccess } = useAuth();
   const [screen, setScreen] = useState<Screen>("micro-check");
 
   // Mark as seen on first load — subsequent completions skip this page
@@ -76,7 +78,7 @@ export default function PostSessionPage() {
                 ou devenir un repère dans le temps.
               </p>
             </div>
-            <PrimaryButton onClick={() => setScreen("paywall")}>
+            <PrimaryButton onClick={() => hasPremiumAccess ? router.push("/app/ce-qui-change") : setScreen("paywall")}>
               Voir comment
             </PrimaryButton>
           </div>
@@ -119,8 +121,8 @@ export default function PostSessionPage() {
                 <p className="font-inter text-xs t-text-secondary uppercase tracking-wider">
                   Annuel
                 </p>
-                <p className="font-serif text-2xl text-t-beige">79€</p>
-                <p className="font-inter text-xs t-text-secondary">par an · soit 6,60€/mois</p>
+                <p className="font-serif text-2xl text-t-beige">78€</p>
+                <p className="font-inter text-xs t-text-secondary">par an · soit 6,50€/mois</p>
               </div>
             </div>
 
