@@ -85,41 +85,41 @@ const BESOIN_CHIPS = [
 
 const ACTION_SUGGESTIONS: Record<string, string[]> = {
   "être compris(e)": [
+    "trouver comment l'exprimer simplement",
     "écrire ce que j'aurais voulu dire",
-    "noter ce qui m'a affecté dans cette situation",
-    "trouver à qui en parler",
+    "choisir à qui en parler",
   ],
   "poser une limite": [
-    "nommer ce que je ne veux plus",
-    "décider ce que je vais dire et comment",
-    "écrire ce que je refuse clairement",
+    "dire ce que je n'accepte plus",
+    "écrire ce que je suis prêt(e) à poser clairement",
+    "décider ce que je vais dire et quand",
   ],
   "clarifier quelque chose": [
-    "noter ce qui m'échappe encore",
     "écrire les deux côtés de la situation",
-    "nommer ce qui reste flou pour moi",
+    "noter ce qui reste flou pour moi",
+    "mettre au clair ce que je veux vraiment",
   ],
   "exprimer ce que j'ai ressenti": [
-    "écrire ce qui s'est passé pour moi",
-    "trouver les mots exacts pour le dire",
+    "écrire ce que j'aurais voulu dire",
+    "trouver les mots justes pour le nommer",
     "dire ce que j'ai gardé pour moi",
   ],
   "prendre du recul": [
+    "laisser passer avant de répondre",
     "écrire la situation depuis l'extérieur",
     "noter ce que je ferais autrement",
-    "laisser passer avant de réagir",
   ],
   "me rapprocher de quelqu'un": [
-    "choisir quand et comment en parler",
+    "envoyer un message simple",
+    "choisir le bon moment pour en parler",
     "écrire ce que j'ai envie de partager",
-    "trouver ce qui me retient de le faire",
   ],
 };
 
 const ACTION_FALLBACK = [
-  "mettre au clair ce que je ressens",
   "écrire ce qui compte pour moi",
-  "exprimer ce qui m'a touché",
+  "laisser passer avant de répondre",
+  "trouver comment l'exprimer simplement",
 ];
 
 function getActionSuggestions(besoin: string): string[] {
