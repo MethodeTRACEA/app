@@ -66,8 +66,12 @@ export default function CeQuiChangePage() {
   const appuis = computeAppuisBlock(sessions);
 
   const n = sessions.length;
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const recentCount = sessions.filter((s) => new Date(s.date) >= thirtyDaysAgo).length;
+
   const rythmeText =
-    n === 0 ? "Ta première traversée ouvrira le chemin."
+    recentCount >= 2 ? "Tu as traversé plusieurs fois ce mois-ci."
+    : n === 0 ? "Ta première traversée ouvrira le chemin."
     : n <= 2 ? "Tu commences à laisser une trace."
     : n <= 5 ? "Tu reviens. C'est déjà un mouvement."
     : "Un rythme commence à se dessiner.";
@@ -113,14 +117,22 @@ export default function CeQuiChangePage() {
       </div>
 
       {/* ── CE QUI SE STABILISE ── */}
-      <div className="card-base p-6">
-        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          Ce qui se stabilise
-        </p>
-        <p className="font-body text-base text-espresso leading-relaxed">
-          Tu ne cherches pas à tout régler d&apos;un coup. Tu reviens, tu traverses, tu poses un geste.
-        </p>
-      </div>
+      {sessions.length > 0 && (
+        <div className="card-base p-6">
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
+            Ce qui se stabilise
+          </p>
+          <p className="font-body text-base text-espresso leading-relaxed">
+            Tu reviens.
+          </p>
+          <p className="font-body text-base text-espresso leading-relaxed mt-2">
+            Tu traverses.
+          </p>
+          <p className="font-body text-base text-espresso leading-relaxed mt-2">
+            Tu poses un geste.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
