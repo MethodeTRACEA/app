@@ -95,6 +95,35 @@ export default function HistoriquePage() {
       ? "Tu commences à revenir vers toi quand quelque chose bouge.\n\nC'est déjà une trace."
       : null;
 
+  // Appuis les plus utilisés (premium)
+  function topActionsFn(): string[] {
+    const counts: Record<string, number> = {};
+    for (const s of sessions) {
+      if (!s.actionAlignee) continue;
+      const key = s.actionAlignee.toLowerCase().trim();
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+    return Object.entries(counts)
+      .filter(([, n]) => n >= 2)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 2)
+      .map(([v]) => v);
+  }
+  const topActions = topActionsFn();
+
+  // Vérité intérieure récurrente (premium)
+  function topVeriteFn(): string | null {
+    const counts: Record<string, number> = {};
+    for (const s of sessions) {
+      if (!s.veriteInterieure) continue;
+      const key = s.veriteInterieure.toLowerCase().trim();
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+    const top = Object.entries(counts).sort(([, a], [, b]) => b - a)[0];
+    return top && top[1] >= 2 ? top[0] : null;
+  }
+  const topVerite = topVeriteFn();
+
   // Patterns exercices — 1 phrase (premium)
   function patternPhrase(): string | null {
     if (topEmerger.length === 0 || sessions.length < 3) return null;
@@ -143,6 +172,28 @@ export default function HistoriquePage() {
             <div className="card-base p-6">
               <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce que tu utilises le plus</p>
               <p className="font-body text-base text-espresso">{patternInsight}</p>
+            </div>
+          )}
+
+          {/* ── Tes appuis les plus utilisés ── */}
+          {topActions.length > 0 && (
+            <div className="card-base p-6">
+              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Tes appuis les plus utilisés</p>
+              <p className="font-body text-sm text-warm-gray mb-2">Tu reviens souvent à :</p>
+              <div className="space-y-1">
+                {topActions.map((a) => (
+                  <p key={a} className="font-body text-base text-espresso">« {a} »</p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Ce qui revient ── */}
+          {topVerite && (
+            <div className="card-base p-6">
+              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce qui revient</p>
+              <p className="font-body text-sm text-warm-gray mb-2">Tu es revenu(e) à :</p>
+              <p className="font-body text-base text-espresso">« {topVerite} »</p>
             </div>
           )}
 
