@@ -76,6 +76,15 @@ export default function CeQuiChangePage() {
     : n <= 5 ? "Tu reviens. C'est déjà un mouvement."
     : "Un rythme commence à se dessiner.";
 
+  let evolutionText: string | null = null;
+  if (n >= 3 && recentCount >= 2) {
+    evolutionText = "Tu t'arrêtes plus souvent qu'avant.";
+  } else if (n >= 2) {
+    evolutionText = "Tu reviens quand ça s'active.";
+  } else if (n === 1) {
+    evolutionText = "Tu as commencé à t'arrêter.";
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
       <h1 className="section-title">Ce qui change</h1>
@@ -92,6 +101,18 @@ export default function CeQuiChangePage() {
           {rythmeText}
         </p>
       </div>
+
+      {/* ── CE QUE ÇA CHANGE CONCRÈTEMENT ── */}
+      {evolutionText && (
+        <div className="card-base p-6">
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
+            Ce que ça change concrètement
+          </p>
+          <p className="font-body text-base text-espresso leading-relaxed">
+            {evolutionText}
+          </p>
+        </div>
+      )}
 
       {/* ── TES APPUIS ── */}
       <div className="card-base p-6">
