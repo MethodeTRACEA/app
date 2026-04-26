@@ -82,7 +82,7 @@ export default function LandingPage() {
             href="/start"
             className="t-btn-primary inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
           >
-            Lancer ma 1re traversée (2 minutes)
+            Lancer ma 1re traversée
           </Link>
 
           {/* CTA secondaire */}
