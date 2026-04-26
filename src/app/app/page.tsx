@@ -45,7 +45,7 @@ export default function Accueil() {
           href="/start"
           className="btn-primary inline-block text-center !py-4 !text-base !rounded-2xl"
         >
-          Commencer une travers&eacute;e
+          Faire une travers&eacute;e
         </Link>
         <Link
           href="/app/urgence"

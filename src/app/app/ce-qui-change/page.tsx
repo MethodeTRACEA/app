@@ -125,7 +125,7 @@ export default function CeQuiChangePage() {
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
       <h1 className="section-title">Ce qui change</h1>
       <p className="font-body text-sm text-warm-gray">
-        Un regard simple sur ce qui se stabilise dans ta manière de traverser.
+        Ce qui se construit en toi, traversée après traversée.
       </p>
 
       {/* ── TON RYTHME ── */}

@@ -233,7 +233,7 @@ function UrgenceInner() {
 
           <div className="w-full space-y-3">
             <PrimaryButton onClick={backToChoose}>
-              Continuer
+              Faire un autre exercice
             </PrimaryButton>
             <SecondaryButton onClick={() => router.push("/app/traversee-courte")}>
               Faire une travers&eacute;e
@@ -246,7 +246,7 @@ function UrgenceInner() {
               onClick={() => router.push("/app/session")}
               className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
             >
-              Comprendre ce qui s&apos;est passé
+              Approfondir ce que tu viens de vivre
             </button>
             <p className="font-inter text-xs t-text-ghost opacity-70">
               Prendre un moment pour y voir plus clair
