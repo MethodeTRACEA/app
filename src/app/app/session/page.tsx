@@ -426,13 +426,19 @@ function SessionContent({ userId }: { userId: string }) {
                 />
               )}
               {situation && situation !== "autre" && (
-                <textarea
-                  value={situationComplement}
-                  onChange={(e) => setSituationComplement(e.target.value)}
-                  placeholder="En quelques mots, ce qui s'est passé exactement : (optionnel)"
-                  className={textareaClass}
-                  rows={2}
-                />
+                <div className="space-y-1.5">
+                  <p className="font-inter text-xs t-text-ghost px-1">
+                    Qu&apos;est-ce qui s&apos;est passé exactement ?
+                  </p>
+                  <textarea
+                    value={situationComplement}
+                    onChange={(e) => setSituationComplement(e.target.value)}
+                    placeholder="une phrase suffit…"
+                    className={textareaClass}
+                    rows={1}
+                    autoFocus
+                  />
+                </div>
               )}
             </div>
 
