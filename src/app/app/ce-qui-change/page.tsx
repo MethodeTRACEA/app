@@ -76,6 +76,17 @@ export default function CeQuiChangePage() {
     : n <= 5 ? "Tu reviens. C'est déjà un mouvement."
     : "Un rythme commence à se dessiner.";
 
+  const recentActionSessions = sessions
+    .filter((s) => s.actionAlignee?.trim())
+    .slice(0, 3);
+  const recentActionCounts = new Map<string, number>();
+  for (const s of recentActionSessions) {
+    const key = s.actionAlignee!.trim().toLowerCase();
+    recentActionCounts.set(key, (recentActionCounts.get(key) ?? 0) + 1);
+  }
+  const recentRepeatedAction =
+    [...recentActionCounts.entries()].find(([, count]) => count >= 2)?.[0] ?? null;
+
   let evolutionText: string | null = null;
   if (n >= 3 && recentCount >= 2) {
     evolutionText = "Tu t'arrêtes plus souvent qu'avant.";
@@ -119,7 +130,12 @@ export default function CeQuiChangePage() {
         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
           Tes appuis
         </p>
-        {appuis.length === 0 ? (
+        {recentRepeatedAction ? (
+          <p className="font-body text-base text-espresso leading-relaxed">
+            Ces derniers temps, tu reviens souvent à :{" "}
+            <span className="italic">« {recentRepeatedAction} »</span>.
+          </p>
+        ) : appuis.length === 0 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
             Tes appuis se dessinent traversée après traversée.
           </p>
