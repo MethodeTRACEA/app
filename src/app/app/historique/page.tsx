@@ -106,6 +106,14 @@ export default function HistoriquePage() {
     .sort((a, b) => emotionCounts[b] - emotionCounts[a])
     .slice(0, 8);
 
+  // Insights V1 — action la plus fréquente (tous utilisateurs)
+  const actionCounts: Record<string, number> = {};
+  sessions.forEach((s) => {
+    const a = (s.actionAlignee || s.steps.emerger || "").toLowerCase().trim().slice(0, 60);
+    if (a) actionCounts[a] = (actionCounts[a] || 0) + 1;
+  });
+  const topAction = Object.keys(actionCounts).sort((a, b) => actionCounts[b] - actionCounts[a])[0] ?? null;
+
   // Progression rythme (tous les utilisateurs, 1 phrase max)
   const rythmePhrase =
     sessions.length >= 10 ? "Tu as pris l'habitude de revenir." :
@@ -153,6 +161,22 @@ export default function HistoriquePage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
       <h1 className="section-title">Traces</h1>
+
+      {/* ── INSIGHTS V1 — Ce qui revient souvent (>= 3 sessions) ── */}
+      {sessions.length >= 3 && (
+        <div className="card-base p-6">
+          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ce qui revient souvent</p>
+          <div className="space-y-2 font-body text-base text-espresso">
+            <p>Tu as traversé {sessions.length} moments.</p>
+            {topEmotions[0] && (
+              <p>L&apos;émotion la plus présente : {topEmotions[0]}.</p>
+            )}
+            {topAction && (
+              <p>Tu reviens souvent vers : {topAction}.</p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── BLOC 1 — TON PARCOURS (tous les utilisateurs) ── */}
       <div className="card-base p-6">
@@ -277,14 +301,29 @@ export default function HistoriquePage() {
 
                   {isExpanded && (
                     <div className="px-5 pb-4 pt-2 border-t border-beige-dark animate-fade-up">
-                      {/* Émotion dominante */}
-                      {s.emotionPrimaire && (
-                        <p className="font-body text-sm text-warm-gray italic mb-3">{s.emotionPrimaire}</p>
+                      {/* 1 — Situation */}
+                      {s.steps.traverser && (
+                        <div className="mb-3">
+                          <p className="text-xs text-warm-gray/60 mb-1">Ce qui s'est passé :</p>
+                          <p className="font-body text-sm text-warm-gray italic leading-relaxed">
+                            {s.steps.traverser}
+                          </p>
+                        </div>
                       )}
 
-                      {/* Action ou intention */}
+                      {/* 2 — Miroir IA */}
+                      {s.analysis && (
+                        <div className="mb-5 rounded-xl bg-beige/60 border border-beige-dark px-4 py-4">
+                          <p className="text-xs text-warm-gray/60 mb-3 tracking-wide">Ce que tu viens de traverser</p>
+                          <p className="font-body text-base text-espresso leading-loose whitespace-pre-line">
+                            {s.analysis}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* 3 — Action ou intention */}
                       {(s.actionAlignee || s.steps.emerger || s.steps.aligner || s.veriteInterieure) && (
-                        <div className="mb-4">
+                        <div className="mb-3">
                           <p className="text-xs text-warm-gray/60 mb-1">Ce qui te semblait juste :</p>
                           <p className="font-body text-base text-espresso leading-relaxed">
                             {s.actionAlignee || s.steps.emerger || s.steps.aligner || s.veriteInterieure}
@@ -292,17 +331,12 @@ export default function HistoriquePage() {
                         </div>
                       )}
 
-                      {/* Miroir IA */}
-                      {s.analysis && (
-                        <div className="mb-4">
-                          <p className="text-xs text-warm-gray/60 mb-1">Ce que tu viens de traverser</p>
-                          <p className="font-body text-sm text-espresso leading-relaxed whitespace-pre-line">
-                            {s.analysis}
-                          </p>
-                        </div>
+                      {/* 4 — Émotion */}
+                      {s.emotionPrimaire && (
+                        <p className="font-body text-sm text-warm-gray italic mb-3">{s.emotionPrimaire}</p>
                       )}
 
-                      {/* Note entre sessions */}
+                      {/* 5 — Note entre sessions */}
                       <div className="mt-4 pt-3 border-t border-beige-dark">
                         <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
                           Ce qui a continué à travailler après
