@@ -12,7 +12,7 @@ const publicLinks = [
 ];
 
 const authLinks = [
-  { href: "/", label: "Accueil" },
+  { href: "/app", label: "Accueil" },
   { href: "/app/entrainement", label: "S'entraîner" },
   { href: "/app/historique", label: "Tes traces" },
   { href: "/app/ce-qui-change", label: "Ce qui change" },
@@ -39,7 +39,7 @@ export function Navigation() {
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href={user ? "/app" : "/"} className="flex items-center">
             <Image
               src="/images/tracea-logo-espresso-transparent.png"
               alt="TRACÉA"
