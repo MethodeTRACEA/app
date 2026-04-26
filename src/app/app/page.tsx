@@ -42,7 +42,7 @@ export default function Accueil() {
           Un espace pour revenir &agrave; quelque chose de plus supportable.
         </p>
         <Link
-          href="/app/traversee-courte"
+          href="/start"
           className="btn-primary inline-block text-center !py-4 !text-base !rounded-2xl"
         >
           Commencer une travers&eacute;e

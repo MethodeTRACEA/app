@@ -121,7 +121,7 @@ export default function StartPage() {
 
         {/* CTA principal */}
         <Link
-          href="/app"
+          href="/app/traversee-courte"
           className="font-sans"
           style={{
             display: "inline-block",
