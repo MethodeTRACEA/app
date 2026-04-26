@@ -117,7 +117,7 @@ export default function CeQuiChangePage() {
   } else if (n >= 3 && recentCount >= 2) {
     transformationLines = [
       "Tu ne laisses plus tout passer comme avant.",
-      "Tu commences à faire autrement.",
+      "Tu ne fais plus comme avant.",
     ];
   }
 
@@ -162,7 +162,7 @@ export default function CeQuiChangePage() {
           <p className="font-body text-base text-espresso leading-relaxed">
             Quand ça s'active,{" "}
             <br />
-            tu reviens à ça :
+            tu reviens à :
             <br />
             <br />
             <em>« {recentRepeatedActionDisplay} »</em>.
