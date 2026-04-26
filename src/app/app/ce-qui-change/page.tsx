@@ -6,7 +6,20 @@ import { getCompletedSessionsDb } from "@/lib/supabase-store";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 
-// ── TES APPUIS ───────────────────────────────────────────────────
+// ── NORMALISATION AFFICHAGE — je → tu ────────────────────────────
+
+function normalizeActionDisplay(action: string): string {
+  return action
+    .replace(/\bje\b/gi, "tu")
+    .replace(/\bj['']/gi, "tu ")
+    .replace(/\bme\b/gi, "te")
+    .replace(/\bmon\b/gi, "ton")
+    .replace(/\bma\b/gi, "ta")
+    .replace(/\bmes\b/gi, "tes")
+    .trim();
+}
+
+// ── APPUIS GLOBAUX ────────────────────────────────────────────────
 
 function computeAppuisBlock(sessions: SessionData[]): string[] {
   const counts: Record<string, number> = {};
@@ -89,6 +102,11 @@ export default function CeQuiChangePage() {
   const recentRepeatedAction =
     Object.entries(recentActionCounts).find(([, count]) => count >= 2)?.[0] ?? null;
 
+  const recentRepeatedActionDisplay = recentRepeatedAction
+    ? normalizeActionDisplay(recentRepeatedAction)
+    : null;
+  const appuisDisplay = appuis.map(normalizeActionDisplay);
+
   let transformationLines: string[] = [];
   if (n === 1) {
     transformationLines = ["Tu as commencé à t'arrêter."];
@@ -140,31 +158,34 @@ export default function CeQuiChangePage() {
           Ton chemin de retour
         </p>
 
-        {recentRepeatedAction ? (
+        {recentRepeatedActionDisplay ? (
           <p className="font-body text-base text-espresso leading-relaxed">
-            Quand ça s'active, tu reviens à :
+            Quand ça s'active,{" "}
             <br />
-            <em>« {recentRepeatedAction} »</em>.
+            tu reviens à ça :
+            <br />
+            <br />
+            <em>« {recentRepeatedActionDisplay} »</em>.
           </p>
         ) : recentActionSessions.length >= 2 ? (
           <>
             <p className="font-body text-base text-espresso leading-relaxed">Tu explores encore plusieurs façons de revenir.</p>
             <p className="font-body text-base text-espresso leading-relaxed">Rien n'est figé, mais tu reviens.</p>
           </>
-        ) : appuis.length === 0 ? (
+        ) : appuisDisplay.length === 0 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
             Ton chemin de retour se dessine traversée après traversée.
           </p>
-        ) : appuis.length === 1 ? (
+        ) : appuisDisplay.length === 1 ? (
           <p className="font-body text-base text-espresso leading-relaxed">
             Tu reviens souvent à :{" "}
-            <em>« {appuis[0]} »</em>.
+            <em>« {appuisDisplay[0]} »</em>.
           </p>
         ) : (
           <p className="font-body text-base text-espresso leading-relaxed">
             Tu reviens souvent à :{" "}
-            <em>« {appuis[0]} »</em> et{" "}
-            <em>« {appuis[1]} »</em>.
+            <em>« {appuisDisplay[0]} »</em> et{" "}
+            <em>« {appuisDisplay[1]} »</em>.
           </p>
         )}
       </div>
