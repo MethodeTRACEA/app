@@ -79,12 +79,17 @@ export default function SubscribePage() {
         {/* Accroche */}
         <div className="text-center space-y-4">
           <p className="font-serif text-2xl text-t-beige leading-relaxed">
-            Tu ne repars plus de zéro.
+            Ne repars plus de zéro.
+          </p>
+          <p className="font-body text-base t-text-secondary leading-relaxed">
+            TRACÉA garde la trace de ce qui t&apos;aide,<br />
+            de ce qui revient,<br />
+            et de ce qui change en toi.
           </p>
           <div className="space-y-1 pt-1">
-            <p className="font-body text-base t-text-secondary">Tu retrouves ce qui t&apos;aide.</p>
-            <p className="font-body text-base t-text-secondary">Tu vois ce qui revient.</p>
-            <p className="font-body text-base t-text-secondary">L&apos;IA t&apos;accompagne à chaque traversée.</p>
+            <p className="font-body text-base t-text-secondary">Retrouve ce qui t&apos;aide.</p>
+            <p className="font-body text-base t-text-secondary">Vois ce qui revient.</p>
+            <p className="font-body text-base t-text-secondary">Observe ce qui change.</p>
           </div>
         </div>
 
@@ -99,11 +104,11 @@ export default function SubscribePage() {
                 : "border-[rgba(232,216,199,0.15)] bg-transparent"
             }`}
           >
-            <p className="font-inter text-xs t-text-secondary uppercase tracking-wider mb-1">
-              Annuel · le plus simple
+            <p className="font-inter text-[10px] t-text-ghost uppercase tracking-wider mb-1">
+              Le plus doux dans le temps
             </p>
-            <p className="font-serif text-2xl text-t-beige">79€</p>
-            <p className="font-inter text-xs t-text-secondary mt-1">par an · soit 6,60€/mois</p>
+            <p className="font-serif text-2xl text-t-beige">78€</p>
+            <p className="font-inter text-xs t-text-secondary mt-1">par an · soit 6,50€/mois</p>
           </button>
 
           <button
@@ -124,13 +129,17 @@ export default function SubscribePage() {
         </div>
 
         {/* CTA */}
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-3">
           <PrimaryButton
             onClick={handleSubscribe}
             disabled={status === "loading"}
           >
             {status === "loading" ? "En cours…" : "Continuer avec TRACÉA"}
           </PrimaryButton>
+
+          <p className="font-inter text-xs t-text-ghost text-center">
+            Tu peux arrêter quand tu veux.
+          </p>
 
           {status === "error" && (
             <p className="font-inter text-xs text-red-400/70 text-center">
@@ -143,7 +152,7 @@ export default function SubscribePage() {
           </SecondaryButton>
         </div>
 
-        {/* Note mock */}
+        {/* Note */}
         <p className="font-inter text-xs t-text-ghost text-center">
           Paiement sécurisé · Résiliable à tout moment
         </p>
