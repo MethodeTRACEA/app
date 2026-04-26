@@ -177,14 +177,6 @@ export default function HistoriquePage() {
 
       {hasPremiumAccess ? (
         <>
-          {/* ── Ce qui se met en place ── */}
-          {continuite && (
-            <div className="card-base p-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce qui se met en place</p>
-              <p className="font-body text-base text-espresso">{continuite}</p>
-            </div>
-          )}
-
           {/* ── Ce que tu utilises le plus — patterns ── */}
           {patternInsight && (
             <div className="card-base p-6">
@@ -286,17 +278,7 @@ export default function HistoriquePage() {
                         </div>
                       )}
 
-                      {/* 3 — Action ou intention */}
-                      {(s.actionAlignee || s.steps.emerger || s.steps.aligner || s.veriteInterieure) && (
-                        <div className="mb-3">
-                          <p className="text-xs text-warm-gray/60 mb-1">Ce qui te semblait juste :</p>
-                          <p className="font-body text-base text-espresso leading-relaxed">
-                            {s.actionAlignee || s.steps.emerger || s.steps.aligner || s.veriteInterieure}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* 4 — Émotion */}
+                      {/* 3 — Émotion */}
                       {s.emotionPrimaire && (
                         <p className="font-body text-sm text-warm-gray italic mb-3">{s.emotionPrimaire}</p>
                       )}
