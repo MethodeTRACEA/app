@@ -359,6 +359,9 @@ ${toneDirective}
 
 ---
 
+Structure attendue pour la direction :
+"Ce qui te semble juste, c'est ${input.action}."
+
 Règle :
 - utilise TOUS les éléments
 - ne supprime pas l'émotion
