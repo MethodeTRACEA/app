@@ -51,11 +51,11 @@ const steps: StepResource[] = [
   {
     number: 4,
     letter: "C",
-    name: "Écouter",
+    name: "Comprendre",
     subtitle: "Ce qui se passe dans ton esprit",
     dotColor: "#A89080",
     content: [
-      "Le cortex préfrontal, la partie la plus évoluée du cerveau, est le siège de la compréhension, du sens, de la mise en perspective. Mais il ne fonctionne bien que quand le système nerveux est suffisamment régulé. C'est pourquoi Écouter vient après Ancrer, pas avant.",
+      "Le cortex préfrontal, la partie la plus évoluée du cerveau, est le siège de la compréhension, du sens, de la mise en perspective. Mais il ne fonctionne bien que quand le système nerveux est suffisamment régulé. C'est pourquoi Comprendre vient après Ancrer, pas avant.",
       "Une fois le corps stabilisé, tu peux remonter le fil : pourquoi cette émotion ? Que te raconte-t-elle de tes besoins profonds ?",
       "Nos schémas émotionnels se forment tôt, souvent dans l'enfance. Ils se répètent parce qu'ils ont été utiles — des stratégies de survie devenues des réflexes. Les voir clairement, sans les juger, c'est déjà commencer à s'en libérer.",
     ],

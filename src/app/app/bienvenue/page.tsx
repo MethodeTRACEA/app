@@ -9,7 +9,7 @@ const steps = [
   { letter: "T", name: "Traverser", desc: "Accueillir la vague émotionnelle sans la fuir", color: "bg-terra text-cream" },
   { letter: "R", name: "Reconnaître", desc: "Nommer ce qui se passe en toi", color: "bg-terra/80 text-cream" },
   { letter: "A", name: "Ancrer", desc: "Revenir dans le corps par la respiration", color: "bg-sage text-cream" },
-  { letter: "C", name: "Écouter", desc: "Comprendre le message de l'émotion", color: "bg-espresso/80 text-cream" },
+  { letter: "C", name: "Comprendre", desc: "Comprendre le message de l'émotion", color: "bg-espresso/80 text-cream" },
   { letter: "É", name: "Émerger", desc: "Laisser venir une nouvelle compréhension", color: "bg-dusty text-cream" },
   { letter: "A", name: "Aligner", desc: "Choisir un geste aligné avec ta vérité", color: "bg-terra-dark text-cream" },
 ];

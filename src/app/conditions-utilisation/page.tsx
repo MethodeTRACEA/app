@@ -37,7 +37,7 @@ export default function ConditionsUtilisation() {
             TRACEA est une application d&apos;exploration émotionnelle
             structurée et de régulation psycho-émotionnelle. Elle propose un
             protocole guidé en six étapes (Traverser, Reconnaître, Ancrer,
-            Conscientiser, Émerger, Aligner) permettant à l&apos;utilisateur de
+            Comprendre, Émerger, Aligner) permettant à l&apos;utilisateur de
             traverser, comprendre et intégrer ses expériences émotionnelles.
           </p>
         </section>
