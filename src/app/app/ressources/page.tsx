@@ -342,19 +342,23 @@ export default function RessourcesPage() {
                         return (
                           <p
                             key={i}
-                            className="font-sans"
+                            className={
+                              isHighlight
+                                ? "font-sans my-8 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]"
+                                : "font-sans"
+                            }
                             style={{
-                              fontSize: isHighlight ? 16 : 15,
-                              lineHeight: 1.8,
-                              margin: isHighlight ? "12px 0 8px" : 0,
+                              fontSize: isHighlight ? undefined : 15,
+                              lineHeight: isHighlight ? undefined : 1.8,
+                              margin: isHighlight ? undefined : 0,
                               whiteSpace: "pre-line",
-                              color: isLast
+                              color: isHighlight
+                                ? undefined
+                                : isLast
                                 ? "#C9907C"
-                                : isHighlight
-                                ? "rgba(245,239,230,0.93)"
                                 : "rgba(245,239,230,0.75)",
-                              fontStyle: isLast ? "italic" : "normal",
-                              fontWeight: isLast ? 500 : isHighlight ? 500 : 400,
+                              fontStyle: isHighlight ? undefined : isLast ? "italic" : "normal",
+                              fontWeight: isHighlight ? undefined : isLast ? 500 : 400,
                             }}
                           >
                             {paragraph}
