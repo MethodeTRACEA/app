@@ -9,6 +9,7 @@ interface StepResource {
   subtitle: string;
   dotColor: string;
   content: string[];
+  highlightIndex?: number;
   scienceToggleLabel?: string;
   scienceContent?: string[];
 }
@@ -42,9 +43,11 @@ const steps: StepResource[] = [
     dotColor: "#835E54",
     content: [
       "Le cerveau possède deux voies de traitement émotionnel. La voie rapide, instinctive et automatique, réagit avant même que tu aies le temps de penser. La voie lente, portée par le cortex préfrontal, analyse, nuance, donne du sens.",
-      "Reconnaître une émotion, c'est activer cette deuxième voie.\n\nDes recherches ont montré que nommer une émotion, simplement lui donner un mot, réduit son intensité dans le corps. C'est ce qu'on appelle l'affect labeling. Dire « j'ai peur » diminue l'activation de l'amygdale. Pas parce que la peur disparaît, mais parce que le cerveau passe du mode survie au mode compréhension.",
+      "Reconnaître une émotion, c'est activer cette deuxième voie.",
+      "Des recherches ont montré que nommer une émotion, simplement lui donner un mot, réduit son intensité dans le corps. C'est ce qu'on appelle l'affect labeling. Dire « j'ai peur » diminue l'activation de l'amygdale. Pas parce que la peur disparaît, mais parce que le cerveau passe du mode survie au mode compréhension.",
       "La distinction entre émotion primaire et secondaire est cruciale : la colère protège souvent une peur. L'irritation cache parfois une tristesse profonde. Reconnaître la couche de dessous, c'est accéder à la vérité.",
     ],
+    highlightIndex: 1,
   },
   {
     number: 3,
@@ -335,18 +338,23 @@ export default function RessourcesPage() {
                     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                       {step.content.map((paragraph, i) => {
                         const isLast = i === step.content.length - 1;
+                        const isHighlight = step.highlightIndex === i;
                         return (
                           <p
                             key={i}
                             className="font-sans"
                             style={{
-                              fontSize: 15,
+                              fontSize: isHighlight ? 16 : 15,
                               lineHeight: 1.8,
                               margin: 0,
                               whiteSpace: "pre-line",
-                              color: isLast ? "#C9907C" : "rgba(245,239,230,0.75)",
+                              color: isLast
+                                ? "#C9907C"
+                                : isHighlight
+                                ? "rgba(245,239,230,0.93)"
+                                : "rgba(245,239,230,0.75)",
                               fontStyle: isLast ? "italic" : "normal",
-                              fontWeight: isLast ? 500 : 400,
+                              fontWeight: isLast ? 500 : isHighlight ? 500 : 400,
                             }}
                           >
                             {paragraph}
