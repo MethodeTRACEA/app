@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { getApprofondiSessionEndCount } from "@/lib/supabase-store";
 
 interface StepResource {
   number: number;
@@ -125,6 +127,18 @@ const pNormal = {
 export default function RessourcesPage() {
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const [scienceOpen, setScienceOpen] = useState<number | null>(null);
+  const { user, hasPremiumAccess } = useAuth();
+  const [sessionCount, setSessionCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    getApprofondiSessionEndCount(user.id).then(setSessionCount);
+  }, [user]);
+
+  const ctaDestination =
+    hasPremiumAccess || sessionCount === 0 || sessionCount === null
+      ? "/start"
+      : "/app/subscribe";
 
   return (
     <div
@@ -592,6 +606,68 @@ export default function RessourcesPage() {
               </div>
             );
           })}
+        </div>
+
+        {/* CTA final */}
+        <div style={{ marginTop: 56 }}>
+          <div
+            style={{
+              borderRadius: 20,
+              padding: "36px 28px",
+              background: "#2E1F17",
+              border: "1px solid rgba(61,42,34,0.6)",
+              boxShadow: "0 2px 16px rgba(0,0,0,0.12)",
+              textAlign: "center",
+            }}
+          >
+            <p
+              className="font-sans"
+              style={{ fontSize: 13, fontWeight: 500, letterSpacing: "0.15em",
+                textTransform: "uppercase", color: "#C9907C", marginBottom: 20 }}
+            >
+              Passer &agrave; l&apos;exp&eacute;rience
+            </p>
+            <p
+              className="font-sans"
+              style={{ fontSize: 15, lineHeight: 1.8, color: "rgba(245,239,230,0.75)",
+                marginBottom: 10 }}
+            >
+              Tu comprends maintenant ce qui se passe en toi.
+            </p>
+            <p
+              className="font-sans"
+              style={{ fontSize: 15, lineHeight: 1.8, color: "rgba(245,239,230,0.75)",
+                marginBottom: 10 }}
+            >
+              Mais comprendre ne suffit pas &agrave; transformer.
+            </p>
+            <p
+              className="font-sans"
+              style={{ fontSize: 15, lineHeight: 1.8, color: "rgba(245,239,230,0.75)",
+                marginBottom: 24 }}
+            >
+              Ce qui change vraiment, c&apos;est de le vivre, dans le moment.<br />
+              TRAC&Eacute;A est con&ccedil;u pour &ccedil;a.<br />
+              T&apos;accompagner, pas &agrave; pas, quand &ccedil;a se passe vraiment.
+            </p>
+            <a
+              href={ctaDestination}
+              className="font-sans"
+              style={{
+                display: "inline-block",
+                padding: "14px 28px",
+                borderRadius: 40,
+                fontSize: 14,
+                fontWeight: 500,
+                background: "#C9907C",
+                color: "#1C1410",
+                textDecoration: "none",
+                transition: "opacity 0.2s",
+              }}
+            >
+              Commencer l&apos;exp&eacute;rience TRAC&Eacute;A
+            </a>
+          </div>
         </div>
 
         {/* Footer note */}
