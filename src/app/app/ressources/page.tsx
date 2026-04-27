@@ -216,12 +216,20 @@ export default function RessourcesPage() {
         {/* Branding TRACÉA */}
         <div style={{ marginBottom: 48 }}>
           <div className="mt-12 flex items-center justify-center gap-2 sm:gap-3 whitespace-nowrap">
-            {["T", "R", "A", "C", "É", "A"].map((letter, i) => (
+            {[
+              { letter: "T", color: "#C9907C" },
+              { letter: "R", color: "#835E54" },
+              { letter: "A", color: "#8A9E7A" },
+              { letter: "C", color: "#A89080" },
+              { letter: "É", color: "#C4998A" },
+              { letter: "A", color: "#6B3D2E" },
+            ].map((item, i) => (
               <div
                 key={i}
-                className="font-sans flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-[#D99A84]/25 bg-[#8A4A3A]/70 text-sm font-semibold tracking-[0.12em] text-[#F7EFE6] shadow-sm"
+                className="font-sans flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-[#D99A84]/25 text-sm font-semibold tracking-[0.12em] text-[#F7EFE6] shadow-sm"
+                style={{ background: item.color }}
               >
-                {letter}
+                {item.letter}
               </div>
             ))}
           </div>
