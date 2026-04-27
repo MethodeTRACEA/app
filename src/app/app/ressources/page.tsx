@@ -353,7 +353,7 @@ export default function RessourcesPage() {
                         <p className="font-sans leading-relaxed" style={pNormal}>
                           Et quand &ccedil;a arrive, le r&eacute;flexe naturel est de fuir&nbsp;: penser &agrave; autre chose, s&apos;occuper, minimiser. Mais fuir ne fait pas dispara&icirc;tre l&apos;&eacute;motion. Elle reste, elle revient autrement.
                         </p>
-                        <p className="font-sans italic leading-relaxed" style={{ fontSize: 15, margin: 0, color: "#C9907C", fontWeight: 500 }}>
+                        <p className="font-sans mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
                           Traverser, c&apos;est autre chose. C&apos;est rester l&agrave;, pr&eacute;sent, pendant que &ccedil;a passe. Pas pour souffrir davantage, mais parce que c&apos;est le seul chemin pour que &ccedil;a redescende vraiment.
                         </p>
                       </div>
