@@ -83,10 +83,14 @@ const steps: StepResource[] = [
     name: "Émerger",
     subtitle: "Ce qui se transforme en toi",
     dotColor: "#C4998A",
-    content: [
-      "L'intégration émotionnelle est un processus neurologique réel. Quand une expérience difficile est traversée, nommée, régulée et mise en sens, le cerveau crée de nouvelles connexions, ce qu'on appelle la plasticité neuronale.",
-      "Une nouvelle compréhension émerge. Ce n'est pas une conclusion intellectuelle. C'est souvent une sensation physique d'abord, un souffle qui se libère, une légèreté dans les épaules, une évidence qui arrive sans forcer.",
-      "Émerger ne se commande pas. Ça se laisse venir. L'invitation de cette étape est simple : rester à l'écoute de ce qui change, sans l'anticiper.",
+    content: [],
+    scienceToggleLabel: "Pourquoi ça change ?",
+    scienceContent: [
+      "L'intégration émotionnelle est un processus neurologique réel.",
+      "Quand une expérience difficile est traversée, nommée, régulée et mise en sens, le cerveau peut créer de nouvelles connexions.",
+      "C'est ce qu'on appelle la plasticité neuronale.",
+      "Une nouvelle compréhension peut alors émerger.",
+      "Ce n'est pas une conclusion intellectuelle. C'est souvent une sensation physique d'abord : un souffle qui se libère, une légèreté dans les épaules, une évidence qui arrive sans forcer.",
     ],
   },
   {
@@ -410,6 +414,31 @@ export default function RessourcesPage() {
                           Ils se r&eacute;p&egrave;tent parce qu&apos;ils ont &eacute;t&eacute; utiles &mdash; des strat&eacute;gies de survie devenues des r&eacute;flexes.
                           <br /><br />
                           Les voir clairement, sans les juger, c&apos;est d&eacute;j&agrave; commencer &agrave; s&apos;en lib&eacute;rer.
+                        </p>
+                      </div>
+
+                    ) : step.number === 5 ? (
+                      /* — ÉMERGER : paragraphes dédiés — */
+                      <div className="space-y-5">
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Quelque chose a peut-&ecirc;tre chang&eacute;.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Pas forc&eacute;ment une pens&eacute;e.<br />
+                          Plut&ocirc;t une sensation.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Un peu plus d&apos;espace.<br />
+                          Un souffle diff&eacute;rent.<br />
+                          Une tension qui l&acirc;che.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Tu n&apos;as rien &agrave; faire de plus.<br />
+                          Juste remarquer.
+                        </p>
+                        <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
+                          &Eacute;merger ne se commande pas.<br />
+                          &Ccedil;a se laisse venir.
                         </p>
                       </div>
 
