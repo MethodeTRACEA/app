@@ -402,9 +402,7 @@ export default function RessourcesPage() {
                           Souvent, derri&egrave;re une r&eacute;action, il y a un besoin.
                         </p>
                         <p className="font-sans leading-relaxed" style={pNormal}>
-                          Un besoin non respect&eacute;,<br />
-                          non entendu,<br />
-                          ou menac&eacute;.
+                          Un besoin non respect&eacute;, non entendu ou menac&eacute;.
                         </p>
                         <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
                           Nos sch&eacute;mas &eacute;motionnels se forment t&ocirc;t, souvent dans l&apos;enfance.
