@@ -214,46 +214,18 @@ export default function RessourcesPage() {
         </div>
 
         {/* Branding TRACÉA */}
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 10,
-              marginBottom: 14,
-            }}
-          >
+        <div style={{ marginBottom: 48 }}>
+          <div className="mt-12 flex items-center justify-center gap-2 sm:gap-3 whitespace-nowrap">
             {["T", "R", "A", "C", "É", "A"].map((letter, i) => (
               <div
                 key={i}
-                className="font-body"
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  background: "#C9907C",
-                  color: "#1C1410",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 15,
-                  fontWeight: 600,
-                  flexShrink: 0,
-                }}
+                className="font-sans flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-[#D99A84]/25 bg-[#8A4A3A]/70 text-sm font-semibold tracking-[0.12em] text-[#F7EFE6] shadow-sm"
               >
                 {letter}
               </div>
             ))}
           </div>
-          <p
-            className="font-sans"
-            style={{
-              fontSize: 13,
-              color: "rgba(168,144,128,0.6)",
-              letterSpacing: "0.05em",
-              margin: 0,
-            }}
-          >
+          <p className="mt-5 text-center font-sans text-sm tracking-[0.08em] text-[#C8B3A8]">
             Un chemin pour revenir &agrave; toi
           </p>
         </div>
