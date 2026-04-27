@@ -10,6 +10,7 @@ interface StepResource {
   dotColor: string;
   content: string[];
   highlightIndex?: number;
+  highlightClass?: string;
   scienceToggleLabel?: string;
   scienceContent?: string[];
 }
@@ -28,6 +29,7 @@ const steps: StepResource[] = [
       "Traverser, c'est autre chose.\n\nC'est rester là, présent, pendant que ça passe.\n\nPas pour souffrir davantage,\nmais parce que c'est le seul chemin pour que ça redescende vraiment.",
     ],
     highlightIndex: 1,
+    highlightClass: "font-sans my-6 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]",
     scienceToggleLabel: "Pourquoi ça fait ça ?",
     scienceContent: [
       "Quand une émotion surgit, l'amygdale peut déclencher une réponse d'alerte très rapide.",
@@ -337,7 +339,7 @@ export default function RessourcesPage() {
                       }}
                     />
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: step.number === 1 ? 12 : 16 }}>
                       {step.content.map((paragraph, i) => {
                         const isLast = i === step.content.length - 1;
                         const isHighlight = step.highlightIndex === i;
@@ -346,7 +348,7 @@ export default function RessourcesPage() {
                             key={i}
                             className={
                               isHighlight
-                                ? "font-sans my-8 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]"
+                                ? (step.highlightClass ?? "font-sans my-8 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]")
                                 : "font-sans"
                             }
                             style={{
