@@ -346,7 +346,7 @@ export default function RessourcesPage() {
                             style={{
                               fontSize: isHighlight ? 16 : 15,
                               lineHeight: 1.8,
-                              margin: 0,
+                              margin: isHighlight ? "12px 0 8px" : 0,
                               whiteSpace: "pre-line",
                               color: isLast
                                 ? "#C9907C"
