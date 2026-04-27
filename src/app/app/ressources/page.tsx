@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getApprofondiSessionEndCount } from "@/lib/supabase-store";
+import { getApprofondiSessionEndCount, trackEvent } from "@/lib/supabase-store";
 
 interface StepResource {
   number: number;
@@ -637,6 +637,7 @@ export default function RessourcesPage() {
             </p>
             <a
               href={ctaDestination}
+              onClick={() => trackEvent(user?.id ?? null, "CTA_RESSOURCES_CLICK", { destination: ctaDestination })}
               className="font-sans"
               style={{
                 display: "inline-block",
