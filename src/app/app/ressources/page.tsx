@@ -647,8 +647,8 @@ export default function RessourcesPage() {
                 marginBottom: 24 }}
             >
               Ce qui change vraiment, c&apos;est de le vivre, dans le moment.<br />
-              TRAC&Eacute;A est con&ccedil;u pour &ccedil;a.<br />
-              T&apos;accompagner, pas &agrave; pas, quand &ccedil;a se passe vraiment.
+              TRAC&Eacute;A est con&ccedil;u pour t&apos;accompagner &agrave; ce moment-l&agrave;.<br />
+              Quand &ccedil;a se passe vraiment.
             </p>
             <a
               href={ctaDestination}
