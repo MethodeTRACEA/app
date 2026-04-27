@@ -22,14 +22,7 @@ const steps: StepResource[] = [
     name: "Traverser",
     subtitle: "Ce qui se passe dans ton corps",
     dotColor: "#C9907C",
-    content: [
-      "Quand une émotion surgit, ton corps réagit avant toi.\n\nLe cerveau déclenche une alarme.\nLe cœur s'accélère, les muscles se contractent,\nla respiration se raccourcit.\n\nTout ça en une fraction de seconde.",
-      "Ce que tu ressens n'est pas excessif.\nC'est une réaction.",
-      "Et quand ça arrive, le réflexe naturel est de fuir :\npenser à autre chose, s'occuper, minimiser.\n\nMais fuir ne fait pas disparaître l'émotion.\nElle reste, elle revient autrement.",
-      "Traverser, c'est autre chose.\n\nC'est rester là, présent, pendant que ça passe.\n\nPas pour souffrir davantage,\nmais parce que c'est le seul chemin pour que ça redescende vraiment.",
-    ],
-    highlightIndex: 1,
-    highlightClass: "font-sans my-5 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]",
+    content: [],
     scienceToggleLabel: "Pourquoi ça fait ça ?",
     scienceContent: [
       "Quand une émotion surgit, l'amygdale peut déclencher une réponse d'alerte très rapide.",
@@ -102,6 +95,13 @@ const steps: StepResource[] = [
     ],
   },
 ];
+
+const pNormal = {
+  fontSize: 15,
+  lineHeight: 1.8,
+  margin: 0,
+  color: "rgba(245,239,230,0.75)",
+} as const;
 
 export default function RessourcesPage() {
   const [activeStep, setActiveStep] = useState<number | null>(null);
@@ -323,13 +323,9 @@ export default function RessourcesPage() {
                   </div>
                 </button>
 
-                {/* Card content — NO max-height, NO overflow-hidden that clips */}
+                {/* Card content */}
                 {isExpanded && (
-                  <div
-                    style={{
-                      padding: "0 20px 24px",
-                    }}
-                  >
+                  <div style={{ padding: "0 20px 24px" }}>
                     {/* Separator */}
                     <div
                       style={{
@@ -339,41 +335,66 @@ export default function RessourcesPage() {
                       }}
                     />
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: step.number === 1 ? 10 : 16 }}>
-                      {step.content.map((paragraph, i) => {
-                        const isLast = i === step.content.length - 1;
-                        const isHighlight = step.highlightIndex === i;
-                        return (
-                          <p
-                            key={i}
-                            className={
-                              isHighlight
-                                ? (step.highlightClass ?? "font-sans my-8 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]")
-                                : "font-sans"
-                            }
-                            style={{
-                              fontSize: isHighlight ? undefined : 15,
-                              lineHeight: isHighlight ? undefined : 1.8,
-                              margin: isHighlight ? undefined : 0,
-                              whiteSpace: "pre-line",
-                              color: isHighlight
-                                ? undefined
-                                : isLast
-                                ? "#C9907C"
-                                : "rgba(245,239,230,0.75)",
-                              fontStyle: isHighlight ? undefined : isLast ? "italic" : "normal",
-                              fontWeight: isHighlight ? undefined : isLast ? 500 : 400,
-                            }}
-                          >
-                            {paragraph}
-                          </p>
-                        );
-                      })}
-                    </div>
+                    {/* — TRAVERSER : 6 paragraphes dédiés — */}
+                    {step.number === 1 ? (
+                      <div className="space-y-5">
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Quand une &eacute;motion surgit, ton corps r&eacute;agit avant toi.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Le cerveau d&eacute;clenche une alarme. Le c&oelig;ur s&apos;acc&eacute;l&egrave;re, les muscles se contractent, la respiration se raccourcit.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Tout &ccedil;a en une fraction de seconde.
+                        </p>
+                        <p className="font-sans my-6 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]">
+                          Ce que tu ressens n&apos;est pas excessif. C&apos;est une r&eacute;action.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Et quand &ccedil;a arrive, le r&eacute;flexe naturel est de fuir&nbsp;: penser &agrave; autre chose, s&apos;occuper, minimiser. Mais fuir ne fait pas dispara&icirc;tre l&apos;&eacute;motion. Elle reste, elle revient autrement.
+                        </p>
+                        <p className="font-sans italic leading-relaxed" style={{ fontSize: 15, margin: 0, color: "#C9907C", fontWeight: 500 }}>
+                          Traverser, c&apos;est autre chose. C&apos;est rester l&agrave;, pr&eacute;sent, pendant que &ccedil;a passe. Pas pour souffrir davantage, mais parce que c&apos;est le seul chemin pour que &ccedil;a redescende vraiment.
+                        </p>
+                      </div>
+                    ) : (
+                      /* — AUTRES ÉTAPES : renderer générique — */
+                      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                        {step.content.map((paragraph, i) => {
+                          const isLast = i === step.content.length - 1;
+                          const isHighlight = step.highlightIndex === i;
+                          return (
+                            <p
+                              key={i}
+                              className={
+                                isHighlight
+                                  ? (step.highlightClass ?? "font-sans my-8 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]")
+                                  : "font-sans"
+                              }
+                              style={{
+                                fontSize: isHighlight ? undefined : 15,
+                                lineHeight: isHighlight ? undefined : 1.8,
+                                margin: isHighlight ? undefined : 0,
+                                whiteSpace: "pre-line",
+                                color: isHighlight
+                                  ? undefined
+                                  : isLast
+                                  ? "#C9907C"
+                                  : "rgba(245,239,230,0.75)",
+                                fontStyle: isHighlight ? undefined : isLast ? "italic" : "normal",
+                                fontWeight: isHighlight ? undefined : isLast ? 500 : 400,
+                              }}
+                            >
+                              {paragraph}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    )}
 
                     {/* Science toggle */}
                     {step.scienceToggleLabel && step.scienceContent && (
-                      <div style={{ marginTop: step.number === 1 ? 16 : 20 }}>
+                      <div className="mt-5">
                         <button
                           onClick={() =>
                             setScienceOpen(isScienceOpen ? null : step.number)
