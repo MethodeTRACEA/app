@@ -465,12 +465,16 @@ export default function RessourcesPage() {
                           Aligner, c&apos;est choisir un geste simple,<br />
                           en lien avec ce que tu viens de traverser.
                         </p>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 16 }}>
+                          Quelque chose de concret.<br />
+                          M&ecirc;me minuscule.
+                        </p>
                         <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 28 }}>
                           Pas parfait.<br />
                           Pas h&eacute;ro&iuml;que.
                         </p>
                         <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 16 }}>
-                          Juste juste.
+                          Juste ce qu&apos;il faut.
                         </p>
                         <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
                           Un petit mouvement dans la bonne direction.
