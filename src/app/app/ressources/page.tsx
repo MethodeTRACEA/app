@@ -646,8 +646,13 @@ export default function RessourcesPage() {
               style={{ fontSize: 15, lineHeight: 1.8, color: "rgba(245,239,230,0.75)",
                 marginBottom: 24 }}
             >
-              Ce qui change vraiment, c&apos;est de le vivre, dans le moment.<br />
+              Ce qui change vraiment, c&apos;est quand tu le vis,<br />
+              quand &ccedil;a t&apos;arrive,<br />
+              et que tu ne fuis plus.<br />
+              <br />
               TRAC&Eacute;A est con&ccedil;u pour t&apos;accompagner &agrave; ce moment-l&agrave;.<br />
+              Pas apr&egrave;s.<br />
+              Pas en th&eacute;orie.<br />
               Quand &ccedil;a se passe vraiment.
             </p>
             <a
