@@ -45,7 +45,7 @@ const steps: StepResource[] = [
       "Le cerveau possède deux voies de traitement émotionnel. La voie rapide, instinctive et automatique, réagit avant même que tu aies le temps de penser. La voie lente, portée par le cortex préfrontal, analyse, nuance, donne du sens.",
       "Reconnaître une émotion, c'est activer cette deuxième voie.",
       "Des recherches ont montré que nommer une émotion, simplement lui donner un mot, réduit son intensité dans le corps. C'est ce qu'on appelle l'affect labeling. Dire « j'ai peur » diminue l'activation de l'amygdale. Pas parce que la peur disparaît, mais parce que le cerveau passe du mode survie au mode compréhension.",
-      "La distinction entre émotion primaire et secondaire est cruciale : la colère protège souvent une peur. L'irritation cache parfois une tristesse profonde. Reconnaître la couche de dessous, c'est accéder à la vérité.",
+      "La colère protège souvent une peur.\nL'irritation cache parfois une tristesse.\n\nReconnaître la couche de dessous,\nc'est accéder à la vérité.",
     ],
     highlightIndex: 1,
   },
