@@ -175,89 +175,69 @@ export default function RessourcesPage() {
               fontWeight: 500,
               color: "#F5EFE6",
               lineHeight: 1.2,
-              marginBottom: 20,
+              marginBottom: 28,
             }}
           >
             Ressources TRAC&Eacute;A
           </h1>
-          <p
-            className="font-sans"
+          <div
             style={{
-              fontSize: 15,
-              lineHeight: 1.7,
-              color: "#A89080",
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
               maxWidth: 560,
               margin: "0 auto",
             }}
           >
-            Chaque &eacute;tape du protocole TRAC&Eacute;A s&apos;appuie sur des m&eacute;canismes
-            neurophysiologiques r&eacute;els. Voici, en langage accessible, ce qui se passe
-            dans ton corps et ton cerveau &agrave; chaque &eacute;tape, pour que tu comprennes
-            non seulement <em style={{ color: "#F5EFE6", fontStyle: "italic" }}>quoi</em> faire, mais <em style={{ color: "#F5EFE6", fontStyle: "italic" }}>pourquoi</em>.
-          </p>
+            <p
+              className="font-sans"
+              style={{ fontSize: 15, lineHeight: 1.7, color: "#F5EFE6", margin: 0 }}
+            >
+              Tu ressens des choses que tu ne contr&ocirc;les pas toujours.
+            </p>
+            <p
+              className="font-sans"
+              style={{ fontSize: 15, lineHeight: 1.7, color: "#A89080", margin: 0 }}
+            >
+              TRAC&Eacute;A t&apos;aide &agrave; comprendre ce qui se passe,<br />
+              mais surtout &agrave; le vivre autrement, dans ton corps.
+            </p>
+            <p
+              className="font-sans"
+              style={{ fontSize: 14, lineHeight: 1.7, color: "rgba(168,144,128,0.7)", margin: 0, marginTop: 8 }}
+            >
+              Chaque &eacute;tape du protocole TRAC&Eacute;A s&apos;appuie sur des m&eacute;canismes neurophysiologiques r&eacute;els.
+              Voici, en langage accessible, ce qui se passe dans ton corps et ton cerveau &agrave; chaque &eacute;tape,
+              pour que tu comprennes non seulement <em style={{ color: "#F5EFE6", fontStyle: "italic" }}>quoi</em> faire, mais <em style={{ color: "#F5EFE6", fontStyle: "italic" }}>pourquoi</em>.
+            </p>
+          </div>
         </div>
 
-        {/* Step navigation pills */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: 8,
-            marginBottom: 48,
-          }}
-        >
-          {steps.map((step) => {
-            const isActive = activeStep === step.number;
-            return (
-              <button
-                key={step.number}
-                onClick={() =>
-                  setActiveStep(activeStep === step.number ? null : step.number)
-                }
-                className="font-sans"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  padding: "10px 18px",
-                  borderRadius: 40,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  border: "none",
-                  cursor: "pointer",
-                  transition: "all 0.3s",
-                  background: isActive ? step.dotColor : "#251A14",
-                  color: isActive ? "#1C1410" : "#A89080",
-                  boxShadow: isActive
-                    ? "0 4px 16px rgba(0,0,0,0.25)"
-                    : "none",
-                  transform: isActive ? "scale(1.05)" : "scale(1)",
-                }}
-              >
-                <span
-                  style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 12,
-                    fontWeight: 700,
-                    background: isActive
-                      ? "rgba(28,20,16,0.25)"
-                      : "rgba(201,144,124,0.15)",
-                    color: isActive ? "#1C1410" : "#C9907C",
-                    transition: "all 0.3s",
-                  }}
-                >
-                  {step.letter}
-                </span>
-                {step.name}
-              </button>
-            );
-          })}
+        {/* Branding TRACÉA */}
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <p
+            className="font-body"
+            style={{
+              fontSize: "clamp(1.1rem, 3vw, 1.35rem)",
+              fontWeight: 400,
+              letterSpacing: "0.35em",
+              color: "#C9907C",
+              marginBottom: 10,
+            }}
+          >
+            T &mdash; R &mdash; A &mdash; C &mdash; &Eacute; &mdash; A
+          </p>
+          <p
+            className="font-sans"
+            style={{
+              fontSize: 13,
+              color: "rgba(168,144,128,0.6)",
+              letterSpacing: "0.05em",
+              margin: 0,
+            }}
+          >
+            Un chemin pour revenir &agrave; toi
+          </p>
         </div>
 
         {/* Step cards */}
