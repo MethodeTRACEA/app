@@ -21,17 +21,17 @@ const steps: StepResource[] = [
     subtitle: "Ce qui se passe dans ton corps",
     dotColor: "#C9907C",
     content: [
-      "Quand une émotion surgit, ton corps réagit avant toi.\n\nLe cerveau déclenche une alarme.\nLe cœur s’accélère.\nLes muscles se contractent.\nLa respiration se raccourcit.\n\nTout ça en une fraction de seconde.\n\nCe que tu ressens n’est pas excessif.\nC’est une réaction.",
-      "Et quand ça arrive, le réflexe naturel est de fuir :\npenser à autre chose,\ns’occuper,\nminimiser.\n\nMais fuir ne fait pas disparaître l’émotion.\nElle reste.\nElle revient autrement.",
-      "Traverser, c’est autre chose.\n\nC’est rester là,\nprésent,\npendant que ça passe.\n\nPas pour souffrir davantage,\nmais parce que c’est le seul chemin\npour que ça redescende vraiment.",
+      "Quand une émotion surgit, ton corps réagit avant toi.\n\nLe cerveau déclenche une alarme.\nLe cœur s'accélère, les muscles se contractent,\nla respiration se raccourcit.\n\nTout ça en une fraction de seconde.\n\nCe que tu ressens n'est pas excessif.\nC'est une réaction.",
+      "Et quand ça arrive, le réflexe naturel est de fuir :\npenser à autre chose, s'occuper, minimiser.\n\nMais fuir ne fait pas disparaître l'émotion.\nElle reste, elle revient autrement.",
+      "Traverser, c'est autre chose.\n\nC'est rester là, présent, pendant que ça passe.\n\nPas pour souffrir davantage,\nmais parce que c'est le seul chemin pour que ça redescende vraiment.",
     ],
-    scienceToggleLabel: "Pourquoi ça fait ça ?",
+    scienceToggleLabel: "Pourquoi ça fait ça ?",
     scienceContent: [
-      "Quand une émotion surgit, l’amygdale peut déclencher une réponse d’alerte très rapide.",
-      "Le corps libère alors des hormones de stress, comme l’adrénaline et le cortisol. Le rythme cardiaque augmente, les muscles se préparent à agir, et la respiration devient plus courte.",
-      "Ce mécanisme est utile : il sert à protéger.",
-      "Mais quand l’alerte se déclenche dans une situation relationnelle, mentale ou émotionnelle, le corps peut réagir comme s’il y avait un danger immédiat.",
-      "TRACÉA commence par Traverser parce qu’on ne peut pas apaiser durablement ce qu’on fuit systématiquement.",
+      "Quand une émotion surgit, l'amygdale peut déclencher une réponse d'alerte très rapide.",
+      "Le corps libère alors des hormones de stress, comme l'adrénaline et le cortisol. Le rythme cardiaque augmente, les muscles se préparent à agir, et la respiration devient plus courte.",
+      "Ce mécanisme est utile : il sert à protéger.",
+      "Mais quand l'alerte se déclenche dans une situation relationnelle, mentale ou émotionnelle, le corps peut réagir comme s'il y avait un danger immédiat.",
+      "TRACÉA commence par Traverser parce qu'on ne peut pas apaiser durablement ce qu'on fuit systématiquement.",
     ],
   },
   {
@@ -42,8 +42,8 @@ const steps: StepResource[] = [
     dotColor: "#835E54",
     content: [
       "Le cerveau possède deux voies de traitement émotionnel. La voie rapide, instinctive et automatique, réagit avant même que tu aies le temps de penser. La voie lente, portée par le cortex préfrontal, analyse, nuance, donne du sens.",
-      "Reconnaître une émotion, c’est activer cette deuxième voie. Des recherches ont montré que nommer une émotion, simplement lui donner un mot, réduit son intensité dans le corps. C’est ce qu’on appelle l’affect labeling. Dire « j’ai peur » diminue l’activation de l’amygdale. Pas parce que la peur disparaît, mais parce que le cerveau passe du mode survie au mode compréhension.",
-      "La distinction entre émotion primaire et secondaire est cruciale : la colère protège souvent une peur. L’irritation cache parfois une tristesse profonde. Reconnaître la couche de dessous, c’est accéder à la vérité.",
+      "Reconnaître une émotion, c'est activer cette deuxième voie. Des recherches ont montré que nommer une émotion, simplement lui donner un mot, réduit son intensité dans le corps. C'est ce qu'on appelle l'affect labeling. Dire « j'ai peur » diminue l'activation de l'amygdale. Pas parce que la peur disparaît, mais parce que le cerveau passe du mode survie au mode compréhension.",
+      "La distinction entre émotion primaire et secondaire est cruciale : la colère protège souvent une peur. L'irritation cache parfois une tristesse profonde. Reconnaître la couche de dessous, c'est accéder à la vérité.",
     ],
   },
   {
@@ -53,9 +53,9 @@ const steps: StepResource[] = [
     subtitle: "Ce qui se passe dans ton corps",
     dotColor: "#8A9E7A",
     content: [
-      "Le système nerveux autonome régule tout ce que tu ne contrôles pas consciemment : ton rythme cardiaque, ta digestion, ta respiration. Il fonctionne en deux modes : le système sympathique (activation, stress, survie) et le système parasympathique (repos, récupération, sécurité).",
-      "Quand une émotion intense surgit, le sympathique prend le dessus. Ancrer le corps, c’est réactiver le parasympathique. La respiration est le seul pont conscient entre ces deux systèmes.",
-      "Expirer plus longtemps que tu n’inspires, comme dans le guide 4/6 secondes, active le nerf vague, qui envoie un signal de sécurité à tout le corps. Ce n’est pas de la relaxation. C’est de la régulation neurologique.",
+      "Le système nerveux autonome régule tout ce que tu ne contrôles pas consciemment : ton rythme cardiaque, ta digestion, ta respiration. Il fonctionne en deux modes : le système sympathique (activation, stress, survie) et le système parasympathique (repos, récupération, sécurité).",
+      "Quand une émotion intense surgit, le sympathique prend le dessus. Ancrer le corps, c'est réactiver le parasympathique. La respiration est le seul pont conscient entre ces deux systèmes.",
+      "Expirer plus longtemps que tu n'inspires, comme dans le guide 4/6 secondes, active le nerf vague, qui envoie un signal de sécurité à tout le corps. Ce n'est pas de la relaxation. C'est de la régulation neurologique.",
     ],
   },
   {
@@ -65,9 +65,9 @@ const steps: StepResource[] = [
     subtitle: "Ce qui se passe dans ton esprit",
     dotColor: "#A89080",
     content: [
-      "Le cortex préfrontal, la partie la plus évoluée du cerveau, est le siège de la compréhension, du sens, de la mise en perspective. Mais il ne fonctionne bien que quand le système nerveux est suffisamment régulé. C’est pourquoi Comprendre vient après Ancrer, pas avant.",
-      "Une fois le corps stabilisé, tu peux remonter le fil : pourquoi cette émotion ? Que te raconte-t-elle de tes besoins profonds ?",
-      "Nos schémas émotionnels se forment tôt, souvent dans l’enfance. Ils se répètent parce qu’ils ont été utiles — des stratégies de survie devenues des réflexes. Les voir clairement, sans les juger, c’est déjà commencer à s’en libérer.",
+      "Le cortex préfrontal, la partie la plus évoluée du cerveau, est le siège de la compréhension, du sens, de la mise en perspective. Mais il ne fonctionne bien que quand le système nerveux est suffisamment régulé. C'est pourquoi Comprendre vient après Ancrer, pas avant.",
+      "Une fois le corps stabilisé, tu peux remonter le fil : pourquoi cette émotion ? Que te raconte-t-elle de tes besoins profonds ?",
+      "Nos schémas émotionnels se forment tôt, souvent dans l'enfance. Ils se répètent parce qu'ils ont été utiles — des stratégies de survie devenues des réflexes. Les voir clairement, sans les juger, c'est déjà commencer à s'en libérer.",
     ],
   },
   {
@@ -77,9 +77,9 @@ const steps: StepResource[] = [
     subtitle: "Ce qui se transforme en toi",
     dotColor: "#C4998A",
     content: [
-      "L’intégration émotionnelle est un processus neurologique réel. Quand une expérience difficile est traversée, nommée, régulée et mise en sens, le cerveau crée de nouvelles connexions, ce qu’on appelle la plasticité neuronale.",
-      "Une nouvelle compréhension émerge. Ce n’est pas une conclusion intellectuelle. C’est souvent une sensation physique d’abord, un souffle qui se libère, une légèreté dans les épaules, une évidence qui arrive sans forcer.",
-      "Émerger ne se commande pas. Ça se laisse venir. L’invitation de cette étape est simple : rester à l’écoute de ce qui change, sans l’anticiper.",
+      "L'intégration émotionnelle est un processus neurologique réel. Quand une expérience difficile est traversée, nommée, régulée et mise en sens, le cerveau crée de nouvelles connexions, ce qu'on appelle la plasticité neuronale.",
+      "Une nouvelle compréhension émerge. Ce n'est pas une conclusion intellectuelle. C'est souvent une sensation physique d'abord, un souffle qui se libère, une légèreté dans les épaules, une évidence qui arrive sans forcer.",
+      "Émerger ne se commande pas. Ça se laisse venir. L'invitation de cette étape est simple : rester à l'écoute de ce qui change, sans l'anticiper.",
     ],
   },
   {
@@ -89,8 +89,8 @@ const steps: StepResource[] = [
     subtitle: "Ce qui change dans ta vie",
     dotColor: "#6B3D2E",
     content: [
-      "La compréhension seule ne suffit pas à transformer. Le cerveau apprend par l’action répétée. Chaque micro-décision alignée avec ta vérité intérieure crée une nouvelle voie neuronale. Au fil du temps, ces nouvelles voies deviennent des réflexes, des façons d’être plutôt que des efforts conscients.",
-      "Aligner, c’est donc choisir un geste concret, aussi petit soit-il, qui honore ce que tu viens de traverser. Pas une résolution héroïque. Juste une direction.",
+      "La compréhension seule ne suffit pas à transformer. Le cerveau apprend par l'action répétée. Chaque micro-décision alignée avec ta vérité intérieure crée une nouvelle voie neuronale. Au fil du temps, ces nouvelles voies deviennent des réflexes, des façons d'être plutôt que des efforts conscients.",
+      "Aligner, c'est donc choisir un geste concret, aussi petit soit-il, qui honore ce que tu viens de traverser. Pas une résolution héroïque. Juste une direction.",
       "Un pas dans le sens de qui tu deviens.",
     ],
   },
