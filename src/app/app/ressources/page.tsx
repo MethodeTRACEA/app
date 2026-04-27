@@ -469,6 +469,12 @@ export default function RessourcesPage() {
                           Quelque chose de concret.<br />
                           M&ecirc;me minuscule.
                         </p>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 16 }}>
+                          Un message.<br />
+                          Un non.<br />
+                          Un pas de c&ocirc;t&eacute;.<br />
+                          Ou juste ne pas r&eacute;agir comme avant.
+                        </p>
                         <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 28 }}>
                           Pas parfait.<br />
                           Pas h&eacute;ro&iuml;que.
