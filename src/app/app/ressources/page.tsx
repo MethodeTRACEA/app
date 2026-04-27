@@ -215,18 +215,36 @@ export default function RessourcesPage() {
 
         {/* Branding TRACÉA */}
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <p
-            className="font-body"
+          <div
             style={{
-              fontSize: "clamp(1.1rem, 3vw, 1.35rem)",
-              fontWeight: 400,
-              letterSpacing: "0.35em",
-              color: "#C9907C",
-              marginBottom: 10,
+              display: "flex",
+              justifyContent: "center",
+              gap: 10,
+              marginBottom: 14,
             }}
           >
-            T &mdash; R &mdash; A &mdash; C &mdash; &Eacute; &mdash; A
-          </p>
+            {["T", "R", "A", "C", "É", "A"].map((letter, i) => (
+              <div
+                key={i}
+                className="font-body"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  background: "#C9907C",
+                  color: "#1C1410",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  flexShrink: 0,
+                }}
+              >
+                {letter}
+              </div>
+            ))}
+          </div>
           <p
             className="font-sans"
             style={{
