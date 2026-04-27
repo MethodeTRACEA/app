@@ -423,17 +423,19 @@ export default function RessourcesPage() {
                         <p className="font-sans leading-relaxed" style={pNormal}>
                           Quelque chose a peut-&ecirc;tre chang&eacute;.
                         </p>
-                        <p className="font-sans leading-relaxed" style={pNormal}>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 28 }}>
                           Pas forc&eacute;ment une pens&eacute;e.<br />
                           Plut&ocirc;t une sensation.
                         </p>
-                        <p className="font-sans leading-relaxed" style={pNormal}>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 28 }}>
                           Un peu plus d&apos;espace.<br />
                           Un souffle diff&eacute;rent.<br />
                           Une tension qui l&acirc;che.
                         </p>
-                        <p className="font-sans leading-relaxed" style={pNormal}>
-                          Tu n&apos;as rien &agrave; faire de plus.<br />
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 28 }}>
+                          Tu n&apos;as rien &agrave; faire de plus.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 16 }}>
                           Juste remarquer.
                         </p>
                         <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
