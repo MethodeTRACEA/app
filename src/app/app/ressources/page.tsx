@@ -99,10 +99,18 @@ const steps: StepResource[] = [
     name: "Aligner",
     subtitle: "Ce qui change dans ta vie",
     dotColor: "#6B3D2E",
-    content: [
-      "La compréhension seule ne suffit pas à transformer. Le cerveau apprend par l'action répétée. Chaque micro-décision alignée avec ta vérité intérieure crée une nouvelle voie neuronale. Au fil du temps, ces nouvelles voies deviennent des réflexes, des façons d'être plutôt que des efforts conscients.",
-      "Aligner, c'est donc choisir un geste concret, aussi petit soit-il, qui honore ce que tu viens de traverser. Pas une résolution héroïque. Juste une direction.",
-      "Un pas dans le sens de qui tu deviens.",
+    content: [],
+    scienceToggleLabel: "Pourquoi ça transforme ?",
+    scienceContent: [
+      "Le cerveau change par répétition.",
+      "Chaque fois que tu fais un geste aligné après une émotion, tu renforces une nouvelle voie neuronale.",
+      "C'est ce qu'on appelle la neuroplasticité.",
+      "Au début, ce n'est pas naturel. C'est parfois inconfortable.",
+      "Mais à force de répéter, ce qui demandait un effort devient plus simple.",
+      "Puis automatique.",
+      "C'est comme ça que de nouveaux réflexes se construisent.",
+      "Pas en comprenant une fois.",
+      "Mais en pratiquant, encore et encore.",
     ],
   },
 ];
@@ -441,6 +449,31 @@ export default function RessourcesPage() {
                         <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
                           &Eacute;merger ne se commande pas.<br />
                           &Ccedil;a se laisse venir.
+                        </p>
+                      </div>
+
+                    ) : step.number === 6 ? (
+                      /* — ALIGNER : paragraphes dédiés — */
+                      <div className="space-y-5">
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          La compr&eacute;hension seule ne suffit pas.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 28 }}>
+                          Ce qui transforme, c&apos;est ce que tu fais apr&egrave;s.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 28 }}>
+                          Aligner, c&apos;est choisir un geste simple,<br />
+                          en lien avec ce que tu viens de traverser.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 28 }}>
+                          Pas parfait.<br />
+                          Pas h&eacute;ro&iuml;que.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={{ ...pNormal, marginTop: 16 }}>
+                          Juste juste.
+                        </p>
+                        <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
+                          Un petit mouvement dans la bonne direction.
                         </p>
                       </div>
 
