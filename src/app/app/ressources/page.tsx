@@ -52,10 +52,15 @@ const steps: StepResource[] = [
     name: "Ancrer",
     subtitle: "Ce qui se passe dans ton corps",
     dotColor: "#8A9E7A",
-    content: [
-      "Le système nerveux autonome régule tout ce que tu ne contrôles pas consciemment : ton rythme cardiaque, ta digestion, ta respiration. Il fonctionne en deux modes : le système sympathique (activation, stress, survie) et le système parasympathique (repos, récupération, sécurité).",
-      "Quand une émotion intense surgit, le sympathique prend le dessus. Ancrer le corps, c'est réactiver le parasympathique. La respiration est le seul pont conscient entre ces deux systèmes.",
-      "Expirer plus longtemps que tu n'inspires, comme dans le guide 4/6 secondes, active le nerf vague, qui envoie un signal de sécurité à tout le corps. Ce n'est pas de la relaxation. C'est de la régulation neurologique.",
+    content: [],
+    scienceToggleLabel: "Comprendre ce qui se passe",
+    scienceContent: [
+      "Le système nerveux autonome fonctionne en deux modes :",
+      "• le système sympathique : activation, stress, survie",
+      "• le système parasympathique : repos, récupération, sécurité",
+      "Quand une émotion intense surgit, le sympathique prend le dessus.",
+      "Respirer lentement, et surtout expirer plus longtemps, aide à réactiver le parasympathique.",
+      "C'est ce qui permet au corps de redescendre.",
     ],
   },
   {
@@ -335,7 +340,7 @@ export default function RessourcesPage() {
                       }}
                     />
 
-                    {/* — TRAVERSER : 6 paragraphes dédiés — */}
+                    {/* — TRAVERSER : paragraphes dédiés — */}
                     {step.number === 1 ? (
                       <div className="space-y-5">
                         <p className="font-sans leading-relaxed" style={pNormal}>
@@ -357,6 +362,27 @@ export default function RessourcesPage() {
                           Traverser, c&apos;est autre chose. C&apos;est rester l&agrave;, pr&eacute;sent, pendant que &ccedil;a passe. Pas pour souffrir davantage, mais parce que c&apos;est le seul chemin pour que &ccedil;a redescende vraiment.
                         </p>
                       </div>
+
+                    ) : step.number === 3 ? (
+                      /* — ANCRER : paragraphes dédiés — */
+                      <div className="space-y-5">
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Ton corps passe en mode alerte.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Tu peux l&apos;aider &agrave; redescendre.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Respire lentement. Expire plus longtemps que tu n&apos;inspires. C&apos;est comme &ccedil;a que ton syst&egrave;me nerveux retrouve un signal de s&eacute;curit&eacute;.
+                        </p>
+                        <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
+                          Expirer plus longtemps active un signal de s&eacute;curit&eacute; dans ton corps.
+                          <br /><br />
+                          Ce n&apos;est pas de la relaxation.<br />
+                          C&apos;est de la r&eacute;gulation.
+                        </p>
+                      </div>
+
                     ) : (
                       /* — AUTRES ÉTAPES : renderer générique — */
                       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
