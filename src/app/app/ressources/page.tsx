@@ -69,10 +69,12 @@ const steps: StepResource[] = [
     name: "Comprendre",
     subtitle: "Ce qui se passe dans ton esprit",
     dotColor: "#A89080",
-    content: [
-      "Le cortex préfrontal, la partie la plus évoluée du cerveau, est le siège de la compréhension, du sens, de la mise en perspective. Mais il ne fonctionne bien que quand le système nerveux est suffisamment régulé. C'est pourquoi Comprendre vient après Ancrer, pas avant.",
-      "Une fois le corps stabilisé, tu peux remonter le fil : pourquoi cette émotion ? Que te raconte-t-elle de tes besoins profonds ?",
-      "Nos schémas émotionnels se forment tôt, souvent dans l'enfance. Ils se répètent parce qu'ils ont été utiles — des stratégies de survie devenues des réflexes. Les voir clairement, sans les juger, c'est déjà commencer à s'en libérer.",
+    content: [],
+    scienceToggleLabel: "Comprendre le fonctionnement du cerveau",
+    scienceContent: [
+      "Le cortex préfrontal est la partie du cerveau qui permet de comprendre, nuancer et donner du sens.",
+      "Mais il ne fonctionne pleinement que lorsque le système nerveux est régulé.",
+      "C'est pour cela que Comprendre vient après Ancrer.",
     ],
   },
   {
@@ -380,6 +382,36 @@ export default function RessourcesPage() {
                           <br /><br />
                           Ce n&apos;est pas de la relaxation.<br />
                           C&apos;est de la r&eacute;gulation.
+                        </p>
+                      </div>
+
+                    ) : step.number === 4 ? (
+                      /* — COMPRENDRE : paragraphes dédiés — */
+                      <div className="space-y-5">
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Une fois ton corps stabilis&eacute;, tu peux commencer &agrave; comprendre.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Pourquoi cette &eacute;motion&nbsp;?
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Qu&apos;est-ce qu&apos;elle vient toucher&nbsp;?<br />
+                          Qu&apos;est-ce qu&apos;elle essaie de dire&nbsp;?
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Souvent, derri&egrave;re une r&eacute;action, il y a un besoin.
+                        </p>
+                        <p className="font-sans leading-relaxed" style={pNormal}>
+                          Un besoin non respect&eacute;,<br />
+                          non entendu,<br />
+                          ou menac&eacute;.
+                        </p>
+                        <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
+                          Nos sch&eacute;mas &eacute;motionnels se forment t&ocirc;t, souvent dans l&apos;enfance.
+                          <br /><br />
+                          Ils se r&eacute;p&egrave;tent parce qu&apos;ils ont &eacute;t&eacute; utiles &mdash; des strat&eacute;gies de survie devenues des r&eacute;flexes.
+                          <br /><br />
+                          Les voir clairement, sans les juger, c&apos;est d&eacute;j&agrave; commencer &agrave; s&apos;en lib&eacute;rer.
                         </p>
                       </div>
 
