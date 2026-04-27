@@ -347,10 +347,10 @@ export default function RessourcesPage() {
                         <p className="font-sans leading-relaxed" style={pNormal}>
                           Tout &ccedil;a en une fraction de seconde.
                         </p>
-                        <p className="font-sans my-6 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]">
+                        <p className="my-6 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]">
                           Ce que tu ressens n&apos;est pas excessif. C&apos;est une r&eacute;action.
                         </p>
-                        <p className="font-sans leading-relaxed" style={pNormal}>
+                        <p className="text-[var(--text-secondary)] leading-relaxed">
                           Et quand &ccedil;a arrive, le r&eacute;flexe naturel est de fuir&nbsp;: penser &agrave; autre chose, s&apos;occuper, minimiser. Mais fuir ne fait pas dispara&icirc;tre l&apos;&eacute;motion. Elle reste, elle revient autrement.
                         </p>
                         <p className="font-sans mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
