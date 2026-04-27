@@ -22,10 +22,12 @@ const steps: StepResource[] = [
     subtitle: "Ce qui se passe dans ton corps",
     dotColor: "#C9907C",
     content: [
-      "Quand une émotion surgit, ton corps réagit avant toi.\n\nLe cerveau déclenche une alarme.\nLe cœur s'accélère, les muscles se contractent,\nla respiration se raccourcit.\n\nTout ça en une fraction de seconde.\n\nCe que tu ressens n'est pas excessif.\nC'est une réaction.",
+      "Quand une émotion surgit, ton corps réagit avant toi.\n\nLe cerveau déclenche une alarme.\nLe cœur s'accélère, les muscles se contractent,\nla respiration se raccourcit.\n\nTout ça en une fraction de seconde.",
+      "Ce que tu ressens n'est pas excessif.\nC'est une réaction.",
       "Et quand ça arrive, le réflexe naturel est de fuir :\npenser à autre chose, s'occuper, minimiser.\n\nMais fuir ne fait pas disparaître l'émotion.\nElle reste, elle revient autrement.",
       "Traverser, c'est autre chose.\n\nC'est rester là, présent, pendant que ça passe.\n\nPas pour souffrir davantage,\nmais parce que c'est le seul chemin pour que ça redescende vraiment.",
     ],
+    highlightIndex: 1,
     scienceToggleLabel: "Pourquoi ça fait ça ?",
     scienceContent: [
       "Quand une émotion surgit, l'amygdale peut déclencher une réponse d'alerte très rapide.",
