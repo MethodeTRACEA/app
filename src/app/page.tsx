@@ -1,6 +1,30 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 export default function LandingPage() {
+  const finalCtaRef = useRef<HTMLDivElement | null>(null);
+  const [finalCtaVisible, setFinalCtaVisible] = useState(false);
+
+  useEffect(() => {
+    const el = finalCtaRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setFinalCtaVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
   return (
     <div
       className="min-h-screen relative overflow-hidden"
@@ -412,7 +436,13 @@ export default function LandingPage() {
           CTA FINAL
       ════════════════════════════════════════════════════════════ */}
       <section className="relative px-6 pt-6 pb-12 md:pt-10 md:pb-16 min-h-[90vh] md:min-h-0 flex flex-col justify-center" style={{ zIndex: 1 }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
+        <div
+          ref={finalCtaRef}
+          style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}
+          className={`transition-all duration-700 ease-out ${
+            finalCtaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          }`}
+        >
           <h2 className="text-[26px] md:text-[32px] tracking-tight mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Essaye maintenant
           </h2>
