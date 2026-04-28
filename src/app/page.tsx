@@ -61,14 +61,18 @@ export default function LandingPage() {
 
           {/* Titre */}
           <h1 className="text-[30px] md:text-[40px] leading-[1.25] tracking-tight mb-4 md:mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
-            Quand ça monte dans ton corps,
+            Quand ça te submerge,
             <br />
             tu fais quoi ?
           </h1>
 
           {/* Sous-titre */}
           <div className="text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-6 md:mb-12 space-y-3" style={{ color: "rgba(240,230,214,0.60)" }}>
-            <p>Poitrine serrée. Souffle court. Pensées en boucle.</p>
+            <p>
+              Poitrine serrée.<br />
+              Souffle court.<br />
+              Pensées en boucle.
+            </p>
             <p>
               TRACÉA t&apos;aide à redescendre.
               <br />
