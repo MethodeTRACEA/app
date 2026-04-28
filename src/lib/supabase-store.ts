@@ -504,30 +504,45 @@ export async function getPremiumMemory(userId: string): Promise<PremiumMemory | 
 
 // --- Tracking events ---
 
+/**
+ * Envoie un event de tracking via la route serveur /api/track-event.
+ *
+ * Garanties :
+ * - Aucun insert direct Supabase depuis le navigateur.
+ * - Bloqué silencieusement si le consentement est absent.
+ * - try/catch global : ne bloque jamais l'UX.
+ * - Le serveur valide le payload et applique le rate limit.
+ */
 export async function trackEvent(
   userId: string | null,
   event: string,
   data?: Record<string, unknown>
 ) {
-  // Vérification consentement — ne rien envoyer sans accord explicite
-  if (typeof window !== "undefined") {
-    if (localStorage.getItem("tracea_consent") !== "true") return;
+  // Gate consentement côté client — first line of defense
+  if (typeof window === "undefined") return;
+  if (localStorage.getItem("tracea_consent") !== "true") return;
+
+  // ID anonyme pour les utilisateurs non connectés
+  const anonymousId = !userId
+    ? (localStorage.getItem("tracea_anonymous_id") ?? undefined)
+    : undefined;
+
+  // Envoi via route serveur — silencieux en cas d'erreur réseau ou serveur
+  try {
+    await fetch("/api/track-event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tracea_consent: true,
+        event,
+        user_id: userId,
+        data: data ?? {},
+        ...(anonymousId ? { anonymous_id: anonymousId } : {}),
+      }),
+    });
+  } catch {
+    // Ne jamais faire crasher l'app pour un problème de tracking
   }
-
-  // Récupération de l'ID anonyme si utilisateur non connecté
-  const anonymousId =
-    !userId && typeof window !== "undefined"
-      ? (localStorage.getItem("tracea_anonymous_id") ?? undefined)
-      : undefined;
-
-  await supabase.from("tracea_events").insert({
-    user_id: userId,
-    event,
-    data: {
-      ...(data ?? {}),
-      ...(anonymousId ? { anonymous_id: anonymousId } : {}),
-    },
-  });
 }
 
 // --- Helpers ---
