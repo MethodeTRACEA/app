@@ -4,6 +4,28 @@
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
+/* ============================================================
+   TRACÉA — DESIGN TOKENS V3
+   Ajout taupe + tokens sémantiques d'étapes TRACÉA.
+   Ne pas modifier les tokens existants ci-dessous.
+   ============================================================ */
+:root {
+  /* Taupe V3 — couche de surface et d'ambiance */
+  --t-taupe: #6F6A64;
+  --t-taupe-soft: #7A756F;
+  --t-taupe-dark: #4C4540;
+  --t-surface: rgba(46, 40, 37, 0.82);
+  --t-surface-taupe: rgba(111, 106, 100, 0.20);
+
+  /* Étapes TRACÉA — progression visuelle T R A C É A */
+  --step-traverser: #C97B6A;
+  --step-reconnaitre: #9C8A7B;
+  --step-ancrer: #8A9E7A;
+  --step-comprendre: #D8C4AE;
+  --step-emerger: #D9A093;
+  --step-aligner: #8B3F2D;
+}
+
 @layer base {
   html { scroll-behavior: smooth; }
   body {

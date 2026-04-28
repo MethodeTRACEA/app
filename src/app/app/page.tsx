@@ -24,7 +24,10 @@ export default function Accueil() {
   if (!mounted) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="font-serif text-4xl text-terra animate-pulse-gentle">
+        <div
+          className="font-body text-4xl animate-pulse-gentle"
+          style={{ color: "var(--step-traverser)" }}
+        >
           TRACEA
         </div>
       </div>
@@ -32,87 +35,208 @@ export default function Accueil() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10 md:py-16">
-      {/* Hero court */}
-      <section className="text-center mb-10 md:mb-14">
-        <h1 className="font-serif text-2xl md:text-4xl text-espresso mb-4 leading-tight">
-          Bienvenue dans TRACEA
-        </h1>
-        <p className="font-body text-base md:text-lg text-espresso/70 leading-relaxed mb-8">
-          Un espace pour revenir &agrave; quelque chose de plus supportable.
-        </p>
-        <Link
-          href="/start"
-          className="btn-primary inline-block text-center !py-4 !text-base !rounded-2xl"
-        >
-          Faire une travers&eacute;e
-        </Link>
-        <Link
-          href="/app/urgence"
-          className="w-full mt-4 flex items-center justify-center gap-3 rounded-[28px] px-6 py-5 text-[18px] font-semibold text-white bg-white/20 border border-white/35 shadow-[0_0_20px_rgba(255,255,255,0.15)] backdrop-blur-sm transition active:scale-[0.98]"
-        >
-          <span className="text-[#F6C94A] text-xl">⚡</span>
-          <span>Redescendre, maintenant</span>
-        </Link>
-      </section>
+    <div
+      className="min-h-screen"
+      style={{
+        background:
+          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
+          "radial-gradient(ellipse at 15% 0%, rgba(111,106,100,0.16) 0%, transparent 58%), " +
+          "#1A120D",
+      }}
+    >
+      <div className="max-w-md mx-auto px-6 py-16 flex flex-col gap-8">
 
-      {/* Dernière session (si existe) */}
-      {lastSession && lastSession.completed && (
-        <section className="mb-10">
-          <div className="card-accent">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-xs text-warm-gray">
-                Derni&egrave;re travers&eacute;e &middot;{" "}
-                {new Date(lastSession.date).toLocaleDateString("fr-FR", {
-                  day: "numeric",
-                  month: "long",
-                })}
-              </span>
-              <span className="text-xs text-sage font-medium">
-                {lastSession.intensiteBefore} &rarr; {lastSession.intensiteAfter}/10
-              </span>
-            </div>
-            {lastSession.veriteInterieure && (
-              <p className="font-body text-base text-espresso italic leading-relaxed">
-                &ldquo;{lastSession.veriteInterieure}&rdquo;
-              </p>
-            )}
+        {/* Hero court */}
+        <section className="text-center flex flex-col gap-6 pt-4">
+          <h1
+            className="font-body leading-tight"
+            style={{
+              fontSize: "clamp(32px, 8vw, 42px)",
+              fontWeight: 300,
+              color: "#F0E6D6",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Bienvenue dans TRACEA
+          </h1>
+          <p
+            className="font-sans leading-relaxed"
+            style={{
+              fontSize: "18px",
+              fontWeight: 300,
+              color: "rgba(240,230,214,0.60)",
+            }}
+          >
+            Un espace pour revenir &agrave; quelque chose de plus supportable.
+          </p>
+          <div className="flex flex-col gap-3 mt-2">
+            <Link
+              href="/start"
+              className="w-full block text-center"
+              style={{
+                borderRadius: "999px",
+                padding: "17px 26px",
+                fontSize: "18px",
+                fontWeight: 400,
+                letterSpacing: "0.03em",
+                color: "#1A120D",
+                background:
+                  "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+                boxShadow:
+                  "0 8px 28px rgba(184,99,79,0.30), 0 2px 8px rgba(0,0,0,0.35)",
+              }}
+            >
+              Faire une travers&eacute;e
+            </Link>
+            <Link
+              href="/app/urgence"
+              className="w-full flex items-center justify-center gap-3"
+              style={{
+                borderRadius: "999px",
+                padding: "17px 26px",
+                fontSize: "13.5px",
+                fontWeight: 300,
+                letterSpacing: "0.01em",
+                color: "rgba(240,230,214,0.65)",
+                background: "rgba(111,106,100,0.20)",
+                border: "1px solid rgba(240,230,214,0.14)",
+              }}
+            >
+              <span style={{ color: "#F6C94A" }}>⚡</span>
+              <span>Redescendre, maintenant</span>
+            </Link>
           </div>
         </section>
-      )}
 
-
-      {/* Stats compactes (si sessions existantes) */}
-      {stats.total > 0 && (
-        <section className="mb-10 md:mb-14">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="card-base text-center !py-4">
-              <div className="font-serif text-2xl text-terra">{stats.total}</div>
-              <div className="text-[10px] text-warm-gray mt-1 tracking-wide uppercase">Sessions</div>
-            </div>
-            <div className="card-base text-center !py-4">
-              <div className="font-serif text-2xl text-sage">{stats.lastWeekCount}</div>
-              <div className="text-[10px] text-warm-gray mt-1 tracking-wide uppercase">Cette semaine</div>
-            </div>
-            <div className="card-base text-center !py-4">
-              {stats.avgRecovery > 0 ? (
-                <>
-                  <div className="font-serif text-2xl text-sage">
-                    -{stats.avgRecovery.toFixed(1)}
-                  </div>
-                  <div className="text-[10px] text-sage mt-1 tracking-wide uppercase">R&eacute;gulation</div>
-                </>
-              ) : (
-                <>
-                  <div className="font-serif text-2xl text-warm-gray">~</div>
-                  <div className="text-[10px] text-warm-gray mt-1 tracking-wide uppercase">Stable</div>
-                </>
+        {/* Dernière session (si existe) */}
+        {lastSession && lastSession.completed && (
+          <section>
+            <div
+              style={{
+                background: "rgba(111,106,100,0.14)",
+                border: "1px solid rgba(240,230,214,0.085)",
+                borderRadius: "22px",
+                padding: "22px 24px",
+              }}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <span
+                  className="font-sans uppercase tracking-widest"
+                  style={{ fontSize: "10px", color: "var(--step-traverser)" }}
+                >
+                  Derni&egrave;re travers&eacute;e &middot;{" "}
+                  {new Date(lastSession.date).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </span>
+                <span
+                  className="font-sans"
+                  style={{ fontSize: "12px", color: "#8A9E7A" }}
+                >
+                  {lastSession.intensiteBefore} &rarr; {lastSession.intensiteAfter}/10
+                </span>
+              </div>
+              {lastSession.veriteInterieure && (
+                <p
+                  className="font-body italic leading-relaxed mt-2"
+                  style={{ fontSize: "16px", color: "#F0E6D6" }}
+                >
+                  &ldquo;{lastSession.veriteInterieure}&rdquo;
+                </p>
               )}
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
+        {/* Stats compactes (si sessions existantes) */}
+        {stats.total > 0 && (
+          <section>
+            <div className="grid grid-cols-3 gap-3">
+              <div
+                className="text-center py-4"
+                style={{
+                  background: "rgba(111,106,100,0.12)",
+                  border: "1px solid rgba(240,230,214,0.08)",
+                  borderRadius: "16px",
+                }}
+              >
+                <div
+                  className="font-body text-2xl"
+                  style={{ color: "var(--step-traverser)" }}
+                >
+                  {stats.total}
+                </div>
+                <div
+                  className="font-sans uppercase tracking-wide mt-1"
+                  style={{ fontSize: "10px", color: "rgba(240,230,214,0.38)" }}
+                >
+                  Sessions
+                </div>
+              </div>
+              <div
+                className="text-center py-4"
+                style={{
+                  background: "rgba(111,106,100,0.12)",
+                  border: "1px solid rgba(240,230,214,0.08)",
+                  borderRadius: "16px",
+                }}
+              >
+                <div className="font-body text-2xl" style={{ color: "#8A9E7A" }}>
+                  {stats.lastWeekCount}
+                </div>
+                <div
+                  className="font-sans uppercase tracking-wide mt-1"
+                  style={{ fontSize: "10px", color: "rgba(240,230,214,0.38)" }}
+                >
+                  Cette semaine
+                </div>
+              </div>
+              <div
+                className="text-center py-4"
+                style={{
+                  background: "rgba(111,106,100,0.12)",
+                  border: "1px solid rgba(240,230,214,0.08)",
+                  borderRadius: "16px",
+                }}
+              >
+                {stats.avgRecovery > 0 ? (
+                  <>
+                    <div
+                      className="font-body text-2xl"
+                      style={{ color: "#8A9E7A" }}
+                    >
+                      -{stats.avgRecovery.toFixed(1)}
+                    </div>
+                    <div
+                      className="font-sans uppercase tracking-wide mt-1"
+                      style={{ fontSize: "10px", color: "rgba(240,230,214,0.38)" }}
+                    >
+                      R&eacute;gulation
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      className="font-body text-2xl"
+                      style={{ color: "rgba(240,230,214,0.35)" }}
+                    >
+                      ~
+                    </div>
+                    <div
+                      className="font-sans uppercase tracking-wide mt-1"
+                      style={{ fontSize: "10px", color: "rgba(240,230,214,0.38)" }}
+                    >
+                      Stable
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+      </div>
     </div>
   );
 }
