@@ -8,18 +8,17 @@ export const metadata: Metadata = {
 };
 
 // ── Design tokens V3 stricts (tracea_preview_v3.html) ────────────────
-// --t-bg-deep      #120D09
-// --t-surface-taupe rgba(111,106,100,0.20)
-// --t-accent       #B8634F
-// --t-cream        #F0E6D6
-// --t-cream-dim    rgba(240,230,214,0.44)
-// --t-cream-soft   rgba(240,230,214,0.30)
-// --t-cream-ghost  rgba(240,230,214,0.18)
-// --t-cream-faint  rgba(240,230,214,0.08)
-// --font-title     'Cormorant Garamond', serif
-// --font-ui        'DM Sans', sans-serif
-// --radius-lg      24px
-// --shadow-card    0 18px 48px rgba(0,0,0,0.38)
+// --t-bg-deep        #120D09
+// --t-surface-taupe  rgba(111,106,100,0.14)
+// --t-accent-light   #C97B6A
+// --t-cream          #F0E6D6
+// --t-cream-dim      rgba(240,230,214,0.44)
+// --t-cream-soft     rgba(240,230,214,0.30)
+// --t-cream-faint    rgba(240,230,214,0.085)
+// --font-title       'Cormorant Garamond', serif
+// --font-ui          'DM Sans', sans-serif
+// --radius-lg        24px
+// --shadow-card      0 18px 48px rgba(0,0,0,0.38)
 
 type Option = {
   href: string;
@@ -31,7 +30,8 @@ type Option = {
   border: string;
   recommended?: true;
   badge?: string;
-  dim?: true;
+  cardOpacity?: number;
+  titleColor?: string;
 };
 
 const options: Option[] = [
@@ -41,8 +41,8 @@ const options: Option[] = [
     title: "Je veux redescendre vite",
     desc: "Quand c'est trop intense. Directement par le corps.",
     tag: "2 min",
-    dot: "#B8634F",
-    border: "rgba(240,230,214,0.08)",
+    dot: "#C97B6A",
+    border: "rgba(240,230,214,0.085)",
   },
   {
     href: "/app/traversee-courte",
@@ -51,8 +51,8 @@ const options: Option[] = [
     desc: "Pour déposer, revenir au corps, puis choisir un geste simple.",
     tag: "5 min",
     recommended: true,
-    dot: "#B8634F",
-    border: "rgba(240,230,214,0.18)",
+    dot: "#C97B6A",
+    border: "rgba(240,230,214,0.14)",
   },
   {
     href: "/app/session",
@@ -62,33 +62,46 @@ const options: Option[] = [
     tag: "15 min",
     badge: "Compte requis",
     dot: "rgba(240,230,214,0.30)",
-    border: "rgba(240,230,214,0.08)",
-    dim: true,
+    border: "rgba(240,230,214,0.085)",
+    cardOpacity: 0.86,
+    titleColor: "rgba(240,230,214,0.82)",
   },
 ];
 
-// Carte V3 — surface taupe, pas de glow, pas de dégradé
+// Carte V3 — surface taupe, sans glow, sans dégradé
 const cardBase: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: 14,
-  background: "rgba(111,106,100,0.20)",
+  background: "rgba(111,106,100,0.14)",
   borderRadius: 24,
-  padding: "22px",
+  padding: "20px 22px",
   textDecoration: "none",
   textAlign: "left",
   boxShadow: "0 18px 48px rgba(0,0,0,0.38)",
   transition: "opacity 0.2s ease",
 };
 
-// Tag V3 — cream neutre uniquement, pas de jaune
+// Tag durée V3 — cream neutre
 const tagStyle: React.CSSProperties = {
   fontSize: 9,
   color: "rgba(240,230,214,0.45)",
   background: "rgba(240,230,214,0.07)",
+  border: "1px solid rgba(240,230,214,0.10)",
   borderRadius: 999,
   padding: "1px 7px",
   letterSpacing: "0.04em",
+};
+
+// Badge "recommandé" — distinct du tag durée
+const recommendedStyle: React.CSSProperties = {
+  fontSize: 9,
+  color: "rgba(240,230,214,0.58)",
+  background: "rgba(240,230,214,0.07)",
+  border: "1px solid rgba(240,230,214,0.12)",
+  borderRadius: 999,
+  padding: "1px 7px",
+  letterSpacing: "0.06em",
 };
 
 export default function StartPage() {
@@ -97,9 +110,10 @@ export default function StartPage() {
       style={{
         position: "relative",
         minHeight: "100dvh",
+        // Fond exact V3 body — tracea_preview_v3.html
         background:
-          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.12) 0%, transparent 60%)," +
-          "radial-gradient(ellipse at 20% 0%, rgba(111,106,100,0.12) 0%, transparent 60%)," +
+          "radial-gradient(ellipse at 18% 8%, rgba(111,106,100,0.18) 0%, rgba(46,40,37,0.12) 34%, transparent 62%)," +
+          "radial-gradient(ellipse at 30% 0%, rgba(184,99,79,0.11) 0%, rgba(18,13,9,0.70) 42%, rgba(7,5,3,0.95) 100%)," +
           "#120D09",
         display: "flex",
         alignItems: "center",
@@ -175,7 +189,7 @@ export default function StartPage() {
         </p>
 
         {/* Cartes */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {options.map((opt) => (
             <Link
               key={opt.href}
@@ -183,7 +197,7 @@ export default function StartPage() {
               style={{
                 ...cardBase,
                 border: `1px solid ${opt.border}`,
-                opacity: opt.dim ? 0.6 : 1,
+                opacity: opt.cardOpacity ?? 1,
               }}
             >
               {/* Dot */}
@@ -200,7 +214,7 @@ export default function StartPage() {
 
               {/* Contenu */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                {/* Label + durée + badge */}
+                {/* Label + durée + badge recommandé */}
                 <div
                   style={{
                     display: "flex",
@@ -225,7 +239,7 @@ export default function StartPage() {
                     {opt.tag}
                   </span>
                   {opt.recommended && (
-                    <span className="font-sans" style={tagStyle}>
+                    <span className="font-sans" style={recommendedStyle}>
                       recommandé
                     </span>
                   )}
@@ -236,7 +250,7 @@ export default function StartPage() {
                   className="font-body"
                   style={{
                     fontSize: 16,
-                    color: "#F0E6D6",
+                    color: opt.titleColor ?? "#F0E6D6",
                     fontWeight: 300,
                     margin: "0 0 4px",
                     lineHeight: 1.2,
@@ -264,7 +278,7 @@ export default function StartPage() {
                     className="font-sans"
                     style={{
                       fontSize: 10,
-                      color: "rgba(240,230,214,0.30)",
+                      color: "rgba(240,230,214,0.34)",
                       margin: "5px 0 0",
                       letterSpacing: "0.04em",
                     }}
