@@ -49,7 +49,7 @@ const options: Option[] = [
     tag: "5 min",
     recommended: true,
     dot: "#C97B6A",
-    border: "rgba(240,230,214,0.22)",
+    border: "rgba(240,230,214,0.26)",
   },
   {
     href: "/app/session",
@@ -60,8 +60,8 @@ const options: Option[] = [
     badge: "Compte requis",
     dot: "rgba(240,230,214,0.28)",
     border: "rgba(240,230,214,0.10)",
-    cardOpacity: 0.94,
-    titleColor: "rgba(240,230,214,0.90)",
+    cardOpacity: 0.97,
+    titleColor: "rgba(240,230,214,0.92)",
   },
 ];
 
@@ -106,7 +106,10 @@ export default function StartPage() {
               src="/images/tracea-logo-terra-transparent.png"
               alt="TRACÉA"
               className="mx-auto object-contain"
-              style={{ height: "clamp(64px, 10vw, 80px)" }}
+              style={{
+                height: "clamp(72px, 11vw, 90px)",
+                filter: "drop-shadow(0 0 14px rgba(201,123,106,0.20))",
+              }}
             />
           </div>
 
@@ -115,11 +118,11 @@ export default function StartPage() {
             className="tracking-tight"
             style={{
               fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
-              fontSize: "clamp(26px, 7vw, 34px)",
+              fontSize: "clamp(24px, 6.5vw, 32px)",
               fontWeight: 300,
-              lineHeight: 1.15,
+              lineHeight: 1.1,
               color: "#F0E6D6",
-              marginBottom: 4,
+              marginBottom: 3,
               letterSpacing: "-0.01em",
             }}
           >
@@ -133,7 +136,7 @@ export default function StartPage() {
               fontSize: 14,
               color: "rgba(240,230,214,0.50)",
               lineHeight: 1.5,
-              marginBottom: 14,
+              marginBottom: 12,
             }}
           >
             Choisis le chemin qui correspond à ton état maintenant.
@@ -269,7 +272,7 @@ export default function StartPage() {
                       className="font-sans"
                       style={{
                         fontSize: 10,
-                        color: "rgba(240,230,214,0.42)",
+                        color: "rgba(240,230,214,0.50)",
                         margin: "5px 0 0",
                         letterSpacing: "0.04em",
                       }}
@@ -305,7 +308,7 @@ export default function StartPage() {
             style={{
               fontSize: 12,
               color: "rgba(240,230,214,0.28)",
-              marginTop: 10,
+              marginTop: 8,
               lineHeight: 1.55,
               letterSpacing: "0.01em",
             }}
