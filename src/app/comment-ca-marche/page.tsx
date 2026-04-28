@@ -13,14 +13,6 @@ const blockStyle: CSSProperties = {
   boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
 };
 
-const warningBlockStyle: CSSProperties = {
-  background: "rgba(111,106,100,0.18)",
-  border: "1px solid rgba(240,230,214,0.14)",
-  borderRadius: 24,
-  padding: "24px 26px",
-  boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
-};
-
 const usageCardStyle: CSSProperties = {
   background: "rgba(26,18,13,0.35)",
   border: "1px solid rgba(240,230,214,0.07)",
@@ -57,27 +49,9 @@ const listStyle: CSSProperties = {
   gap: 8,
 };
 
-const olStyle: CSSProperties = {
-  listStyle: "none",
-  padding: 0,
-  margin: 0,
-  display: "flex",
-  flexDirection: "column",
-  gap: 8,
-  counterReset: "step-counter",
-};
-
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CommentCaMarchePage() {
-  const steps = [
-    "Tu poses ce qui est là",
-    "Tu reviens à ton corps",
-    "Tu ralentis",
-    "Tu vois plus clair",
-    "Tu choisis un geste simple",
-  ];
-
   const sensations = [
     "ça serre dans ta poitrine",
     "ton souffle se coupe",
@@ -113,10 +87,10 @@ export default function CommentCaMarchePage() {
           zIndex: 1,
           maxWidth: 640,
           margin: "0 auto",
-          padding: "64px 20px 88px",
+          padding: "64px 20px 72px",
           display: "flex",
           flexDirection: "column",
-          gap: 20,
+          gap: 16,
         }}
       >
         {/* ── Titre ── */}
@@ -142,7 +116,7 @@ export default function CommentCaMarchePage() {
             fontWeight: 300,
             color: "rgba(240,230,214,0.60)",
             lineHeight: 1.6,
-            marginTop: -8,
+            marginTop: -4,
           }}
         >
           Un protocole simple pour redescendre quand &ccedil;a monte.
@@ -150,7 +124,7 @@ export default function CommentCaMarchePage() {
           Sans analyser. En revenant au corps.
         </p>
 
-        {/* ── Bloc 1 ── */}
+        {/* ── Bloc 1 — Sensations ── */}
         <div style={blockStyle}>
           <p style={pNormal}>
             Quand &ccedil;a monte dans ton corps, tu le sens tout de suite.
@@ -177,7 +151,7 @@ export default function CommentCaMarchePage() {
           </p>
         </div>
 
-        {/* ── Bloc 2 ── */}
+        {/* ── Bloc 2 — Bascule ── */}
         <div style={blockStyle}>
           <p
             className="font-body"
@@ -199,40 +173,6 @@ export default function CommentCaMarchePage() {
           </p>
         </div>
 
-        {/* ── Bloc 3 ── */}
-        <div style={blockStyle}>
-          <p style={kickerText}>En 2 &agrave; 5 minutes&nbsp;:</p>
-          <ol style={olStyle}>
-            {steps.map((step, i) => (
-              <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                <span
-                  style={{
-                    fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
-                    fontSize: 15,
-                    color: "#C97B6A",
-                    lineHeight: 1.65,
-                    minWidth: 18,
-                    flexShrink: 0,
-                  }}
-                >
-                  {i + 1}.
-                </span>
-                <span style={pNormal}>{step}</span>
-              </li>
-            ))}
-          </ol>
-          <p
-            style={{
-              ...pNormal,
-              marginTop: 20,
-              fontStyle: "italic",
-              color: "#D99A84",
-            }}
-          >
-            Et quelque chose change.
-          </p>
-        </div>
-
         {/* ── Bloc usages ── */}
         <div style={blockStyle}>
           <p style={kickerText}>Tu peux l&apos;utiliser de plusieurs fa&ccedil;ons</p>
@@ -250,7 +190,7 @@ export default function CommentCaMarchePage() {
                 className="font-sans"
                 style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
               >
-                Un acc&egrave;s rapide pour redescendre sans r&eacute;fl&eacute;chir.
+                Redescendre sans r&eacute;fl&eacute;chir.
               </p>
               <Link
                 href="/app/urgence"
@@ -281,7 +221,7 @@ export default function CommentCaMarchePage() {
                 className="font-sans"
                 style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
               >
-                Le parcours guid&eacute; &eacute;tape par &eacute;tape.
+                Le parcours guid&eacute;, &eacute;tape par &eacute;tape.
               </p>
               <Link
                 href="/app"
@@ -312,7 +252,7 @@ export default function CommentCaMarchePage() {
                 className="font-sans"
                 style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
               >
-                Une travers&eacute;e plus approfondie pour mieux comprendre ce qui se joue et avancer dans le temps.
+                Pour aller plus loin, &agrave; ton rythme.
               </p>
               <Link
                 href="/app/entrainement"
@@ -334,29 +274,21 @@ export default function CommentCaMarchePage() {
           </div>
         </div>
 
-        {/* ── Bloc 6 — Cadre disclaimer ── */}
-        <div style={warningBlockStyle}>
+        {/* ── Disclaimer (texte simple) ── */}
+        <div style={{ padding: "4px 4px" }}>
           <p style={pNormal}>
             TRAC&Eacute;A peut t&apos;aider quand &ccedil;a monte fort.
           </p>
-          <p style={{ ...pNormal, marginTop: 10 }}>
+          <p style={{ ...pNormal, marginTop: 8 }}>
             Mais ce n&apos;est pas un outil pour les situations de d&eacute;tresse grave ou d&apos;urgence m&eacute;dicale.
           </p>
-          <p style={{ ...pNormal, marginTop: 10 }}>
+          <p style={{ ...pNormal, marginTop: 8 }}>
             Si tu es en danger, contacte les services adapt&eacute;s.
           </p>
         </div>
 
-        {/* ── Bloc cadre ── */}
-        <div
-          style={{
-            background: "rgba(111,106,100,0.18)",
-            border: "1px solid rgba(240,230,214,0.10)",
-            borderRadius: 24,
-            padding: "28px 24px",
-            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
-          }}
-        >
+        {/* ── Repère important (texte simple) ── */}
+        <div style={{ padding: "4px 4px" }}>
           <p
             style={{
               fontSize: 12,
@@ -364,31 +296,15 @@ export default function CommentCaMarchePage() {
               letterSpacing: "0.20em",
               textTransform: "uppercase" as const,
               color: "#C97B6A",
-              marginBottom: 18,
+              marginBottom: 14,
             }}
           >
             Un rep&egrave;re important
           </p>
-          <p
-            style={{
-              fontSize: 16,
-              fontWeight: 300,
-              lineHeight: 1.65,
-              color: "rgba(240,230,214,0.68)",
-              marginBottom: 14,
-            }}
-          >
+          <p style={{ ...pNormal, marginBottom: 10 }}>
             TRAC&Eacute;A est un appui.
           </p>
-          <p
-            style={{
-              fontSize: 16,
-              fontWeight: 300,
-              lineHeight: 1.65,
-              color: "rgba(240,230,214,0.68)",
-              marginBottom: 0,
-            }}
-          >
+          <p style={pNormal}>
             Si tu es compl&egrave;tement submerg&eacute;(e) ou en d&eacute;tresse,{" "}
             <span style={{ color: "#F0E6D6", fontWeight: 600 }}>
               ne reste pas seul(e).
@@ -399,7 +315,7 @@ export default function CommentCaMarchePage() {
         </div>
 
         {/* ── CTA ── */}
-        <div style={{ textAlign: "center", marginTop: 40 }}>
+        <div style={{ textAlign: "center", marginTop: 24 }}>
           <Link
             href="/app"
             className="font-sans"
@@ -417,8 +333,19 @@ export default function CommentCaMarchePage() {
                 "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
             }}
           >
-            Essayer ma premi&egrave;re travers&eacute;e
+            Lancer ma travers&eacute;e maintenant
           </Link>
+          <p
+            className="font-sans"
+            style={{
+              fontSize: 13,
+              color: "rgba(240,230,214,0.40)",
+              marginTop: 12,
+              fontWeight: 300,
+            }}
+          >
+            2 minutes. Sans r&eacute;fl&eacute;chir.
+          </p>
         </div>
       </div>
     </div>
