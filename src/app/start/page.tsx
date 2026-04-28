@@ -7,15 +7,20 @@ export const metadata: Metadata = {
     "Commence ta traversee emotionnelle guidee. 2 a 10 minutes, gratuit, sans engagement.",
 };
 
+// ── Palette V3 ──────────────────────────────────────────────────────
+// Fond : #1A120D · Ivoire : #F0E6D6
+// Cuivre doux : #C97B6A · Or doux : #D4A96A · Brun chaud : rgba(111,106,100,…)
+// Pas de rouge saturé — tout reste dans le registre brun/cuivre/ivoire.
+
 type Option = {
   href: string;
   label: string;
   title: string;
   desc: string;
   tag: string;
+  dot: string;
   accent: string;
   border: string;
-  dot: string;
   recommended?: true;
   badge?: string;
 };
@@ -27,10 +32,9 @@ const options: Option[] = [
     title: "Je veux redescendre vite",
     desc: "Quand c'est trop intense. Directement par le corps.",
     tag: "2 min",
-    // Présent mais non dominant — accessible sans agressivité
-    accent: "rgba(184,99,79,0.16)",
-    border: "rgba(184,99,79,0.24)",
-    dot: "#B8634F",
+    dot: "#C97B6A",
+    accent: "rgba(201,123,106,0.12)",
+    border: "rgba(201,123,106,0.22)",
   },
   {
     href: "/app/traversee-courte",
@@ -39,10 +43,9 @@ const options: Option[] = [
     desc: "Pour déposer, revenir au corps, puis choisir un geste simple.",
     tag: "5 min",
     recommended: true,
-    // Plus chaud, plus lumineux — choix central recommandé
-    accent: "rgba(201,123,106,0.24)",
-    border: "rgba(201,123,106,0.52)",
-    dot: "#C97B6A",
+    dot: "#D4A96A",
+    accent: "rgba(212,169,106,0.14)",
+    border: "rgba(212,169,106,0.42)",
   },
   {
     href: "/app/session",
@@ -51,10 +54,9 @@ const options: Option[] = [
     desc: "Une traversée complète avec analyse et mémoire de tes repères.",
     tag: "15 min",
     badge: "Compte requis",
-    // Plus sobre, premium, légèrement en retrait
-    accent: "rgba(111,106,100,0.10)",
-    border: "rgba(240,230,214,0.08)",
-    dot: "rgba(240,230,214,0.35)",
+    dot: "rgba(240,230,214,0.40)",
+    accent: "rgba(111,106,100,0.12)",
+    border: "rgba(240,230,214,0.10)",
   },
 ];
 
@@ -64,15 +66,14 @@ export default function StartPage() {
       style={{
         position: "relative",
         minHeight: "100svh",
-        background: `
-          radial-gradient(ellipse 70% 50% at 30% 20%, rgba(201,123,106,0.07) 0%, transparent 65%),
-          radial-gradient(ellipse 60% 40% at 70% 80%, rgba(131,94,84,0.05) 0%, transparent 60%),
-          linear-gradient(180deg, #1A120D 0%, #1C1410 100%)
-        `,
+        background:
+          "radial-gradient(ellipse 80% 50% at 40% 15%, rgba(201,123,106,0.06) 0%, transparent 60%)," +
+          "radial-gradient(ellipse 60% 40% at 65% 85%, rgba(131,94,84,0.04) 0%, transparent 55%)," +
+          "linear-gradient(180deg, #1A120D 0%, #1C1410 100%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "40px 16px",
+        padding: "32px 16px",
       }}
     >
       {/* Grain texture */}
@@ -80,9 +81,10 @@ export default function StartPage() {
         style={{
           position: "fixed",
           inset: 0,
-          opacity: 0.025,
+          opacity: 0.022,
           pointerEvents: "none",
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
           backgroundRepeat: "repeat",
           backgroundSize: "128px 128px",
         }}
@@ -96,13 +98,13 @@ export default function StartPage() {
           zIndex: 0,
           pointerEvents: "none",
           background:
-            "radial-gradient(circle at 50% 35%, rgba(255,160,100,0.12) 0%, rgba(28,20,16,0) 60%)",
+            "radial-gradient(circle at 50% 32%, rgba(212,169,106,0.09) 0%, rgba(28,20,16,0) 58%)",
         }}
       />
 
       <div
         style={{
-          maxWidth: 420,
+          maxWidth: 400,
           width: "100%",
           textAlign: "center",
           position: "relative",
@@ -113,37 +115,38 @@ export default function StartPage() {
         <img
           src="/images/tracea-logo-terra-transparent.png"
           alt="TRACEA"
-          style={{ height: 44, margin: "0 auto 36px", objectFit: "contain" }}
+          style={{ height: 58, margin: "0 auto 28px", objectFit: "contain" }}
         />
 
         {/* Titre */}
         <h1
           className="font-body"
           style={{
-            fontSize: "clamp(1.4rem, 4.2vw, 1.85rem)",
+            fontSize: "clamp(1.3rem, 4vw, 1.75rem)",
             color: "#F0E6D6",
-            lineHeight: 1.25,
-            marginBottom: 8,
+            lineHeight: 1.22,
+            marginBottom: 7,
             fontWeight: 300,
           }}
         >
           Tu veux redescendre comment&nbsp;?
         </h1>
 
+        {/* Sous-titre */}
         <p
           className="font-sans"
           style={{
-            fontSize: 13,
-            color: "rgba(240,230,214,0.42)",
-            marginBottom: 32,
-            lineHeight: 1.5,
+            fontSize: 12,
+            color: "rgba(240,230,214,0.38)",
+            marginBottom: 26,
+            lineHeight: 1.55,
           }}
         >
           Choisis le chemin qui correspond à ton état maintenant.
         </p>
 
-        {/* Options */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {/* Cartes */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {options.map((opt) => (
             <Link
               key={opt.href}
@@ -151,52 +154,54 @@ export default function StartPage() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 14,
+                gap: 13,
                 background: opt.accent,
                 border: `1px solid ${opt.border}`,
-                borderRadius: 16,
-                padding: opt.recommended ? "18px 18px" : "15px 18px",
+                borderRadius: 14,
+                padding: opt.recommended ? "15px 16px" : "13px 16px",
                 textDecoration: "none",
                 textAlign: "left",
-                backdropFilter: "blur(8px)",
-                transition: "transform 0.15s, background 0.15s",
-                // Légère ombre sur la carte recommandée
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+                transition: "opacity 0.15s",
                 boxShadow: opt.recommended
-                  ? "0 0 0 1px rgba(201,123,106,0.18), 0 4px 20px rgba(201,123,106,0.08)"
+                  ? "0 0 0 1px rgba(212,169,106,0.10), 0 4px 18px rgba(212,169,106,0.06)"
                   : "none",
               }}
             >
-              {/* Dot indicator */}
+              {/* Dot */}
               <div
                 style={{
-                  width: 7,
-                  height: 7,
+                  width: 6,
+                  height: 6,
                   borderRadius: "50%",
                   background: opt.dot,
                   flexShrink: 0,
                   marginTop: 1,
+                  opacity: opt.badge && !opt.recommended ? 0.7 : 1,
                 }}
               />
 
-              {/* Content */}
+              {/* Contenu */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                {/* Label row */}
+                {/* Ligne label + durée + badge recommandé */}
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 6,
+                    gap: 5,
                     marginBottom: 3,
-                    flexWrap: "wrap",
+                    flexWrap: "wrap" as const,
                   }}
                 >
                   <span
                     className="font-sans"
                     style={{
-                      fontSize: 10,
+                      fontSize: 9,
                       fontWeight: 700,
-                      letterSpacing: "0.12em",
+                      letterSpacing: "0.13em",
                       color: opt.dot,
+                      opacity: opt.badge && !opt.recommended ? 0.7 : 1,
                     }}
                   >
                     {opt.label}
@@ -204,30 +209,29 @@ export default function StartPage() {
                   <span
                     className="font-sans"
                     style={{
-                      fontSize: 10,
-                      color: "rgba(240,230,214,0.35)",
-                      background: "rgba(111,106,100,0.20)",
-                      border: "1px solid rgba(240,230,214,0.07)",
+                      fontSize: 9,
+                      color: "rgba(240,230,214,0.32)",
+                      background: "rgba(111,106,100,0.18)",
+                      border: "1px solid rgba(240,230,214,0.06)",
                       borderRadius: 999,
-                      padding: "2px 7px",
+                      padding: "1px 6px",
                       letterSpacing: "0.04em",
                     }}
                   >
                     {opt.tag}
                   </span>
-                  {/* Badge recommandé — TRAVERSÉE uniquement */}
                   {opt.recommended && (
                     <span
                       className="font-sans"
                       style={{
-                        fontSize: 9,
+                        fontSize: 8,
                         fontWeight: 600,
-                        letterSpacing: "0.08em",
-                        color: "rgba(201,123,106,0.85)",
-                        background: "rgba(201,123,106,0.12)",
-                        border: "1px solid rgba(201,123,106,0.22)",
+                        letterSpacing: "0.09em",
+                        color: "rgba(212,169,106,0.80)",
+                        background: "rgba(212,169,106,0.10)",
+                        border: "1px solid rgba(212,169,106,0.20)",
                         borderRadius: 999,
-                        padding: "2px 7px",
+                        padding: "1px 6px",
                         textTransform: "uppercase" as const,
                       }}
                     >
@@ -236,16 +240,16 @@ export default function StartPage() {
                   )}
                 </div>
 
-                {/* Titre */}
+                {/* Titre carte */}
                 <p
                   className="font-body"
                   style={{
-                    fontSize: opt.recommended ? 17 : 16,
+                    fontSize: opt.recommended ? 16 : 15,
                     color: opt.badge && !opt.recommended
-                      ? "rgba(240,230,214,0.75)"
+                      ? "rgba(240,230,214,0.70)"
                       : "#F0E6D6",
                     fontWeight: 300,
-                    margin: "0 0 3px",
+                    margin: "0 0 2px",
                     lineHeight: 1.2,
                   }}
                 >
@@ -256,10 +260,10 @@ export default function StartPage() {
                 <p
                   className="font-sans"
                   style={{
-                    fontSize: 12,
+                    fontSize: 11,
                     color: opt.badge && !opt.recommended
-                      ? "rgba(240,230,214,0.38)"
-                      : "rgba(240,230,214,0.48)",
+                      ? "rgba(240,230,214,0.33)"
+                      : "rgba(240,230,214,0.45)",
                     margin: 0,
                     lineHeight: 1.5,
                   }}
@@ -267,14 +271,14 @@ export default function StartPage() {
                   {opt.desc}
                 </p>
 
-                {/* Badge secondaire (ex: Compte requis) */}
+                {/* Badge secondaire (Compte requis) */}
                 {opt.badge && (
                   <p
                     className="font-sans"
                     style={{
                       fontSize: 10,
-                      color: "rgba(240,230,214,0.28)",
-                      margin: "5px 0 0",
+                      color: "rgba(240,230,214,0.26)",
+                      margin: "4px 0 0",
                       letterSpacing: "0.04em",
                     }}
                   >
@@ -283,15 +287,15 @@ export default function StartPage() {
                 )}
               </div>
 
-              {/* Arrow */}
+              {/* Flèche */}
               <svg
-                width="14"
-                height="14"
+                width="13"
+                height="13"
                 viewBox="0 0 16 16"
                 fill="none"
                 style={{
                   flexShrink: 0,
-                  opacity: opt.badge && !opt.recommended ? 0.22 : 0.32,
+                  opacity: opt.badge && !opt.recommended ? 0.18 : 0.28,
                 }}
               >
                 <path
@@ -311,9 +315,9 @@ export default function StartPage() {
           className="font-sans"
           style={{
             fontSize: 11,
-            color: "rgba(240,230,214,0.26)",
-            marginTop: 28,
-            lineHeight: 1.65,
+            color: "rgba(240,230,214,0.28)",
+            marginTop: 22,
+            lineHeight: 1.6,
             letterSpacing: "0.02em",
           }}
         >
