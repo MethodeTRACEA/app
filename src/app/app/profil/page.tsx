@@ -62,6 +62,12 @@ export default function ProfilPage() {
   const [loading, setLoading] = useState(true);
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
+  // Mémoire TRACÉA — state remonté pour rendu dans l'accordéon
+  const [memoryProfile, setMemoryProfile] = useState<MemoryProfile | null>(null);
+  const [memoryLoading, setMemoryLoading] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     Promise.all([getProfileDb(user.id), getUserStatsDb(user.id)]).then(
@@ -72,6 +78,10 @@ export default function ProfilPage() {
         setLoading(false);
       }
     );
+    getMemoryProfileClient(supabase, user.id).then((profile) => {
+      setMemoryProfile(profile);
+      setMemoryLoading(false);
+    });
   }, [user]);
 
   if (authLoading || loading) {
@@ -96,6 +106,8 @@ export default function ProfilPage() {
       </div>
     );
   }
+
+  const hasMemory = memoryProfile && memoryProfile.total_sessions > 0;
 
   async function handleSaveName() {
     if (!user) return;
@@ -131,6 +143,19 @@ export default function ProfilPage() {
 
     await deleteAccount(user.id);
     await signOut();
+  }
+
+  async function handleDeleteMemory() {
+    if (!user) return;
+    if (!deleteConfirm) {
+      setDeleteConfirm(true);
+      return;
+    }
+    await deleteMemoryData(supabase, user.id);
+    setMemoryProfile(null);
+    setDeleteConfirm(false);
+    setDeleteSuccess(true);
+    setTimeout(() => setDeleteSuccess(false), 4000);
   }
 
   return (
@@ -290,20 +315,11 @@ export default function ProfilPage() {
           </p>
         </div>
 
-        {/* ── Mémoire TRACÉA ── */}
-        <MemoryProfileSection
-          userId={user.id}
-          topEmotions={stats.topEmotions}
-          totalSessions={stats.total}
-          lastWeekCount={stats.lastWeekCount}
-        />
-
         {/* ── Données & confidentialité (accordéon) ── */}
         <div style={{ marginTop: 8 }}>
           {/* Bouton accordéon */}
           <button
             onClick={() => setPrivacyOpen((o) => !o)}
-            className="active:scale-[0.995]"
             style={{
               ...blockStyle,
               border: privacyOpen
@@ -316,8 +332,13 @@ export default function ProfilPage() {
               alignItems: "center",
               justifyContent: "space-between",
               gap: 16,
-              transition: "border 0.18s ease, background 0.18s ease",
+              transition: "border 0.18s ease, transform 0.1s ease",
             }}
+            onMouseDown={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.995)"; }}
+            onMouseUp={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; }}
+            onTouchStart={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.995)"; }}
+            onTouchEnd={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; }}
           >
             <div>
               <p
@@ -357,9 +378,65 @@ export default function ProfilPage() {
           {/* Contenu accordéon */}
           {privacyOpen && (
             <div
-              className="animate-fade-up"
-              style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 16 }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                marginTop: 16,
+                animation: "fadeUp 0.2s ease forwards",
+              }}
             >
+              {/* Effacer mémoire TRACÉA */}
+              {!memoryLoading && hasMemory && (
+                <div style={{ textAlign: "center", padding: "4px 0" }}>
+                  {deleteSuccess ? (
+                    <p
+                      className="font-body"
+                      style={{ fontSize: "0.9rem", color: "#8A9E7A", fontStyle: "italic" }}
+                    >
+                      Ta m&eacute;moire TRACEA a &eacute;t&eacute; effac&eacute;e. Tes sessions restent dans ton historique.
+                    </p>
+                  ) : deleteConfirm ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      <p className="font-sans" style={{ fontSize: "0.9rem", color: "rgba(240,230,214,0.70)" }}>
+                        Es-tu s&ucirc;r(e)&nbsp;? Cette action supprime tout l&apos;historique de tes patterns.
+                        Tes sessions restent dans ton historique.
+                      </p>
+                      <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
+                        <button
+                          onClick={handleDeleteMemory}
+                          className="font-sans"
+                          style={{ fontSize: "0.9rem", color: "#C97B6A", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}
+                        >
+                          Confirmer la suppression
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm(false)}
+                          className="font-sans"
+                          style={{ fontSize: "0.9rem", color: "rgba(240,230,214,0.45)", cursor: "pointer" }}
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleDeleteMemory}
+                      className="font-sans"
+                      style={{
+                        fontSize: 12,
+                        color: "rgba(240,230,214,0.62)",
+                        textDecoration: "underline",
+                        textUnderlineOffset: 3,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Effacer ma m&eacute;moire TRACEA
+                    </button>
+                  )}
+                </div>
+              )}
+
               <ConsentSection userId={user.id} />
 
               <div style={blockStyle}>
@@ -457,132 +534,8 @@ export default function ProfilPage() {
 }
 
 // ===================================================================
-// SECTION MÉMOIRE
+// CONSENTEMENT
 // ===================================================================
-
-function MemoryProfileSection({
-  userId,
-  topEmotions,
-  totalSessions,
-  lastWeekCount,
-}: {
-  userId: string;
-  topEmotions: string[];
-  totalSessions: number;
-  lastWeekCount: number;
-}) {
-  const [memoryProfile, setMemoryProfile] = useState<MemoryProfile | null>(null);
-  const [memoryLoading, setMemoryLoading] = useState(true);
-  const [deleteConfirm, setDeleteConfirm] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-
-  useEffect(() => {
-    getMemoryProfileClient(supabase, userId).then((profile) => {
-      setMemoryProfile(profile);
-      setMemoryLoading(false);
-    });
-  }, [userId]);
-
-  async function handleDeleteMemory() {
-    if (!deleteConfirm) {
-      setDeleteConfirm(true);
-      return;
-    }
-    await deleteMemoryData(supabase, userId);
-    setMemoryProfile(null);
-    setDeleteConfirm(false);
-    setDeleteSuccess(true);
-    setTimeout(() => setDeleteSuccess(false), 4000);
-  }
-
-  if (memoryLoading) return null;
-
-  const hasMemory = memoryProfile && memoryProfile.total_sessions > 0;
-
-  function normalizeAction(raw: string): string | null {
-    const v = raw.toLowerCase();
-    if (v.includes("respir")) return "Respirer lentement";
-    if (v.includes("corps") || v.includes("appui") || v.includes("ancr")) return "Revenir au corps";
-    if (v.includes("regard") || v.includes("pose")) return "Se poser un moment";
-    return null;
-  }
-
-  const effectiveActions = Array.from(
-    new Set(
-      (memoryProfile?.effective_actions ?? [])
-        .map(normalizeAction)
-        .filter((a): a is string => a !== null)
-    )
-  ).slice(0, 3);
-
-  // Continuité — 1 phrase comportementale (conservatrice)
-  const topAction = effectiveActions[0] ?? null;
-  function continuitePhraseProfile(): string | null {
-    if (totalSessions < 3) return null;
-    if (topAction === "Revenir au corps") return "Tu passes par le corps plus souvent.";
-    if (effectiveActions.length > 1 && totalSessions >= 5) return "Tu trouves peu à peu ce qui t'apaise.";
-    if (lastWeekCount >= 2) return "Tu prends un moment avant de réagir.";
-    return "Tu reviens ici quand ça monte.";
-  }
-  const continuite = continuitePhraseProfile();
-
-  return (
-    <div>
-      {/* Suppression mémoire RGPD */}
-      {hasMemory && (
-        <div style={{ textAlign: "center" }}>
-          {deleteSuccess ? (
-            <p
-              className="font-body"
-              style={{ fontSize: "0.9rem", color: "#8A9E7A", fontStyle: "italic" }}
-            >
-              Ta m&eacute;moire TRACEA a &eacute;t&eacute; effac&eacute;e. Tes sessions restent dans ton historique.
-            </p>
-          ) : deleteConfirm ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <p className="font-sans" style={{ fontSize: "0.9rem", color: "rgba(240,230,214,0.70)" }}>
-                Es-tu s&ucirc;r(e)&nbsp;? Cette action supprime tout l&apos;historique de tes patterns.
-                Tes sessions restent dans ton historique.
-              </p>
-              <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
-                <button
-                  onClick={handleDeleteMemory}
-                  className="font-sans"
-                  style={{ fontSize: "0.9rem", color: "#C97B6A", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}
-                >
-                  Confirmer la suppression
-                </button>
-                <button
-                  onClick={() => setDeleteConfirm(false)}
-                  className="font-sans"
-                  style={{ fontSize: "0.9rem", color: "rgba(240,230,214,0.45)", cursor: "pointer" }}
-                >
-                  Annuler
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div style={{ marginTop: 24, textAlign: "center" }}>
-            <button
-              onClick={handleDeleteMemory}
-              className="font-sans"
-              style={{
-                fontSize: 12,
-                color: "rgba(240,230,214,0.50)",
-                textDecoration: "underline",
-                textUnderlineOffset: 3,
-                cursor: "pointer",
-              }}
-            >
-              Effacer ma m&eacute;moire TRACEA
-            </button>
-          </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function ConsentSection({ userId }: { userId: string }) {
   const [consent, setConsent] = useState<ReturnType<typeof getConsent>>(null);
