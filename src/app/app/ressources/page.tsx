@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { getApprofondiSessionEndCount, trackEvent } from "@/lib/supabase-store";
 
@@ -124,6 +124,23 @@ const pNormal = {
   color: "rgba(245,239,230,0.75)",
 } as const;
 
+const blockStyle: React.CSSProperties = {
+  background: "rgba(111,106,100,0.18)",
+  border: "1px solid rgba(240,230,214,0.10)",
+  borderRadius: 24,
+  boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+};
+
+const kickerStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+  fontSize: 12,
+  fontWeight: 400,
+  color: "#C97B6A",
+  letterSpacing: "0.20em",
+  textTransform: "uppercase",
+  marginBottom: 18,
+};
+
 export default function RessourcesPage() {
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const [scienceOpen, setScienceOpen] = useState<number | null>(null);
@@ -143,15 +160,25 @@ export default function RessourcesPage() {
   return (
     <div
       style={{
-        minHeight: "100%",
-        background: `
-          radial-gradient(ellipse 70% 50% at 25% 15%, rgba(201,144,124,0.06) 0%, transparent 65%),
-          radial-gradient(ellipse 60% 40% at 75% 70%, rgba(131,94,84,0.04) 0%, transparent 60%),
-          #1C1410
-        `,
+        minHeight: "calc(100svh - 56px)",
+        background:
+          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
+          "radial-gradient(ellipse at 15% 0%, rgba(111,106,100,0.16) 0%, transparent 58%), " +
+          "#1A120D",
+        position: "relative",
       }}
     >
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "56px 16px 80px" }}>
+      {/* Halo V3 */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          background: "radial-gradient(circle at 50% 32%, rgba(201,123,106,0.28) 0%, rgba(201,123,106,0.18) 18%, rgba(201,123,106,0.10) 32%, rgba(26,18,13,0.82) 55%, rgba(26,18,13,1) 75%)",
+        }}
+      />
+      <div style={{ maxWidth: 640, margin: "0 auto", padding: "56px 16px 80px", position: "relative", zIndex: 1 }}>
 
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -159,10 +186,10 @@ export default function RessourcesPage() {
             className="font-sans"
             style={{
               fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: "0.2em",
+              fontWeight: 400,
+              letterSpacing: "0.20em",
               textTransform: "uppercase",
-              color: "#C9907C",
+              color: "#C97B6A",
               marginBottom: 12,
             }}
           >
@@ -172,7 +199,7 @@ export default function RessourcesPage() {
             className="font-body"
             style={{
               fontSize: "clamp(1.75rem, 5vw, 2.25rem)",
-              fontWeight: 500,
+              fontWeight: 300,
               color: "#F5EFE6",
               lineHeight: 1.2,
               marginBottom: 28,
@@ -249,14 +276,11 @@ export default function RessourcesPage() {
                 key={step.number}
                 id={`step-${step.number}`}
                 style={{
-                  borderRadius: 20,
+                  ...blockStyle,
                   transition: "all 0.5s",
                   opacity: isOpen ? 1 : 0.25,
                   transform: isOpen ? "scale(1)" : "scale(0.97)",
                   pointerEvents: isOpen ? "auto" : "none",
-                  background: "#2E1F17",
-                  border: "1px solid rgba(61,42,34,0.6)",
-                  boxShadow: "0 2px 16px rgba(0,0,0,0.12)",
                 }}
               >
                 {/* Card header */}
@@ -341,7 +365,7 @@ export default function RessourcesPage() {
                     <div
                       style={{
                         height: 1,
-                        background: "rgba(61,42,34,0.5)",
+                        background: "rgba(240,230,214,0.08)",
                         marginBottom: 20,
                       }}
                     />
@@ -528,7 +552,7 @@ export default function RessourcesPage() {
                             cursor: "pointer",
                             padding: "4px 0",
                             fontSize: 13,
-                            color: "rgba(168,144,128,0.6)",
+                            color: "rgba(240,230,214,0.45)",
                             display: "flex",
                             alignItems: "center",
                             gap: 6,
@@ -554,8 +578,8 @@ export default function RessourcesPage() {
                               marginTop: 12,
                               padding: "16px 18px",
                               borderRadius: 12,
-                              background: "rgba(28,20,16,0.5)",
-                              border: "1px solid rgba(61,42,34,0.4)",
+                              background: "rgba(26,18,13,0.5)",
+                              border: "1px solid rgba(240,230,214,0.08)",
                               display: "flex",
                               flexDirection: "column",
                               gap: 10,
@@ -590,18 +614,15 @@ export default function RessourcesPage() {
         <div style={{ marginTop: 56 }}>
           <div
             style={{
-              borderRadius: 20,
+              ...blockStyle,
               padding: "36px 28px",
-              background: "#2E1F17",
-              border: "1px solid rgba(61,42,34,0.6)",
-              boxShadow: "0 2px 16px rgba(0,0,0,0.12)",
               textAlign: "center",
             }}
           >
             <p
               className="font-sans"
-              style={{ fontSize: 13, fontWeight: 500, letterSpacing: "0.15em",
-                textTransform: "uppercase", color: "#C9907C", marginBottom: 20 }}
+              style={{ fontSize: 13, fontWeight: 400, letterSpacing: "0.20em",
+                textTransform: "uppercase", color: "#C97B6A", marginBottom: 20 }}
             >
               Passer &agrave; l&apos;exp&eacute;rience
             </p>
@@ -643,8 +664,8 @@ export default function RessourcesPage() {
                 borderRadius: 40,
                 fontSize: 14,
                 fontWeight: 500,
-                background: "#C9907C",
-                color: "#1C1410",
+                background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+                color: "#1A120D",
                 textDecoration: "none",
                 transition: "opacity 0.2s",
               }}
@@ -658,11 +679,9 @@ export default function RessourcesPage() {
         <div style={{ marginTop: 56, textAlign: "center" }}>
           <div
             style={{
+              ...blockStyle,
               display: "inline-block",
               padding: "20px 28px",
-              borderRadius: 20,
-              background: "#251A14",
-              border: "1px solid rgba(61,42,34,0.5)",
             }}
           >
             <p
