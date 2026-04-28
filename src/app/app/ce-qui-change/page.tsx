@@ -123,11 +123,11 @@ export default function CeQuiChangePage() {
 
   // ── Styles V3 ────────────────────────────────────────────────────
   const blockStyle: React.CSSProperties = {
-    background: "rgba(111,106,100,0.15)",
-    border: "1px solid rgba(240,230,214,0.085)",
+    background: "rgba(111,106,100,0.18)",
+    border: "1px solid rgba(240,230,214,0.10)",
     borderRadius: 24,
     padding: "28px 26px",
-    boxShadow: "0 18px 42px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.035)",
+    boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
   };
 
   const kickerStyle: React.CSSProperties = {
@@ -171,7 +171,7 @@ export default function CeQuiChangePage() {
           inset: 0,
           zIndex: 0,
           pointerEvents: "none",
-          background: "radial-gradient(circle at 50% 35%, rgba(255,180,120,0.14) 0%, rgba(255,140,90,0.07) 30%, rgba(28,20,16,0) 60%)",
+          background: "radial-gradient(circle at 50% 35%, rgba(201,123,106,0.22) 0%, rgba(201,123,106,0.12) 25%, rgba(26,18,13,0.85) 55%, rgba(26,18,13,1) 75%)",
         }}
       />
 
@@ -299,6 +299,24 @@ export default function CeQuiChangePage() {
             </div>
           </div>
         )}
+
+        {/* ── Footer discret ── */}
+        <div
+          style={{
+            marginTop: 48,
+            borderTop: "1px solid rgba(240,230,214,0.07)",
+            paddingTop: 24,
+            textAlign: "center",
+            opacity: 0.5,
+          }}
+        >
+          <p
+            className="font-sans"
+            style={{ fontSize: 11, color: "rgba(240,230,214,0.55)", letterSpacing: "0.12em" }}
+          >
+            Stabilit&eacute; &eacute;motionnelle &middot; Entra&icirc;nement physiologique
+          </p>
+        </div>
       </div>
     </div>
   );
