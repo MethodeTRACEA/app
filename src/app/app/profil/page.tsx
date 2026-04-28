@@ -60,6 +60,7 @@ export default function ProfilPage() {
     lastWeekCount: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -297,49 +298,106 @@ export default function ProfilPage() {
           lastWeekCount={stats.lastWeekCount}
         />
 
-        {/* ── Consentement RGPD ── */}
-        <ConsentSection userId={user.id} />
+        {/* ── Données & confidentialité (accordéon) ── */}
+        <div>
+          {/* Bouton accordéon */}
+          <button
+            onClick={() => setPrivacyOpen((o) => !o)}
+            style={{
+              ...blockStyle,
+              width: "100%",
+              textAlign: "left",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 16,
+            }}
+          >
+            <div>
+              <p
+                className="font-sans"
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "#C97B6A",
+                  letterSpacing: "0.20em",
+                  textTransform: "uppercase",
+                  marginBottom: 6,
+                }}
+              >
+                Donn&eacute;es &amp; confidentialit&eacute;
+              </p>
+              <p
+                className="font-sans"
+                style={{ fontSize: 13, color: "rgba(240,230,214,0.50)", lineHeight: 1.4 }}
+              >
+                Consentement, export et suppression de tes donn&eacute;es.
+              </p>
+            </div>
+            <span
+              style={{
+                color: "rgba(240,230,214,0.30)",
+                fontSize: 18,
+                transition: "transform 0.25s",
+                transform: privacyOpen ? "rotate(180deg)" : "none",
+                flexShrink: 0,
+              }}
+            >
+              ›
+            </span>
+          </button>
 
-        {/* ── Tes droits RGPD ── */}
-        <div style={blockStyle}>
-          <p className="font-sans" style={kickerStyle}>Tes droits RGPD</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <button
-              onClick={handleExport}
-              className="font-sans"
-              style={{
-                width: "100%",
-                padding: "16px 22px",
-                border: "1px solid #C97B6A",
-                borderRadius: 999,
-                color: "#C97B6A",
-                fontSize: 15,
-                fontWeight: 400,
-                lineHeight: 1.35,
-                textAlign: "center",
-                cursor: "pointer",
-                background: "transparent",
-              }}
+          {/* Contenu accordéon */}
+          {privacyOpen && (
+            <div
+              className="animate-fade-up"
+              style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 12 }}
             >
-              Exporter mes donn&eacute;es (portabilit&eacute;)
-            </button>
-            <button
-              onClick={handleDeleteAccount}
-              className="font-sans"
-              style={{
-                width: "100%",
-                textAlign: "center",
-                fontSize: 14,
-                color: "rgba(240,230,214,0.62)",
-                textDecoration: "underline",
-                textUnderlineOffset: 3,
-                padding: "8px 0",
-                cursor: "pointer",
-              }}
-            >
-              Supprimer mon compte et toutes mes donn&eacute;es
-            </button>
-          </div>
+              <ConsentSection userId={user.id} />
+
+              <div style={blockStyle}>
+                <p className="font-sans" style={kickerStyle}>Tes droits RGPD</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <button
+                    onClick={handleExport}
+                    className="font-sans"
+                    style={{
+                      width: "100%",
+                      padding: "16px 22px",
+                      border: "1px solid #C97B6A",
+                      borderRadius: 999,
+                      color: "#C97B6A",
+                      fontSize: 15,
+                      fontWeight: 400,
+                      lineHeight: 1.35,
+                      textAlign: "center",
+                      cursor: "pointer",
+                      background: "transparent",
+                    }}
+                  >
+                    Exporter mes donn&eacute;es (portabilit&eacute;)
+                  </button>
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="font-sans"
+                    style={{
+                      width: "100%",
+                      textAlign: "center",
+                      fontSize: 14,
+                      color: "rgba(240,230,214,0.62)",
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                      padding: "8px 0",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Supprimer mon compte et toutes mes donn&eacute;es
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ── Disclaimer ── */}
