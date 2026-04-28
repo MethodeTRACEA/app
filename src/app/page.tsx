@@ -116,8 +116,6 @@ export default function LandingPage() {
               "ça serre dans ta poitrine",
               "ton souffle se coupe",
               "tu relis le même message 10 fois",
-              "tu sens que tu vas répondre trop vite",
-              "ou tu n'arrives plus à répondre du tout",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-t-dore/50 mt-2.5 shrink-0" />
@@ -131,36 +129,6 @@ export default function LandingPage() {
           <p className="text-lg md:text-xl font-medium text-t-dore/80 text-center">
             C&apos;est là que tout se joue.
           </p>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════
-          POSITIONNEMENT
-      ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-20 md:py-28">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[350px] pointer-events-none"
-          aria-hidden="true"
-          style={{
-            background: "radial-gradient(circle, rgba(214,165,106,0.05), transparent 65%)",
-            filter: "blur(80px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-lg mx-auto text-center">
-          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-8">
-            Tu n&apos;as pas besoin de comprendre.
-          </h2>
-
-          <div className="space-y-4 text-base md:text-lg leading-relaxed t-text-secondary mb-10">
-            <p>Quand ça déborde,</p>
-            <p>réfléchir ne suffit plus.</p>
-          </div>
-
-          <div className="space-y-3 text-base md:text-lg leading-relaxed t-text-primary">
-            <p className="font-medium">Il faut redescendre.</p>
-            <p className="text-t-dore/80 pt-2">TRACÉA est fait pour ça.</p>
-          </div>
         </div>
       </section>
 
@@ -202,36 +170,6 @@ export default function LandingPage() {
           <p className="text-center text-lg md:text-xl t-text-primary font-medium">
             Et quelque chose change.
           </p>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════
-          DIFFÉRENCIATION
-      ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-20 md:py-28">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] pointer-events-none"
-          aria-hidden="true"
-          style={{
-            background: "radial-gradient(circle, rgba(214,165,106,0.05), transparent 65%)",
-            filter: "blur(80px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-lg mx-auto text-center">
-          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-10">
-            Comprendre ne calme pas le corps
-          </h2>
-
-          <div className="space-y-4 text-base md:text-lg leading-relaxed t-text-secondary mb-8">
-            <p>Tu peux tout analyser.</p>
-            <p>Ça ne change rien dans le moment.</p>
-          </div>
-
-          <div className="space-y-3 text-base md:text-lg leading-relaxed t-text-primary">
-            <p>Ce qui change quelque chose :</p>
-            <p className="text-t-dore/80 font-medium">revenir dans ton corps.</p>
-          </div>
         </div>
       </section>
 
@@ -302,43 +240,6 @@ export default function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          GRATUITÉ / MODÈLE
-      ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-20 md:py-28">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] pointer-events-none"
-          aria-hidden="true"
-          style={{
-            background: "radial-gradient(circle, rgba(214,165,106,0.06), transparent 65%)",
-            filter: "blur(80px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-lg mx-auto text-center">
-          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-8">
-            Commence sans réfléchir
-          </h2>
-
-          <div className="space-y-4 text-base md:text-lg leading-relaxed t-text-secondary mb-6">
-            <p>La première traversée est gratuite.</p>
-            <p>Tu testes.</p>
-            <p>Tu vois si ça t&apos;aide.</p>
-          </div>
-
-          <p className="text-sm t-text-secondary leading-relaxed mb-10 max-w-sm mx-auto">
-            Ensuite, l&apos;accès complet se poursuit par abonnement.
-          </p>
-
-          <Link
-            href="/start"
-            className="t-btn-primary inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
-          >
-            Essayer ma 1re traversée gratuite
-          </Link>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════
           CADRE / SÉCURITÉ
       ════════════════════════════════════════════════════════════ */}
       <section className="relative px-6 py-16 md:py-20">
@@ -396,6 +297,10 @@ export default function LandingPage() {
           >
             Lancer ma traversée
           </Link>
+
+          <p className="text-[13px] t-text-ghost mt-6 tracking-wide">
+            Premi&egrave;re travers&eacute;e gratuite
+          </p>
         </div>
       </section>
 
