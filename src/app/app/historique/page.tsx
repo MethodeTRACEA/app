@@ -132,217 +132,427 @@ export default function HistoriquePage() {
     );
   }
 
+  // ── Styles V3 réutilisables ───────────────────────────────
+  const blockStyle: React.CSSProperties = {
+    background: "rgba(111,106,100,0.15)",
+    border: "1px solid rgba(240,230,214,0.085)",
+    borderRadius: 24,
+    padding: "28px 26px",
+  };
+
+  const kickerStyle: React.CSSProperties = {
+    fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+    fontSize: 12,
+    fontWeight: 400,
+    color: "#C97B6A",
+    letterSpacing: "0.20em",
+    textTransform: "uppercase" as const,
+    marginBottom: 18,
+  };
+
+  const blockTextStyle: React.CSSProperties = {
+    fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+    fontSize: "1.05rem",
+    fontWeight: 300,
+    color: "#F0E6D6",
+    lineHeight: 1.6,
+  };
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
-      <h1 className="section-title">Tes traces</h1>
-      <p className="font-body text-sm text-warm-gray">
-        Ce qui est revenu dans tes traversées.
-      </p>
+    <div
+      style={{
+        minHeight: "calc(100svh - 56px)",
+        background:
+          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
+          "radial-gradient(ellipse at 15% 0%, rgba(111,106,100,0.16) 0%, transparent 58%), " +
+          "#1A120D",
+        position: "relative",
+      }}
+    >
+      {/* Halo V3 */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          background: "radial-gradient(circle at 50% 35%, rgba(255,180,120,0.14) 0%, rgba(255,140,90,0.07) 30%, rgba(28,20,16,0) 60%)",
+        }}
+      />
 
-      {/* ── INSIGHT LONGITUDINAL — miroir déterministe (>= 5 traversées approfondies) ── */}
-      {historyInsight && (
-        <div className="card-base p-6">
-          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ce qui revient souvent</p>
-          <p className="font-body text-base text-espresso leading-relaxed whitespace-pre-line">{historyInsight}</p>
-        </div>
-      )}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: 640,
+          margin: "0 auto",
+          padding: "48px 20px 64px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+        }}
+      >
+        {/* Titre */}
+        <h1
+          className="font-body"
+          style={{
+            fontSize: "clamp(1.75rem, 5vw, 2.25rem)",
+            fontWeight: 300,
+            color: "#F0E6D6",
+            lineHeight: 1.15,
+            letterSpacing: "-0.01em",
+            marginBottom: 0,
+          }}
+        >
+          Tes traces
+        </h1>
 
-      {/* ── CE QUI SE TRANSFORME ── */}
-      {transformeText && (
-        <div className="card-base p-6">
-          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Ce qui se transforme</p>
-          <p className="font-body text-base text-espresso leading-relaxed whitespace-pre-line">{transformeText}</p>
-        </div>
-      )}
+        {/* Sous-titre */}
+        <p
+          className="font-body"
+          style={{
+            fontSize: "1rem",
+            fontWeight: 300,
+            color: "rgba(240,230,214,0.60)",
+            lineHeight: 1.5,
+            marginTop: -8,
+          }}
+        >
+          Ce qui est revenu dans tes traversées.
+        </p>
 
-      {hasPremiumAccess ? (
-        <>
-          {/* ── Ce que tu utilises le plus — patterns ── */}
-          {patternInsight && (
-            <div className="card-base p-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Ce que tu utilises le plus</p>
-              <p className="font-body text-base text-espresso">{patternInsight}</p>
-            </div>
-          )}
+        {/* ── INSIGHT LONGITUDINAL ── */}
+        {historyInsight && (
+          <div style={blockStyle}>
+            <p className="font-sans" style={kickerStyle}>Ce qui revient souvent</p>
+            <p className="font-body" style={{ ...blockTextStyle, whiteSpace: "pre-line" }}>{historyInsight}</p>
+          </div>
+        )}
 
-          {/* ── Tes appuis les plus utilisés ── */}
-          {topActions.length > 0 && (
-            <div className="card-base p-6">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-3">Tes appuis les plus utilisés</p>
-              <p className="font-body text-sm text-warm-gray mb-2">Tu reviens souvent à :</p>
-              <div className="space-y-1">
-                {topActions.map((a) => (
-                  <p key={a} className="font-body text-base text-espresso">« {a} »</p>
-                ))}
+        {/* ── CE QUI SE TRANSFORME ── */}
+        {transformeText && (
+          <div style={blockStyle}>
+            <p className="font-sans" style={kickerStyle}>Ce qui se transforme</p>
+            <p className="font-body" style={{ ...blockTextStyle, whiteSpace: "pre-line" }}>{transformeText}</p>
+          </div>
+        )}
+
+        {hasPremiumAccess ? (
+          <>
+            {/* ── Ce que tu utilises le plus ── */}
+            {patternInsight && (
+              <div style={blockStyle}>
+                <p className="font-sans" style={kickerStyle}>Ce que tu utilises le plus</p>
+                <p className="font-body" style={blockTextStyle}>{patternInsight}</p>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* ── Repères IA (premium memory) ── */}
-          {premiumMemory !== undefined && premiumMemory !== null && (
-            <div className="card-base p-6 space-y-5">
-              <p className="text-xs font-medium tracking-widest uppercase text-warm-gray">Repères</p>
-              {([
-                { label: "Ce qui revient",        text: premiumMemory.ceQuiRevient },
-                { label: "Ce qui semble demandé", text: premiumMemory.ceQuiSembleDemandem },
-                { label: "Ce qui t'aide",         text: premiumMemory.ceQuiTAide },
-                { label: "Ce que tu peux tester", text: premiumMemory.ceQuePeutTester },
-              ] as { label: string; text: string | null }[])
-                .filter((b) => b.text)
-                .map((block) => (
-                  <div key={block.label}>
-                    <p className="text-[11px] font-medium tracking-wider uppercase text-terra/60 mb-1">{block.label}</p>
-                    <p className="font-body text-base text-espresso leading-relaxed">{block.text}</p>
-                  </div>
-                ))}
-            </div>
-          )}
-        </>
-      ) : (
-        /* ── CTA gratuit ── */
-        sessions.length >= 1 && (
-          <button
-            type="button"
-            onClick={() => setShowPaywall(true)}
-            className="w-full card-base p-6 text-left hover:bg-beige/60 transition-colors cursor-pointer"
-          >
-            <p className="font-body text-sm text-warm-gray">
-              Voir ta progression dans le temps →
-            </p>
-          </button>
-        )
-      )}
+            {/* ── Tes appuis les plus utilisés ── */}
+            {topActions.length > 0 && (
+              <div style={blockStyle}>
+                <p className="font-sans" style={kickerStyle}>Tes appuis les plus utilisés</p>
+                <p className="font-body" style={{ ...blockTextStyle, marginBottom: 8 }}>Tu reviens souvent à :</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                  {topActions.map((a) => (
+                    <p key={a} className="font-body" style={{ ...blockTextStyle, fontStyle: "italic" }}>« {a} »</p>
+                  ))}
+                </div>
+              </div>
+            )}
 
-      {/* ── Liste des sessions ── */}
-      {sessions.length > 0 && (
-        <div>
-          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">Tes traces</p>
-          <div className="space-y-3">
-            {sessions.map((s) => {
-              const isExpanded = expandedId === s.id;
-              return (
-                <div key={s.id} className="card-base !p-0 overflow-hidden">
-                  <button
-                    onClick={() => setExpandedId(isExpanded ? null : s.id)}
-                    className="w-full text-left"
-                  >
-                    <div className="px-5 py-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-serif text-base text-espresso">
-                            {new Date(s.date).toLocaleDateString("fr-FR", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}
-                          </div>
-                          {(s.veriteInterieure || s.emotionPrimaire) && (
-                            <p className="font-body text-sm text-warm-gray italic mt-0.5 truncate max-w-[260px]">
-                              {s.veriteInterieure ? `"${s.veriteInterieure}"` : s.emotionPrimaire}
-                            </p>
-                          )}
-                        </div>
-                        <span className={`transition-transform duration-200 text-warm-gray/50 ${isExpanded ? "rotate-90" : ""}`}>
-                          ▸
-                        </span>
-                      </div>
+            {/* ── Repères IA (premium memory) ── */}
+            {premiumMemory !== undefined && premiumMemory !== null && (
+              <div style={{ ...blockStyle, display: "flex", flexDirection: "column", gap: 20 }}>
+                <p className="font-sans" style={{ ...kickerStyle, marginBottom: 0 }}>Repères</p>
+                {([
+                  { label: "Ce qui revient",        text: premiumMemory.ceQuiRevient },
+                  { label: "Ce qui semble demandé", text: premiumMemory.ceQuiSembleDemandem },
+                  { label: "Ce qui t'aide",         text: premiumMemory.ceQuiTAide },
+                  { label: "Ce que tu peux tester", text: premiumMemory.ceQuePeutTester },
+                ] as { label: string; text: string | null }[])
+                  .filter((b) => b.text)
+                  .map((block) => (
+                    <div key={block.label}>
+                      <p
+                        className="font-sans"
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 500,
+                          letterSpacing: "0.15em",
+                          textTransform: "uppercase",
+                          color: "rgba(201,123,106,0.65)",
+                          marginBottom: 6,
+                        }}
+                      >
+                        {block.label}
+                      </p>
+                      <p className="font-body" style={blockTextStyle}>{block.text}</p>
                     </div>
-                  </button>
+                  ))}
+              </div>
+            )}
+          </>
+        ) : (
+          /* ── CTA gratuit ── */
+          sessions.length >= 1 && (
+            <button
+              type="button"
+              onClick={() => setShowPaywall(true)}
+              style={{
+                ...blockStyle,
+                width: "100%",
+                textAlign: "left",
+                cursor: "pointer",
+                background: "rgba(111,106,100,0.10)",
+                transition: "background 0.2s",
+              }}
+            >
+              <p className="font-body" style={{ ...blockTextStyle, color: "rgba(240,230,214,0.55)" }}>
+                Voir ta progression dans le temps →
+              </p>
+            </button>
+          )
+        )}
 
-                  {isExpanded && (
-                    <div className="px-5 pb-4 pt-2 border-t border-beige-dark animate-fade-up">
-                      {/* 1 — Situation */}
-                      {s.steps.traverser && (
-                        <div className="mb-3">
-                          <p className="text-xs text-warm-gray/60 mb-1">Ce qui s'est passé :</p>
-                          <p className="font-body text-sm text-warm-gray italic leading-relaxed">
-                            {s.steps.traverser}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* 2 — Miroir IA */}
-                      {s.analysis && (
-                        <div className="mb-5 rounded-xl bg-beige/60 border border-beige-dark px-4 py-4">
-                          <p className="text-xs text-warm-gray/60 mb-3 tracking-wide">Ce que tu viens de traverser</p>
-                          <p className="font-body text-base text-espresso leading-loose whitespace-pre-line">
-                            {s.analysis}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* 3 — Émotion */}
-                      {s.emotionPrimaire && (
-                        <p className="font-body text-sm text-warm-gray italic mb-3">{s.emotionPrimaire}</p>
-                      )}
-
-                      {/* 5 — Note entre sessions */}
-                      <div className="mt-4 pt-3 border-t border-beige-dark">
-                        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-2">
-                          Ce qui a continué à travailler après
-                        </p>
-                        {editingNoteId === s.id ? (
+        {/* ── Liste des sessions ── */}
+        {sessions.length > 0 && (
+          <div>
+            <p
+              className="font-sans"
+              style={{ ...kickerStyle, marginBottom: 16 }}
+            >
+              Tes traces
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {sessions.map((s) => {
+                const isExpanded = expandedId === s.id;
+                return (
+                  <div
+                    key={s.id}
+                    style={{
+                      background: "rgba(111,106,100,0.14)",
+                      border: "1px solid rgba(240,230,214,0.085)",
+                      borderRadius: 22,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <button
+                      onClick={() => setExpandedId(isExpanded ? null : s.id)}
+                      className="w-full text-left"
+                    >
+                      <div style={{ padding: "22px 24px" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                           <div>
-                            <textarea
-                              value={noteText}
-                              onChange={(e) => setNoteText(e.target.value)}
-                              placeholder="Ce qui est remonté dans les jours suivants..."
-                              className="w-full px-4 py-3 bg-beige/50 rounded-xl text-espresso font-sans text-sm border border-beige-dark focus:border-terra focus:outline-none focus:ring-1 focus:ring-terra/20 transition-all placeholder:text-warm-gray/40 resize-none mb-2"
-                              rows={2}
-                              autoFocus
-                            />
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleSaveNote(s.id)}
-                                className="text-xs text-terra font-medium hover:text-terra-dark transition-colors"
-                              >
-                                Enregistrer
-                              </button>
-                              <button
-                                onClick={() => { setEditingNoteId(null); setNoteText(""); }}
-                                className="text-xs text-warm-gray hover:text-espresso transition-colors"
-                              >
-                                Annuler
-                              </button>
+                            <div
+                              className="font-body"
+                              style={{ fontSize: "1rem", fontWeight: 400, color: "#F0E6D6", lineHeight: 1 }}
+                            >
+                              {new Date(s.date).toLocaleDateString("fr-FR", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              })}
                             </div>
-                          </div>
-                        ) : (
-                          <div
-                            onClick={() => { setEditingNoteId(s.id); setNoteText(s.noteEntreSession || ""); }}
-                            className="cursor-pointer group"
-                          >
-                            {s.noteEntreSession ? (
-                              <p className="font-body text-sm text-espresso italic leading-relaxed group-hover:text-terra transition-colors">
-                                {s.noteEntreSession}
-                              </p>
-                            ) : (
-                              <p className="text-sm text-warm-gray/60 italic group-hover:text-warm-gray transition-colors">
-                                Ajouter une note...
+                            {(s.veriteInterieure || s.emotionPrimaire) && (
+                              <p
+                                className="font-body"
+                                style={{
+                                  fontSize: "0.9rem",
+                                  fontStyle: "italic",
+                                  fontWeight: 300,
+                                  color: "rgba(240,230,214,0.64)",
+                                  marginTop: 6,
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                  maxWidth: 260,
+                                }}
+                              >
+                                {s.veriteInterieure ? `"${s.veriteInterieure}"` : s.emotionPrimaire}
                               </p>
                             )}
                           </div>
-                        )}
+                          <span
+                            style={{
+                              color: "rgba(240,230,214,0.25)",
+                              fontSize: 20,
+                              transition: "transform 0.2s",
+                              transform: isExpanded ? "rotate(90deg)" : "none",
+                              lineHeight: 1,
+                            }}
+                          >
+                            ›
+                          </span>
+                        </div>
                       </div>
+                    </button>
 
-                      <div className="mt-4 pt-3 border-t border-beige-dark flex justify-end">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (confirm("Supprimer cette trace ?")) handleDelete(s.id);
+                    {isExpanded && (
+                      <div
+                        className="animate-fade-up"
+                        style={{
+                          padding: "0 24px 24px",
+                          borderTop: "1px solid rgba(240,230,214,0.07)",
+                          paddingTop: 20,
+                        }}
+                      >
+                        {/* 1 — Situation */}
+                        {s.steps.traverser && (
+                          <div style={{ marginBottom: 16 }}>
+                            <p
+                              className="font-sans"
+                              style={{ fontSize: 11, color: "rgba(240,230,214,0.35)", marginBottom: 6, letterSpacing: "0.10em" }}
+                            >
+                              Ce qui s&apos;est passé :
+                            </p>
+                            <p
+                              className="font-body"
+                              style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.60)", lineHeight: 1.55 }}
+                            >
+                              {s.steps.traverser}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* 2 — Miroir IA */}
+                        {s.analysis && (
+                          <div
+                            style={{
+                              marginBottom: 20,
+                              background: "rgba(111,106,100,0.18)",
+                              border: "1px solid rgba(240,230,214,0.07)",
+                              borderRadius: 16,
+                              padding: "18px 20px",
+                            }}
+                          >
+                            <p
+                              className="font-sans"
+                              style={{ fontSize: 11, color: "rgba(240,230,214,0.35)", marginBottom: 12, letterSpacing: "0.10em" }}
+                            >
+                              Ce que tu viens de traverser
+                            </p>
+                            <p
+                              className="font-body"
+                              style={{ fontSize: "1rem", color: "#F0E6D6", lineHeight: 1.65, whiteSpace: "pre-line" }}
+                            >
+                              {s.analysis}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* 3 — Émotion */}
+                        {s.emotionPrimaire && (
+                          <p
+                            className="font-body"
+                            style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.55)", marginBottom: 16 }}
+                          >
+                            {s.emotionPrimaire}
+                          </p>
+                        )}
+
+                        {/* 5 — Note entre sessions */}
+                        <div
+                          style={{
+                            marginTop: 16,
+                            paddingTop: 16,
+                            borderTop: "1px solid rgba(240,230,214,0.07)",
                           }}
-                          className="text-xs text-warm-gray hover:text-terra-dark transition-colors"
                         >
-                          Supprimer
-                        </button>
+                          <p
+                            className="font-sans"
+                            style={{ ...kickerStyle, marginBottom: 10 }}
+                          >
+                            Ce qui a continué à travailler après
+                          </p>
+                          {editingNoteId === s.id ? (
+                            <div>
+                              <textarea
+                                value={noteText}
+                                onChange={(e) => setNoteText(e.target.value)}
+                                placeholder="Ce qui est remonté dans les jours suivants..."
+                                style={{
+                                  width: "100%",
+                                  padding: "12px 16px",
+                                  background: "rgba(111,106,100,0.20)",
+                                  border: "1px solid rgba(240,230,214,0.12)",
+                                  borderRadius: 12,
+                                  color: "#F0E6D6",
+                                  fontSize: "0.9rem",
+                                  fontFamily: "inherit",
+                                  lineHeight: 1.5,
+                                  resize: "none",
+                                  outline: "none",
+                                  marginBottom: 8,
+                                }}
+                                rows={2}
+                                autoFocus
+                              />
+                              <div style={{ display: "flex", gap: 12 }}>
+                                <button
+                                  onClick={() => handleSaveNote(s.id)}
+                                  style={{ fontSize: 12, color: "#C97B6A", fontWeight: 500, cursor: "pointer" }}
+                                >
+                                  Enregistrer
+                                </button>
+                                <button
+                                  onClick={() => { setEditingNoteId(null); setNoteText(""); }}
+                                  style={{ fontSize: 12, color: "rgba(240,230,214,0.40)", cursor: "pointer" }}
+                                >
+                                  Annuler
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div
+                              onClick={() => { setEditingNoteId(s.id); setNoteText(s.noteEntreSession || ""); }}
+                              style={{ cursor: "pointer" }}
+                            >
+                              {s.noteEntreSession ? (
+                                <p
+                                  className="font-body"
+                                  style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.70)", lineHeight: 1.55 }}
+                                >
+                                  {s.noteEntreSession}
+                                </p>
+                              ) : (
+                                <p
+                                  style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.28)" }}
+                                >
+                                  Ajouter une note...
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        <div
+                          style={{
+                            marginTop: 16,
+                            paddingTop: 16,
+                            borderTop: "1px solid rgba(240,230,214,0.07)",
+                            display: "flex",
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm("Supprimer cette trace ?")) handleDelete(s.id);
+                            }}
+                            style={{ fontSize: 12, color: "rgba(240,230,214,0.30)", cursor: "pointer" }}
+                          >
+                            Supprimer
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
