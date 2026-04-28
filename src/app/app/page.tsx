@@ -71,7 +71,7 @@ export default function Accueil() {
       </div>
 
       {/* Zone 2 — boutons ancrés en bas */}
-      <div className="w-full max-w-md mx-auto px-6 pb-14 flex flex-col gap-4">
+      <div className="w-full max-w-md mx-auto px-6 pb-14 flex flex-col gap-5">
         <Link
           href="/start"
           className="w-full block text-center"
@@ -96,17 +96,17 @@ export default function Accueil() {
           style={{
             borderRadius: "999px",
             padding: "17px 26px",
-            fontSize: "13.5px",
+            fontSize: "18px",
             fontWeight: 500,
-            letterSpacing: "0.01em",
-            color: "rgba(240,230,214,0.95)",
-            background: "linear-gradient(180deg, rgba(46,40,37,0.85), rgba(30,25,22,0.95))",
-            border: "1px solid rgba(212,169,106,0.35)",
-            boxShadow: "0 0 12px rgba(212,169,106,0.25), 0 6px 18px rgba(0,0,0,0.55)",
+            letterSpacing: "0.03em",
+            color: "rgba(240,230,214,0.97)",
+            background: "linear-gradient(180deg, rgba(212,169,106,0.22), rgba(139,63,45,0.35))",
+            border: "1.5px solid rgba(212,169,106,0.50)",
+            boxShadow: "0 0 22px rgba(212,169,106,0.40), 0 8px 24px rgba(0,0,0,0.60)",
             transition: "all 0.2s ease",
           }}
         >
-          <span style={{ fontSize: "17px", color: "#D4A96A", textShadow: "0 0 10px rgba(212,169,106,0.80)" }}>⚡</span>
+          <span style={{ fontSize: "19px", color: "#D4A96A", textShadow: "0 0 12px rgba(212,169,106,0.85)" }}>⚡</span>
           <span>Redescendre, maintenant</span>
         </Link>
       </div>
