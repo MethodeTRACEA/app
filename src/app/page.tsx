@@ -2,47 +2,36 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-t-nuit font-inter text-t-beige">
-      {/* Grain texture */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.025] z-[1]"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-          backgroundRepeat: "repeat",
-          backgroundSize: "256px 256px",
-        }}
-      />
-
-      {/* Background gradients */}
+    <div
+      className="min-h-screen relative overflow-hidden font-inter text-t-beige"
+      style={{ background: "#1A120D" }}
+    >
+      {/* Background gradients V3 */}
       <div
         className="fixed inset-0 pointer-events-none"
         aria-hidden="true"
         style={{
-          background: [
-            "radial-gradient(ellipse 70% 45% at 25% 12%, rgba(214,165,106,0.06), transparent 60%)",
-            "radial-gradient(ellipse 55% 35% at 75% 55%, rgba(110,67,50,0.05), transparent 55%)",
-            "radial-gradient(ellipse 70% 40% at 40% 85%, rgba(214,165,106,0.04), transparent 60%)",
-            "linear-gradient(180deg, #231916 0%, #2a1e1a 40%, #231916 100%)",
-          ].join(", "),
+          background:
+            "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
+            "radial-gradient(ellipse at 15% 0%, rgba(111,106,100,0.16) 0%, transparent 58%)",
+        }}
+      />
+
+      {/* Halo V3 */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 0%, rgba(201,123,106,0.28) 0%, rgba(201,123,106,0) 75%)",
+          zIndex: 0,
         }}
       />
 
       {/* ════════════════════════════════════════════════════════════
           HERO
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[88vh] md:min-h-[95vh] flex items-center justify-center px-6 py-20 md:py-28">
-        {/* Halo */}
-        <div
-          className="absolute top-[28%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] pointer-events-none"
-          aria-hidden="true"
-          style={{
-            background: "radial-gradient(circle, rgba(214,165,106,0.07), transparent 65%)",
-            filter: "blur(80px)",
-          }}
-        />
-
+      <section className="relative min-h-[88vh] md:min-h-[95vh] flex items-center justify-center px-6 py-20 md:py-28" style={{ zIndex: 1 }}>
         <div className="relative z-10 w-full max-w-lg mx-auto text-center">
           {/* Logo */}
           <div className="mb-10 md:mb-14">
@@ -61,14 +50,14 @@ export default function LandingPage() {
           </div>
 
           {/* Titre */}
-          <h1 className="text-[32px] md:text-[40px] leading-[1.2] font-medium tracking-tight text-t-beige mb-6">
+          <h1 className="text-[32px] md:text-[40px] leading-[1.25] tracking-tight mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Quand ça monte dans ton corps,
             <br />
             tu fais quoi ?
           </h1>
 
           {/* Sous-titre */}
-          <div className="text-base md:text-lg leading-relaxed t-text-secondary max-w-sm mx-auto mb-10 md:mb-12 space-y-4">
+          <div className="text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-10 md:mb-12 space-y-4" style={{ color: "rgba(240,230,214,0.60)" }}>
             <p>Poitrine serrée. Souffle court. Pensées en boucle.</p>
             <p>
               TRACÉA t&apos;aide à redescendre.
@@ -80,19 +69,29 @@ export default function LandingPage() {
           {/* CTA principal */}
           <Link
             href="/start"
-            className="t-btn-primary inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
+            className="font-sans inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
+            style={{
+              background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+              color: "#1A120D",
+              borderRadius: 40,
+              padding: "16px 40px",
+              fontWeight: 600,
+              textDecoration: "none",
+              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
+            }}
           >
-            Lancer ma 1re traversée
+            Lancer ma 1re travers&eacute;e
           </Link>
 
           {/* CTA secondaire */}
           <div className="mt-5">
-            <a
-              href="#fonctionnement"
-              className="text-sm text-t-dore/60 hover:text-t-dore/90 transition-colors underline underline-offset-4 decoration-t-dore/20"
+            <Link
+              href="/comment-ca-marche"
+              className="text-sm transition-colors underline underline-offset-4"
+              style={{ color: "rgba(201,123,106,0.60)", textDecorationColor: "rgba(201,123,106,0.20)" }}
             >
-              Voir comment ça marche
-            </a>
+              Voir comment &ccedil;a marche
+            </Link>
           </div>
 
           {/* Micro-texte */}
@@ -105,29 +104,38 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           IDENTIFICATION
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-20 md:py-28">
-        <div className="max-w-lg mx-auto">
-          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-10 text-center">
-            Tu connais ce moment précis
+      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
+        <div
+          className="max-w-lg mx-auto"
+          style={{
+            background: "rgba(111,106,100,0.18)",
+            border: "1px solid rgba(240,230,214,0.10)",
+            borderRadius: 24,
+            padding: "32px 28px",
+            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
+        >
+          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-8 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+            Tu connais ce moment pr&eacute;cis
           </h2>
 
-          <div className="space-y-5 mb-10 max-w-md">
+          <div className="space-y-4 mb-8">
             {[
               "ça serre dans ta poitrine",
               "ton souffle se coupe",
               "tu relis le même message 10 fois",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-t-dore/50 mt-2.5 shrink-0" />
-                <p className="text-base md:text-lg leading-relaxed t-text-secondary">
+                <span style={{ color: "#C97B6A", fontSize: 15, lineHeight: 1.65, flexShrink: 0 }}>—</span>
+                <p className="text-base leading-relaxed" style={{ color: "rgba(240,230,214,0.68)" }}>
                   {item}
                 </p>
               </div>
             ))}
           </div>
 
-          <p className="text-lg md:text-xl font-medium text-t-dore/80 text-center">
-            C&apos;est là que tout se joue.
+          <p className="text-base font-medium text-center" style={{ color: "#D99A84", fontStyle: "italic" }}>
+            C&apos;est l&agrave; que tout se joue.
           </p>
         </div>
       </section>
@@ -135,13 +143,22 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           FONCTIONNEMENT
       ════════════════════════════════════════════════════════════ */}
-      <section id="fonctionnement" className="relative px-6 py-20 md:py-28 scroll-mt-8">
-        <div className="max-w-lg mx-auto">
-          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-12 text-center">
+      <section id="fonctionnement" className="relative px-6 py-14 md:py-18 scroll-mt-8" style={{ zIndex: 1 }}>
+        <div
+          className="max-w-lg mx-auto"
+          style={{
+            background: "rgba(111,106,100,0.18)",
+            border: "1px solid rgba(240,230,214,0.10)",
+            borderRadius: 24,
+            padding: "32px 28px",
+            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
+        >
+          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-10 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Tu prends 2 minutes
           </h2>
 
-          <div className="space-y-5 max-w-md mx-auto mb-12">
+          <div className="space-y-5 mb-10">
             {[
               "Tu poses ce qui est là",
               "Tu reviens à ton corps",
@@ -151,23 +168,26 @@ export default function LandingPage() {
             ].map((text, i) => (
               <div key={i} className="flex items-center gap-5">
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium shrink-0"
+                  className="flex items-center justify-center text-sm font-medium shrink-0"
                   style={{
-                    background: "rgba(214,165,106,0.12)",
-                    border: "1px solid rgba(214,165,106,0.15)",
-                    color: "#D6A56A",
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    background: "rgba(201,123,106,0.15)",
+                    border: "1px solid rgba(201,123,106,0.25)",
+                    color: "#C97B6A",
                   }}
                 >
                   {i + 1}
                 </div>
-                <p className="text-base md:text-lg t-text-primary leading-relaxed">
+                <p className="text-base leading-relaxed" style={{ color: "rgba(240,230,214,0.68)" }}>
                   {text}
                 </p>
               </div>
             ))}
           </div>
 
-          <p className="text-center text-lg md:text-xl t-text-primary font-medium">
+          <p className="text-center text-base font-medium" style={{ color: "#D99A84", fontStyle: "italic" }}>
             Et quelque chose change.
           </p>
         </div>
@@ -176,10 +196,10 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           CAS D'USAGE
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-20 md:py-28">
+      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
         <div className="max-w-lg mx-auto">
-          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-10 text-center">
-            Utilise TRACÉA quand ça monte
+          <h2 className="text-[22px] md:text-[28px] tracking-tight mb-8 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+            Utilise TRAC&Eacute;A quand &ccedil;a monte
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -193,12 +213,14 @@ export default function LandingPage() {
             ].map((text, i) => (
               <div
                 key={i}
-                className="px-5 py-4 rounded-[20px] border border-t-creme/[0.08] bg-t-brume/15"
                 style={{
-                  backdropFilter: "blur(10px)",
+                  padding: "14px 18px",
+                  borderRadius: 16,
+                  background: "rgba(111,106,100,0.14)",
+                  border: "1px solid rgba(240,230,214,0.08)",
                 }}
               >
-                <p className="text-[15px] t-text-secondary leading-relaxed">{text}</p>
+                <p style={{ fontSize: 14, color: "rgba(240,230,214,0.65)", lineHeight: 1.55 }}>{text}</p>
               </div>
             ))}
           </div>
@@ -208,13 +230,22 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           IMPACT
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-20 md:py-28">
-        <div className="max-w-lg mx-auto">
-          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-10 text-center">
+      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
+        <div
+          className="max-w-lg mx-auto"
+          style={{
+            background: "rgba(111,106,100,0.18)",
+            border: "1px solid rgba(240,230,214,0.10)",
+            borderRadius: 24,
+            padding: "32px 28px",
+            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
+        >
+          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-8 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             En quelques minutes
           </h2>
 
-          <div className="grid grid-cols-2 gap-3 mb-10">
+          <div className="grid grid-cols-2 gap-3 mb-8">
             {[
               "ça relâche un peu",
               "tu respires mieux",
@@ -223,18 +254,21 @@ export default function LandingPage() {
             ].map((text, i) => (
               <div
                 key={i}
-                className="px-5 py-5 rounded-[20px] text-center border border-t-dore/[0.10] bg-t-brume/10"
                 style={{
-                  boxShadow: "0 0 30px rgba(214,165,106,0.04)",
+                  padding: "18px 14px",
+                  borderRadius: 16,
+                  textAlign: "center",
+                  background: "rgba(26,18,13,0.35)",
+                  border: "1px solid rgba(240,230,214,0.07)",
                 }}
               >
-                <p className="text-[15px] t-text-primary leading-relaxed">{text}</p>
+                <p style={{ fontSize: 14, color: "rgba(240,230,214,0.72)", lineHeight: 1.5 }}>{text}</p>
               </div>
             ))}
           </div>
 
-          <p className="text-center text-base text-t-dore/70 font-medium">
-            C&apos;est déjà suffisant.
+          <p className="text-center text-sm font-medium" style={{ color: "#D99A84", fontStyle: "italic" }}>
+            C&apos;est d&eacute;j&agrave; suffisant.
           </p>
         </div>
       </section>
@@ -242,24 +276,29 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           CADRE / SÉCURITÉ
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-16 md:py-20">
+      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
         <div className="max-w-lg mx-auto">
           <div
-            className="px-6 py-8 md:px-8 md:py-10 rounded-[28px] border border-t-creme/[0.06] bg-t-brume/10"
-            style={{ backdropFilter: "blur(10px)" }}
+            style={{
+              background: "rgba(111,106,100,0.18)",
+              border: "1px solid rgba(240,230,214,0.14)",
+              borderRadius: 24,
+              padding: "28px 26px",
+              boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+            }}
           >
-            <h2 className="text-lg md:text-xl font-medium t-text-primary mb-5">
+            <h2 className="text-base md:text-lg mb-5" style={{ fontWeight: 400, color: "#F0E6D6" }}>
               Ce n&apos;est pas pour tous les moments
             </h2>
 
-            <div className="space-y-3 text-sm md:text-base leading-relaxed t-text-secondary mb-5">
-              <p>Si tu es complètement submergé(e)</p>
-              <p>ou en état de détresse :</p>
-              <p className="t-text-primary font-medium pt-1">ne reste pas seul(e) avec ça.</p>
+            <div className="space-y-3 text-sm leading-relaxed mb-5" style={{ color: "rgba(240,230,214,0.60)" }}>
+              <p>Si tu es compl&egrave;tement submerg&eacute;(e)</p>
+              <p>ou en &eacute;tat de d&eacute;tresse :</p>
+              <p style={{ color: "#F0E6D6", fontWeight: 500, paddingTop: 4 }}>ne reste pas seul(e) avec &ccedil;a.</p>
             </div>
 
-            <p className="text-sm md:text-base leading-relaxed t-text-secondary">
-              TRACÉA est un appui.
+            <p className="text-sm leading-relaxed" style={{ color: "rgba(240,230,214,0.60)" }}>
+              TRAC&Eacute;A est un appui.
               <br />
               Pas une solution d&apos;urgence.
             </p>
@@ -270,22 +309,13 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           CTA FINAL
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-24 md:py-32">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[450px] pointer-events-none"
-          aria-hidden="true"
-          style={{
-            background: "radial-gradient(circle, rgba(214,165,106,0.07), transparent 65%)",
-            filter: "blur(80px)",
-          }}
-        />
-
-        <div className="relative z-10 max-w-lg mx-auto text-center">
-          <h2 className="text-[26px] md:text-[32px] font-medium tracking-tight text-t-beige mb-6">
+      <section className="relative px-6 py-24 md:py-32" style={{ zIndex: 1 }}>
+        <div className="max-w-lg mx-auto text-center">
+          <h2 className="text-[26px] md:text-[32px] tracking-tight mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Essaye maintenant
           </h2>
 
-          <p className="text-base t-text-secondary mb-10">
+          <p className="text-base mb-10" style={{ color: "rgba(240,230,214,0.60)" }}>
             Juste 2 minutes.
             <br />
             Juste voir.
@@ -293,12 +323,21 @@ export default function LandingPage() {
 
           <Link
             href="/start"
-            className="t-btn-primary inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
+            className="font-sans inline-block w-full sm:w-auto text-center text-base md:text-lg"
+            style={{
+              background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+              color: "#1A120D",
+              borderRadius: 40,
+              padding: "16px 40px",
+              fontWeight: 600,
+              textDecoration: "none",
+              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
+            }}
           >
-            Lancer ma traversée
+            Lancer ma travers&eacute;e
           </Link>
 
-          <p className="text-[13px] t-text-ghost mt-6 tracking-wide">
+          <p className="text-[13px] mt-6 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
             Premi&egrave;re travers&eacute;e gratuite
           </p>
         </div>
@@ -307,7 +346,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           FOOTER
       ════════════════════════════════════════════════════════════ */}
-      <footer className="relative px-6 py-10 border-t border-t-creme/[0.06]">
+      <footer className="relative px-6 py-10" style={{ borderTop: "1px solid rgba(240,230,214,0.06)", zIndex: 1 }}>
         <div className="flex flex-col items-center gap-5 max-w-lg mx-auto">
           <img
             src="/images/tracea-logo-terra-transparent.png"
