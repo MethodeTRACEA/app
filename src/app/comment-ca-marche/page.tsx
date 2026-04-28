@@ -119,9 +119,9 @@ export default function CommentCaMarchePage() {
             marginTop: -4,
           }}
         >
-          Un protocole simple pour redescendre quand &ccedil;a monte.
+          Un protocole simple. En revenant au corps.
           <br />
-          Sans analyser. En revenant au corps.
+          Sans analyser.
         </p>
 
         {/* ── Bloc 1 — Sensations ── */}
@@ -169,7 +169,7 @@ export default function CommentCaMarchePage() {
           <p style={{ ...pNormal, marginTop: 14 }}>
             Quand &ccedil;a d&eacute;borde, r&eacute;fl&eacute;chir ne suffit plus.
             <br />
-            Il faut redescendre.
+            Le corps sait quoi faire.
           </p>
         </div>
 
@@ -184,13 +184,13 @@ export default function CommentCaMarchePage() {
                 className="font-sans"
                 style={{ fontSize: 14, fontWeight: 500, color: "#F0E6D6", margin: 0, marginBottom: 6, lineHeight: 1.4 }}
               >
-                Quand &ccedil;a monte d&apos;un coup
+                Urgence
               </p>
               <p
                 className="font-sans"
                 style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
               >
-                Redescendre sans r&eacute;fl&eacute;chir.
+                sans r&eacute;fl&eacute;chir
               </p>
               <Link
                 href="/app/urgence"
@@ -215,13 +215,13 @@ export default function CommentCaMarchePage() {
                 className="font-sans"
                 style={{ fontSize: 14, fontWeight: 500, color: "#F0E6D6", margin: 0, marginBottom: 6, lineHeight: 1.4 }}
               >
-                Quand tu veux faire une travers&eacute;e compl&egrave;te
+                Parcours guid&eacute;
               </p>
               <p
                 className="font-sans"
                 style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
               >
-                Le parcours guid&eacute;, &eacute;tape par &eacute;tape.
+                &eacute;tape par &eacute;tape
               </p>
               <Link
                 href="/app"
@@ -246,13 +246,13 @@ export default function CommentCaMarchePage() {
                 className="font-sans"
                 style={{ fontSize: 14, fontWeight: 500, color: "#F0E6D6", margin: 0, marginBottom: 6, lineHeight: 1.4 }}
               >
-                Quand tu veux aller plus loin
+                Aller plus loin
               </p>
               <p
                 className="font-sans"
                 style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
               >
-                Pour aller plus loin, &agrave; ton rythme.
+                &agrave; ton rythme
               </p>
               <Link
                 href="/app/entrainement"
@@ -314,8 +314,23 @@ export default function CommentCaMarchePage() {
           </p>
         </div>
 
+        {/* ── Tension ── */}
+        <p
+          className="font-sans"
+          style={{
+            textAlign: "center",
+            fontSize: 14,
+            fontWeight: 300,
+            color: "rgba(240,230,214,0.50)",
+            lineHeight: 1.6,
+            marginTop: 8,
+          }}
+        >
+          Quand &ccedil;a monte, tu n&apos;as pas le temps de r&eacute;fl&eacute;chir.
+        </p>
+
         {/* ── CTA ── */}
-        <div style={{ textAlign: "center", marginTop: 24 }}>
+        <div style={{ textAlign: "center", marginTop: 12 }}>
           <Link
             href="/app"
             className="font-sans"
@@ -333,7 +348,7 @@ export default function CommentCaMarchePage() {
                 "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
             }}
           >
-            Lancer ma travers&eacute;e maintenant
+            Commencer ma travers&eacute;e
           </Link>
           <p
             className="font-sans"
