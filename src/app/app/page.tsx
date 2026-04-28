@@ -36,7 +36,7 @@ export default function Accueil() {
 
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen flex flex-col justify-center"
       style={{
         background:
           "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
@@ -44,10 +44,10 @@ export default function Accueil() {
           "#1A120D",
       }}
     >
-      <div className="max-w-md mx-auto px-6 pt-24 pb-16 flex flex-col gap-8">
+      <div className="max-w-md mx-auto w-full px-6 pb-24 flex flex-col gap-8">
 
         {/* Hero court */}
-        <section className="text-center flex flex-col gap-6 pt-4">
+        <section className="text-center flex flex-col items-center gap-6">
           <h1
             className="font-body"
             style={{
