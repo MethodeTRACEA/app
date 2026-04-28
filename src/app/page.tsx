@@ -296,39 +296,6 @@ export default function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          CADRE / SÉCURITÉ
-      ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
-        <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          <div
-            style={{
-              background: "rgba(111,106,100,0.18)",
-              border: "1px solid rgba(240,230,214,0.14)",
-              borderRadius: 24,
-              padding: "28px 26px",
-              boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
-            }}
-          >
-            <h2 className="text-base md:text-lg mb-5" style={{ fontWeight: 400, color: "#F0E6D6" }}>
-              Ce n&apos;est pas pour tous les moments
-            </h2>
-
-            <div className="space-y-3 text-sm leading-relaxed mb-5" style={{ color: "rgba(240,230,214,0.60)" }}>
-              <p>Si tu es compl&egrave;tement submerg&eacute;(e)</p>
-              <p>ou en &eacute;tat de d&eacute;tresse :</p>
-              <p style={{ color: "#F0E6D6", fontWeight: 500, paddingTop: 4 }}>ne reste pas seul(e) avec &ccedil;a.</p>
-            </div>
-
-            <p className="text-sm leading-relaxed" style={{ color: "rgba(240,230,214,0.60)" }}>
-              TRAC&Eacute;A est un appui.
-              <br />
-              Pas une solution d&apos;urgence.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════
           CTA FINAL
       ════════════════════════════════════════════════════════════ */}
       <section className="relative px-6 py-16 md:py-20" style={{ zIndex: 1 }}>

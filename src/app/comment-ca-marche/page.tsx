@@ -414,6 +414,57 @@ export default function CommentCaMarchePage() {
           </p>
         </div>
 
+        {/* ── Bloc cadre ── */}
+        <div
+          style={{
+            background: "rgba(111,106,100,0.18)",
+            border: "1px solid rgba(240,230,214,0.10)",
+            borderRadius: 24,
+            padding: "28px 24px",
+            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
+        >
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 400,
+              letterSpacing: "0.20em",
+              textTransform: "uppercase" as const,
+              color: "#C97B6A",
+              marginBottom: 18,
+            }}
+          >
+            Un rep&egrave;re important
+          </p>
+          <p
+            style={{
+              fontSize: 16,
+              fontWeight: 300,
+              lineHeight: 1.65,
+              color: "rgba(240,230,214,0.68)",
+              marginBottom: 14,
+            }}
+          >
+            TRAC&Eacute;A est un appui.
+          </p>
+          <p
+            style={{
+              fontSize: 16,
+              fontWeight: 300,
+              lineHeight: 1.65,
+              color: "rgba(240,230,214,0.68)",
+              marginBottom: 0,
+            }}
+          >
+            Si tu es compl&egrave;tement submerg&eacute;(e) ou en d&eacute;tresse,{" "}
+            <span style={{ color: "#F0E6D6", fontWeight: 600 }}>
+              ne reste pas seul(e).
+            </span>
+            <br />
+            Ce que tu vis m&eacute;rite aussi d&apos;&ecirc;tre accompagn&eacute;.
+          </p>
+        </div>
+
         {/* ── CTA ── */}
         <div style={{ textAlign: "center", marginTop: 40 }}>
           <Link
