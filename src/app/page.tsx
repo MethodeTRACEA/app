@@ -296,15 +296,17 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <p className="text-center text-base mb-3" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
-            Et &agrave; la fin&hellip;
-            <br />
-            quelque chose redescend.
-          </p>
-
-          <p className="text-center text-base font-medium" style={{ color: "#D99A84", fontStyle: "italic" }}>
-            Et quelque chose change.
-          </p>
+          <div className="text-center space-y-1 mt-2">
+            <p style={{ color: "rgba(240,230,214,0.42)", fontWeight: 300, fontSize: "1rem", lineHeight: 1.6 }}>
+              &Agrave; la fin&hellip;
+            </p>
+            <p style={{ color: "rgba(240,230,214,0.56)", fontWeight: 300, fontSize: "1rem", lineHeight: 1.6 }}>
+              quelque chose redescend.
+            </p>
+            <p style={{ color: "#D99A84", fontStyle: "italic", fontWeight: 600, fontSize: "1rem", lineHeight: 1.6 }}>
+              Quelque chose change.
+            </p>
+          </div>
         </div>
       </section>
 
