@@ -49,7 +49,7 @@ const options: Option[] = [
     tag: "5 min",
     recommended: true,
     dot: "#D4A96A",
-    border: "rgba(212,169,106,0.32)",
+    border: "rgba(212,169,106,0.38)",
   },
   {
     href: "/app/session",
@@ -76,8 +76,8 @@ const cardBase: React.CSSProperties = {
   textAlign: "left",
   backdropFilter: "blur(16px)",
   WebkitBackdropFilter: "blur(16px)",
-  boxShadow: "0 18px 45px rgba(0,0,0,0.42)",
-  transition: "opacity 0.15s",
+  boxShadow: "0 18px 45px rgba(0,0,0,0.42), 0 0 20px rgba(240,230,214,0.04)",
+  transition: "all 0.2s ease",
 };
 
 export default function StartPage() {
@@ -121,7 +121,7 @@ export default function StartPage() {
         }}
       >
         {/* Logo + halo */}
-        <div style={{ position: "relative", marginBottom: 22 }}>
+        <div style={{ position: "relative", marginBottom: 16 }}>
           {/* Halo derrière le logo */}
           <div
             style={{
@@ -132,7 +132,7 @@ export default function StartPage() {
               width: 160,
               height: 100,
               background:
-                "radial-gradient(ellipse at center, rgba(184,99,79,0.20) 0%, transparent 70%)",
+                "radial-gradient(circle, rgba(184,99,79,0.18) 0%, transparent 65%)",
               pointerEvents: "none",
             }}
           />
@@ -154,11 +154,11 @@ export default function StartPage() {
           className="font-body"
           style={{
             fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
-            fontSize: "clamp(36px, 9vw, 46px)",
+            fontSize: "clamp(32px, 8vw, 40px)",
             color: "#F0E6D6",
-            lineHeight: 1.02,
+            lineHeight: 1.05,
             fontWeight: 300,
-            marginBottom: 8,
+            marginBottom: 6,
             letterSpacing: "-0.01em",
           }}
         >
@@ -172,7 +172,7 @@ export default function StartPage() {
             fontSize: 15,
             color: "rgba(240,230,214,0.44)",
             lineHeight: 1.35,
-            marginBottom: 22,
+            marginBottom: 18,
           }}
         >
           Choisis le chemin qui correspond à ton état maintenant.
@@ -254,6 +254,7 @@ export default function StartPage() {
                         borderRadius: 999,
                         padding: "1px 6px",
                         textTransform: "uppercase" as const,
+                        opacity: 0.85,
                       }}
                     >
                       recommandé
@@ -266,11 +267,10 @@ export default function StartPage() {
                   className="font-body"
                   style={{
                     fontSize: opt.recommended ? 17 : 16,
-                    color: "#F0E6D6",
+                    color: opt.badge && !opt.recommended ? "rgba(240,230,214,0.80)" : "#F0E6D6",
                     fontWeight: 300,
                     margin: "0 0 3px",
                     lineHeight: 1.18,
-                    opacity: opt.badge && !opt.recommended ? 0.82 : 1,
                   }}
                 >
                   {opt.title}
@@ -281,10 +281,11 @@ export default function StartPage() {
                   className="font-sans"
                   style={{
                     fontSize: 12,
-                    color: "rgba(240,230,214,0.44)",
+                    color: opt.badge && !opt.recommended
+                      ? "rgba(240,230,214,0.60)"
+                      : "rgba(240,230,214,0.44)",
                     margin: 0,
                     lineHeight: 1.48,
-                    opacity: opt.badge && !opt.recommended ? 0.78 : 1,
                   }}
                 >
                   {opt.desc}
@@ -296,7 +297,7 @@ export default function StartPage() {
                     className="font-sans"
                     style={{
                       fontSize: 10,
-                      color: "rgba(240,230,214,0.28)",
+                      color: "rgba(240,230,214,0.40)",
                       margin: "4px 0 0",
                       letterSpacing: "0.04em",
                     }}
@@ -335,7 +336,7 @@ export default function StartPage() {
           style={{
             fontSize: 13,
             color: "rgba(240,230,214,0.30)",
-            marginTop: 14,
+            marginTop: 10,
             lineHeight: 1.55,
             letterSpacing: "0.01em",
           }}
