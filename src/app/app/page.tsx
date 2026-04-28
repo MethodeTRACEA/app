@@ -36,7 +36,7 @@ export default function Accueil() {
 
   return (
     <div
-      className="min-h-screen flex flex-col pb-32"
+      className="relative min-h-screen pb-32"
       style={{
         background:
           "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
@@ -44,8 +44,8 @@ export default function Accueil() {
           "#1A120D",
       }}
     >
-      {/* ZONE 2 — Centre : titre + texte + boutons */}
-      <section className="flex-1 flex flex-col items-center px-6 text-center gap-6 pt-16">
+      {/* Titre + texte intro */}
+      <section className="flex flex-col items-center px-6 text-center gap-6 pt-16">
         <h1
           className="font-body"
           style={{
@@ -68,7 +68,14 @@ export default function Accueil() {
         >
           Un espace pour revenir &agrave; quelque chose de plus supportable.
         </p>
-        <div className="flex flex-col gap-4 mt-20 w-full max-w-sm">
+      </section>
+
+      {/* Boutons — position absolue à 62% de la hauteur écran */}
+      <div
+        className="absolute left-0 right-0 flex justify-center"
+        style={{ top: "62%" }}
+      >
+        <div className="w-full max-w-sm flex flex-col gap-4 px-6">
           <Link
             href="/start"
             className="w-full block text-center"
@@ -105,10 +112,10 @@ export default function Accueil() {
             <span>Redescendre, maintenant</span>
           </Link>
         </div>
-      </section>
+      </div>
 
-      {/* Sections secondaires — en bas du flex column */}
-      <div className="px-6 max-w-md mx-auto w-full flex flex-col gap-6">
+      {/* Sections secondaires */}
+      <div className="px-6 max-w-md mx-auto w-full flex flex-col gap-6 mt-[75vh]">
 
         {/* Dernière session (si existe) */}
         {lastSession && lastSession.completed && (
