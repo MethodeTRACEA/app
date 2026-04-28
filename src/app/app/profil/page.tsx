@@ -323,8 +323,8 @@ export default function ProfilPage() {
             style={{
               ...blockStyle,
               border: privacyOpen
-                ? "1px solid rgba(240,230,214,0.18)"
-                : "1px solid rgba(240,230,214,0.13)",
+                ? "1px solid rgba(240,230,214,0.16)"
+                : "1px solid rgba(240,230,214,0.10)",
               width: "100%",
               textAlign: "left",
               cursor: "pointer",
@@ -332,13 +332,34 @@ export default function ProfilPage() {
               alignItems: "center",
               justifyContent: "space-between",
               gap: 16,
-              transition: "border 0.18s ease, transform 0.1s ease",
+              transition: "transform 180ms ease, border-color 180ms ease, background 180ms ease",
             }}
-            onMouseDown={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.995)"; }}
-            onMouseUp={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; }}
-            onTouchStart={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.995)"; }}
-            onTouchEnd={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; }}
+            onMouseDown={(e) => {
+              const el = e.currentTarget;
+              el.style.transform = "scale(0.995)";
+              el.style.borderColor = "rgba(240,230,214,0.16)";
+              el.style.background = "rgba(111,106,100,0.22)";
+            }}
+            onMouseUp={(e) => {
+              const el = e.currentTarget;
+              el.style.transform = "scale(1)";
+              el.style.background = "rgba(111,106,100,0.18)";
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget;
+              el.style.transform = "scale(1)";
+              el.style.background = "rgba(111,106,100,0.18)";
+            }}
+            onTouchStart={(e) => {
+              const el = e.currentTarget;
+              el.style.transform = "scale(0.995)";
+              el.style.background = "rgba(111,106,100,0.22)";
+            }}
+            onTouchEnd={(e) => {
+              const el = e.currentTarget;
+              el.style.transform = "scale(1)";
+              el.style.background = "rgba(111,106,100,0.18)";
+            }}
           >
             <div>
               <p
@@ -363,12 +384,13 @@ export default function ProfilPage() {
             </div>
             <span
               style={{
-                color: "rgba(240,230,214,0.55)",
+                color: "rgba(240,230,214,0.58)",
                 fontSize: 22,
-                transition: "transform 0.18s ease",
-                transform: privacyOpen ? "rotate(90deg)" : "rotate(-90deg)",
+                transition: "transform 200ms ease",
+                transform: privacyOpen ? "rotate(180deg)" : "rotate(0deg)",
                 flexShrink: 0,
                 lineHeight: 1,
+                display: "inline-block",
               }}
             >
               ›
@@ -381,14 +403,14 @@ export default function ProfilPage() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 16,
-                marginTop: 16,
+                gap: 18,
+                marginTop: 18,
                 animation: "fadeUp 0.2s ease forwards",
               }}
             >
               {/* Effacer mémoire TRACÉA */}
               {!memoryLoading && hasMemory && (
-                <div style={{ textAlign: "center", padding: "4px 0" }}>
+                <div style={{ textAlign: "center", marginTop: 18, marginBottom: 22 }}>
                   {deleteSuccess ? (
                     <p
                       className="font-body"
@@ -429,6 +451,9 @@ export default function ProfilPage() {
                         textDecoration: "underline",
                         textUnderlineOffset: 3,
                         cursor: "pointer",
+                        display: "block",
+                        width: "100%",
+                        textAlign: "center",
                       }}
                     >
                       Effacer ma m&eacute;moire TRACEA
