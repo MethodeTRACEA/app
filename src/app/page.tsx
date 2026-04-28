@@ -31,20 +31,20 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           HERO
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[88vh] md:min-h-[95vh] flex items-center justify-center px-6 py-20 md:py-28" style={{ zIndex: 1 }}>
+      <section className="relative min-h-[88vh] md:min-h-[95vh] flex items-center justify-center px-6 py-10 md:py-28" style={{ zIndex: 1 }}>
         <div className="relative z-10 w-full text-center" style={{ maxWidth: 640, margin: "0 auto" }}>
           {/* Logo */}
-          <div className="mb-10 md:mb-14">
+          <div className="mb-6 md:mb-14">
             <img
               src="/images/tracea-logo-terra-transparent.png"
               alt="TRACÉA"
-              className="h-14 md:h-20 mx-auto object-contain"
+              className="h-12 md:h-20 mx-auto object-contain"
             />
           </div>
 
           {/* Badge */}
           <div
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-10 md:mb-12"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-6 md:mb-12"
             style={{
               background: "rgba(111,106,100,0.16)",
               border: "1px solid rgba(240,230,214,0.12)",
@@ -59,14 +59,14 @@ export default function LandingPage() {
           </div>
 
           {/* Titre */}
-          <h1 className="text-[32px] md:text-[40px] leading-[1.25] tracking-tight mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+          <h1 className="text-[30px] md:text-[40px] leading-[1.25] tracking-tight mb-5 md:mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Quand ça monte dans ton corps,
             <br />
             tu fais quoi ?
           </h1>
 
           {/* Sous-titre */}
-          <div className="text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-10 md:mb-12 space-y-4" style={{ color: "rgba(240,230,214,0.60)" }}>
+          <div className="text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-7 md:mb-12 space-y-3" style={{ color: "rgba(240,230,214,0.60)" }}>
             <p>Poitrine serrée. Souffle court. Pensées en boucle.</p>
             <p>
               TRACÉA t&apos;aide à redescendre.
@@ -93,7 +93,7 @@ export default function LandingPage() {
           </Link>
 
           {/* CTA secondaire */}
-          <div className="mt-5">
+          <div className="mt-4 md:mt-5">
             <Link
               href="/comment-ca-marche"
               className="text-sm transition-colors underline underline-offset-4"
@@ -104,8 +104,8 @@ export default function LandingPage() {
           </div>
 
           {/* Micro-texte */}
-          <p className="text-[13px] mt-8 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            Gratuit · Sans engagement
+          <p className="text-[13px] mt-5 md:mt-8 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
+            1re travers&eacute;e gratuite · sans engagement
           </p>
         </div>
       </section>
@@ -131,12 +131,23 @@ export default function LandingPage() {
 
           <div className="space-y-4 mb-8">
             {[
-              "ça serre dans ta poitrine",
-              "ton souffle se coupe",
-              "tu relis le même message 10 fois",
+              "Ça serre dans ta poitrine",
+              "Ton souffle se coupe",
+              "Tu relis le même message 10 fois",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
-                <span style={{ color: "#C97B6A", fontSize: 15, lineHeight: 1.65, flexShrink: 0 }}>—</span>
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: 5,
+                    height: 5,
+                    borderRadius: 999,
+                    background: "#C97B6A",
+                    opacity: 0.85,
+                    flexShrink: 0,
+                    marginTop: 10,
+                  }}
+                />
                 <p className="text-base leading-relaxed" style={{ color: "rgba(240,230,214,0.68)" }}>
                   {item}
                 </p>
@@ -169,20 +180,21 @@ export default function LandingPage() {
             Tu prends 2 minutes
           </h2>
 
-          <div className="space-y-5 mb-10">
+          <div className="space-y-3 mb-10">
             {[
               "Tu poses ce qui est là",
               "Tu reviens à ton corps",
               "Tu ralentis un peu",
+              "Tu comprends ce qui se joue",
               "Tu vois ce qui aiderait",
               "Tu choisis un geste simple",
             ].map((text, i) => (
-              <div key={i} className="flex items-center gap-5">
+              <div key={i} className="flex items-center gap-4">
                 <div
                   className="flex items-center justify-center text-sm font-medium shrink-0"
                   style={{
-                    width: 36,
-                    height: 36,
+                    width: 32,
+                    height: 32,
                     borderRadius: "50%",
                     background: "rgba(201,123,106,0.15)",
                     border: "1px solid rgba(201,123,106,0.25)",
@@ -269,22 +281,25 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-2 gap-3 mb-8">
             {[
-              "ça relâche un peu",
-              "tu respires mieux",
-              "c'est plus clair",
-              "tu sais quoi faire",
+              "Ça relâche un peu",
+              "Tu respires mieux",
+              "C'est plus clair",
+              "Tu sais quoi faire",
             ].map((text, i) => (
               <div
                 key={i}
                 style={{
-                  padding: "18px 14px",
+                  minHeight: 72,
+                  padding: "14px 12px",
                   borderRadius: 16,
-                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   background: "rgba(26,18,13,0.35)",
                   border: "1px solid rgba(240,230,214,0.07)",
                 }}
               >
-                <p style={{ fontSize: 14, color: "rgba(240,230,214,0.72)", lineHeight: 1.5 }}>{text}</p>
+                <p style={{ fontSize: 14, color: "rgba(240,230,214,0.72)", lineHeight: 1.35, textAlign: "center", margin: 0 }}>{text}</p>
               </div>
             ))}
           </div>
