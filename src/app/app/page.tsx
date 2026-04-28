@@ -92,20 +92,21 @@ export default function Accueil() {
         </Link>
         <Link
           href="/app/urgence"
-          className="w-full flex items-center justify-center gap-3"
+          className="w-full flex items-center justify-center gap-3 transition-all duration-200 active:scale-[0.98]"
           style={{
             borderRadius: "999px",
             padding: "17px 26px",
             fontSize: "13.5px",
-            fontWeight: 400,
+            fontWeight: 500,
             letterSpacing: "0.01em",
-            color: "rgba(240,230,214,0.95)",
-            background: "linear-gradient(180deg, rgba(111,106,100,0.55), rgba(76,69,64,0.65))",
-            border: "1.5px solid rgba(240,230,214,0.45)",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)",
+            color: "rgba(240,230,214,0.98)",
+            background: "linear-gradient(180deg, rgba(212,169,106,0.18), rgba(139,63,45,0.25))",
+            border: "1.5px solid rgba(212,169,106,0.55)",
+            boxShadow: "0 0 18px rgba(212,169,106,0.35), 0 6px 20px rgba(0,0,0,0.50)",
+            transition: "all 0.2s ease",
           }}
         >
-          <span style={{ fontSize: "17px", color: "#D4A96A", textShadow: "0 0 18px rgba(212,169,106,0.90)" }}>⚡</span>
+          <span style={{ fontSize: "20px", color: "#D4A96A", textShadow: "0 0 10px rgba(212,169,106,1), 0 0 22px rgba(212,169,106,0.90)" }}>⚡</span>
           <span>Redescendre, maintenant</span>
         </Link>
       </div>
