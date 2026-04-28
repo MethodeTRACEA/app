@@ -67,21 +67,76 @@ export default function LandingPage() {
           </h1>
 
           {/* Sous-titre */}
-          <div className="text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-6 md:mb-12 space-y-3" style={{ color: "rgba(240,230,214,0.60)" }}>
-            <p>
-              Poitrine serrée.<br />
+          <div
+            className="mx-auto mb-6 md:mb-12"
+            style={{
+              maxWidth: 360,
+              marginTop: 28,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 18,
+              textAlign: "center",
+            }}
+          >
+            {/* Symptômes */}
+            <p
+              style={{
+                fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+                fontSize: "clamp(1.02rem, 4vw, 1.18rem)",
+                lineHeight: 1.65,
+                fontWeight: 300,
+                color: "rgba(240,230,214,0.52)",
+                margin: 0,
+              }}
+            >
+              Poitrine serr&eacute;e.<br />
               Souffle court.<br />
-              Pensées en boucle.
+              Pens&eacute;es en boucle.
             </p>
-            <p>
-              TRACÉA t&apos;aide à redescendre.
-              <br />
+
+            {/* Phrase centrale */}
+            <p
+              style={{
+                fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+                fontSize: "clamp(1.22rem, 4.8vw, 1.42rem)",
+                lineHeight: 1.35,
+                fontWeight: 500,
+                color: "#F0E6D6",
+                letterSpacing: "-0.01em",
+                margin: 0,
+              }}
+            >
+              TRAC&Eacute;A t&apos;aide &agrave; redescendre.
+            </p>
+
+            {/* Promesse */}
+            <p
+              style={{
+                fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+                fontSize: "clamp(1.02rem, 4vw, 1.16rem)",
+                lineHeight: 1.45,
+                fontWeight: 400,
+                color: "rgba(240,230,214,0.66)",
+                margin: 0,
+              }}
+            >
               En quelques minutes.
             </p>
-            <p>
-              Sans analyser.
-              <br />
-              Juste en revenant au corps.
+
+            {/* Différenciateur */}
+            <p
+              style={{
+                fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+                fontSize: "clamp(0.98rem, 3.8vw, 1.08rem)",
+                lineHeight: 1.55,
+                fontWeight: 300,
+                color: "rgba(240,230,214,0.46)",
+                margin: 0,
+              }}
+            >
+              Sans r&eacute;fl&eacute;chir &agrave; l&apos;infini.<br />
+              Sans tourner en boucle.
             </p>
           </div>
 
