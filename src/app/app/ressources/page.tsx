@@ -384,7 +384,7 @@ export default function RessourcesPage() {
                         <p className="font-sans leading-relaxed" style={pNormal}>
                           Tout &ccedil;a en une fraction de seconde.
                         </p>
-                        <p className="my-6 text-[1.15em] font-semibold leading-relaxed text-[#F0E6D6]">
+                        <p className="my-6 text-[1.15em] font-semibold leading-relaxed text-[#F0E6D6]" style={{ marginBottom: 28 }}>
                           Ce que tu ressens n&apos;est pas excessif. C&apos;est une r&eacute;action.
                         </p>
                         <p className="font-sans leading-relaxed" style={pNormal}>
