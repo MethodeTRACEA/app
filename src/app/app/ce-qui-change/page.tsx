@@ -121,92 +121,185 @@ export default function CeQuiChangePage() {
     ];
   }
 
+  // ── Styles V3 ────────────────────────────────────────────────────
+  const blockStyle: React.CSSProperties = {
+    background: "rgba(111,106,100,0.15)",
+    border: "1px solid rgba(240,230,214,0.085)",
+    borderRadius: 24,
+    padding: "28px 26px",
+    boxShadow: "0 18px 42px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.035)",
+  };
+
+  const kickerStyle: React.CSSProperties = {
+    fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+    fontSize: 12,
+    fontWeight: 400,
+    color: "#C97B6A",
+    letterSpacing: "0.20em",
+    textTransform: "uppercase" as const,
+    marginBottom: 18,
+  };
+
+  const blockTextStyle: React.CSSProperties = {
+    fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+    fontSize: "1.05rem",
+    fontWeight: 300,
+    color: "#F0E6D6",
+    lineHeight: 1.6,
+  };
+
+  const emStyle: React.CSSProperties = {
+    color: "rgba(240,230,214,0.70)",
+    fontStyle: "italic",
+  };
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 space-y-6">
-      <h1 className="section-title">Ce qui change</h1>
-      <p className="font-body text-sm text-warm-gray">
-        Ce qui se construit en toi, traversée après traversée.
-      </p>
+    <div
+      style={{
+        minHeight: "calc(100svh - 56px)",
+        background:
+          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
+          "radial-gradient(ellipse at 15% 0%, rgba(111,106,100,0.16) 0%, transparent 58%), " +
+          "#1A120D",
+        position: "relative",
+      }}
+    >
+      {/* Halo V3 */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          background: "radial-gradient(circle at 50% 35%, rgba(255,180,120,0.14) 0%, rgba(255,140,90,0.07) 30%, rgba(28,20,16,0) 60%)",
+        }}
+      />
 
-      {/* ── TON RYTHME ── */}
-      <div className="card-base p-6">
-        <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-          Ton rythme
-        </p>
-        <p className="font-body text-base text-espresso leading-relaxed">
-          {rythmeText}
-        </p>
-      </div>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: 640,
+          margin: "0 auto",
+          padding: "48px 20px 64px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+        }}
+      >
+        {/* Titre */}
+        <h1
+          className="font-body"
+          style={{
+            fontSize: "clamp(1.75rem, 5vw, 2.25rem)",
+            fontWeight: 300,
+            color: "#F0E6D6",
+            lineHeight: 1.15,
+            letterSpacing: "-0.01em",
+            marginBottom: 0,
+          }}
+        >
+          Ce qui change
+        </h1>
 
-      {/* ── CE QUI BOUGE EN TOI ── */}
-      {transformationLines.length > 0 && (
-        <div className="card-base p-6">
-          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-            Ce qui bouge en toi
+        {/* Sous-titre */}
+        <p
+          className="font-body"
+          style={{
+            fontSize: "1rem",
+            fontWeight: 300,
+            color: "rgba(240,230,214,0.60)",
+            lineHeight: 1.5,
+            marginTop: -8,
+          }}
+        >
+          Ce qui se construit en toi, traversée après traversée.
+        </p>
+
+        {/* ── TON RYTHME ── */}
+        <div style={blockStyle}>
+          <p className="font-sans" style={kickerStyle}>
+            Ton rythme
           </p>
-          <div className="font-body text-base text-espresso leading-loose space-y-3">
-            {transformationLines.map((line, index) => (
-              <p key={index}>{line}</p>
-            ))}
-          </div>
+          <p className="font-body" style={blockTextStyle}>
+            {rythmeText}
+          </p>
         </div>
-      )}
 
-      {/* ── TON CHEMIN DE RETOUR ── */}
-      <div className="card-base p-6 space-y-4">
-        <p className="text-xs uppercase tracking-wider opacity-60">
-          Ton chemin de retour
-        </p>
+        {/* ── CE QUI BOUGE EN TOI ── */}
+        {transformationLines.length > 0 && (
+          <div style={blockStyle}>
+            <p className="font-sans" style={kickerStyle}>
+              Ce qui bouge en toi
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {transformationLines.map((line, index) => (
+                <p key={index} className="font-body" style={blockTextStyle}>
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
 
-        {recentRepeatedActionDisplay ? (
-          <p className="font-body text-base text-espresso leading-relaxed">
-            Quand ça s'active,{" "}
-            <br />
-            tu reviens à :
-            <br />
-            <br />
-            <em>« {recentRepeatedActionDisplay} »</em>.
+        {/* ── TON CHEMIN DE RETOUR ── */}
+        <div style={{ ...blockStyle, display: "flex", flexDirection: "column", gap: 16 }}>
+          <p className="font-sans" style={kickerStyle}>
+            Ton chemin de retour
           </p>
-        ) : recentActionSessions.length >= 2 ? (
-          <>
-            <p className="font-body text-base text-espresso leading-relaxed">Tu explores encore plusieurs façons de revenir.</p>
-            <p className="font-body text-base text-espresso leading-relaxed">Rien n'est figé, mais tu reviens.</p>
-          </>
-        ) : appuisDisplay.length === 0 ? (
-          <p className="font-body text-base text-espresso leading-relaxed">
-            Ton chemin de retour se dessine traversée après traversée.
-          </p>
-        ) : appuisDisplay.length === 1 ? (
-          <p className="font-body text-base text-espresso leading-relaxed">
-            Tu reviens souvent à :{" "}
-            <em>« {appuisDisplay[0]} »</em>.
-          </p>
-        ) : (
-          <p className="font-body text-base text-espresso leading-relaxed">
-            Tu reviens souvent à :{" "}
-            <em>« {appuisDisplay[0]} »</em> et{" "}
-            <em>« {appuisDisplay[1]} »</em>.
-          </p>
+
+          {recentRepeatedActionDisplay ? (
+            <p className="font-body" style={blockTextStyle}>
+              Quand ça s&apos;active,{" "}
+              <br />
+              tu reviens à :
+              <br />
+              <br />
+              <em style={emStyle}>« {recentRepeatedActionDisplay} »</em>.
+            </p>
+          ) : recentActionSessions.length >= 2 ? (
+            <>
+              <p className="font-body" style={blockTextStyle}>Tu explores encore plusieurs façons de revenir.</p>
+              <p className="font-body" style={blockTextStyle}>Rien n&apos;est figé, mais tu reviens.</p>
+            </>
+          ) : appuisDisplay.length === 0 ? (
+            <p className="font-body" style={blockTextStyle}>
+              Ton chemin de retour se dessine traversée après traversée.
+            </p>
+          ) : appuisDisplay.length === 1 ? (
+            <p className="font-body" style={blockTextStyle}>
+              Tu reviens souvent à :{" "}
+              <em style={emStyle}>« {appuisDisplay[0]} »</em>.
+            </p>
+          ) : (
+            <p className="font-body" style={blockTextStyle}>
+              Tu reviens souvent à :{" "}
+              <em style={emStyle}>« {appuisDisplay[0]} »</em> et{" "}
+              <em style={emStyle}>« {appuisDisplay[1]} »</em>.
+            </p>
+          )}
+        </div>
+
+        {/* ── CE QUI SE STABILISE ── */}
+        {sessions.length >= 2 && (
+          <div style={blockStyle}>
+            <p className="font-sans" style={kickerStyle}>
+              Ce qui se stabilise
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <p className="font-body" style={blockTextStyle}>
+                Tu reviens.
+              </p>
+              <p className="font-body" style={blockTextStyle}>
+                Tu traverses.
+              </p>
+              <p className="font-body" style={blockTextStyle}>
+                Tu fais un pas.
+              </p>
+            </div>
+          </div>
         )}
       </div>
-
-      {/* ── CE QUI SE STABILISE ── */}
-      {sessions.length >= 2 && (
-        <div className="card-base p-6">
-          <p className="text-xs font-medium tracking-widest uppercase text-warm-gray mb-4">
-            Ce qui se stabilise
-          </p>
-          <p className="font-body text-base text-espresso leading-relaxed">
-            Tu reviens.
-          </p>
-          <p className="font-body text-base text-espresso leading-relaxed mt-2">
-            Tu traverses.
-          </p>
-          <p className="font-body text-base text-espresso leading-relaxed mt-2">
-            Tu fais un pas.
-          </p>
-        </div>
-      )}
     </div>
   );
 }
