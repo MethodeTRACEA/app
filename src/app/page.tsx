@@ -198,7 +198,7 @@ export default function LandingPage() {
             {[
               "Ça serre dans ta poitrine",
               "Ton souffle se coupe",
-              "Tu relis le même message 10 fois",
+              "Tu as des pensées qui tournent en boucle",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <span
@@ -411,7 +411,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           CTA FINAL
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-16 md:py-20" style={{ zIndex: 1 }}>
+      <section className="relative px-6 pt-8 pb-16 md:pt-12 md:pb-20" style={{ zIndex: 1 }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
           <h2 className="text-[26px] md:text-[32px] tracking-tight mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Essaye maintenant
