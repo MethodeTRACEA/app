@@ -504,14 +504,42 @@ export async function getPremiumMemory(userId: string): Promise<PremiumMemory | 
 
 // --- Tracking events ---
 
+// ── Token anti-bot ──────────────────────────────────────────────────
+// Cache sessionStorage : une seule requête /api/track-token par onglet.
+// Si la récupération échoue, le tracking est silencieusement ignoré.
+
+const SESSION_TOKEN_KEY = "tracea_track_token";
+
+async function getTrackToken(): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+
+  // Cache sessionStorage — valide jusqu'à fermeture de l'onglet
+  const cached = sessionStorage.getItem(SESSION_TOKEN_KEY);
+  if (cached) return cached;
+
+  try {
+    const res = await fetch("/api/track-token");
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (typeof json?.token === "string" && json.token.length === 32) {
+      sessionStorage.setItem(SESSION_TOKEN_KEY, json.token);
+      return json.token;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Envoie un event de tracking via la route serveur /api/track-event.
  *
  * Garanties :
  * - Aucun insert direct Supabase depuis le navigateur.
  * - Bloqué silencieusement si le consentement est absent.
+ * - Bloqué silencieusement si le token anti-bot est indisponible.
+ * - Token expiré (403) → cache invalidé pour la prochaine fois.
  * - try/catch global : ne bloque jamais l'UX.
- * - Le serveur valide le payload et applique le rate limit.
  */
 export async function trackEvent(
   userId: string | null,
@@ -522,6 +550,10 @@ export async function trackEvent(
   if (typeof window === "undefined") return;
   if (localStorage.getItem("tracea_consent") !== "true") return;
 
+  // Token anti-bot — échec silencieux, jamais de crash UX
+  const trackToken = await getTrackToken();
+  if (!trackToken) return;
+
   // ID anonyme pour les utilisateurs non connectés
   const anonymousId = !userId
     ? (localStorage.getItem("tracea_anonymous_id") ?? undefined)
@@ -529,17 +561,23 @@ export async function trackEvent(
 
   // Envoi via route serveur — silencieux en cas d'erreur réseau ou serveur
   try {
-    await fetch("/api/track-event", {
+    const res = await fetch("/api/track-event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         tracea_consent: true,
+        track_token: trackToken,
         event,
         user_id: userId,
         data: data ?? {},
         ...(anonymousId ? { anonymous_id: anonymousId } : {}),
       }),
     });
+
+    // Token expiré (rotation horaire) → invalider le cache pour le prochain event
+    if (res.status === 403) {
+      sessionStorage.removeItem(SESSION_TOKEN_KEY);
+    }
   } catch {
     // Ne jamais faire crasher l'app pour un problème de tracking
   }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getClientIp } from "@/lib/rate-limit";
+import { isValidToken } from "@/lib/track-token";
 
 // ===================================================================
 // TRACK EVENT — Route serveur sécurisée
@@ -111,6 +112,11 @@ export async function POST(request: NextRequest) {
     // 3. Consentement — première vérification serveur
     if (body.tracea_consent !== true) {
       return NextResponse.json({ error: "Consentement requis" }, { status: 403 });
+    }
+
+    // 3b. Token anti-bot — refuser les appels directs non signés
+    if (!isValidToken(body.track_token)) {
+      return NextResponse.json({ error: "Token invalide" }, { status: 403 });
     }
 
     // 4. Champ event
