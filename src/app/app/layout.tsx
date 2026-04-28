@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { CookieBanner } from "@/components/CookieBanner";
+import { ConsentBanner } from "@/components/ConsentBanner";
 import { AuthProvider } from "@/lib/auth-context";
 import { OnboardingRedirect } from "@/components/OnboardingRedirect";
 import Link from "next/link";
@@ -39,6 +40,7 @@ export default function AppLayout({
         </div>
       </footer>
       <CookieBanner />
+      <ConsentBanner />
     </AuthProvider>
   );
 }

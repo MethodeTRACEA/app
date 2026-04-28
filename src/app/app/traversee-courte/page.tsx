@@ -57,6 +57,7 @@ type Screen =
   | "onboarding"
   | "transition"
   | "exit-transition"
+  | "soft-limit"
   | "entree"
   | "propose-long"
   | "ressenti"
@@ -981,6 +982,11 @@ function TraverseeCourteV2() {
                   onClick={() => {
                     setSelectedNeed(id);
                     trackEvent(user?.id ?? null, "session_end", { mode: "court" });
+                    // Incrémenter compteur sessions courtes gratuites
+                    if (!user) {
+                      const prev = parseInt(localStorage.getItem("tracea_free_short_sessions") ?? "0", 10);
+                      localStorage.setItem("tracea_free_short_sessions", String(prev + 1));
+                    }
                     setScreen("geste-display");
                   }}
                 />
@@ -1063,7 +1069,14 @@ function TraverseeCourteV2() {
               Tu peux revenir ici à chaque fois.
             </p>
             <InstallPrompt />
-            <PrimaryButton onClick={() => setScreen("exit-transition")}>
+            <PrimaryButton onClick={() => {
+              const count = parseInt(localStorage.getItem("tracea_free_short_sessions") ?? "0", 10);
+              if (!user && count > 1) {
+                setScreen("soft-limit");
+              } else {
+                setScreen("exit-transition");
+              }
+            }}>
               Retour à l&apos;accueil
             </PrimaryButton>
             <div className="text-center space-y-1.5">
@@ -1077,6 +1090,26 @@ function TraverseeCourteV2() {
               <p className="font-inter text-xs t-text-ghost opacity-70">
                 Prendre un moment pour y voir plus clair et repartir autrement
               </p>
+            </div>
+          </div>
+        );
+
+      case "soft-limit":
+        return (
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6 px-6 text-center">
+            <p className="font-body text-2xl" style={{ color: "#F0E6D6", fontWeight: 300 }}>
+              Tu peux continuer en créant ton accès
+            </p>
+            <p className="font-sans text-sm" style={{ color: "rgba(240,230,214,0.55)", lineHeight: 1.6 }}>
+              Garde ta progression et retrouve tes traversées.
+            </p>
+            <div className="flex flex-col gap-3 w-full max-w-xs">
+              <PrimaryButton onClick={() => router.push("/app/connexion")}>
+                Créer mon accès
+              </PrimaryButton>
+              <SecondaryButton onClick={() => setScreen("exit-transition")}>
+                Continuer sans compte
+              </SecondaryButton>
             </div>
           </div>
         );

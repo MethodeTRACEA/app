@@ -509,10 +509,24 @@ export async function trackEvent(
   event: string,
   data?: Record<string, unknown>
 ) {
+  // Vérification consentement — ne rien envoyer sans accord explicite
+  if (typeof window !== "undefined") {
+    if (localStorage.getItem("tracea_consent") !== "true") return;
+  }
+
+  // Récupération de l'ID anonyme si utilisateur non connecté
+  const anonymousId =
+    !userId && typeof window !== "undefined"
+      ? (localStorage.getItem("tracea_anonymous_id") ?? undefined)
+      : undefined;
+
   await supabase.from("tracea_events").insert({
     user_id: userId,
     event,
-    data: data ?? {},
+    data: {
+      ...(data ?? {}),
+      ...(anonymousId ? { anonymous_id: anonymousId } : {}),
+    },
   });
 }
 
