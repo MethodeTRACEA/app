@@ -97,15 +97,15 @@ export default function Accueil() {
             borderRadius: "999px",
             padding: "17px 26px",
             fontSize: "13.5px",
-            fontWeight: 300,
+            fontWeight: 400,
             letterSpacing: "0.01em",
-            color: "rgba(240,230,214,0.92)",
-            background: "rgba(111,106,100,0.42)",
-            border: "1.5px solid rgba(240,230,214,0.35)",
-            boxShadow: "0 0 28px rgba(240,230,214,0.10), 0 12px 30px rgba(0,0,0,0.35)",
+            color: "rgba(240,230,214,0.95)",
+            background: "linear-gradient(180deg, rgba(111,106,100,0.55), rgba(76,69,64,0.65))",
+            border: "1.5px solid rgba(240,230,214,0.45)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)",
           }}
         >
-          <span style={{ fontSize: "16px", color: "#D4A96A", textShadow: "0 0 14px rgba(212,169,106,0.75)" }}>⚡</span>
+          <span style={{ fontSize: "17px", color: "#D4A96A", textShadow: "0 0 18px rgba(212,169,106,0.90)" }}>⚡</span>
           <span>Redescendre, maintenant</span>
         </Link>
       </div>
