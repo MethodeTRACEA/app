@@ -150,7 +150,7 @@ export default function ProfilPage() {
           inset: 0,
           zIndex: 0,
           pointerEvents: "none",
-          background: "radial-gradient(circle at 50% 32%, rgba(201,123,106,0.22) 0%, rgba(201,123,106,0.12) 25%, rgba(26,18,13,0.85) 55%, rgba(26,18,13,1) 75%)",
+          background: "radial-gradient(circle at 50% 30%, rgba(201,123,106,0.28) 0%, rgba(201,123,106,0.18) 18%, rgba(201,123,106,0.10) 32%, rgba(26,18,13,0.82) 55%, rgba(26,18,13,1) 75%)",
         }}
       />
 
@@ -343,19 +343,25 @@ export default function ProfilPage() {
         </div>
 
         {/* ── Disclaimer ── */}
-        <div style={blockStyle}>
-          <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+        <div
+          style={{
+            ...blockStyle,
+            background: "rgba(111,106,100,0.12)",
+            padding: "22px 24px",
+          }}
+        >
+          <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
             <div
               style={{
-                width: 11,
-                height: 11,
+                width: 9,
+                height: 9,
                 borderRadius: "50%",
                 background: "#C97B6A",
-                marginTop: 6,
+                marginTop: 7,
                 flexShrink: 0,
               }}
             />
-            <p className="font-body" style={blockTextStyle}>
+            <p className="font-body" style={{ ...blockTextStyle, color: "rgba(240,230,214,0.85)" }}>
               TRACEA est un outil d&apos;exploration &eacute;motionnelle structur&eacute;e. Il ne
               remplace pas un suivi psychologique ou th&eacute;rapeutique.
             </p>
@@ -492,12 +498,13 @@ function MemoryProfileSection({
               </div>
             </div>
           ) : (
+            <div style={{ marginTop: 24, textAlign: "center" }}>
             <button
               onClick={handleDeleteMemory}
               className="font-sans"
               style={{
                 fontSize: 12,
-                color: "rgba(240,230,214,0.45)",
+                color: "rgba(240,230,214,0.50)",
                 textDecoration: "underline",
                 textUnderlineOffset: 3,
                 cursor: "pointer",
@@ -505,6 +512,7 @@ function MemoryProfileSection({
             >
               Effacer ma m&eacute;moire TRACEA
             </button>
+          </div>
           )}
         </div>
       )}
