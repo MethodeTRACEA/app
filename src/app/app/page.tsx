@@ -99,12 +99,13 @@ export default function Accueil() {
             fontSize: "13.5px",
             fontWeight: 300,
             letterSpacing: "0.01em",
-            color: "rgba(240,230,214,0.65)",
-            background: "rgba(111,106,100,0.20)",
-            border: "1px solid rgba(240,230,214,0.14)",
+            color: "rgba(240,230,214,0.82)",
+            background: "rgba(111,106,100,0.26)",
+            border: "1px solid rgba(240,230,214,0.20)",
+            boxShadow: "0 0 24px rgba(240,230,214,0.06)",
           }}
         >
-          <span style={{ color: "#F6C94A" }}>⚡</span>
+          <span style={{ color: "#C97B6A", filter: "drop-shadow(0 0 5px rgba(201,123,106,0.45))" }}>⚡</span>
           <span>Redescendre, maintenant</span>
         </Link>
       </div>
