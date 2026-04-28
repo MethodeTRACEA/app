@@ -36,7 +36,7 @@ export default function Accueil() {
 
   return (
     <div
-      className="min-h-[calc(100svh-56px)] flex flex-col"
+      className="min-h-[calc(100svh-56px)] flex flex-col relative"
       style={{
         background:
           "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
@@ -45,8 +45,19 @@ export default function Accueil() {
       }}
     >
 
+      {/* Halo V3 */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          background: "radial-gradient(circle at 50% 42%, rgba(255,180,120,0.18) 0%, rgba(255,140,90,0.10) 28%, rgba(28,20,16,0) 62%)",
+        }}
+      />
+
       {/* Zone 1 — titre + texte, centrés verticalement */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center px-6 gap-6">
+      <div className="flex-1 flex flex-col items-center justify-center text-center px-6 gap-6 relative z-[1]">
         <h1
           className="font-body leading-tight"
           style={{
@@ -71,7 +82,7 @@ export default function Accueil() {
       </div>
 
       {/* Zone 2 — boutons ancrés en bas */}
-      <div className="w-full max-w-md mx-auto px-6 pb-14 flex flex-col gap-5">
+      <div className="w-full max-w-md mx-auto px-6 pb-14 flex flex-col gap-5 relative z-[1]">
         <Link
           href="/start"
           className="w-full block text-center"
@@ -112,7 +123,7 @@ export default function Accueil() {
       </div>
 
       {/* Zone 3 — sections secondaires */}
-      <div className="w-full max-w-md mx-auto px-6 pb-10 space-y-4">
+      <div className="w-full max-w-md mx-auto px-6 pb-10 space-y-4 relative z-[1]">
 
         {/* Dernière session (si existe) */}
         {lastSession && lastSession.completed && (

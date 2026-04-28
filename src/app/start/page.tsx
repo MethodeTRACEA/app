@@ -11,6 +11,7 @@ export default function StartPage() {
   return (
     <div
       style={{
+        position: "relative",
         minHeight: "100vh",
         background: `
           radial-gradient(ellipse 70% 50% at 30% 20%, rgba(201,144,124,0.08) 0%, transparent 65%),
@@ -39,17 +40,11 @@ export default function StartPage() {
       {/* Halo V3 */}
       <div
         style={{
-          position: "fixed",
+          position: "absolute",
           inset: 0,
+          zIndex: 0,
           pointerEvents: "none",
-          background: `
-            radial-gradient(
-              circle at 50% 40%,
-              rgba(255,180,120,0.18) 0%,
-              rgba(255,140,90,0.12) 25%,
-              rgba(28,20,16,0.0) 60%
-            )
-          `,
+          background: "radial-gradient(circle at 50% 42%, rgba(255,180,120,0.18) 0%, rgba(255,140,90,0.10) 28%, rgba(28,20,16,0) 62%)",
         }}
       />
 
