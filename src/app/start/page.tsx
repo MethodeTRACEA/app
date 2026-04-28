@@ -36,6 +36,23 @@ export default function StartPage() {
         }}
       />
 
+      {/* Halo V3 */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          background: `
+            radial-gradient(
+              circle at 50% 40%,
+              rgba(255,180,120,0.18) 0%,
+              rgba(255,140,90,0.12) 25%,
+              rgba(28,20,16,0.0) 60%
+            )
+          `,
+        }}
+      />
+
       <div style={{ maxWidth: 440, width: "100%", textAlign: "center", position: "relative", zIndex: 1 }}>
         {/* Logo */}
         <img
