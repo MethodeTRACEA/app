@@ -435,19 +435,18 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           CTA FINAL
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 pt-8 pb-14 md:pt-12 md:pb-16" style={{ zIndex: 1 }}>
+      <section className="relative z-10 px-6 pt-4 pb-10" style={{ zIndex: 1 }}>
         <div
           ref={finalCtaRef}
-          style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}
-          className={`transition-all duration-700 ease-out ${
+          className={`mx-auto flex max-w-[640px] flex-col items-center text-center transition-all duration-700 ease-out ${
             finalCtaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <h2 className="text-[26px] md:text-[32px] tracking-tight mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+          <h2 className="text-[26px] md:text-[32px] tracking-tight" style={{ fontWeight: 300, color: "#F0E6D6", marginBottom: 24 }}>
             Essaye maintenant
           </h2>
 
-          <p className="text-base mb-10" style={{ color: "rgba(240,230,214,0.60)" }}>
+          <p className="text-base" style={{ color: "rgba(240,230,214,0.60)", marginBottom: 32 }}>
             Juste 2 minutes.
             <br />
             Juste voir.
@@ -464,12 +463,13 @@ export default function LandingPage() {
               fontWeight: 600,
               textDecoration: "none",
               boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
+              marginBottom: 20,
             }}
           >
             Lancer ma travers&eacute;e
           </Link>
 
-          <p className="text-[13px] mt-4 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
+          <p className="text-[13px] tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
             Premi&egrave;re travers&eacute;e gratuite
           </p>
         </div>
