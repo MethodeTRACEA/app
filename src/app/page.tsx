@@ -411,7 +411,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           CTA FINAL
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 pt-8 pb-16 md:pt-12 md:pb-20" style={{ zIndex: 1 }}>
+      <section className="relative px-6 pt-6 pb-12 md:pt-10 md:pb-16 min-h-[90vh] md:min-h-0 flex flex-col justify-center" style={{ zIndex: 1 }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
           <h2 className="text-[26px] md:text-[32px] tracking-tight mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Essaye maintenant
@@ -439,7 +439,7 @@ export default function LandingPage() {
             Lancer ma travers&eacute;e
           </Link>
 
-          <p className="text-[13px] mt-6 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
+          <p className="text-[13px] mt-4 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
             Premi&egrave;re travers&eacute;e gratuite
           </p>
         </div>
