@@ -6,21 +6,26 @@ import type { CSSProperties } from "react";
 // ── Styles V3 ────────────────────────────────────────────────────────────────
 
 const blockStyle: CSSProperties = {
-  background:
-    "linear-gradient(180deg, rgba(120,110,100,0.22) 0%, rgba(72,52,42,0.18) 100%)",
+  background: "rgba(111,106,100,0.18)",
   border: "1px solid rgba(240,230,214,0.10)",
   borderRadius: 24,
   padding: "28px 26px",
-  boxShadow:
-    "0 24px 64px rgba(0,0,0,0.38), 0 0 48px rgba(201,123,106,0.10), inset 0 1px 0 rgba(255,255,255,0.05)",
+  boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
 };
 
 const warningBlockStyle: CSSProperties = {
-  background: "rgba(72,52,42,0.28)",
-  border: "1px solid rgba(240,230,214,0.12)",
+  background: "rgba(111,106,100,0.18)",
+  border: "1px solid rgba(240,230,214,0.14)",
   borderRadius: 24,
   padding: "24px 26px",
-  boxShadow: "0 12px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03)",
+  boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+};
+
+const usageCardStyle: CSSProperties = {
+  background: "rgba(26,18,13,0.35)",
+  border: "1px solid rgba(240,230,214,0.07)",
+  borderRadius: 18,
+  padding: 18,
 };
 
 const pNormal: CSSProperties = {
@@ -34,13 +39,13 @@ const pNormal: CSSProperties = {
 
 const kickerText: CSSProperties = {
   fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
-  fontSize: 11,
+  fontSize: 12,
   fontWeight: 400,
   letterSpacing: "0.20em",
   textTransform: "uppercase",
   color: "#C97B6A",
   margin: 0,
-  marginBottom: 16,
+  marginBottom: 18,
 };
 
 const listStyle: CSSProperties = {
@@ -111,7 +116,7 @@ export default function CommentCaMarchePage() {
           zIndex: 0,
           pointerEvents: "none",
           background:
-            "radial-gradient(circle at 50% 18%, rgba(201,123,106,0.07) 0%, transparent 52%)",
+            "radial-gradient(circle at 50% 18%, rgba(201,123,106,0.14) 0%, transparent 58%)",
         }}
       />
 
@@ -241,6 +246,107 @@ export default function CommentCaMarchePage() {
           </p>
         </div>
 
+        {/* ── Bloc usages ── */}
+        <div style={blockStyle}>
+          <p style={kickerText}>Tu peux l&apos;utiliser de plusieurs fa&ccedil;ons</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+
+            {/* Usage 1 — Urgence */}
+            <div style={usageCardStyle}>
+              <p
+                className="font-sans"
+                style={{ fontSize: 14, fontWeight: 500, color: "#F0E6D6", margin: 0, marginBottom: 6, lineHeight: 1.4 }}
+              >
+                Quand &ccedil;a monte d&apos;un coup
+              </p>
+              <p
+                className="font-sans"
+                style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
+              >
+                Un acc&egrave;s rapide pour redescendre sans r&eacute;fl&eacute;chir.
+              </p>
+              <Link
+                href="/app/urgence"
+                className="font-sans"
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "#C97B6A",
+                  textDecoration: "none",
+                  letterSpacing: "0.06em",
+                  borderBottom: "1px solid rgba(201,123,106,0.30)",
+                  paddingBottom: 1,
+                }}
+              >
+                M&apos;aider maintenant &rsaquo;
+              </Link>
+            </div>
+
+            {/* Usage 2 — Traversée */}
+            <div style={usageCardStyle}>
+              <p
+                className="font-sans"
+                style={{ fontSize: 14, fontWeight: 500, color: "#F0E6D6", margin: 0, marginBottom: 6, lineHeight: 1.4 }}
+              >
+                Quand tu veux faire une travers&eacute;e compl&egrave;te
+              </p>
+              <p
+                className="font-sans"
+                style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
+              >
+                Le parcours guid&eacute; &eacute;tape par &eacute;tape.
+              </p>
+              <Link
+                href="/app"
+                className="font-sans"
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "#C97B6A",
+                  textDecoration: "none",
+                  letterSpacing: "0.06em",
+                  borderBottom: "1px solid rgba(201,123,106,0.30)",
+                  paddingBottom: 1,
+                }}
+              >
+                Faire une travers&eacute;e &rsaquo;
+              </Link>
+            </div>
+
+            {/* Usage 3 — Entraînement */}
+            <div style={usageCardStyle}>
+              <p
+                className="font-sans"
+                style={{ fontSize: 14, fontWeight: 500, color: "#F0E6D6", margin: 0, marginBottom: 6, lineHeight: 1.4 }}
+              >
+                Quand tu veux aller plus loin
+              </p>
+              <p
+                className="font-sans"
+                style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", margin: 0, marginBottom: 14, lineHeight: 1.55 }}
+              >
+                Une travers&eacute;e plus approfondie pour mieux comprendre ce qui se joue et avancer dans le temps.
+              </p>
+              <Link
+                href="/app/entrainement"
+                className="font-sans"
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "#C97B6A",
+                  textDecoration: "none",
+                  letterSpacing: "0.06em",
+                  borderBottom: "1px solid rgba(201,123,106,0.30)",
+                  paddingBottom: 1,
+                }}
+              >
+                M&apos;entra&icirc;ner &rsaquo;
+              </Link>
+            </div>
+
+          </div>
+        </div>
+
         {/* ── Bloc 4 ── */}
         <div style={blockStyle}>
           <p style={kickerText}>En quelques minutes&nbsp;:</p>
@@ -249,13 +355,13 @@ export default function CommentCaMarchePage() {
               <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                 <span
                   style={{
-                    color: "#8A9E7A",
+                    color: "#C97B6A",
                     fontSize: 14,
                     lineHeight: 1.65,
                     flexShrink: 0,
                   }}
                 >
-                  ✓
+                  —
                 </span>
                 <span style={pNormal}>{item}</span>
               </li>
@@ -309,7 +415,7 @@ export default function CommentCaMarchePage() {
         </div>
 
         {/* ── CTA ── */}
-        <div style={{ textAlign: "center", marginTop: 16 }}>
+        <div style={{ textAlign: "center", marginTop: 40 }}>
           <Link
             href="/app"
             className="font-sans"
