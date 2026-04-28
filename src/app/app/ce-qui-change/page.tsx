@@ -171,7 +171,7 @@ export default function CeQuiChangePage() {
           inset: 0,
           zIndex: 0,
           pointerEvents: "none",
-          background: "radial-gradient(circle at 50% 35%, rgba(201,123,106,0.22) 0%, rgba(201,123,106,0.12) 25%, rgba(26,18,13,0.85) 55%, rgba(26,18,13,1) 75%)",
+          background: "radial-gradient(circle at 50% 32%, rgba(201,123,106,0.28) 0%, rgba(201,123,106,0.18) 18%, rgba(201,123,106,0.10) 32%, rgba(26,18,13,0.82) 55%, rgba(26,18,13,1) 75%)",
         }}
       />
 
