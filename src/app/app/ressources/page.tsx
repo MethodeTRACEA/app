@@ -119,16 +119,16 @@ const steps: StepResource[] = [
 
 const pNormal = {
   fontSize: 15,
-  lineHeight: 1.8,
+  lineHeight: 1.65,
   margin: 0,
   color: "rgba(245,239,230,0.75)",
 } as const;
 
 const blockStyle: React.CSSProperties = {
-  background: "rgba(111,106,100,0.18)",
+  background: "rgba(120,110,100,0.20)",
   border: "1px solid rgba(240,230,214,0.10)",
   borderRadius: 24,
-  boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+  boxShadow: "0 24px 64px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05)",
 };
 
 const kickerStyle: React.CSSProperties = {
@@ -347,14 +347,15 @@ export default function RessourcesPage() {
                   </div>
                   <div
                     style={{
-                      color: "rgba(168,144,128,0.5)",
-                      fontSize: 16,
-                      transition: "transform 0.3s",
-                      transform: activeStep === step.number ? "rotate(180deg)" : "rotate(0deg)",
+                      color: "rgba(240,230,214,0.50)",
+                      fontSize: 14,
+                      display: "inline-block",
+                      transition: "transform 0.25s ease",
+                      transform: activeStep === step.number ? "rotate(90deg)" : "rotate(0deg)",
                       flexShrink: 0,
                     }}
                   >
-                    &#9662;
+                    ›
                   </div>
                 </button>
 
@@ -365,7 +366,7 @@ export default function RessourcesPage() {
                     <div
                       style={{
                         height: 1,
-                        background: "rgba(240,230,214,0.08)",
+                        background: "rgba(240,230,214,0.05)",
                         marginBottom: 20,
                       }}
                     />
@@ -577,9 +578,9 @@ export default function RessourcesPage() {
                             style={{
                               marginTop: 12,
                               padding: "16px 18px",
-                              borderRadius: 12,
-                              background: "rgba(26,18,13,0.5)",
-                              border: "1px solid rgba(240,230,214,0.08)",
+                              background: "rgba(10,8,7,0.35)",
+                              border: "1px solid rgba(240,230,214,0.06)",
+                              borderRadius: 16,
                               display: "flex",
                               flexDirection: "column",
                               gap: 10,
