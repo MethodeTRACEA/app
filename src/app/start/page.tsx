@@ -49,10 +49,10 @@ export default function StartPage() {
           className="font-body"
           style={{
             fontSize: "clamp(1.75rem, 5vw, 2.25rem)",
-            color: "#F5EFE6",
+            color: "#F0E6D6",
             lineHeight: 1.2,
             marginBottom: 24,
-            fontWeight: 500,
+            fontWeight: 300,
           }}
         >
           Ca peut redescendre. Maintenant.
@@ -63,7 +63,7 @@ export default function StartPage() {
           className="font-sans"
           style={{
             fontSize: "clamp(1rem, 2.5vw, 1.125rem)",
-            color: "#A89080",
+            color: "rgba(240,230,214,0.60)",
             lineHeight: 1.6,
             marginBottom: 32,
           }}
@@ -74,13 +74,13 @@ export default function StartPage() {
         {/* Sous-texte */}
         <p
           className="font-sans"
-          style={{ fontSize: 14, color: "rgba(168,144,128,0.6)", lineHeight: 1.6, marginBottom: 4 }}
+          style={{ fontSize: 14, color: "rgba(240,230,214,0.45)", lineHeight: 1.6, marginBottom: 4 }}
         >
           Tu vas juste te laisser guider.
         </p>
         <p
           className="font-sans"
-          style={{ fontSize: 14, color: "rgba(168,144,128,0.55)", lineHeight: 1.6, marginBottom: 48 }}
+          style={{ fontSize: 14, color: "rgba(240,230,214,0.45)", lineHeight: 1.6, marginBottom: 48 }}
         >
           Pendant quelques minutes.
         </p>
@@ -101,9 +101,13 @@ export default function StartPage() {
               className="font-sans"
               style={{
                 fontSize: 12,
-                color: "rgba(168,144,128,0.45)",
+                color: "rgba(240,230,214,0.50)",
                 fontWeight: 500,
                 letterSpacing: "0.05em",
+                background: "rgba(111,106,100,0.15)",
+                border: "1px solid rgba(240,230,214,0.08)",
+                borderRadius: 999,
+                padding: "6px 10px",
               }}
             >
               {item}
@@ -114,7 +118,7 @@ export default function StartPage() {
         {/* Accroche pre-CTA */}
         <p
           className="font-body"
-          style={{ fontSize: 18, color: "rgba(245,239,230,0.5)", marginBottom: 24 }}
+          style={{ fontSize: 18, color: "rgba(240,230,214,0.55)", marginBottom: 24 }}
         >
           On commence ?
         </p>
@@ -127,14 +131,14 @@ export default function StartPage() {
             display: "inline-block",
             width: "100%",
             maxWidth: 320,
-            background: "#C9907C",
+            background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
             color: "#1C1410",
             fontWeight: 600,
             fontSize: 16,
             padding: "16px 40px",
             borderRadius: 40,
             textDecoration: "none",
-            boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15)",
+            boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
             transition: "transform 0.2s, box-shadow 0.2s",
           }}
         >
@@ -144,7 +148,7 @@ export default function StartPage() {
         {/* Micro texte */}
         <p
           className="font-sans"
-          style={{ fontSize: 12, color: "rgba(168,144,128,0.35)", marginTop: 24, lineHeight: 1.6 }}
+          style={{ fontSize: 12, color: "rgba(240,230,214,0.35)", marginTop: 24, lineHeight: 1.6 }}
         >
           Acc&egrave;s imm&eacute;diat. Sans engagement.
         </p>
