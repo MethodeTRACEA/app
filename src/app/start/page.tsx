@@ -34,6 +34,7 @@ const options = [
     title: "Aller plus loin",
     desc: "Une session complète pour comprendre et travailler en profondeur.",
     tag: "15 min",
+    badge: "Compte requis",
     accent: "rgba(111,106,100,0.18)",
     border: "rgba(240,230,214,0.10)",
     dot: "rgba(240,230,214,0.45)",
@@ -215,6 +216,19 @@ export default function StartPage() {
                 >
                   {opt.desc}
                 </p>
+                {"badge" in opt && opt.badge && (
+                  <p
+                    className="font-sans"
+                    style={{
+                      fontSize: 11,
+                      color: "rgba(240,230,214,0.30)",
+                      margin: "5px 0 0",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {opt.badge}
+                  </p>
+                )}
               </div>
 
               {/* Arrow */}
@@ -248,7 +262,7 @@ export default function StartPage() {
             letterSpacing: "0.03em",
           }}
         >
-          Gratuit · Sans compte · Arrête quand tu veux
+          Commence gratuitement · Sans compte · Arrête quand tu veux
         </p>
       </div>
     </div>
