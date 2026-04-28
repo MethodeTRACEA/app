@@ -138,6 +138,7 @@ export default function HistoriquePage() {
     border: "1px solid rgba(240,230,214,0.085)",
     borderRadius: 24,
     padding: "28px 26px",
+    boxShadow: "0 18px 42px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.035)",
   };
 
   const kickerStyle: React.CSSProperties = {
@@ -316,10 +317,10 @@ export default function HistoriquePage() {
 
         {/* ── Liste des sessions ── */}
         {sessions.length > 0 && (
-          <div>
+          <div style={{ marginTop: 16 }}>
             <p
               className="font-sans"
-              style={{ ...kickerStyle, marginBottom: 16 }}
+              style={{ ...kickerStyle, marginBottom: 20, color: "#C97B6A", letterSpacing: "0.22em", fontWeight: 500 }}
             >
               Tes traces
             </p>
@@ -334,6 +335,7 @@ export default function HistoriquePage() {
                       border: "1px solid rgba(240,230,214,0.085)",
                       borderRadius: 22,
                       overflow: "hidden",
+                      boxShadow: "0 12px 28px rgba(0,0,0,0.22)",
                     }}
                   >
                     <button
@@ -401,7 +403,7 @@ export default function HistoriquePage() {
                           <div style={{ marginBottom: 16 }}>
                             <p
                               className="font-sans"
-                              style={{ fontSize: 11, color: "rgba(240,230,214,0.35)", marginBottom: 6, letterSpacing: "0.10em" }}
+                              style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 6, letterSpacing: "0.10em" }}
                             >
                               Ce qui s&apos;est passé :
                             </p>
@@ -419,15 +421,16 @@ export default function HistoriquePage() {
                           <div
                             style={{
                               marginBottom: 20,
-                              background: "rgba(111,106,100,0.18)",
+                              background: "rgba(70,55,45,0.42)",
                               border: "1px solid rgba(240,230,214,0.07)",
                               borderRadius: 16,
                               padding: "18px 20px",
+                              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.025), 0 8px 20px rgba(0,0,0,0.20)",
                             }}
                           >
                             <p
                               className="font-sans"
-                              style={{ fontSize: 11, color: "rgba(240,230,214,0.35)", marginBottom: 12, letterSpacing: "0.10em" }}
+                              style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 12, letterSpacing: "0.10em" }}
                             >
                               Ce que tu viens de traverser
                             </p>
@@ -516,7 +519,7 @@ export default function HistoriquePage() {
                                 </p>
                               ) : (
                                 <p
-                                  style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.28)" }}
+                                  style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.45)" }}
                                 >
                                   Ajouter une note...
                                 </p>
@@ -539,7 +542,7 @@ export default function HistoriquePage() {
                               e.stopPropagation();
                               if (confirm("Supprimer cette trace ?")) handleDelete(s.id);
                             }}
-                            style={{ fontSize: 12, color: "rgba(240,230,214,0.30)", cursor: "pointer" }}
+                            style={{ fontSize: 12, color: "rgba(240,230,214,0.45)", cursor: "pointer" }}
                           >
                             Supprimer
                           </button>
