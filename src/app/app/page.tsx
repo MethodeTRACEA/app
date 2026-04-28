@@ -45,7 +45,7 @@ export default function Accueil() {
       }}
     >
       {/* ZONE 2 — Centre : titre + texte + boutons */}
-      <section className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-6">
+      <section className="flex-1 flex flex-col items-center px-6 text-center gap-6 pt-16">
         <h1
           className="font-body"
           style={{
@@ -68,7 +68,7 @@ export default function Accueil() {
         >
           Un espace pour revenir &agrave; quelque chose de plus supportable.
         </p>
-        <div className="flex flex-col gap-4 mt-10 w-full max-w-sm">
+        <div className="flex flex-col gap-4 mt-20 w-full max-w-sm">
           <Link
             href="/start"
             className="w-full block text-center"
