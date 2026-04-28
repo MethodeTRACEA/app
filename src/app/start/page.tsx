@@ -49,7 +49,7 @@ const options: Option[] = [
     tag: "5 min",
     recommended: true,
     dot: "#C97B6A",
-    border: "rgba(240,230,214,0.16)",
+    border: "rgba(240,230,214,0.22)",
   },
   {
     href: "/app/session",
@@ -60,8 +60,8 @@ const options: Option[] = [
     badge: "Compte requis",
     dot: "rgba(240,230,214,0.28)",
     border: "rgba(240,230,214,0.10)",
-    cardOpacity: 0.88,
-    titleColor: "rgba(240,230,214,0.86)",
+    cardOpacity: 0.94,
+    titleColor: "rgba(240,230,214,0.90)",
   },
 ];
 
@@ -95,13 +95,13 @@ export default function StartPage() {
 
       {/* Contenu centré */}
       <section
-        className="relative flex items-center justify-center px-6 py-10"
+        className="relative flex items-center justify-center px-6 py-6"
         style={{ minHeight: "100dvh", zIndex: 1 }}
       >
         <div className="relative z-10 w-full text-center" style={{ maxWidth: 420 }}>
 
           {/* Logo — rendu identique à la landing, sans wrapper avec fond */}
-          <div className="mb-5">
+          <div className="mb-3">
             <img
               src="/images/tracea-logo-terra-transparent.png"
               alt="TRACÉA"
@@ -119,7 +119,7 @@ export default function StartPage() {
               fontWeight: 300,
               lineHeight: 1.15,
               color: "#F0E6D6",
-              marginBottom: 6,
+              marginBottom: 4,
               letterSpacing: "-0.01em",
             }}
           >
@@ -133,7 +133,7 @@ export default function StartPage() {
               fontSize: 14,
               color: "rgba(240,230,214,0.50)",
               lineHeight: 1.5,
-              marginBottom: 18,
+              marginBottom: 14,
             }}
           >
             Choisis le chemin qui correspond à ton état maintenant.
@@ -149,14 +149,17 @@ export default function StartPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: 14,
-                  background: "rgba(111,106,100,0.18)",
+                  background: opt.recommended
+                    ? "rgba(111,106,100,0.22)"
+                    : "rgba(111,106,100,0.18)",
                   border: `1px solid ${opt.border}`,
                   borderRadius: 24,
                   padding: "16px 20px",
                   textDecoration: "none",
                   textAlign: "left",
-                  boxShadow:
-                    "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+                  boxShadow: opt.recommended
+                    ? "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04), 0 0 18px rgba(201,123,106,0.10)"
+                    : "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
                   opacity: opt.cardOpacity ?? 1,
                   transition: "opacity 0.2s ease",
                 }}
@@ -302,7 +305,7 @@ export default function StartPage() {
             style={{
               fontSize: 12,
               color: "rgba(240,230,214,0.28)",
-              marginTop: 14,
+              marginTop: 10,
               lineHeight: 1.55,
               letterSpacing: "0.01em",
             }}
