@@ -60,8 +60,8 @@ const options: Option[] = [
     badge: "Compte requis",
     dot: "rgba(240,230,214,0.28)",
     border: "rgba(240,230,214,0.10)",
-    cardOpacity: 0.78,
-    titleColor: "rgba(240,230,214,0.78)",
+    cardOpacity: 0.88,
+    titleColor: "rgba(240,230,214,0.86)",
   },
 ];
 
@@ -115,11 +115,11 @@ export default function StartPage() {
             className="tracking-tight"
             style={{
               fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
-              fontSize: "clamp(30px, 8vw, 40px)",
+              fontSize: "clamp(26px, 7vw, 34px)",
               fontWeight: 300,
               lineHeight: 1.15,
               color: "#F0E6D6",
-              marginBottom: 8,
+              marginBottom: 6,
               letterSpacing: "-0.01em",
             }}
           >
@@ -133,7 +133,7 @@ export default function StartPage() {
               fontSize: 14,
               color: "rgba(240,230,214,0.50)",
               lineHeight: 1.5,
-              marginBottom: 28,
+              marginBottom: 18,
             }}
           >
             Choisis le chemin qui correspond à ton état maintenant.
@@ -152,7 +152,7 @@ export default function StartPage() {
                   background: "rgba(111,106,100,0.18)",
                   border: `1px solid ${opt.border}`,
                   borderRadius: 24,
-                  padding: "20px 22px",
+                  padding: "16px 20px",
                   textDecoration: "none",
                   textAlign: "left",
                   boxShadow:
@@ -266,7 +266,7 @@ export default function StartPage() {
                       className="font-sans"
                       style={{
                         fontSize: 10,
-                        color: "rgba(240,230,214,0.32)",
+                        color: "rgba(240,230,214,0.42)",
                         margin: "5px 0 0",
                         letterSpacing: "0.04em",
                       }}
@@ -302,7 +302,7 @@ export default function StartPage() {
             style={{
               fontSize: 12,
               color: "rgba(240,230,214,0.28)",
-              marginTop: 20,
+              marginTop: 14,
               lineHeight: 1.55,
               letterSpacing: "0.01em",
             }}
