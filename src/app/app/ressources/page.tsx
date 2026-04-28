@@ -118,17 +118,18 @@ const steps: StepResource[] = [
 ];
 
 const pNormal = {
+  fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
   fontSize: 15,
   lineHeight: 1.65,
   margin: 0,
-  color: "rgba(245,239,230,0.75)",
+  color: "rgba(240,230,214,0.68)",
 } as const;
 
 const blockStyle: React.CSSProperties = {
-  background: "rgba(120,110,100,0.20)",
+  background: "linear-gradient(180deg, rgba(120,110,100,0.22) 0%, rgba(72,52,42,0.18) 100%)",
   border: "1px solid rgba(240,230,214,0.10)",
   borderRadius: 24,
-  boxShadow: "0 24px 64px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05)",
+  boxShadow: "0 24px 64px rgba(0,0,0,0.38), 0 0 48px rgba(201,123,106,0.10), inset 0 1px 0 rgba(255,255,255,0.05)",
 };
 
 const kickerStyle: React.CSSProperties = {
@@ -175,7 +176,7 @@ export default function RessourcesPage() {
           inset: 0,
           zIndex: 0,
           pointerEvents: "none",
-          background: "radial-gradient(circle at 50% 32%, rgba(201,123,106,0.28) 0%, rgba(201,123,106,0.18) 18%, rgba(201,123,106,0.10) 32%, rgba(26,18,13,0.82) 55%, rgba(26,18,13,1) 75%)",
+          background: "radial-gradient(circle at 50% 18%, rgba(201,123,106,0.07) 0%, transparent 52%)",
         }}
       />
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "56px 16px 80px", position: "relative", zIndex: 1 }}>
@@ -383,10 +384,10 @@ export default function RessourcesPage() {
                         <p className="font-sans leading-relaxed" style={pNormal}>
                           Tout &ccedil;a en une fraction de seconde.
                         </p>
-                        <p className="my-6 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]">
+                        <p className="my-6 text-[1.15em] font-semibold leading-relaxed text-[#F0E6D6]">
                           Ce que tu ressens n&apos;est pas excessif. C&apos;est une r&eacute;action.
                         </p>
-                        <p className="text-[var(--text-secondary)] leading-relaxed">
+                        <p className="font-sans leading-relaxed" style={pNormal}>
                           Et quand &ccedil;a arrive, le r&eacute;flexe naturel est de fuir&nbsp;: penser &agrave; autre chose, s&apos;occuper, minimiser. Mais fuir ne fait pas dispara&icirc;tre l&apos;&eacute;motion. Elle reste, elle revient autrement.
                         </p>
                         <p className="font-sans mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
@@ -515,19 +516,19 @@ export default function RessourcesPage() {
                               key={i}
                               className={
                                 isHighlight
-                                  ? (step.highlightClass ?? "font-sans my-8 text-[1.15em] font-semibold leading-relaxed text-[#F3E6D7]")
+                                  ? (step.highlightClass ?? "font-sans my-8 text-[1.15em] font-semibold leading-relaxed text-[#F0E6D6]")
                                   : "font-sans"
                               }
                               style={{
                                 fontSize: isHighlight ? undefined : 15,
-                                lineHeight: isHighlight ? undefined : 1.8,
+                                lineHeight: isHighlight ? undefined : 1.65,
                                 margin: isHighlight ? undefined : 0,
                                 whiteSpace: "pre-line",
                                 color: isHighlight
                                   ? undefined
                                   : isLast
-                                  ? "#C9907C"
-                                  : "rgba(245,239,230,0.75)",
+                                  ? "#D99A84"
+                                  : "rgba(240,230,214,0.68)",
                                 fontStyle: isHighlight ? undefined : isLast ? "italic" : "normal",
                                 fontWeight: isHighlight ? undefined : isLast ? 500 : 400,
                               }}
@@ -594,7 +595,7 @@ export default function RessourcesPage() {
                                   fontSize: 13,
                                   lineHeight: 1.7,
                                   margin: 0,
-                                  color: "rgba(168,144,128,0.7)",
+                                  color: "rgba(240,230,214,0.52)",
                                 }}
                               >
                                 {para}
