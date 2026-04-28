@@ -435,7 +435,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           CTA FINAL
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 pt-6 pb-12 md:pt-10 md:pb-16 min-h-[90vh] md:min-h-0 flex flex-col justify-center" style={{ zIndex: 1 }}>
+      <section className="relative px-6 pt-8 pb-14 md:pt-12 md:pb-16" style={{ zIndex: 1 }}>
         <div
           ref={finalCtaRef}
           style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}
