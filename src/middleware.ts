@@ -12,7 +12,14 @@ export function middleware(request: NextRequest) {
   if (url === '/app/maintenance') return NextResponse.next()
 
   // Ne pas bloquer la landing page ni les pages légales
-  if (url === '/' || url === '/mentions-legales' || url === '/politique-confidentialite' || url === '/conditions-utilisation') {
+  if (
+    url === '/' ||
+    url === '/mentions-legales' ||
+    url === '/politique-confidentialite' ||
+    url === '/conditions-utilisation' ||
+    url === '/comment-ca-marche' ||
+    url === '/start'
+  ) {
     return NextResponse.next()
   }
 
