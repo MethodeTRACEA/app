@@ -299,12 +299,16 @@ export default function ProfilPage() {
         />
 
         {/* ── Données & confidentialité (accordéon) ── */}
-        <div>
+        <div style={{ marginTop: 8 }}>
           {/* Bouton accordéon */}
           <button
             onClick={() => setPrivacyOpen((o) => !o)}
+            className="active:scale-[0.995]"
             style={{
               ...blockStyle,
+              border: privacyOpen
+                ? "1px solid rgba(240,230,214,0.18)"
+                : "1px solid rgba(240,230,214,0.13)",
               width: "100%",
               textAlign: "left",
               cursor: "pointer",
@@ -312,6 +316,7 @@ export default function ProfilPage() {
               alignItems: "center",
               justifyContent: "space-between",
               gap: 16,
+              transition: "border 0.18s ease, background 0.18s ease",
             }}
           >
             <div>
@@ -330,18 +335,19 @@ export default function ProfilPage() {
               </p>
               <p
                 className="font-sans"
-                style={{ fontSize: 13, color: "rgba(240,230,214,0.50)", lineHeight: 1.4 }}
+                style={{ fontSize: 13, color: "rgba(240,230,214,0.55)", lineHeight: 1.4 }}
               >
-                Consentement, export et suppression de tes donn&eacute;es.
+                Tu peux g&eacute;rer tes donn&eacute;es ici, quand tu veux.
               </p>
             </div>
             <span
               style={{
-                color: "rgba(240,230,214,0.30)",
-                fontSize: 18,
-                transition: "transform 0.25s",
-                transform: privacyOpen ? "rotate(180deg)" : "none",
+                color: "rgba(240,230,214,0.55)",
+                fontSize: 22,
+                transition: "transform 0.18s ease",
+                transform: privacyOpen ? "rotate(90deg)" : "rotate(-90deg)",
                 flexShrink: 0,
+                lineHeight: 1,
               }}
             >
               ›
@@ -352,7 +358,7 @@ export default function ProfilPage() {
           {privacyOpen && (
             <div
               className="animate-fade-up"
-              style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 12 }}
+              style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 16 }}
             >
               <ConsentSection userId={user.id} />
 
