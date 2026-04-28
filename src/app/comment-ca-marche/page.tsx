@@ -1,12 +1,7 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-import type { CSSProperties } from "react";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Comment ça marche | TRACÉA",
-  description:
-    "Un protocole simple pour redescendre quand ça monte. Sans analyser. En revenant au corps.",
-};
+import Link from "next/link";
+import type { CSSProperties } from "react";
 
 // ── Styles V3 ────────────────────────────────────────────────────────────────
 
