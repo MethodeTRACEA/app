@@ -19,8 +19,7 @@ function getSupabaseService() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!key) {
-    console.warn("[TRACK EVENT] SUPABASE_SERVICE_ROLE_KEY manquante — fallback anon");
-    return createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY manquante");
   }
   return createClient(url, key, {
     auth: { autoRefreshToken: false, persistSession: false },
@@ -74,7 +73,6 @@ function slidingWindow(
 
 // ── Validation ────────────────────────────────────────────────────────
 
-const UUID_REGEX  = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // anonymous_id peut être un UUID ou une autre string alphanumérique courte
 const ANON_REGEX  = /^[a-zA-Z0-9_-]{1,64}$/;
 // event : lettres, chiffres, underscores, tirets, points
@@ -117,14 +115,9 @@ export async function POST(request: NextRequest) {
     }
     const event = body.event;
 
-    // 5. Champ user_id (optionnel — null ou UUID)
-    const rawUserId = body.user_id;
-    if (rawUserId !== undefined && rawUserId !== null) {
-      if (typeof rawUserId !== "string" || !UUID_REGEX.test(rawUserId)) {
-        return NextResponse.json({ error: "user_id invalide" }, { status: 400 });
-      }
-    }
-    const userId: string | null = typeof rawUserId === "string" ? rawUserId : null;
+    // 5. user_id — ignoré depuis le body, toujours null côté serveur
+    //    (l'identité est portée par anonymous_id dans data, pas par le body client)
+    const userId: string | null = null;
 
     // 6. Champ data (optionnel — objet plat)
     let data: Record<string, unknown> = {};
