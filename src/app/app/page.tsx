@@ -44,18 +44,18 @@ export default function Accueil() {
           "#1A120D",
       }}
     >
-      <div className="max-w-md mx-auto px-6 py-16 flex flex-col gap-8">
+      <div className="max-w-md mx-auto px-6 pt-24 pb-16 flex flex-col gap-8">
 
         {/* Hero court */}
         <section className="text-center flex flex-col gap-6 pt-4">
           <h1
             className="font-body"
             style={{
-              fontSize: "clamp(26px, 6.5vw, 32px)",
+              fontSize: "clamp(24px, 6vw, 30px)",
               fontWeight: 300,
-              lineHeight: 1.45,
+              lineHeight: 1.5,
               color: "#F0E6D6",
-              letterSpacing: "-0.005em",
+              letterSpacing: "0em",
             }}
           >
             Bienvenue dans TRACEA
@@ -70,7 +70,7 @@ export default function Accueil() {
           >
             Un espace pour revenir &agrave; quelque chose de plus supportable.
           </p>
-          <div className="flex flex-col gap-3 mt-8">
+          <div className="flex flex-col gap-4 mt-10">
             <Link
               href="/start"
               className="w-full block text-center"
@@ -98,9 +98,9 @@ export default function Accueil() {
                 fontSize: "13.5px",
                 fontWeight: 300,
                 letterSpacing: "0.01em",
-                color: "rgba(240,230,214,0.84)",
-                background: "rgba(111,106,100,0.26)",
-                border: "1px solid rgba(240,230,214,0.22)",
+                color: "rgba(240,230,214,0.88)",
+                background: "rgba(111,106,100,0.28)",
+                border: "1px solid rgba(240,230,214,0.26)",
               }}
             >
               <span style={{ color: "#F6C94A", filter: "drop-shadow(0 0 6px rgba(246,201,74,0.40))" }}>⚡</span>
