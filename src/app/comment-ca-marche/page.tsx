@@ -78,19 +78,6 @@ export default function CommentCaMarchePage() {
     "Tu choisis un geste simple",
   ];
 
-  const resultats = [
-    "ça relâche un peu",
-    "tu respires mieux",
-    "c’est plus clair",
-    "tu sais quoi faire",
-  ];
-
-  const usages = [
-    "après un message qui te déclenche",
-    "quand tu sens que ça tourne",
-    "avant une discussion importante",
-  ];
-
   const sensations = [
     "ça serre dans ta poitrine",
     "ton souffle se coupe",
@@ -345,60 +332,6 @@ export default function CommentCaMarchePage() {
             </div>
 
           </div>
-        </div>
-
-        {/* ── Bloc 4 ── */}
-        <div style={blockStyle}>
-          <p style={kickerText}>En quelques minutes&nbsp;:</p>
-          <ul style={listStyle}>
-            {resultats.map((item, i) => (
-              <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                <span
-                  style={{
-                    color: "#C97B6A",
-                    fontSize: 14,
-                    lineHeight: 1.65,
-                    flexShrink: 0,
-                  }}
-                >
-                  —
-                </span>
-                <span style={pNormal}>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <p
-            style={{
-              ...pNormal,
-              marginTop: 20,
-              fontStyle: "italic",
-              color: "#D99A84",
-            }}
-          >
-            C&apos;est d&eacute;j&agrave; suffisant.
-          </p>
-        </div>
-
-        {/* ── Bloc 5 ── */}
-        <div style={blockStyle}>
-          <p style={kickerText}>Tu peux utiliser TRAC&Eacute;A&nbsp;:</p>
-          <ul style={listStyle}>
-            {usages.map((item, i) => (
-              <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                <span
-                  style={{
-                    color: "#C97B6A",
-                    fontSize: 14,
-                    lineHeight: 1.65,
-                    flexShrink: 0,
-                  }}
-                >
-                  —
-                </span>
-                <span style={pNormal}>{item}</span>
-              </li>
-            ))}
-          </ul>
         </div>
 
         {/* ── Bloc 6 — Cadre disclaimer ── */}
