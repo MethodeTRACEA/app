@@ -7,17 +7,19 @@ export const metadata: Metadata = {
     "Commence ta traversee emotionnelle guidee. 2 a 10 minutes, gratuit, sans engagement.",
 };
 
-// ── Tokens stricts Preview V3 ────────────────────────────────────────
-// --t-bg           #1A120D
+// ── Design tokens V3 stricts (tracea_preview_v3.html) ────────────────
 // --t-bg-deep      #120D09
-// --t-surface      rgba(46,40,37,0.82)
+// --t-surface-taupe rgba(111,106,100,0.20)
 // --t-accent       #B8634F
-// --t-accent-light #C97B6A
 // --t-cream        #F0E6D6
 // --t-cream-dim    rgba(240,230,214,0.44)
 // --t-cream-soft   rgba(240,230,214,0.30)
+// --t-cream-ghost  rgba(240,230,214,0.18)
 // --t-cream-faint  rgba(240,230,214,0.08)
-// --t-gold         #D4A96A
+// --font-title     'Cormorant Garamond', serif
+// --font-ui        'DM Sans', sans-serif
+// --radius-lg      24px
+// --shadow-card    0 18px 48px rgba(0,0,0,0.38)
 
 type Option = {
   href: string;
@@ -29,6 +31,7 @@ type Option = {
   border: string;
   recommended?: true;
   badge?: string;
+  dim?: true;
 };
 
 const options: Option[] = [
@@ -39,7 +42,7 @@ const options: Option[] = [
     desc: "Quand c'est trop intense. Directement par le corps.",
     tag: "2 min",
     dot: "#B8634F",
-    border: "rgba(240,230,214,0.085)",
+    border: "rgba(240,230,214,0.08)",
   },
   {
     href: "/app/traversee-courte",
@@ -48,8 +51,8 @@ const options: Option[] = [
     desc: "Pour déposer, revenir au corps, puis choisir un geste simple.",
     tag: "5 min",
     recommended: true,
-    dot: "#D4A96A",
-    border: "rgba(212,169,106,0.38)",
+    dot: "#B8634F",
+    border: "rgba(240,230,214,0.18)",
   },
   {
     href: "/app/session",
@@ -58,26 +61,34 @@ const options: Option[] = [
     desc: "Une traversée complète avec analyse et mémoire de tes repères.",
     tag: "15 min",
     badge: "Compte requis",
-    dot: "rgba(240,230,214,0.35)",
-    border: "rgba(240,230,214,0.06)",
+    dot: "rgba(240,230,214,0.30)",
+    border: "rgba(240,230,214,0.08)",
+    dim: true,
   },
 ];
 
-// Style de carte glass V3 partagé
+// Carte V3 — surface taupe, pas de glow, pas de dégradé
 const cardBase: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: 14,
-  background: "linear-gradient(180deg, rgba(46,40,37,0.82) 0%, rgba(36,26,19,0.72) 100%)",
-  border: "1px solid rgba(240,230,214,0.085)",
-  borderRadius: 28,
-  padding: "18px 20px",
+  background: "rgba(111,106,100,0.20)",
+  borderRadius: 24,
+  padding: "22px",
   textDecoration: "none",
   textAlign: "left",
-  backdropFilter: "blur(16px)",
-  WebkitBackdropFilter: "blur(16px)",
-  boxShadow: "0 18px 45px rgba(0,0,0,0.42), 0 0 20px rgba(240,230,214,0.04)",
-  transition: "all 0.2s ease",
+  boxShadow: "0 18px 48px rgba(0,0,0,0.38)",
+  transition: "opacity 0.2s ease",
+};
+
+// Tag V3 — cream neutre uniquement, pas de jaune
+const tagStyle: React.CSSProperties = {
+  fontSize: 9,
+  color: "rgba(240,230,214,0.45)",
+  background: "rgba(240,230,214,0.07)",
+  borderRadius: 999,
+  padding: "1px 7px",
+  letterSpacing: "0.04em",
 };
 
 export default function StartPage() {
@@ -87,14 +98,13 @@ export default function StartPage() {
         position: "relative",
         minHeight: "100dvh",
         background:
-          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.16) 0%, rgba(184,99,79,0.06) 35%, transparent 68%)," +
-          "radial-gradient(ellipse at 20% 0%, rgba(111,106,100,0.18) 0%, transparent 58%)," +
-          "radial-gradient(ellipse at 80% 0%, rgba(184,99,79,0.055) 0%, transparent 52%)," +
-          "#1A120D",
+          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.12) 0%, transparent 60%)," +
+          "radial-gradient(ellipse at 20% 0%, rgba(111,106,100,0.12) 0%, transparent 60%)," +
+          "#120D09",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "32px 32px 24px",
+        padding: "24px",
       }}
     >
       {/* Grain texture */}
@@ -121,21 +131,7 @@ export default function StartPage() {
         }}
       >
         {/* Logo + halo */}
-        <div style={{ position: "relative", marginBottom: 16 }}>
-          {/* Halo derrière le logo */}
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 160,
-              height: 100,
-              background:
-                "radial-gradient(circle, rgba(184,99,79,0.18) 0%, transparent 65%)",
-              pointerEvents: "none",
-            }}
-          />
+        <div style={{ marginBottom: 20 }}>
           <img
             src="/images/tracea-logo-terra-transparent.png"
             alt="TRACEA"
@@ -144,21 +140,21 @@ export default function StartPage() {
               objectFit: "contain",
               display: "block",
               margin: "0 auto",
-              position: "relative",
+              boxShadow: "0 0 40px rgba(184,99,79,0.25)",
             }}
           />
         </div>
 
-        {/* Titre — Cormorant / serif premium V3 */}
+        {/* Titre — font-title V3 */}
         <h1
           className="font-body"
           style={{
-            fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
-            fontSize: "clamp(32px, 8vw, 40px)",
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "clamp(32px, 8vw, 42px)",
             color: "#F0E6D6",
             lineHeight: 1.05,
             fontWeight: 300,
-            marginBottom: 6,
+            marginBottom: 8,
             letterSpacing: "-0.01em",
           }}
         >
@@ -169,17 +165,17 @@ export default function StartPage() {
         <p
           className="font-sans"
           style={{
-            fontSize: 15,
+            fontSize: 14,
             color: "rgba(240,230,214,0.44)",
-            lineHeight: 1.35,
-            marginBottom: 18,
+            lineHeight: 1.4,
+            marginBottom: 24,
           }}
         >
           Choisis le chemin qui correspond à ton état maintenant.
         </p>
 
         {/* Cartes */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {options.map((opt) => (
             <Link
               key={opt.href}
@@ -187,20 +183,18 @@ export default function StartPage() {
               style={{
                 ...cardBase,
                 border: `1px solid ${opt.border}`,
-                boxShadow: opt.recommended
-                  ? "0 18px 45px rgba(0,0,0,0.42), 0 0 28px rgba(212,169,106,0.08)"
-                  : "0 18px 45px rgba(0,0,0,0.42)",
+                opacity: opt.dim ? 0.6 : 1,
               }}
             >
               {/* Dot */}
               <div
                 style={{
-                  width: 7,
-                  height: 7,
+                  width: 6,
+                  height: 6,
                   borderRadius: "50%",
                   background: opt.dot,
                   flexShrink: 0,
-                  marginTop: 2,
+                  marginTop: 1,
                 }}
               />
 
@@ -211,8 +205,8 @@ export default function StartPage() {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 5,
-                    marginBottom: 4,
+                    gap: 6,
+                    marginBottom: 5,
                     flexWrap: "wrap" as const,
                   }}
                 >
@@ -220,43 +214,18 @@ export default function StartPage() {
                     className="font-sans"
                     style={{
                       fontSize: 9,
-                      fontWeight: 700,
+                      fontWeight: 600,
                       letterSpacing: "0.14em",
                       color: opt.dot,
                     }}
                   >
                     {opt.label}
                   </span>
-                  <span
-                    className="font-sans"
-                    style={{
-                      fontSize: 9,
-                      color: "rgba(240,230,214,0.32)",
-                      background: "rgba(111,106,100,0.20)",
-                      border: "1px solid rgba(240,230,214,0.07)",
-                      borderRadius: 999,
-                      padding: "1px 7px",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
+                  <span className="font-sans" style={tagStyle}>
                     {opt.tag}
                   </span>
                   {opt.recommended && (
-                    <span
-                      className="font-sans"
-                      style={{
-                        fontSize: 8,
-                        fontWeight: 600,
-                        letterSpacing: "0.09em",
-                        color: "#D4A96A",
-                        background: "rgba(212,169,106,0.08)",
-                        border: "1px solid rgba(212,169,106,0.18)",
-                        borderRadius: 999,
-                        padding: "1px 6px",
-                        textTransform: "uppercase" as const,
-                        opacity: 0.85,
-                      }}
-                    >
+                    <span className="font-sans" style={tagStyle}>
                       recommandé
                     </span>
                   )}
@@ -266,11 +235,11 @@ export default function StartPage() {
                 <p
                   className="font-body"
                   style={{
-                    fontSize: opt.recommended ? 17 : 16,
-                    color: opt.badge && !opt.recommended ? "rgba(240,230,214,0.80)" : "#F0E6D6",
+                    fontSize: 16,
+                    color: "#F0E6D6",
                     fontWeight: 300,
-                    margin: "0 0 3px",
-                    lineHeight: 1.18,
+                    margin: "0 0 4px",
+                    lineHeight: 1.2,
                   }}
                 >
                   {opt.title}
@@ -281,24 +250,22 @@ export default function StartPage() {
                   className="font-sans"
                   style={{
                     fontSize: 12,
-                    color: opt.badge && !opt.recommended
-                      ? "rgba(240,230,214,0.60)"
-                      : "rgba(240,230,214,0.44)",
+                    color: "rgba(240,230,214,0.44)",
                     margin: 0,
-                    lineHeight: 1.48,
+                    lineHeight: 1.55,
                   }}
                 >
                   {opt.desc}
                 </p>
 
-                {/* Badge secondaire */}
+                {/* Badge compte requis */}
                 {opt.badge && (
                   <p
                     className="font-sans"
                     style={{
                       fontSize: 10,
-                      color: "rgba(240,230,214,0.40)",
-                      margin: "4px 0 0",
+                      color: "rgba(240,230,214,0.30)",
+                      margin: "5px 0 0",
                       letterSpacing: "0.04em",
                     }}
                   >
@@ -313,10 +280,7 @@ export default function StartPage() {
                 height="13"
                 viewBox="0 0 16 16"
                 fill="none"
-                style={{
-                  flexShrink: 0,
-                  opacity: opt.badge && !opt.recommended ? 0.20 : 0.28,
-                }}
+                style={{ flexShrink: 0, opacity: 0.25 }}
               >
                 <path
                   d="M6 3l5 5-5 5"
@@ -334,9 +298,9 @@ export default function StartPage() {
         <p
           className="font-sans"
           style={{
-            fontSize: 13,
-            color: "rgba(240,230,214,0.30)",
-            marginTop: 10,
+            fontSize: 12,
+            color: "rgba(240,230,214,0.25)",
+            marginTop: 20,
             lineHeight: 1.55,
             letterSpacing: "0.01em",
           }}
