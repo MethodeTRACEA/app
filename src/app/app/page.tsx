@@ -36,7 +36,7 @@ export default function Accueil() {
 
   return (
     <div
-      className="min-h-screen flex flex-col justify-center"
+      className="min-h-screen flex flex-col pb-32"
       style={{
         background:
           "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
@@ -44,70 +44,71 @@ export default function Accueil() {
           "#1A120D",
       }}
     >
-      <div className="max-w-md mx-auto w-full px-6 pb-24 flex flex-col gap-8">
-
-        {/* Hero court */}
-        <section className="text-center flex flex-col items-center gap-6">
-          <h1
-            className="font-body"
+      {/* ZONE 2 — Centre : titre + texte + boutons */}
+      <section className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-6">
+        <h1
+          className="font-body"
+          style={{
+            fontSize: "clamp(24px, 6vw, 30px)",
+            fontWeight: 300,
+            lineHeight: 1.5,
+            color: "#F0E6D6",
+            letterSpacing: "0em",
+          }}
+        >
+          Bienvenue dans TRACEA
+        </h1>
+        <p
+          className="font-sans leading-relaxed"
+          style={{
+            fontSize: "18px",
+            fontWeight: 300,
+            color: "rgba(240,230,214,0.76)",
+          }}
+        >
+          Un espace pour revenir &agrave; quelque chose de plus supportable.
+        </p>
+        <div className="flex flex-col gap-4 mt-10 w-full max-w-sm">
+          <Link
+            href="/start"
+            className="w-full block text-center"
             style={{
-              fontSize: "clamp(24px, 6vw, 30px)",
-              fontWeight: 300,
-              lineHeight: 1.5,
-              color: "#F0E6D6",
-              letterSpacing: "0em",
-            }}
-          >
-            Bienvenue dans TRACEA
-          </h1>
-          <p
-            className="font-sans leading-relaxed"
-            style={{
+              borderRadius: "999px",
+              padding: "17px 26px",
               fontSize: "18px",
-              fontWeight: 300,
-              color: "rgba(240,230,214,0.76)",
+              fontWeight: 400,
+              letterSpacing: "0.03em",
+              color: "#1A120D",
+              background:
+                "linear-gradient(135deg, #DDB870 0%, #D08870 38%, #C07060 68%, #A5503E 100%)",
+              boxShadow:
+                "0 0 24px rgba(184,99,79,0.22), 0 8px 32px rgba(184,99,79,0.32), 0 2px 8px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06) inset",
             }}
           >
-            Un espace pour revenir &agrave; quelque chose de plus supportable.
-          </p>
-          <div className="flex flex-col gap-4 mt-10">
-            <Link
-              href="/start"
-              className="w-full block text-center"
-              style={{
-                borderRadius: "999px",
-                padding: "17px 26px",
-                fontSize: "18px",
-                fontWeight: 400,
-                letterSpacing: "0.03em",
-                color: "#1A120D",
-                background:
-                  "linear-gradient(135deg, #DDB870 0%, #D08870 38%, #C07060 68%, #A5503E 100%)",
-                boxShadow:
-                  "0 0 24px rgba(184,99,79,0.22), 0 8px 32px rgba(184,99,79,0.32), 0 2px 8px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06) inset",
-              }}
-            >
-              Faire une travers&eacute;e
-            </Link>
-            <Link
-              href="/app/urgence"
-              className="w-full flex items-center justify-center gap-3"
-              style={{
-                borderRadius: "999px",
-                padding: "17px 26px",
-                fontSize: "13.5px",
-                fontWeight: 300,
-                letterSpacing: "0.01em",
-                color: "rgba(240,230,214,0.88)",
-                background: "rgba(111,106,100,0.28)",
-                border: "1px solid rgba(240,230,214,0.26)",
-              }}
-            >
-              <span style={{ color: "#F6C94A", filter: "drop-shadow(0 0 6px rgba(246,201,74,0.40))" }}>⚡</span>
-              <span>Redescendre, maintenant</span>
-            </Link>
-          </div>
-        </section>
+            Faire une travers&eacute;e
+          </Link>
+          <Link
+            href="/app/urgence"
+            className="w-full flex items-center justify-center gap-3"
+            style={{
+              borderRadius: "999px",
+              padding: "17px 26px",
+              fontSize: "13.5px",
+              fontWeight: 300,
+              letterSpacing: "0.01em",
+              color: "rgba(240,230,214,0.88)",
+              background: "rgba(111,106,100,0.28)",
+              border: "1px solid rgba(240,230,214,0.26)",
+            }}
+          >
+            <span style={{ color: "#F6C94A", filter: "drop-shadow(0 0 6px rgba(246,201,74,0.40))" }}>⚡</span>
+            <span>Redescendre, maintenant</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* Sections secondaires — en bas du flex column */}
+      <div className="px-6 max-w-md mx-auto w-full flex flex-col gap-6">
 
         {/* Dernière session (si existe) */}
         {lastSession && lastSession.completed && (
