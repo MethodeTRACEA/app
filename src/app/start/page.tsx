@@ -7,10 +7,17 @@ export const metadata: Metadata = {
     "Commence ta traversee emotionnelle guidee. 2 a 10 minutes, gratuit, sans engagement.",
 };
 
-// ── Palette V3 ──────────────────────────────────────────────────────
-// Fond : #1A120D · Ivoire : #F0E6D6
-// Cuivre doux : #C97B6A · Or doux : #D4A96A · Brun chaud : rgba(111,106,100,…)
-// Pas de rouge saturé — tout reste dans le registre brun/cuivre/ivoire.
+// ── Tokens stricts Preview V3 ────────────────────────────────────────
+// --t-bg           #1A120D
+// --t-bg-deep      #120D09
+// --t-surface      rgba(46,40,37,0.82)
+// --t-accent       #B8634F
+// --t-accent-light #C97B6A
+// --t-cream        #F0E6D6
+// --t-cream-dim    rgba(240,230,214,0.44)
+// --t-cream-soft   rgba(240,230,214,0.30)
+// --t-cream-faint  rgba(240,230,214,0.08)
+// --t-gold         #D4A96A
 
 type Option = {
   href: string;
@@ -19,7 +26,6 @@ type Option = {
   desc: string;
   tag: string;
   dot: string;
-  accent: string;
   border: string;
   recommended?: true;
   badge?: string;
@@ -32,9 +38,8 @@ const options: Option[] = [
     title: "Je veux redescendre vite",
     desc: "Quand c'est trop intense. Directement par le corps.",
     tag: "2 min",
-    dot: "#C97B6A",
-    accent: "rgba(201,123,106,0.12)",
-    border: "rgba(201,123,106,0.22)",
+    dot: "#B8634F",
+    border: "rgba(240,230,214,0.085)",
   },
   {
     href: "/app/traversee-courte",
@@ -44,8 +49,7 @@ const options: Option[] = [
     tag: "5 min",
     recommended: true,
     dot: "#D4A96A",
-    accent: "rgba(212,169,106,0.14)",
-    border: "rgba(212,169,106,0.42)",
+    border: "rgba(212,169,106,0.32)",
   },
   {
     href: "/app/session",
@@ -54,26 +58,43 @@ const options: Option[] = [
     desc: "Une traversée complète avec analyse et mémoire de tes repères.",
     tag: "15 min",
     badge: "Compte requis",
-    dot: "rgba(240,230,214,0.40)",
-    accent: "rgba(111,106,100,0.12)",
-    border: "rgba(240,230,214,0.10)",
+    dot: "rgba(240,230,214,0.35)",
+    border: "rgba(240,230,214,0.06)",
   },
 ];
+
+// Style de carte glass V3 partagé
+const cardBase: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 14,
+  background: "linear-gradient(180deg, rgba(46,40,37,0.82) 0%, rgba(36,26,19,0.72) 100%)",
+  border: "1px solid rgba(240,230,214,0.085)",
+  borderRadius: 28,
+  padding: "18px 20px",
+  textDecoration: "none",
+  textAlign: "left",
+  backdropFilter: "blur(16px)",
+  WebkitBackdropFilter: "blur(16px)",
+  boxShadow: "0 18px 45px rgba(0,0,0,0.42)",
+  transition: "opacity 0.15s",
+};
 
 export default function StartPage() {
   return (
     <div
       style={{
         position: "relative",
-        minHeight: "100svh",
+        minHeight: "100dvh",
         background:
-          "radial-gradient(ellipse 80% 50% at 40% 15%, rgba(201,123,106,0.06) 0%, transparent 60%)," +
-          "radial-gradient(ellipse 60% 40% at 65% 85%, rgba(131,94,84,0.04) 0%, transparent 55%)," +
-          "linear-gradient(180deg, #1A120D 0%, #1C1410 100%)",
+          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.16) 0%, rgba(184,99,79,0.06) 35%, transparent 68%)," +
+          "radial-gradient(ellipse at 20% 0%, rgba(111,106,100,0.18) 0%, transparent 58%)," +
+          "radial-gradient(ellipse at 80% 0%, rgba(184,99,79,0.055) 0%, transparent 52%)," +
+          "#1A120D",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "32px 16px",
+        padding: "32px 32px 24px",
       }}
     >
       {/* Grain texture */}
@@ -90,43 +111,55 @@ export default function StartPage() {
         }}
       />
 
-      {/* Halo V3 */}
       <div
         style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 0,
-          pointerEvents: "none",
-          background:
-            "radial-gradient(circle at 50% 32%, rgba(212,169,106,0.09) 0%, rgba(28,20,16,0) 58%)",
-        }}
-      />
-
-      <div
-        style={{
-          maxWidth: 400,
+          maxWidth: 390,
           width: "100%",
           textAlign: "center",
           position: "relative",
           zIndex: 1,
         }}
       >
-        {/* Logo */}
-        <img
-          src="/images/tracea-logo-terra-transparent.png"
-          alt="TRACEA"
-          style={{ height: 58, margin: "0 auto 28px", objectFit: "contain" }}
-        />
+        {/* Logo + halo */}
+        <div style={{ position: "relative", marginBottom: 22 }}>
+          {/* Halo derrière le logo */}
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 160,
+              height: 100,
+              background:
+                "radial-gradient(ellipse at center, rgba(184,99,79,0.20) 0%, transparent 70%)",
+              pointerEvents: "none",
+            }}
+          />
+          <img
+            src="/images/tracea-logo-terra-transparent.png"
+            alt="TRACEA"
+            style={{
+              height: 72,
+              objectFit: "contain",
+              display: "block",
+              margin: "0 auto",
+              position: "relative",
+            }}
+          />
+        </div>
 
-        {/* Titre */}
+        {/* Titre — Cormorant / serif premium V3 */}
         <h1
           className="font-body"
           style={{
-            fontSize: "clamp(1.3rem, 4vw, 1.75rem)",
+            fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
+            fontSize: "clamp(36px, 9vw, 46px)",
             color: "#F0E6D6",
-            lineHeight: 1.22,
-            marginBottom: 7,
+            lineHeight: 1.02,
             fontWeight: 300,
+            marginBottom: 8,
+            letterSpacing: "-0.01em",
           }}
         >
           Tu veux redescendre comment&nbsp;?
@@ -136,10 +169,10 @@ export default function StartPage() {
         <p
           className="font-sans"
           style={{
-            fontSize: 12,
-            color: "rgba(240,230,214,0.38)",
-            marginBottom: 26,
-            lineHeight: 1.55,
+            fontSize: 15,
+            color: "rgba(240,230,214,0.44)",
+            lineHeight: 1.35,
+            marginBottom: 22,
           }}
         >
           Choisis le chemin qui correspond à ton état maintenant.
@@ -152,45 +185,34 @@ export default function StartPage() {
               key={opt.href}
               href={opt.href}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 13,
-                background: opt.accent,
+                ...cardBase,
                 border: `1px solid ${opt.border}`,
-                borderRadius: 14,
-                padding: opt.recommended ? "15px 16px" : "13px 16px",
-                textDecoration: "none",
-                textAlign: "left",
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-                transition: "opacity 0.15s",
                 boxShadow: opt.recommended
-                  ? "0 0 0 1px rgba(212,169,106,0.10), 0 4px 18px rgba(212,169,106,0.06)"
-                  : "none",
+                  ? "0 18px 45px rgba(0,0,0,0.42), 0 0 28px rgba(212,169,106,0.08)"
+                  : "0 18px 45px rgba(0,0,0,0.42)",
               }}
             >
               {/* Dot */}
               <div
                 style={{
-                  width: 6,
-                  height: 6,
+                  width: 7,
+                  height: 7,
                   borderRadius: "50%",
                   background: opt.dot,
                   flexShrink: 0,
-                  marginTop: 1,
-                  opacity: opt.badge && !opt.recommended ? 0.7 : 1,
+                  marginTop: 2,
                 }}
               />
 
               {/* Contenu */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                {/* Ligne label + durée + badge recommandé */}
+                {/* Label + durée + badge */}
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
                     gap: 5,
-                    marginBottom: 3,
+                    marginBottom: 4,
                     flexWrap: "wrap" as const,
                   }}
                 >
@@ -199,9 +221,8 @@ export default function StartPage() {
                     style={{
                       fontSize: 9,
                       fontWeight: 700,
-                      letterSpacing: "0.13em",
+                      letterSpacing: "0.14em",
                       color: opt.dot,
-                      opacity: opt.badge && !opt.recommended ? 0.7 : 1,
                     }}
                   >
                     {opt.label}
@@ -211,10 +232,10 @@ export default function StartPage() {
                     style={{
                       fontSize: 9,
                       color: "rgba(240,230,214,0.32)",
-                      background: "rgba(111,106,100,0.18)",
-                      border: "1px solid rgba(240,230,214,0.06)",
+                      background: "rgba(111,106,100,0.20)",
+                      border: "1px solid rgba(240,230,214,0.07)",
                       borderRadius: 999,
-                      padding: "1px 6px",
+                      padding: "1px 7px",
                       letterSpacing: "0.04em",
                     }}
                   >
@@ -227,9 +248,9 @@ export default function StartPage() {
                         fontSize: 8,
                         fontWeight: 600,
                         letterSpacing: "0.09em",
-                        color: "rgba(212,169,106,0.80)",
-                        background: "rgba(212,169,106,0.10)",
-                        border: "1px solid rgba(212,169,106,0.20)",
+                        color: "#D4A96A",
+                        background: "rgba(212,169,106,0.08)",
+                        border: "1px solid rgba(212,169,106,0.18)",
                         borderRadius: 999,
                         padding: "1px 6px",
                         textTransform: "uppercase" as const,
@@ -244,13 +265,12 @@ export default function StartPage() {
                 <p
                   className="font-body"
                   style={{
-                    fontSize: opt.recommended ? 16 : 15,
-                    color: opt.badge && !opt.recommended
-                      ? "rgba(240,230,214,0.70)"
-                      : "#F0E6D6",
+                    fontSize: opt.recommended ? 17 : 16,
+                    color: "#F0E6D6",
                     fontWeight: 300,
-                    margin: "0 0 2px",
-                    lineHeight: 1.2,
+                    margin: "0 0 3px",
+                    lineHeight: 1.18,
+                    opacity: opt.badge && !opt.recommended ? 0.82 : 1,
                   }}
                 >
                   {opt.title}
@@ -260,24 +280,23 @@ export default function StartPage() {
                 <p
                   className="font-sans"
                   style={{
-                    fontSize: 11,
-                    color: opt.badge && !opt.recommended
-                      ? "rgba(240,230,214,0.33)"
-                      : "rgba(240,230,214,0.45)",
+                    fontSize: 12,
+                    color: "rgba(240,230,214,0.44)",
                     margin: 0,
-                    lineHeight: 1.5,
+                    lineHeight: 1.48,
+                    opacity: opt.badge && !opt.recommended ? 0.78 : 1,
                   }}
                 >
                   {opt.desc}
                 </p>
 
-                {/* Badge secondaire (Compte requis) */}
+                {/* Badge secondaire */}
                 {opt.badge && (
                   <p
                     className="font-sans"
                     style={{
                       fontSize: 10,
-                      color: "rgba(240,230,214,0.26)",
+                      color: "rgba(240,230,214,0.28)",
                       margin: "4px 0 0",
                       letterSpacing: "0.04em",
                     }}
@@ -295,7 +314,7 @@ export default function StartPage() {
                 fill="none"
                 style={{
                   flexShrink: 0,
-                  opacity: opt.badge && !opt.recommended ? 0.18 : 0.28,
+                  opacity: opt.badge && !opt.recommended ? 0.20 : 0.28,
                 }}
               >
                 <path
@@ -310,15 +329,15 @@ export default function StartPage() {
           ))}
         </div>
 
-        {/* Micro texte bas */}
+        {/* Microtexte bas */}
         <p
           className="font-sans"
           style={{
-            fontSize: 11,
-            color: "rgba(240,230,214,0.28)",
-            marginTop: 22,
-            lineHeight: 1.6,
-            letterSpacing: "0.02em",
+            fontSize: 13,
+            color: "rgba(240,230,214,0.30)",
+            marginTop: 14,
+            lineHeight: 1.55,
+            letterSpacing: "0.01em",
           }}
         >
           Tu peux commencer sans compte. Tu restes libre d&apos;arrêter.
