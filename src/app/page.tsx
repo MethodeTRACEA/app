@@ -381,7 +381,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           IMPACT
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
+      <section className="relative px-6 pt-14 pb-6 md:pt-18 md:pb-6" style={{ zIndex: 1 }}>
         <div
           style={{
             maxWidth: 640,
