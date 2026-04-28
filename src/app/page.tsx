@@ -31,20 +31,21 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════════════════════════
           HERO
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[88vh] md:min-h-[95vh] flex items-center justify-center px-6 py-10 md:py-28" style={{ zIndex: 1 }}>
+      <section className="relative min-h-[100svh] md:min-h-[95vh] flex items-center justify-center px-6 py-10 md:py-28" style={{ zIndex: 1 }}>
         <div className="relative z-10 w-full text-center" style={{ maxWidth: 640, margin: "0 auto" }}>
           {/* Logo */}
-          <div className="mb-6 md:mb-14">
+          <div className="mb-4 md:mb-14">
             <img
               src="/images/tracea-logo-terra-transparent.png"
               alt="TRACÉA"
-              className="h-12 md:h-20 mx-auto object-contain"
+              className="mx-auto object-contain"
+              style={{ height: "clamp(72px, 10vw, 88px)" }}
             />
           </div>
 
           {/* Badge */}
           <div
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-6 md:mb-12"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-5 md:mb-12"
             style={{
               background: "rgba(111,106,100,0.16)",
               border: "1px solid rgba(240,230,214,0.12)",
@@ -59,14 +60,14 @@ export default function LandingPage() {
           </div>
 
           {/* Titre */}
-          <h1 className="text-[30px] md:text-[40px] leading-[1.25] tracking-tight mb-5 md:mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+          <h1 className="text-[30px] md:text-[40px] leading-[1.25] tracking-tight mb-4 md:mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Quand ça monte dans ton corps,
             <br />
             tu fais quoi ?
           </h1>
 
           {/* Sous-titre */}
-          <div className="text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-7 md:mb-12 space-y-3" style={{ color: "rgba(240,230,214,0.60)" }}>
+          <div className="text-base md:text-lg leading-relaxed max-w-sm mx-auto mb-6 md:mb-12 space-y-3" style={{ color: "rgba(240,230,214,0.60)" }}>
             <p>Poitrine serrée. Souffle court. Pensées en boucle.</p>
             <p>
               TRACÉA t&apos;aide à redescendre.
