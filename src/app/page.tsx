@@ -78,6 +78,11 @@ export default function LandingPage() {
               <br />
               En quelques minutes.
             </p>
+            <p>
+              Sans analyser.
+              <br />
+              Juste en revenant au corps.
+            </p>
           </div>
 
           {/* CTA principal */}
@@ -163,6 +168,23 @@ export default function LandingPage() {
           <p className="text-base font-medium text-center" style={{ color: "#D99A84", fontStyle: "italic" }}>
             C&apos;est l&agrave; que tout se joue.
           </p>
+          <p className="text-base text-center mt-4" style={{ color: "rgba(240,230,214,0.50)" }}>
+            Et &ccedil;a peut durer longtemps.
+          </p>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          BASCULE
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-6 md:py-10" style={{ zIndex: 1 }}>
+        <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center" }}>
+          <p className="text-base md:text-lg leading-relaxed mb-4" style={{ color: "rgba(240,230,214,0.70)", fontWeight: 300 }}>
+            Tu n&apos;as pas besoin de comprendre.
+          </p>
+          <p className="text-base md:text-lg leading-relaxed" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
+            Quand &ccedil;a d&eacute;borde, r&eacute;fl&eacute;chir ne suffit plus.
+          </p>
         </div>
       </section>
 
@@ -181,11 +203,15 @@ export default function LandingPage() {
             boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
           }}
         >
-          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-10 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-6 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Tu prends 2 minutes
           </h2>
 
-          <div className="space-y-3 mb-10">
+          <p className="text-base text-center mb-8" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
+            En quelques minutes, voil&agrave; ce qui se passe&nbsp;:
+          </p>
+
+          <div className="space-y-3 mb-8">
             {[
               "Tu poses ce qui est là",
               "Tu reviens à ton corps",
@@ -214,6 +240,12 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+
+          <p className="text-center text-base mb-3" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
+            Et &agrave; la fin&hellip;
+            <br />
+            quelque chose redescend.
+          </p>
 
           <p className="text-center text-base font-medium" style={{ color: "#D99A84", fontStyle: "italic" }}>
             Et quelque chose change.
@@ -280,9 +312,13 @@ export default function LandingPage() {
             boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
           }}
         >
-          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-8 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-6 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             En quelques minutes
           </h2>
+
+          <p className="text-base text-center mb-6" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
+            Tu le sens tout de suite&nbsp;:
+          </p>
 
           <div className="grid grid-cols-2 gap-3 mb-8">
             {[
