@@ -34,8 +34,15 @@ function getSupabaseService() {
 // IP   : 60 events / minute
 // Anon : 120 events / heure
 
-const trackIpWindows  = new Map<string, number[]>();
+const trackIpWindows   = new Map<string, number[]>();
 const trackAnonWindows = new Map<string, number[]>();
+const trackEventWindows = new Map<string, number[]>();
+
+const EVENT_LIMITS: Record<string, { max: number; window: number }> = {
+  session_start: { max: 5,  window: 60_000 },
+  session_end:   { max: 5,  window: 60_000 },
+  step_complete: { max: 30, window: 60_000 },
+};
 
 const IP_MAX    = 60;
 const IP_WIN    = 60_000;          // 1 min
@@ -164,7 +171,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 10. Insert via service_role (bypass RLS)
+    // 10. Rate limit par type d'événement
+    //     Clé = event + identifiant disponible (IP > anonymous_id > "unknown")
+    const eventLimit = EVENT_LIMITS[event];
+    if (eventLimit) {
+      const key = `${event}:${ip ?? anonymousId ?? "unknown"}`;
+      if (!slidingWindow(trackEventWindows, key, eventLimit.window, eventLimit.max)) {
+        console.warn(`[TRACK EVENT] Rate limit event: ${event}`);
+        return NextResponse.json(
+          { error: "Trop d'actions répétées — ralentis un peu" },
+          { status: 429 },
+        );
+      }
+    }
+
+    // 11. Insert via service_role (bypass RLS)
     const supabase = getSupabaseService();
     const { error: insertError } = await supabase.from("tracea_events").insert({
       user_id: userId,
