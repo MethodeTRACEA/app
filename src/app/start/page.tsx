@@ -38,7 +38,7 @@ const options: Option[] = [
   {
     href: "/app/traversee-courte",
     label: "TRAVERSÉE",
-    title: "Je veux me poser et redescendre",
+    title: "Me poser et redescendre",
     desc: "Pour déposer, revenir au corps, puis choisir un geste simple.",
     tag: "5 min",
     recommended: true,
