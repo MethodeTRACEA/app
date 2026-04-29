@@ -42,8 +42,8 @@ const options: Option[] = [
     tag: "5 min",
     recommended: true,
     labelColor: "#C97B6A",
-    cardBorder: "rgba(255,255,255,0.22)",
-    cardBg: "rgba(255,255,255,0.12)",
+    cardBorder: "rgba(240,230,214,0.18)",
+    cardBg: "rgba(111,106,100,0.20)",
   },
   {
     href: "/app/session",
@@ -98,9 +98,9 @@ export default function StartPage() {
           <img
             src="/images/tracea-logo-terra-transparent.png"
             alt="TRACÉA"
-            className="w-9 h-9 object-contain"
+            className="w-10 h-10 object-contain"
             style={{
-              opacity: 0.85,
+              opacity: 0.90,
               filter: "drop-shadow(0 0 12px rgba(201,123,106,0.25))",
             }}
           />
@@ -140,6 +140,9 @@ export default function StartPage() {
                 WebkitBackdropFilter: "blur(12px)",
                 textDecoration: "none",
                 opacity: opt.cardOpacity ?? 1,
+                boxShadow: opt.recommended
+                  ? "0 18px 44px rgba(0,0,0,0.42), 0 0 18px rgba(240,230,214,0.035)"
+                  : undefined,
               }}
             >
               {/* TAG — label + durée + recommandé */}
@@ -164,9 +167,9 @@ export default function StartPage() {
                   <span
                     className="font-sans text-[12px] leading-none px-2.5 py-1 rounded-full"
                     style={{
-                      color: "rgba(240,230,214,0.72)",
-                      background: "rgba(240,230,214,0.08)",
-                      border: "1px solid rgba(240,230,214,0.20)",
+                      color: "rgba(240,230,214,0.68)",
+                      background: "rgba(240,230,214,0.09)",
+                      border: "1px solid rgba(240,230,214,0.16)",
                     }}
                   >
                     recommandé
