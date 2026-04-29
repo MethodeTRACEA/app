@@ -941,16 +941,12 @@ function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
         Tu viens de redescendre un peu.
       </p>
       <div className="font-body text-base t-text-secondary leading-relaxed space-y-3">
-        <p>
-          La prochaine fois, tu pourras revenir plus vite.<br />
-          Sans repartir de zéro.
-        </p>
+        <p>La prochaine fois, tu pourras revenir plus vite.</p>
         <p>
           Tu verras ce qui revient.<br />
           Et ce qui change en toi.
         </p>
         <p>Tu avances, même quand ça revient.</p>
-        <p className="t-text-ghost text-sm">Sinon, tu repartiras de zéro la prochaine fois.</p>
       </div>
       <PrimaryButton onClick={() => router.push("/app/subscribe")}>
         Continuer avec TRACÉA
@@ -960,7 +956,7 @@ function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
         onClick={onDismiss}
         className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors underline"
       >
-        Repartir de zéro
+        Continuer librement
       </button>
       <p className="font-inter text-[10px] t-text-ghost">
         Tu peux arrêter quand tu veux.
