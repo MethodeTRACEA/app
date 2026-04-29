@@ -1,42 +1,108 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { SecondaryButton } from "@/components/ui/SecondaryButton";
 
 interface PaywallProps {
   onContinue: () => void;
 }
 
 export function Paywall({ onContinue }: PaywallProps) {
+  const router = useRouter();
+
   return (
-    <div className="flex flex-col items-center gap-10 text-center max-w-sm mx-auto px-4 py-12">
-      <div className="space-y-4">
-        <p className="font-body text-xl text-espresso leading-relaxed">
-          Tu as réussi à redescendre.<br /><br />
-          Tu peux revenir ici quand ça monte,<br />
-          et t&apos;entraîner pour que ça redescende plus vite.
+    <div className="w-full max-w-md mx-auto px-5 py-10 flex flex-col items-center text-center gap-6">
+      {/* Carte enveloppe TRACÉA */}
+      <div
+        className="w-full flex flex-col items-center gap-6"
+        style={{
+          background: "rgba(111,106,100,0.18)",
+          border: "1px solid rgba(240,230,214,0.10)",
+          borderRadius: 24,
+          padding: "28px 24px",
+          boxShadow:
+            "0 14px 30px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.04)",
+        }}
+      >
+        {/* Titre */}
+        <h2
+          className="font-light text-[26px] leading-[32px] tracking-[-0.01em]"
+          style={{
+            fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
+            color: "#F0E6D6",
+          }}
+        >
+          Tu peux continuer à t&apos;entraîner
+        </h2>
+
+        {/* Phrase contenante */}
+        <p
+          className="font-sans text-[14px] leading-[20px]"
+          style={{ color: "rgba(240,230,214,0.62)" }}
+        >
+          Le parcours approfondi peut devenir un repère quand tu as besoin de
+          traverser plus en profondeur.
         </p>
-        <p className="font-body text-sm text-warm-gray leading-relaxed">
-          Avec l&apos;accès complet, tu peux :<br />
-          t&apos;entraîner régulièrement,<br />
-          revenir autant de fois que nécessaire,<br />
-          et sentir la différence dans le temps.
+
+        {/* Bénéfices */}
+        <div className="w-full text-left">
+          <p
+            className="font-sans text-[13px] leading-[18px] mb-3"
+            style={{ color: "rgba(240,230,214,0.55)" }}
+          >
+            Avec l&apos;abonnement, tu peux&nbsp;:
+          </p>
+          <ul
+            className="space-y-2 font-sans text-[13px] leading-[18px]"
+            style={{ color: "rgba(240,230,214,0.62)" }}
+          >
+            <li className="flex items-start gap-2">
+              <span
+                aria-hidden="true"
+                style={{ color: "#C97B6A", marginTop: 6, fontSize: 6 }}
+              >
+                ●
+              </span>
+              <span>lancer des sessions approfondies régulièrement</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span
+                aria-hidden="true"
+                style={{ color: "#C97B6A", marginTop: 6, fontSize: 6 }}
+              >
+                ●
+              </span>
+              <span>revenir autant de fois que nécessaire</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span
+                aria-hidden="true"
+                style={{ color: "#C97B6A", marginTop: 6, fontSize: 6 }}
+              >
+                ●
+              </span>
+              <span>observer ce qui t&apos;aide dans le temps</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* CTA principal — explicite payant */}
+        <PrimaryButton onClick={() => router.push("/app/subscribe")}>
+          Découvrir l&apos;abonnement
+        </PrimaryButton>
+
+        {/* Prix transparent, discret */}
+        <p
+          className="font-sans text-[11px]"
+          style={{ color: "rgba(240,230,214,0.38)" }}
+        >
+          À partir de 9&nbsp;€/mois
         </p>
       </div>
-      <div className="w-full space-y-3">
-        <Link
-          href="/app/subscribe"
-          className="btn-primary !block !w-full !py-4 !text-sm !rounded-2xl text-center"
-        >
-          Accéder à l&apos;expérience complète
-        </Link>
-        <button
-          type="button"
-          onClick={onContinue}
-          className="w-full py-3 px-6 rounded-2xl text-warm-gray/60 font-normal text-xs hover:text-warm-gray transition-all"
-        >
-          Repartir sans m&apos;abonner
-        </button>
-      </div>
+
+      {/* Sortie libre — digne, hors carte */}
+      <SecondaryButton onClick={onContinue}>Continuer librement</SecondaryButton>
     </div>
   );
 }
