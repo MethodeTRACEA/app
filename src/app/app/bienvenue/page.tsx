@@ -100,10 +100,11 @@ export default function BienvenuePage() {
           <img
             src="/images/tracea-logo-terra-transparent.png"
             alt="TRACÉA"
-            className="w-[72px] h-[72px] md:w-20 md:h-20 object-contain mb-8 animate-fade-in"
+            className="w-[88px] h-[88px] object-contain mb-8 animate-fade-in"
             style={{
-              opacity: 0.92,
-              filter: "drop-shadow(0 0 16px rgba(201,123,106,0.30))",
+              opacity: 0.95,
+              filter:
+                "drop-shadow(0 0 20px rgba(201,123,106,0.34)) drop-shadow(0 0 6px rgba(201,123,106,0.20))",
             }}
           />
 
