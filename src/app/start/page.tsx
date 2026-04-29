@@ -132,7 +132,7 @@ export default function StartPage() {
             <Link
               key={opt.href}
               href={opt.href}
-              className="block rounded-[18px] px-4 py-2.5 no-underline"
+              className="block rounded-[18px] px-5 py-4 no-underline"
               style={{
                 background: opt.cardBg,
                 border: `1px solid ${opt.cardBorder}`,
@@ -143,32 +143,40 @@ export default function StartPage() {
               }}
             >
               {/* TAG — label + durée + recommandé */}
-              <div className="flex items-center gap-2 mb-0.5">
+              <div className="flex items-center gap-2 mb-1">
                 <span
-                  className="font-sans text-[9px] tracking-[0.10em] font-semibold"
+                  className="font-sans text-[11px] tracking-[0.18em] leading-none font-semibold"
                   style={{ color: opt.labelColor }}
                 >
                   {opt.label}
                 </span>
                 <span
-                  className="font-sans text-[9px]"
-                  style={{ color: "rgba(255,255,255,0.40)" }}
+                  className="font-sans text-[12px] leading-none px-2.5 py-1 rounded-full"
+                  style={{
+                    color: "rgba(255,255,255,0.40)",
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
                 >
                   {opt.tag}
                 </span>
                 {opt.recommended && (
                   <span
-                    className="font-sans text-[9px]"
-                    style={{ color: "rgba(240,230,214,0.45)" }}
+                    className="font-sans text-[12px] leading-none px-2.5 py-1 rounded-full"
+                    style={{
+                      color: "rgba(240,230,214,0.50)",
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                    }}
                   >
-                    · recommandé
+                    recommandé
                   </span>
                 )}
               </div>
 
               {/* TITRE CARTE */}
               <p
-                className="font-body text-[22px] leading-[1.05]"
+                className="font-body text-[24px] max-[370px]:text-[22px] leading-[1.08]"
                 style={{
                   color: "#F0E6D6",
                   fontWeight: 300,
@@ -180,7 +188,7 @@ export default function StartPage() {
 
               {/* DESCRIPTION */}
               <p
-                className="font-sans text-[13px] leading-[1.3] line-clamp-2"
+                className="font-sans text-[15px] max-[370px]:text-[14px] leading-[1.35] line-clamp-2"
                 style={{ color: "rgba(240,230,214,0.50)", margin: 0 }}
               >
                 {opt.desc}
