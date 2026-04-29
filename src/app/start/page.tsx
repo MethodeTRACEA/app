@@ -127,12 +127,12 @@ export default function StartPage() {
         </div>
 
         {/* CARTES */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2">
           {options.map((opt) => (
             <Link
               key={opt.href}
               href={opt.href}
-              className="block rounded-[18px] px-5 py-4 no-underline"
+              className="block rounded-[18px] px-5 py-3 no-underline"
               style={{
                 background: opt.cardBg,
                 border: `1px solid ${opt.cardBorder}`,
@@ -146,7 +146,7 @@ export default function StartPage() {
               }}
             >
               {/* TAG — label + durée + recommandé */}
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-0.5">
                 <span
                   className="font-sans text-[11px] tracking-[0.18em] leading-none font-semibold"
                   style={{ color: opt.labelColor }}
