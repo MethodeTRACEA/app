@@ -14,6 +14,7 @@ import { Paywall } from "@/components/Paywall";
 import { ConsentGate } from "@/components/ConsentGate";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { InstallPrompt } from "@/components/InstallPrompt";
 
 // ════════════════════════════════════════════════════════════
@@ -908,23 +909,21 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
 
           <InstallPrompt />
 
-          {isFirstSession && !paywallDismissed && !hasPremiumAccess ? (
+          {isFirstSession && !paywallDismissed && !hasPremiumAccess && (
             <PaywallSection onDismiss={() => setPaywallDismissed(true)} />
-          ) : (
-            <>
-              <PrimaryButton onClick={() => router.push("/app")}>
-                Terminer
-              </PrimaryButton>
-
-              <button
-                type="button"
-                onClick={() => router.push("/app/historique")}
-                className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
-              >
-                Voir mes traces →
-              </button>
-            </>
           )}
+
+          <PrimaryButton onClick={() => router.push("/app")}>
+            Terminer
+          </PrimaryButton>
+
+          <button
+            type="button"
+            onClick={() => router.push("/app/historique")}
+            className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
+          >
+            Voir mes traces →
+          </button>
 
         </div>
       </div>
@@ -949,15 +948,11 @@ function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
         <p>Tu avances, même quand ça revient.</p>
       </div>
       <PrimaryButton onClick={() => router.push("/app/subscribe")}>
-        Continuer avec TRACÉA
+        Découvrir l&apos;abonnement
       </PrimaryButton>
-      <button
-        type="button"
-        onClick={onDismiss}
-        className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors underline"
-      >
+      <SecondaryButton onClick={onDismiss}>
         Continuer librement
-      </button>
+      </SecondaryButton>
       <p className="font-inter text-[10px] t-text-ghost">
         Tu peux arrêter quand tu veux.
       </p>
