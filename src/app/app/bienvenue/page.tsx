@@ -92,7 +92,7 @@ export default function BienvenuePage() {
       />
 
       <div
-        className="relative min-h-[100dvh] flex flex-col items-center justify-center px-5 py-10 md:py-16"
+        className="relative min-h-[100dvh] flex flex-col items-center justify-start px-5 pt-14 pb-10 md:pt-20 md:pb-16"
         style={{ zIndex: 1 }}
       >
         <div className="w-full max-w-md flex flex-col items-center text-center">
@@ -100,10 +100,10 @@ export default function BienvenuePage() {
           <img
             src="/images/tracea-logo-terra-transparent.png"
             alt="TRACÉA"
-            className="w-16 h-16 md:w-[72px] md:h-[72px] object-contain mb-8 animate-fade-in"
+            className="w-[72px] h-[72px] md:w-20 md:h-20 object-contain mb-8 animate-fade-in"
             style={{
               opacity: 0.92,
-              filter: "drop-shadow(0 0 14px rgba(201,123,106,0.28))",
+              filter: "drop-shadow(0 0 16px rgba(201,123,106,0.30))",
             }}
           />
 
@@ -132,11 +132,11 @@ export default function BienvenuePage() {
           <div
             className="w-full flex flex-col items-center animate-fade-up"
             style={{
-              background: "rgba(111,106,100,0.18)",
+              background: "rgba(111,106,100,0.14)",
               border: "1px solid rgba(240,230,214,0.10)",
               borderRadius: 24,
               padding: "26px 22px",
-              boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+              boxShadow: "0 14px 30px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.04)",
             }}
           >
             {/* Prénom — facultatif, discret */}
@@ -159,7 +159,7 @@ export default function BienvenuePage() {
               className="w-full h-[58px] flex items-center justify-center font-inter text-base font-semibold cursor-pointer transition-all duration-[250ms] mb-5 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background:
-                  "linear-gradient(135deg, #D89986 0%, #C97B6A 50%, #A5503E 100%)",
+                  "linear-gradient(135deg, #DBA08C 0%, #C97B6A 48%, #913F2D 100%)",
                 borderRadius: "26px",
                 border: "1px solid rgba(255,255,255,0.12)",
                 boxShadow:
