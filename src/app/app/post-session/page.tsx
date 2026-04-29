@@ -59,9 +59,18 @@ export default function PostSessionPage() {
                 Tu peux t&apos;arrêter là.
               </p>
             </div>
-            <PrimaryButton onClick={() => setScreen("bridge")}>
-              Terminer
-            </PrimaryButton>
+            <div className="w-full flex flex-col items-center gap-4">
+              <PrimaryButton onClick={exit}>
+                Terminer
+              </PrimaryButton>
+              <button
+                type="button"
+                onClick={() => setScreen("bridge")}
+                className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors underline underline-offset-[3px]"
+              >
+                Voir comment garder une trace
+              </button>
+            </div>
           </div>
         )}
 
@@ -70,8 +79,8 @@ export default function PostSessionPage() {
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
             <div className="text-center space-y-6">
               <p className="font-body text-lg t-text-primary leading-relaxed">
-                Tu peux continuer seul<br />
-                ou ne plus repartir de zéro.
+                Tu peux t&apos;arrêter ici.<br />
+                Ou choisir de garder une trace de ce qui t&apos;aide.
               </p>
               <p className="font-body text-base t-text-secondary leading-relaxed">
                 TRACÉA peut rester un moment ponctuel<br />
@@ -115,7 +124,6 @@ export default function PostSessionPage() {
                 </p>
                 <p className="font-serif text-2xl text-t-beige">9€</p>
                 <p className="font-inter text-xs t-text-secondary">par mois</p>
-                <p className="font-inter text-xs t-text-ghost mt-1">Moins qu&apos;un café par semaine</p>
               </div>
               <div className="t-card p-5 text-center space-y-1 border-[rgba(232,216,199,0.30)]">
                 <p className="font-inter text-xs t-text-secondary uppercase tracking-wider">
@@ -132,7 +140,7 @@ export default function PostSessionPage() {
                 Continuer avec TRACÉA
               </PrimaryButton>
               <SecondaryButton onClick={exit}>
-                Continuer seul
+                Continuer librement
               </SecondaryButton>
             </div>
           </div>
