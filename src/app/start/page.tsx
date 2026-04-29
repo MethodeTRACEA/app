@@ -42,8 +42,8 @@ const options: Option[] = [
     tag: "5 min",
     recommended: true,
     labelColor: "#C97B6A",
-    cardBorder: "rgba(240,230,214,0.18)",
-    cardBg: "rgba(111,106,100,0.20)",
+    cardBorder: "rgba(240,230,214,0.22)",
+    cardBg: "rgba(111,106,100,0.24)",
   },
   {
     href: "/app/session",
@@ -55,7 +55,7 @@ const options: Option[] = [
     labelColor: "rgba(240,230,214,0.38)",
     cardBorder: "rgba(255,255,255,0.08)",
     cardBg: "rgba(255,255,255,0.06)",
-    cardOpacity: 0.72,
+    cardOpacity: 0.65,
   },
 ];
 
@@ -141,7 +141,7 @@ export default function StartPage() {
                 textDecoration: "none",
                 opacity: opt.cardOpacity ?? 1,
                 boxShadow: opt.recommended
-                  ? "0 18px 44px rgba(0,0,0,0.42), 0 0 18px rgba(240,230,214,0.035)"
+                  ? "0 20px 52px rgba(0,0,0,0.46), 0 0 22px rgba(240,230,214,0.05)"
                   : undefined,
               }}
             >
