@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 // Halo   : radial-gradient(ellipse at 50% 0%, rgba(201,123,106,0.28) …)
 // Bg     : radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) …)
 //           + radial-gradient(ellipse at 15% 0%, rgba(111,106,100,0.16) …)
-// Card   : rgba(111,106,100,0.18), border rgba(240,230,214,0.10), r24
+// Card   : rgba(111,106,100,0.18), border rgba(240,230,214,0.10), r28
 // Shadow : 0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)
 // Dot    : #C97B6A
 // Cream  : #F0E6D6
@@ -93,37 +93,29 @@ export default function StartPage() {
         }}
       />
 
-      {/* Contenu centré */}
-      <section
-        className="relative flex items-center justify-center px-6 py-6"
-        style={{ minHeight: "100dvh", zIndex: 1 }}
+      {/* Layout top-down — px-6 pt-6 pb-4, pas de justify-center */}
+      <div
+        className="relative min-h-[100dvh] flex flex-col items-center px-6 pt-6 pb-4 overflow-hidden"
+        style={{ zIndex: 1 }}
       >
-        <div className="relative z-10 w-full text-center" style={{ maxWidth: 420 }}>
+        <div className="w-full flex flex-col items-center text-center" style={{ maxWidth: 420 }}>
 
-          {/* Logo — rendu identique à la landing, sans wrapper avec fond */}
-          <div className="mb-3">
+          {/* Logo — w-16 max-w-[64px] h-auto, drop-shadow uniquement */}
+          <div className="mb-6">
             <img
               src="/images/tracea-logo-terra-transparent.png"
               alt="TRACÉA"
-              className="mx-auto object-contain"
-              style={{
-                height: "clamp(72px, 11vw, 90px)",
-                filter: "drop-shadow(0 0 14px rgba(201,123,106,0.20))",
-              }}
+              className="mx-auto object-contain w-16 max-w-[64px] h-auto"
+              style={{ filter: "drop-shadow(0 0 14px rgba(201,123,106,0.20))" }}
             />
           </div>
 
-          {/* Titre */}
+          {/* Titre — 38px / leading 0.98 / tracking -0.02em */}
           <h1
-            className="tracking-tight"
+            className="font-light w-full text-[38px] max-[370px]:text-[34px] leading-[0.98] tracking-[-0.02em] mb-3"
             style={{
               fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
-              fontSize: "clamp(24px, 6.5vw, 32px)",
-              fontWeight: 300,
-              lineHeight: 1.1,
               color: "#F0E6D6",
-              marginBottom: 3,
-              letterSpacing: "-0.01em",
             }}
           >
             Tu veux redescendre comment&nbsp;?
@@ -131,40 +123,31 @@ export default function StartPage() {
 
           {/* Sous-titre */}
           <p
-            className="font-sans"
-            style={{
-              fontSize: 14,
-              color: "rgba(240,230,214,0.50)",
-              lineHeight: 1.5,
-              marginBottom: 12,
-            }}
+            className="font-sans text-[16px] max-[370px]:text-[15px] leading-[1.35] mb-6 max-[370px]:mb-5 max-w-[320px]"
+            style={{ color: "rgba(240,230,214,0.50)" }}
           >
             Choisis le chemin qui correspond à ton état maintenant.
           </p>
 
-          {/* Les 3 cartes */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* Cartes — space-y-3 / h-[124px] */}
+          <div className="w-full max-w-[612px] space-y-3">
             {options.map((opt) => (
               <Link
                 key={opt.href}
                 href={opt.href}
+                className="flex items-center min-h-0 h-[124px] max-[370px]:h-[116px] px-5 max-[370px]:px-4 py-4 max-[370px]:py-3 rounded-[28px] overflow-hidden"
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
+                  gap: 12,
                   background: opt.recommended
                     ? "rgba(111,106,100,0.22)"
                     : "rgba(111,106,100,0.18)",
                   border: `1px solid ${opt.border}`,
-                  borderRadius: 24,
-                  padding: "16px 20px",
                   textDecoration: "none",
                   textAlign: "left",
                   boxShadow: opt.recommended
                     ? "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04), 0 0 18px rgba(201,123,106,0.10)"
                     : "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
                   opacity: opt.cardOpacity ?? 1,
-                  transition: "opacity 0.2s ease",
                 }}
               >
                 {/* Dot */}
@@ -175,63 +158,42 @@ export default function StartPage() {
                     borderRadius: "50%",
                     background: opt.dot,
                     flexShrink: 0,
-                    marginTop: 1,
                     opacity: 0.85,
                   }}
                 />
 
                 {/* Contenu */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  {/* Label + tag durée + badge recommandé */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      marginBottom: 5,
-                      flexWrap: "wrap" as const,
-                    }}
-                  >
+                <div className="flex-1 min-w-0">
+
+                  {/* Label + badges */}
+                  <div className="flex items-center gap-2 mb-2">
                     <span
-                      className="font-sans"
-                      style={{
-                        fontSize: 9,
-                        fontWeight: 600,
-                        letterSpacing: "0.14em",
-                        color: opt.dot,
-                      }}
+                      className="font-sans text-[12px] leading-none tracking-[0.18em] font-semibold"
+                      style={{ color: opt.dot }}
                     >
                       {opt.label}
                     </span>
 
                     {/* Tag durée */}
                     <span
-                      className="font-sans"
+                      className="font-sans h-7 max-[370px]:h-6 px-3 max-[370px]:px-2 text-[13px] max-[370px]:text-[12px] leading-none flex items-center rounded-full"
                       style={{
-                        fontSize: 9,
                         color: "rgba(240,230,214,0.45)",
                         background: "rgba(240,230,214,0.07)",
                         border: "1px solid rgba(240,230,214,0.10)",
-                        borderRadius: 999,
-                        padding: "1px 7px",
-                        letterSpacing: "0.04em",
                       }}
                     >
                       {opt.tag}
                     </span>
 
-                    {/* Badge recommandé — neutre, sans or */}
+                    {/* Badge recommandé */}
                     {opt.recommended && (
                       <span
-                        className="font-sans"
+                        className="font-sans h-7 max-[370px]:h-6 px-3 max-[370px]:px-2 text-[13px] max-[370px]:text-[12px] leading-none flex items-center rounded-full"
                         style={{
-                          fontSize: 9,
                           color: "rgba(240,230,214,0.55)",
                           background: "rgba(240,230,214,0.07)",
                           border: "1px solid rgba(240,230,214,0.12)",
-                          borderRadius: 999,
-                          padding: "1px 7px",
-                          letterSpacing: "0.05em",
                         }}
                       >
                         recommandé
@@ -239,43 +201,31 @@ export default function StartPage() {
                     )}
                   </div>
 
-                  {/* Titre carte */}
+                  {/* Titre carte — 28px / lh 1.02 */}
                   <p
-                    className="font-body"
+                    className="font-body text-[28px] max-[370px]:text-[25px] leading-[1.02] tracking-[-0.01em]"
                     style={{
-                      fontSize: 16,
                       color: opt.titleColor ?? "#F0E6D6",
                       fontWeight: 300,
-                      margin: "0 0 4px",
-                      lineHeight: 1.25,
+                      margin: 0,
                     }}
                   >
                     {opt.title}
                   </p>
 
-                  {/* Description */}
+                  {/* Description — line-clamp-2 */}
                   <p
-                    className="font-sans"
-                    style={{
-                      fontSize: 12,
-                      color: "rgba(240,230,214,0.44)",
-                      margin: 0,
-                      lineHeight: 1.55,
-                    }}
+                    className="font-sans text-[16px] max-[370px]:text-[15px] leading-[1.45] max-[370px]:leading-[1.35] mt-1 line-clamp-2"
+                    style={{ color: "rgba(240,230,214,0.44)" }}
                   >
                     {opt.desc}
                   </p>
 
-                  {/* Badge compte requis */}
+                  {/* Badge Compte requis */}
                   {opt.badge && (
                     <p
-                      className="font-sans"
-                      style={{
-                        fontSize: 10,
-                        color: "rgba(240,230,214,0.50)",
-                        margin: "5px 0 0",
-                        letterSpacing: "0.04em",
-                      }}
+                      className="font-sans text-[14px] max-[370px]:text-[13px] mt-2 max-[370px]:mt-1 leading-none"
+                      style={{ color: "rgba(240,230,214,0.50)" }}
                     >
                       {opt.badge}
                     </p>
@@ -304,19 +254,17 @@ export default function StartPage() {
 
           {/* Microtexte bas */}
           <p
-            className="font-sans"
+            className="font-sans text-[14px] max-[370px]:text-[13px] mt-4 max-[370px]:mt-3 leading-[1.3] max-w-[320px]"
             style={{
-              fontSize: 12,
               color: "rgba(240,230,214,0.28)",
-              marginTop: 8,
-              lineHeight: 1.55,
               letterSpacing: "0.01em",
             }}
           >
             Tu peux commencer sans compte. Tu restes libre d&apos;arrêter.
           </p>
+
         </div>
-      </section>
+      </div>
     </div>
   );
 }
