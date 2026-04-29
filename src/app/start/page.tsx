@@ -38,7 +38,7 @@ const options: Option[] = [
   {
     href: "/app/traversee-courte",
     label: "TRAVERSÉE",
-    title: "Je veux être guidé(e)",
+    title: "Je veux me poser et redescendre",
     desc: "Pour déposer, revenir au corps, puis choisir un geste simple.",
     tag: "5 min",
     recommended: true,
@@ -49,7 +49,7 @@ const options: Option[] = [
   {
     href: "/app/session",
     label: "APPROFONDIR",
-    title: "Je veux comprendre ce qui se joue",
+    title: "Aller plus loin",
     desc: "Une traversée complète avec analyse et mémoire de tes repères.",
     tag: "15 min",
     badge: "Compte requis",
