@@ -127,12 +127,12 @@ export default function StartPage() {
         </div>
 
         {/* CARTES */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           {options.map((opt) => (
             <Link
               key={opt.href}
               href={opt.href}
-              className="block rounded-[18px] px-4 py-3 no-underline"
+              className="block rounded-[18px] px-4 py-2.5 no-underline"
               style={{
                 background: opt.cardBg,
                 border: `1px solid ${opt.cardBorder}`,
@@ -143,22 +143,22 @@ export default function StartPage() {
               }}
             >
               {/* TAG — label + durée + recommandé */}
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-0.5">
                 <span
-                  className="font-sans text-[10px] tracking-[0.12em] font-semibold"
+                  className="font-sans text-[9px] tracking-[0.10em] font-semibold"
                   style={{ color: opt.labelColor }}
                 >
                   {opt.label}
                 </span>
                 <span
-                  className="font-sans text-[10px]"
+                  className="font-sans text-[9px]"
                   style={{ color: "rgba(255,255,255,0.40)" }}
                 >
                   {opt.tag}
                 </span>
                 {opt.recommended && (
                   <span
-                    className="font-sans text-[10px]"
+                    className="font-sans text-[9px]"
                     style={{ color: "rgba(240,230,214,0.45)" }}
                   >
                     · recommandé
@@ -168,11 +168,11 @@ export default function StartPage() {
 
               {/* TITRE CARTE */}
               <p
-                className="font-body text-[16px] leading-[20px] mb-1"
+                className="font-body text-[22px] leading-[1.05]"
                 style={{
                   color: "#F0E6D6",
                   fontWeight: 300,
-                  margin: "0 0 4px",
+                  margin: "0 0 3px",
                 }}
               >
                 {opt.title}
@@ -180,7 +180,7 @@ export default function StartPage() {
 
               {/* DESCRIPTION */}
               <p
-                className="font-sans text-[12px] leading-[16px]"
+                className="font-sans text-[13px] leading-[1.3] line-clamp-2"
                 style={{ color: "rgba(240,230,214,0.50)", margin: 0 }}
               >
                 {opt.desc}
