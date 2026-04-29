@@ -297,20 +297,48 @@ function SessionPageInner() {
 
   if (!user) {
     return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center space-y-6">
-        <p className="font-serif text-2xl text-espresso">On y est presque.</p>
-        <p className="font-body text-base text-espresso/70 leading-relaxed">
-          Crée ton espace pour garder ta progression.
-        </p>
-        <Link
-          href="/app/connexion"
-          className="btn-primary inline-block !py-4 !text-base !rounded-2xl w-full"
-        >
-          Continuer
-        </Link>
-        <p className="font-body text-xs text-warm-gray/50">
-          Gratuit. Sans engagement.
-        </p>
+      <div
+        className="flex flex-col items-center justify-center px-5"
+        style={{ minHeight: "80vh", background: "#1A120D" }}
+      >
+        <div className="w-full max-w-md flex flex-col items-center text-center gap-6 py-12">
+          <h2
+            className="font-light text-[28px] leading-[34px] tracking-[-0.01em]"
+            style={{
+              fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
+              color: "#F0E6D6",
+            }}
+          >
+            Crée un compte pour continuer.
+          </h2>
+
+          <p
+            className="font-sans text-[14px] leading-[20px]"
+            style={{ color: "rgba(240,230,214,0.62)" }}
+          >
+            Crée un compte pour retrouver tes traversées.
+          </p>
+
+          <div className="w-full flex flex-col items-center gap-2">
+            <PrimaryButton onClick={() => router.push("/app/connexion")}>
+              Créer un compte gratuit
+            </PrimaryButton>
+            <p
+              className="font-sans text-[12px]"
+              style={{ color: "rgba(240,230,214,0.50)" }}
+            >
+              Gratuit. Sans engagement.
+            </p>
+          </div>
+
+          <Link
+            href="/app/traversee-courte"
+            className="font-sans text-[13px] underline underline-offset-[3px] transition-colors"
+            style={{ color: "rgba(240,230,214,0.50)" }}
+          >
+            Faire une traversée courte sans compte
+          </Link>
+        </div>
       </div>
     );
   }
