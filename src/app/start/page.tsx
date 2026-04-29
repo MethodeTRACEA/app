@@ -33,6 +33,7 @@ const options: Option[] = [
     labelColor: "#C97B6A",
     cardBorder: "rgba(255,255,255,0.08)",
     cardBg: "rgba(255,255,255,0.06)",
+    cardOpacity: 0.82,
   },
   {
     href: "/app/traversee-courte",
@@ -42,7 +43,7 @@ const options: Option[] = [
     tag: "5 min",
     recommended: true,
     labelColor: "#C97B6A",
-    cardBorder: "rgba(240,230,214,0.26)",
+    cardBorder: "rgba(240,230,214,0.32)",
     cardBg: "rgba(111,106,100,0.28)",
   },
   {
