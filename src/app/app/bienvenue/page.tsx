@@ -21,6 +21,17 @@ export default function BienvenuePage() {
     setReady(true);
   }, [user, authLoading, router]);
 
+  // Masquer le footer du layout sur cette page uniquement
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.setAttribute("data-bienvenue-hide-footer", "");
+    style.textContent = "footer { display: none !important; }";
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   async function handleStart() {
     if (!user) return;
     setSaving(true);
@@ -134,7 +145,15 @@ export default function BienvenuePage() {
           <button
             onClick={handleStart}
             disabled={saving}
-            className="t-btn-primary mb-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-[58px] flex items-center justify-center font-inter text-base font-semibold cursor-pointer transition-all duration-[250ms] mb-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              background: "linear-gradient(135deg, #C97B6A 0%, #B26450 100%)",
+              borderRadius: "26px",
+              border: "1px solid rgba(240,230,214,0.10)",
+              boxShadow:
+                "0 2px 12px rgba(184,99,79,0.18), 0 1px 4px rgba(0,0,0,0.18)",
+              color: "#F0E6D6",
+            }}
           >
             {saving ? "Un instant..." : "Entrer dans mon espace"}
           </button>
