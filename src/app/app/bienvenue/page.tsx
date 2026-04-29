@@ -92,7 +92,7 @@ export default function BienvenuePage() {
       />
 
       <div
-        className="relative min-h-[100dvh] flex flex-col items-center justify-start px-5 pt-14 pb-10 md:pt-20 md:pb-16"
+        className="relative min-h-[100dvh] flex flex-col items-center justify-start px-5 pt-20 pb-10 md:pt-24 md:pb-16"
         style={{ zIndex: 1 }}
       >
         <div className="w-full max-w-md flex flex-col items-center text-center">
@@ -109,7 +109,7 @@ export default function BienvenuePage() {
 
           {/* Titre */}
           <h1
-            className="font-light text-[32px] leading-[36px] tracking-[-0.01em] mb-3 animate-fade-up"
+            className="font-light text-[32px] leading-[36px] tracking-[-0.01em] mb-4 animate-fade-up"
             style={{
               fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
               color: "#F0E6D6",
