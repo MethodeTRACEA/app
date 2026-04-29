@@ -1069,14 +1069,7 @@ function TraverseeCourteV2() {
               Tu peux revenir ici à chaque fois.
             </p>
             <InstallPrompt />
-            <PrimaryButton onClick={() => {
-              const count = parseInt(localStorage.getItem("tracea_free_short_sessions") ?? "0", 10);
-              if (!user && count > 1) {
-                setScreen("soft-limit");
-              } else {
-                setScreen("exit-transition");
-              }
-            }}>
+            <PrimaryButton onClick={() => setScreen("exit-transition")}>
               Retour à l&apos;accueil
             </PrimaryButton>
             <div className="text-center space-y-1.5">
@@ -1098,17 +1091,17 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6 px-6 text-center">
             <p className="font-body text-2xl" style={{ color: "#F0E6D6", fontWeight: 300 }}>
-              Tu peux continuer en créant ton accès
+              Tu peux créer un compte gratuit
             </p>
             <p className="font-sans text-sm" style={{ color: "rgba(240,230,214,0.55)", lineHeight: 1.6 }}>
-              Garde ta progression et retrouve tes traversées.
+              Tu pourras retrouver tes traversées plus facilement.
             </p>
             <div className="flex flex-col gap-3 w-full max-w-xs">
               <PrimaryButton onClick={() => router.push("/app/connexion")}>
-                Créer mon accès
+                Créer un compte gratuit
               </PrimaryButton>
               <SecondaryButton onClick={() => setScreen("exit-transition")}>
-                Continuer sans compte
+                Continuer librement
               </SecondaryButton>
             </div>
           </div>
