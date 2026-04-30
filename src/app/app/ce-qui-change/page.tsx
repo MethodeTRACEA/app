@@ -224,14 +224,14 @@ export default function CeQuiChangePage() {
             marginTop: -8,
           }}
         >
-          Ce qui revient, ce qui t&apos;aide, ce qui commence à se construire.
+          Ce qui revient, ce qui t&apos;aide, ce que tes traversées montrent.
         </p>
 
         {/* ── Cas 0 — aucune session ── */}
         {n === 0 && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
-              Tes premières traversées viendront laisser des traces ici.
+              Cet espace se remplira au fil de tes traversées.
             </p>
           </div>
         )}
@@ -256,8 +256,7 @@ export default function CeQuiChangePage() {
               Tes traversées sont bien enregistrées.
               <br />
               <br />
-              La lecture de ce qui revient deviendra plus précise avec les
-              prochaines sessions.
+              Avec quelques traversées de plus, ce qui revient apparaîtra ici.
             </p>
           </div>
         )}
@@ -319,13 +318,13 @@ export default function CeQuiChangePage() {
                   <br />
                   Ce n&apos;est pas un score.
                   <br />
-                  C&apos;est une trace de tes retours vers toi.
+                  C&apos;est simplement ce que tu as posé ici.
                 </p>
               ) : (
                 <p className="font-body" style={blockTextStyle}>
-                  Tu as déjà laissé plusieurs traces.
+                  Plusieurs traversées sont déjà enregistrées.
                   <br />
-                  Elles commencent à former un repère.
+                  Elles restent ici, sans avoir besoin d&apos;être interprétées.
                 </p>
               )}
             </div>

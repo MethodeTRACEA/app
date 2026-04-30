@@ -331,7 +331,7 @@ export default function HistoriquePage() {
                               className="font-sans"
                               style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 12, letterSpacing: "0.10em" }}
                             >
-                              Ce que tu viens de traverser
+                              Le miroir de cette session
                             </p>
                             <p
                               className="font-body"
@@ -364,7 +364,7 @@ export default function HistoriquePage() {
                             className="font-sans"
                             style={{ ...kickerStyle, marginBottom: 10 }}
                           >
-                            Ce qui a continué à travailler après
+                            Une note pour plus tard
                           </p>
                           {editingNoteId === s.id ? (
                             <div>
