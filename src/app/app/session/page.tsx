@@ -477,6 +477,44 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
       setAnalysis(analysisText);
     }
 
+    // ── Fire-and-forget : alimenter la mémoire évolutive ────────────
+    // Appelé AVANT updateSessionDb(completed:true) : la route summarize
+    // utilise checkAiLimit qui compte les sessions déjà completed. En
+    // déclenchant summarize ici, la 1re session gratuite peut bien créer
+    // un résumé mémoire avant que le compteur ne la voie.
+    try {
+      if (sessionId && authSession?.access_token) {
+        console.log("[TRACEA summarize] start");
+        fetch("/api/tracea/summarize", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authSession.access_token}`,
+          },
+          body: JSON.stringify({
+            sessionId,
+            steps,
+            context: "approfondi",
+            hadDoNotStore: false,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              console.log("[TRACEA summarize] success");
+            } else {
+              console.warn("[TRACEA summarize] error", res.status);
+            }
+          })
+          .catch(() => {
+            console.warn("[TRACEA summarize] error");
+          });
+      } else {
+        console.log("[TRACEA summarize] skipped");
+      }
+    } catch {
+      console.warn("[TRACEA summarize] error");
+    }
+
     if (sessionId) {
       await updateSessionDb(sessionId, {
         steps,
