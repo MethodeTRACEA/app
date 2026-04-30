@@ -2,12 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb, getTopEmergerValues, getPremiumMemory } from "@/lib/supabase-store";
-import type { PremiumMemory } from "@/lib/supabase-store";
+import { getCompletedSessionsDb, deleteSessionDb, updateSessionDb } from "@/lib/supabase-store";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
-import { Paywall } from "@/components/Paywall";
-import { buildHistoryInsight } from "@/lib/history-insight";
 import { getSessionSummariesByIds } from "@/lib/memory";
 import { supabase } from "@/lib/supabase";
 
@@ -16,34 +13,18 @@ type SummaryLite = Awaited<
 >[string];
 
 export default function HistoriquePage() {
-  const { user, loading: authLoading, hasPremiumAccess } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<SessionData[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
-  const [topEmerger, setTopEmerger] = useState<string[]>([]);
-  const [premiumMemory, setPremiumMemory] = useState<PremiumMemory | null | undefined>(undefined);
   const [summariesById, setSummariesById] = useState<Record<string, SummaryLite>>({});
-  const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
     if (!user) return;
-    const queries: Promise<unknown>[] = [
-      getCompletedSessionsDb(user.id),
-      getTopEmergerValues(user.id),
-    ];
-    if (hasPremiumAccess) queries.push(getPremiumMemory(user.id));
-
-    Promise.all(queries).then((results) => {
-      const [data, emerger, pm] = results as [
-        Awaited<ReturnType<typeof getCompletedSessionsDb>>,
-        Awaited<ReturnType<typeof getTopEmergerValues>>,
-        PremiumMemory | null | undefined,
-      ];
+    getCompletedSessionsDb(user.id).then((data) => {
       setSessions(data);
-      setTopEmerger(emerger);
-      if (hasPremiumAccess) setPremiumMemory(pm ?? null);
       setLoading(false);
 
       // Charger les résumés des sessions affichées (best-effort, non bloquant).
@@ -95,56 +76,6 @@ export default function HistoriquePage() {
     );
     setEditingNoteId(null);
     setNoteText("");
-  }
-
-  // ── Données calculées ─────────────────────────────────────
-
-  // Insight longitudinal déterministe (traversées approfondies uniquement)
-  const historyInsight = buildHistoryInsight(sessions);
-
-  // Bloc "Ce qui se transforme"
-  const transformeText =
-    sessions.length >= 10
-      ? "Tu reviens souvent quand quelque chose t'active.\n\nTu ne laisses plus passer sans t'arrêter."
-      : sessions.length >= 3
-      ? "Tu commences à revenir vers toi quand quelque chose bouge.\n\nC'est déjà une trace."
-      : null;
-
-  // Appuis les plus utilisés (premium)
-  function topActionsFn(): string[] {
-    const counts: Record<string, number> = {};
-    for (const s of sessions) {
-      if (!s.actionAlignee) continue;
-      const key = s.actionAlignee.toLowerCase().trim();
-      counts[key] = (counts[key] ?? 0) + 1;
-    }
-    return Object.entries(counts)
-      .filter(([, n]) => n >= 2)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 2)
-      .map(([v]) => v);
-  }
-  const topActions = topActionsFn();
-
-  // Patterns exercices — 1 phrase (premium)
-  function patternPhrase(): string | null {
-    if (topEmerger.length === 0 || sessions.length < 3) return null;
-    const v = topEmerger[0].toLowerCase();
-    if (v.includes("respir")) return "Tu utilises souvent Respirer lentement";
-    if (v.includes("corps") || v.includes("appui") || v.includes("ancr")) return "Tu reviens souvent au corps";
-    if (v.includes("regard") || v.includes("pose")) return "Tu choisis souvent de te poser un moment";
-    if (topEmerger.length > 1) return "Tu explores différentes façons de revenir au calme";
-    return null;
-  }
-  const patternInsight = patternPhrase();
-
-  // ── Paywall inline ────────────────────────────────────────
-  if (showPaywall) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Paywall onContinue={() => setShowPaywall(false)} />
-      </div>
-    );
   }
 
   // ── Styles V3 réutilisables ───────────────────────────────
@@ -234,101 +165,8 @@ export default function HistoriquePage() {
             marginTop: -8,
           }}
         >
-          Ce qui est revenu dans tes traversées.
+          La mémoire de tes traversées, une à une.
         </p>
-
-        {/* ── INSIGHT LONGITUDINAL ── */}
-        {historyInsight && (
-          <div style={blockStyle}>
-            <p className="font-sans" style={kickerStyle}>Ce qui revient souvent</p>
-            <p className="font-body" style={{ ...blockTextStyle, whiteSpace: "pre-line" }}>{historyInsight}</p>
-          </div>
-        )}
-
-        {/* ── CE QUI SE TRANSFORME ── */}
-        {transformeText && (
-          <div style={blockStyle}>
-            <p className="font-sans" style={kickerStyle}>Ce qui se transforme</p>
-            <p className="font-body" style={{ ...blockTextStyle, whiteSpace: "pre-line" }}>{transformeText}</p>
-          </div>
-        )}
-
-        {hasPremiumAccess ? (
-          <>
-            {/* ── Ce que tu utilises le plus ── */}
-            {patternInsight && (
-              <div style={blockStyle}>
-                <p className="font-sans" style={kickerStyle}>Ce que tu utilises le plus</p>
-                <p className="font-body" style={blockTextStyle}>{patternInsight}</p>
-              </div>
-            )}
-
-            {/* ── Tes appuis les plus utilisés ── */}
-            {topActions.length > 0 && (
-              <div style={blockStyle}>
-                <p className="font-sans" style={kickerStyle}>Tes appuis les plus utilisés</p>
-                <p className="font-body" style={{ ...blockTextStyle, marginBottom: 8 }}>Tu reviens souvent à :</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  {topActions.map((a) => (
-                    <p key={a} className="font-body" style={{ ...blockTextStyle, fontStyle: "italic" }}>« {a} »</p>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* ── Repères IA (premium memory) ── */}
-            {premiumMemory !== undefined && premiumMemory !== null && (
-              <div style={{ ...blockStyle, display: "flex", flexDirection: "column", gap: 20 }}>
-                <p className="font-sans" style={{ ...kickerStyle, marginBottom: 0 }}>Repères</p>
-                {([
-                  { label: "Ce qui revient",        text: premiumMemory.ceQuiRevient },
-                  { label: "Ce qui semble demandé", text: premiumMemory.ceQuiSembleDemandem },
-                  { label: "Ce qui t'aide",         text: premiumMemory.ceQuiTAide },
-                  { label: "Ce que tu peux tester", text: premiumMemory.ceQuePeutTester },
-                ] as { label: string; text: string | null }[])
-                  .filter((b) => b.text)
-                  .map((block) => (
-                    <div key={block.label}>
-                      <p
-                        className="font-sans"
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 500,
-                          letterSpacing: "0.15em",
-                          textTransform: "uppercase",
-                          color: "rgba(201,123,106,0.65)",
-                          marginBottom: 6,
-                        }}
-                      >
-                        {block.label}
-                      </p>
-                      <p className="font-body" style={blockTextStyle}>{block.text}</p>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </>
-        ) : (
-          /* ── CTA gratuit ── */
-          sessions.length >= 1 && (
-            <button
-              type="button"
-              onClick={() => setShowPaywall(true)}
-              style={{
-                ...blockStyle,
-                width: "100%",
-                textAlign: "left",
-                cursor: "pointer",
-                background: "rgba(111,106,100,0.10)",
-                transition: "background 0.2s",
-              }}
-            >
-              <p className="font-body" style={{ ...blockTextStyle, color: "rgba(240,230,214,0.55)" }}>
-                Voir ta progression dans le temps →
-              </p>
-            </button>
-          )
-        )}
 
         {/* ── Liste des sessions ── */}
         {sessions.length > 0 && (
