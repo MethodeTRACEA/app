@@ -151,9 +151,16 @@ export default function CeQuiChangePage() {
     fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
     fontSize: "1.05rem",
     fontWeight: 300,
-    color: "rgba(240,230,214,0.85)",
+    color: "rgba(240,230,214,0.88)",
     lineHeight: 1.5,
-    fontStyle: "italic",
+    display: "flex",
+    gap: 10,
+  };
+
+  const bulletStyle: React.CSSProperties = {
+    color: "#C97B6A",
+    flexShrink: 0,
+    lineHeight: 1.5,
   };
 
   return (
@@ -217,7 +224,7 @@ export default function CeQuiChangePage() {
             marginTop: -8,
           }}
         >
-          Ce qui se construit en toi, traversée après traversée.
+          Ce qui revient, ce qui t&apos;aide, ce qui commence à se construire.
         </p>
 
         {/* ── Cas 0 — aucune session ── */}
@@ -271,7 +278,8 @@ export default function CeQuiChangePage() {
                 <ul style={listStyle}>
                   {block1Items.map((item, i) => (
                     <li key={`b1-${i}`} style={listItemStyle}>
-                      « {item} »
+                      <span style={bulletStyle} aria-hidden="true">•</span>
+                      <span>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -285,14 +293,15 @@ export default function CeQuiChangePage() {
                   Ce qui t&apos;aide déjà
                 </p>
                 <p className="font-body" style={blockTextStyle}>
-                  Certains appuis reviennent dans tes traversées.
+                  Des appuis reviennent dans tes traversées.
                   <br />
-                  Tu pourras les retrouver quand ça remonte.
+                  Tu peux les retrouver quand ça remonte.
                 </p>
                 <ul style={listStyle}>
                   {block2Items.map((item, i) => (
                     <li key={`b2-${i}`} style={listItemStyle}>
-                      « {item} »
+                      <span style={bulletStyle} aria-hidden="true">•</span>
+                      <span>{item}</span>
                     </li>
                   ))}
                 </ul>
