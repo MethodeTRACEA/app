@@ -575,6 +575,47 @@ export async function getRecentInnerTruths(
   return (data || []) as { inner_truth: string; created_at: string }[];
 }
 
+// Lecture par lot : récupère les résumés de sessions ciblées par sessionIds.
+// Retour : objet indexé par session_id pour lookup O(1) côté UI.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getSessionSummariesByIds(
+  supabaseClient: any,
+  userId: string,
+  sessionIds: string[]
+): Promise<Record<string, Pick<SessionSummary,
+  "session_id" | "inner_truth" | "narrative_summary" | "dominant_emotions" | "created_at"
+>>> {
+  if (sessionIds.length === 0) return {};
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("session_summaries")
+      .select("session_id, inner_truth, narrative_summary, dominant_emotions, created_at")
+      .eq("user_id", userId)
+      .in("session_id", sessionIds)
+      .eq("excluded_from_memory", false);
+
+    if (error) {
+      console.warn("[TRACEA Memory] getSessionSummariesByIds error:", error.message);
+      return {};
+    }
+
+    const rows = (data || []) as Pick<SessionSummary,
+      "session_id" | "inner_truth" | "narrative_summary" | "dominant_emotions" | "created_at"
+    >[];
+
+    const result: Record<string, Pick<SessionSummary,
+      "session_id" | "inner_truth" | "narrative_summary" | "dominant_emotions" | "created_at"
+    >> = {};
+    for (const row of rows) {
+      if (row.session_id) result[row.session_id] = row;
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function deleteMemoryData(
   supabaseClient: any,

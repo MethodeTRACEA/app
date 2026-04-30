@@ -8,6 +8,12 @@ import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 import { Paywall } from "@/components/Paywall";
 import { buildHistoryInsight } from "@/lib/history-insight";
+import { getSessionSummariesByIds } from "@/lib/memory";
+import { supabase } from "@/lib/supabase";
+
+type SummaryLite = Awaited<
+  ReturnType<typeof getSessionSummariesByIds>
+>[string];
 
 export default function HistoriquePage() {
   const { user, loading: authLoading, hasPremiumAccess } = useAuth();
@@ -18,6 +24,7 @@ export default function HistoriquePage() {
   const [noteText, setNoteText] = useState("");
   const [topEmerger, setTopEmerger] = useState<string[]>([]);
   const [premiumMemory, setPremiumMemory] = useState<PremiumMemory | null | undefined>(undefined);
+  const [summariesById, setSummariesById] = useState<Record<string, SummaryLite>>({});
   const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
@@ -38,6 +45,14 @@ export default function HistoriquePage() {
       setTopEmerger(emerger);
       if (hasPremiumAccess) setPremiumMemory(pm ?? null);
       setLoading(false);
+
+      // Charger les résumés des sessions affichées (best-effort, non bloquant).
+      const sessionIds = data.map((s) => s.id);
+      if (sessionIds.length > 0) {
+        getSessionSummariesByIds(supabase, user.id, sessionIds)
+          .then((sums) => setSummariesById(sums))
+          .catch(() => {});
+      }
     });
   }, [user]);
 
@@ -327,6 +342,12 @@ export default function HistoriquePage() {
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {sessions.map((s) => {
                 const isExpanded = expandedId === s.id;
+                const summary = summariesById[s.id];
+                const pivotText = summary?.inner_truth || s.veriteInterieure || s.emotionPrimaire || "";
+                const pivotIsQuote = !!(summary?.inner_truth || s.veriteInterieure);
+                const previewEmotions = (summary?.dominant_emotions ?? [])
+                  .filter((e) => e && e.trim() !== "")
+                  .slice(0, 2);
                 return (
                   <div
                     key={s.id}
@@ -344,7 +365,7 @@ export default function HistoriquePage() {
                     >
                       <div style={{ padding: "22px 24px" }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                          <div>
+                          <div style={{ minWidth: 0, flex: 1 }}>
                             <div
                               className="font-body"
                               style={{ fontSize: "1rem", fontWeight: 400, color: "#F0E6D6", lineHeight: 1 }}
@@ -355,7 +376,7 @@ export default function HistoriquePage() {
                                 year: "numeric",
                               })}
                             </div>
-                            {(s.veriteInterieure || s.emotionPrimaire) && (
+                            {pivotText && (
                               <p
                                 className="font-body"
                                 style={{
@@ -370,7 +391,21 @@ export default function HistoriquePage() {
                                   maxWidth: 260,
                                 }}
                               >
-                                {s.veriteInterieure ? `"${s.veriteInterieure}"` : s.emotionPrimaire}
+                                {pivotIsQuote ? `"${pivotText}"` : pivotText}
+                              </p>
+                            )}
+                            {previewEmotions.length > 0 && (
+                              <p
+                                className="font-sans"
+                                style={{
+                                  fontSize: 11,
+                                  fontWeight: 400,
+                                  color: "rgba(240,230,214,0.48)",
+                                  marginTop: 4,
+                                  letterSpacing: "0.04em",
+                                }}
+                              >
+                                {previewEmotions.join(" · ")}
                               </p>
                             )}
                           </div>
@@ -412,6 +447,32 @@ export default function HistoriquePage() {
                               style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.60)", lineHeight: 1.55 }}
                             >
                               {s.steps.traverser}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* 1bis — Résumé de session (mémoire évolutive) */}
+                        {summary?.narrative_summary && summary.narrative_summary.trim() !== "" && (
+                          <div
+                            style={{
+                              marginBottom: 16,
+                              background: "rgba(70,55,45,0.20)",
+                              border: "1px solid rgba(240,230,214,0.05)",
+                              borderRadius: 14,
+                              padding: "16px 18px",
+                            }}
+                          >
+                            <p
+                              className="font-sans"
+                              style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 8, letterSpacing: "0.10em" }}
+                            >
+                              Ce qui s&apos;est dit dans cette session
+                            </p>
+                            <p
+                              className="font-body"
+                              style={{ fontSize: "0.95rem", color: "rgba(240,230,214,0.78)", lineHeight: 1.6, whiteSpace: "pre-line" }}
+                            >
+                              {summary.narrative_summary}
                             </p>
                           </div>
                         )}
