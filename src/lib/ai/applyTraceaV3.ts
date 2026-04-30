@@ -42,37 +42,37 @@ const VALIDATIONS: Record<EmotionKey, [string, string]> = {
 const VALIDATION_FALLBACK: [string, string] = ["Ça a du sens.", "Ça compte."];
 
 const MICRO_PHRASES: Record<EmotionKey, [string, string]> = {
-  "colère":      ["Ça pousse.", "Il y a quelque chose."],
-  "tristesse":   ["C'est lourd.", "Ça touche."],
+  "colère":      ["La colère est là.", "Quelque chose ne passe pas."],
+  "tristesse":   ["La tristesse est là.", "C'est sensible."],
   "peur":        ["Il y a une tension.", "Ton corps réagit."],
-  "confusion":   ["C'est flou.", "Quelque chose échappe."],
-  "honte":       ["Ça se referme.", "C'est difficile à montrer."],
-  "frustration": ["Ça bloque.", "Quelque chose résiste."],
-  "culpabilité": ["Ça pèse.", "Tu le vois."],
-  "solitude":    ["C'est seul là.", "Il manque quelque chose."],
+  "confusion":   ["Tout n'est pas clair.", "La confusion est là."],
+  "honte":       ["La honte est là.", "C'est difficile à montrer."],
+  "frustration": ["La frustration est là.", "Un blocage est là."],
+  "culpabilité": ["La culpabilité est là.", "Ce poids est présent."],
+  "solitude":    ["La solitude est là.", "Le manque est présent."],
 };
 
 const HUMAN_TOUCH: Record<string, [string, string]> = {
-  "colère":       ["Ça a touché quelque chose.", "Ça ne passe pas."],
-  "tristesse":    ["Ça compte pour toi.", "Ça fait quelque chose."],
-  "peur":         ["Il y a une tension là.", "Ça serre un peu."],
-  "honte":        ["C'est sensible.", "Ça te touche."],
-  "culpabilité":  ["Ça pèse un peu.", "Tu le vois."],
-  "confusion":    ["C'est flou.", "Ça ne se pose pas encore."],
-  "frustration":  ["Ça bloque.", "Ça frotte."],
-  "solitude":     ["C'est seul là.", "Il manque quelque chose."],
+  "colère":       ["La colère touche un point sensible.", "Quelque chose ne passe pas."],
+  "tristesse":    ["Ça compte pour toi.", "La tristesse prend de la place."],
+  "peur":         ["Il y a une tension là.", "Une tension serre un peu."],
+  "honte":        ["C'est sensible.", "La honte touche un point sensible."],
+  "culpabilité":  ["La culpabilité reste présente.", "Tu le prends sur toi."],
+  "confusion":    ["Tout n'est pas encore clair.", "La confusion reste présente."],
+  "frustration":  ["La frustration est là.", "Un frottement est présent."],
+  "solitude":     ["Le manque est présent.", "Tu le sens."],
 };
 
 // Phrase de lien insérée entre situation et émotion (variante A uniquement)
 const LINK_PHRASES: Record<string, [string, string]> = {
-  "colère":       ["Ça ne passe pas.", "Ça touche quelque chose."],
-  "tristesse":    ["Ça compte pour toi.", "Ça fait quelque chose."],
-  "peur":         ["Il y a une tension là.", "Ça serre un peu."],
+  "colère":       ["La colère reste présente.", "Un point sensible est touché."],
+  "tristesse":    ["La tristesse reste présente.", "Ce poids est présent."],
+  "peur":         ["Il y a une tension là.", "Une tension serre un peu."],
   "honte":        ["C'est sensible.", "C'est difficile à montrer."],
-  "culpabilité":  ["Ça pèse un peu.", "Tu le vois."],
-  "confusion":    ["C'est flou.", "Ça ne se pose pas encore."],
-  "frustration":  ["Ça bloque.", "Ça frotte."],
-  "solitude":     ["C'est seul là.", "Il manque quelque chose."],
+  "culpabilité":  ["La culpabilité reste présente.", "Ce poids est présent."],
+  "confusion":    ["Tout n'est pas encore clair.", "La confusion reste présente."],
+  "frustration":  ["La frustration reste présente.", "Un frottement est présent."],
+  "solitude":     ["La solitude reste présente.", "Le manque est présent."],
 };
 
 // Toutes les phrases somatiques injectées (pour filtre doublons consécutifs — Rule C)

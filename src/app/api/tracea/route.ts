@@ -140,7 +140,7 @@ function getToneDirective(emotion: string): string {
     return `Signature émotionnelle : COLÈRE
 Ton : direct, ancré.
 Rythme : court, peu d'espace entre les phrases.
-Micro-phrase optionnelle (1 seule, si pertinent) : "Ça pousse." ou "Il y a quelque chose."
+Micro-phrase optionnelle (1 seule, si pertinent) : "La colère est là." ou "Quelque chose ne passe pas."
 Validation finale — choisir UNE parmi : "Tu peux t'écouter." / "Tu peux t'appuyer là-dessus."`;
   }
 
@@ -148,7 +148,7 @@ Validation finale — choisir UNE parmi : "Tu peux t'écouter." / "Tu peux t'app
     return `Signature émotionnelle : TRISTESSE
 Ton : doux, lent.
 Rythme : avec respiration — sauts de ligne possibles.
-Micro-phrase optionnelle (1 seule, si pertinent) : "C'est lourd." ou "Ça touche."
+Micro-phrase optionnelle (1 seule, si pertinent) : "La tristesse est là." ou "C'est sensible."
 Validation finale — choisir UNE parmi : "Tu peux prendre ce temps." / "Ça a sa place."`;
   }
 
@@ -164,7 +164,7 @@ Validation finale — choisir UNE parmi : "Tu peux ralentir." / "Tu peux rester 
     return `Signature émotionnelle : CONFUSION
 Ton : ouvert, non défini.
 Rythme : légèrement flottant.
-Micro-phrase optionnelle (1 seule, si pertinent) : "C'est flou." ou "Quelque chose échappe."
+Micro-phrase optionnelle (1 seule, si pertinent) : "Tout n'est pas clair." ou "La confusion est là."
 Validation finale — choisir UNE parmi : "Ça peut rester comme ça." / "Tu n'as pas besoin de savoir tout de suite."`;
   }
 
@@ -172,7 +172,7 @@ Validation finale — choisir UNE parmi : "Ça peut rester comme ça." / "Tu n'a
     return `Signature émotionnelle : HONTE
 Ton : très délicat, minimal.
 Rythme : lent, épuré.
-Micro-phrase optionnelle (1 seule, si pertinent) : "Ça se referme." ou "C'est difficile à montrer."
+Micro-phrase optionnelle (1 seule, si pertinent) : "La honte est là." ou "C'est difficile à montrer."
 Validation finale — choisir UNE parmi : "Tu peux y aller doucement." / "Tu peux t'appuyer là-dessus."`;
   }
 
@@ -180,7 +180,7 @@ Validation finale — choisir UNE parmi : "Tu peux y aller doucement." / "Tu peu
     return `Signature émotionnelle : FRUSTRATION
 Ton : lucide, posé.
 Rythme : légèrement haché.
-Micro-phrase optionnelle (1 seule, si pertinent) : "Ça bloque." ou "Quelque chose résiste."
+Micro-phrase optionnelle (1 seule, si pertinent) : "La frustration est là." ou "Un blocage est là."
 Validation finale — choisir UNE parmi : "Tu peux le voir." / "C'est là."`;
   }
 
