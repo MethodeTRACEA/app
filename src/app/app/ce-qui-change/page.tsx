@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { getCompletedSessionsDb } from "@/lib/supabase-store";
+import { getMemoryProfileClient, type MemoryProfile } from "@/lib/memory";
+import { supabase } from "@/lib/supabase";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 
@@ -19,7 +21,7 @@ function normalizeActionDisplay(action: string): string {
     .trim();
 }
 
-// ── APPUIS GLOBAUX ────────────────────────────────────────────────
+// ── APPUIS — fallback si effective_actions absentes ──────────────
 
 function computeAppuisBlock(sessions: SessionData[]): string[] {
   const counts: Record<string, number> = {};
@@ -31,7 +33,7 @@ function computeAppuisBlock(sessions: SessionData[]): string[] {
   return Object.entries(counts)
     .filter(([, count]) => count >= 2)
     .sort(([, a], [, b]) => b - a)
-    .slice(0, 2)
+    .slice(0, 3)
     .map(([action]) => action);
 }
 
@@ -40,12 +42,17 @@ function computeAppuisBlock(sessions: SessionData[]): string[] {
 export default function CeQuiChangePage() {
   const { user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<SessionData[]>([]);
+  const [memoryProfile, setMemoryProfile] = useState<MemoryProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
-    getCompletedSessionsDb(user.id).then((data) => {
-      setSessions(data);
+    Promise.all([
+      getCompletedSessionsDb(user.id),
+      getMemoryProfileClient(supabase, user.id),
+    ]).then(([s, profile]) => {
+      setSessions(s);
+      setMemoryProfile(profile);
       setLoading(false);
     });
   }, [user]);
@@ -76,50 +83,32 @@ export default function CeQuiChangePage() {
     );
   }
 
-  const appuis = computeAppuisBlock(sessions);
-
+  // ── Données mémoire (avec garde-fous, jamais d'amplification) ──
   const n = sessions.length;
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-  const recentCount = sessions.filter((s) => new Date(s.date) >= thirtyDaysAgo).length;
+  const recurringPatterns =
+    memoryProfile?.recurring_patterns?.filter(Boolean) ?? [];
+  const commonTriggers =
+    memoryProfile?.common_triggers?.filter(Boolean) ?? [];
+  const effectiveActions =
+    memoryProfile?.effective_actions?.filter(Boolean) ?? [];
+  const memTotal = memoryProfile?.total_sessions ?? 0;
 
-  const rythmeText =
-    recentCount >= 2 ? "Tu as traversé plusieurs fois ce mois-ci."
-    : n === 0 ? "Ta première traversée ouvrira le chemin."
-    : n <= 2 ? "Tu commences à laisser une trace."
-    : n <= 5 ? "Tu reviens. C'est déjà un mouvement."
-    : "Un rythme commence à se dessiner.";
+  // Bloc 1 — priorité recurring_patterns, fallback common_triggers
+  const block1Items =
+    recurringPatterns.length > 0
+      ? recurringPatterns.slice(0, 3)
+      : commonTriggers.slice(0, 3);
 
-  const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000);
-  const recentActionSessions = sessions
-    .filter((s) => s.actionAlignee?.trim())
-    .filter((s) => new Date(s.date) >= sixtyDaysAgo)
-    .slice(0, 3);
-  const recentActionCounts: Record<string, number> = {};
-  for (const s of recentActionSessions) {
-    const key = s.actionAlignee!.trim().toLowerCase();
-    recentActionCounts[key] = (recentActionCounts[key] ?? 0) + 1;
-  }
-  const recentRepeatedAction =
-    Object.entries(recentActionCounts).find(([, count]) => count >= 2)?.[0] ?? null;
+  // Bloc 2 — priorité effective_actions, fallback computeAppuisBlock
+  const fallbackAppuis = computeAppuisBlock(sessions).map(
+    normalizeActionDisplay
+  );
+  const block2Items =
+    effectiveActions.length > 0
+      ? effectiveActions.slice(0, 3).map(normalizeActionDisplay)
+      : fallbackAppuis;
 
-  const recentRepeatedActionDisplay = recentRepeatedAction
-    ? normalizeActionDisplay(recentRepeatedAction)
-    : null;
-  const appuisDisplay = appuis.map(normalizeActionDisplay);
-
-  let transformationLines: string[] = [];
-  if (n === 1) {
-    transformationLines = ["Tu as commencé à t'arrêter."];
-  } else if (n >= 2 && recentCount === 0) {
-    transformationLines = ["Tu es déjà revenu(e) plusieurs fois."];
-  } else if (n >= 2 && recentCount >= 1 && recentCount < 2) {
-    transformationLines = ["Tu reviens quand ça s'active."];
-  } else if (n >= 3 && recentCount >= 2) {
-    transformationLines = [
-      "Tu ne laisses plus tout passer comme avant.",
-      "Tu ne fais plus comme avant.",
-    ];
-  }
+  const hasMemoryContent = block1Items.length > 0 || block2Items.length > 0;
 
   // ── Styles V3 ────────────────────────────────────────────────────
   const blockStyle: React.CSSProperties = {
@@ -127,7 +116,8 @@ export default function CeQuiChangePage() {
     border: "1px solid rgba(240,230,214,0.10)",
     borderRadius: 24,
     padding: "28px 26px",
-    boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+    boxShadow:
+      "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
   };
 
   const kickerStyle: React.CSSProperties = {
@@ -148,8 +138,21 @@ export default function CeQuiChangePage() {
     lineHeight: 1.6,
   };
 
-  const emStyle: React.CSSProperties = {
-    color: "rgba(240,230,214,0.70)",
+  const listStyle: React.CSSProperties = {
+    listStyle: "none",
+    padding: 0,
+    margin: "16px 0 0 0",
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+  };
+
+  const listItemStyle: React.CSSProperties = {
+    fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+    fontSize: "1.05rem",
+    fontWeight: 300,
+    color: "rgba(240,230,214,0.85)",
+    lineHeight: 1.5,
     fontStyle: "italic",
   };
 
@@ -171,7 +174,8 @@ export default function CeQuiChangePage() {
           inset: 0,
           zIndex: 0,
           pointerEvents: "none",
-          background: "radial-gradient(circle at 50% 32%, rgba(201,123,106,0.28) 0%, rgba(201,123,106,0.18) 18%, rgba(201,123,106,0.10) 32%, rgba(26,18,13,0.82) 55%, rgba(26,18,13,1) 75%)",
+          background:
+            "radial-gradient(circle at 50% 32%, rgba(201,123,106,0.28) 0%, rgba(201,123,106,0.18) 18%, rgba(201,123,106,0.10) 32%, rgba(26,18,13,0.82) 55%, rgba(26,18,13,1) 75%)",
         }}
       />
 
@@ -216,91 +220,110 @@ export default function CeQuiChangePage() {
           Ce qui se construit en toi, traversée après traversée.
         </p>
 
-        {/* ── TON RYTHME ── */}
-        <div style={blockStyle}>
-          <p className="font-sans" style={kickerStyle}>
-            Ton rythme
-          </p>
-          <p className="font-body" style={blockTextStyle}>
-            {rythmeText}
-          </p>
-        </div>
-
-        {/* ── CE QUI BOUGE EN TOI ── */}
-        {transformationLines.length > 0 && (
+        {/* ── Cas 0 — aucune session ── */}
+        {n === 0 && (
           <div style={blockStyle}>
-            <p className="font-sans" style={kickerStyle}>
-              Ce qui bouge en toi
+            <p className="font-body" style={blockTextStyle}>
+              Tes premières traversées viendront laisser des traces ici.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {transformationLines.map((line, index) => (
-                <p key={index} className="font-body" style={blockTextStyle}>
-                  {line}
+          </div>
+        )}
+
+        {/* ── Cas 1 — une seule session ── */}
+        {n === 1 && (
+          <div style={blockStyle}>
+            <p className="font-body" style={blockTextStyle}>
+              Une première trace existe.
+              <br />
+              <br />
+              Il faut encore quelques traversées pour voir ce qui revient
+              vraiment.
+            </p>
+          </div>
+        )}
+
+        {/* ── Cas 2 — sessions présentes mais mémoire pas encore prête ── */}
+        {n >= 2 && !hasMemoryContent && (
+          <div style={blockStyle}>
+            <p className="font-body" style={blockTextStyle}>
+              Tes traversées sont bien enregistrées.
+              <br />
+              <br />
+              La lecture de ce qui revient deviendra plus précise avec les
+              prochaines sessions.
+            </p>
+          </div>
+        )}
+
+        {/* ── Cas 3 — mémoire disponible : 3 blocs ── */}
+        {n >= 2 && hasMemoryContent && (
+          <>
+            {/* Bloc 1 — Ce qui revient souvent */}
+            {block1Items.length > 0 && (
+              <div style={blockStyle}>
+                <p className="font-sans" style={kickerStyle}>
+                  Ce qui revient souvent
                 </p>
-              ))}
+                <p className="font-body" style={blockTextStyle}>
+                  Dans tes dernières traversées, certaines choses apparaissent
+                  plusieurs fois.
+                </p>
+                <ul style={listStyle}>
+                  {block1Items.map((item, i) => (
+                    <li key={`b1-${i}`} style={listItemStyle}>
+                      « {item} »
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Bloc 2 — Ce qui t'aide déjà */}
+            {block2Items.length > 0 && (
+              <div style={blockStyle}>
+                <p className="font-sans" style={kickerStyle}>
+                  Ce qui t&apos;aide déjà
+                </p>
+                <p className="font-body" style={blockTextStyle}>
+                  Certains appuis reviennent dans tes traversées.
+                  <br />
+                  Tu pourras les retrouver quand ça remonte.
+                </p>
+                <ul style={listStyle}>
+                  {block2Items.map((item, i) => (
+                    <li key={`b2-${i}`} style={listItemStyle}>
+                      « {item} »
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Bloc 3 — Ce qui se construit */}
+            <div style={blockStyle}>
+              <p className="font-sans" style={kickerStyle}>
+                Ce qui se construit
+              </p>
+              {memTotal >= 2 ? (
+                <p className="font-body" style={blockTextStyle}>
+                  Tu as déjà {memTotal} traversées enregistrées.
+                  <br />
+                  Ce n&apos;est pas un score.
+                  <br />
+                  C&apos;est une trace de tes retours vers toi.
+                </p>
+              ) : (
+                <p className="font-body" style={blockTextStyle}>
+                  Tu as déjà laissé plusieurs traces.
+                  <br />
+                  Elles commencent à former un repère.
+                </p>
+              )}
             </div>
-          </div>
+          </>
         )}
 
-        {/* ── TON CHEMIN DE RETOUR ── */}
-        <div style={{ ...blockStyle, display: "flex", flexDirection: "column", gap: 16 }}>
-          <p className="font-sans" style={kickerStyle}>
-            Ton chemin de retour
-          </p>
-
-          {recentRepeatedActionDisplay ? (
-            <p className="font-body" style={blockTextStyle}>
-              Quand ça s&apos;active,{" "}
-              <br />
-              tu reviens à :
-              <br />
-              <br />
-              <em style={emStyle}>« {recentRepeatedActionDisplay} »</em>.
-            </p>
-          ) : recentActionSessions.length >= 2 ? (
-            <>
-              <p className="font-body" style={blockTextStyle}>Tu explores encore plusieurs façons de revenir.</p>
-              <p className="font-body" style={blockTextStyle}>Rien n&apos;est figé, mais tu reviens.</p>
-            </>
-          ) : appuisDisplay.length === 0 ? (
-            <p className="font-body" style={blockTextStyle}>
-              Ton chemin de retour se dessine traversée après traversée.
-            </p>
-          ) : appuisDisplay.length === 1 ? (
-            <p className="font-body" style={blockTextStyle}>
-              Tu reviens souvent à :{" "}
-              <em style={emStyle}>« {appuisDisplay[0]} »</em>.
-            </p>
-          ) : (
-            <p className="font-body" style={blockTextStyle}>
-              Tu reviens souvent à :{" "}
-              <em style={emStyle}>« {appuisDisplay[0]} »</em> et{" "}
-              <em style={emStyle}>« {appuisDisplay[1]} »</em>.
-            </p>
-          )}
-        </div>
-
-        {/* ── CE QUI SE STABILISE ── */}
-        {sessions.length >= 2 && (
-          <div style={blockStyle}>
-            <p className="font-sans" style={kickerStyle}>
-              Ce qui se stabilise
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <p className="font-body" style={blockTextStyle}>
-                Tu reviens.
-              </p>
-              <p className="font-body" style={blockTextStyle}>
-                Tu traverses.
-              </p>
-              <p className="font-body" style={blockTextStyle}>
-                Tu fais un pas.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* ── Footer discret ── */}
+        {/* ── Footer discret (inchangé) ── */}
         <div
           style={{
             marginTop: 48,
@@ -312,9 +335,14 @@ export default function CeQuiChangePage() {
         >
           <p
             className="font-sans"
-            style={{ fontSize: 11, color: "rgba(240,230,214,0.55)", letterSpacing: "0.12em" }}
+            style={{
+              fontSize: 11,
+              color: "rgba(240,230,214,0.55)",
+              letterSpacing: "0.12em",
+            }}
           >
-            Stabilit&eacute; &eacute;motionnelle &middot; Entra&icirc;nement physiologique
+            Stabilit&eacute; &eacute;motionnelle &middot; Entra&icirc;nement
+            physiologique
           </p>
         </div>
       </div>
