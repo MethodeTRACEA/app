@@ -56,6 +56,25 @@ function getSafeEnding() {
   ];
 }
 
+const TRACEA_TRUTHS = [
+  "Quand c'est trop intense…\ntu fais comme tu peux,\npas comme tu veux.",
+  "Ce que tu ressens est fort.\nMais ça ne dit pas\nqui tu es.",
+  "Dans cet état…\nle corps passe devant.\nLa clarté revient après.",
+  "Tu n'es pas en train d'échouer.\nTu es en train de traverser.",
+  "Ce moment ne te définit pas.\nC'est quelque chose\nqui te traverse.",
+  "Quand ça déborde…\nton système cherche à te protéger.\nPas à te nuire.",
+  "L'intensité est dans le corps.\nPas dans ce que tu es.",
+  "Quand tout s'accélère à l'intérieur…\nc'est normal\nque tout devienne flou.",
+  "Tu es encore là.\nEt ça compte.",
+  "Même si c'est encore présent…\nquelque chose\na déjà bougé.",
+];
+
+function getTraceaTruth() {
+  return TRACEA_TRUTHS[
+    Math.floor(Math.random() * TRACEA_TRUTHS.length)
+  ];
+}
+
 const SITUATION_CHIPS = [
   "une tension avec quelqu'un",
   "une décision difficile",
@@ -933,6 +952,17 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             <p className="font-body text-base text-t-beige">
               {getSafeEnding()}
             </p>
+            <div
+              style={{
+                marginTop: "24px",
+                color: "rgba(240,230,214,0.72)",
+                fontSize: "15px",
+                lineHeight: "1.6",
+                whiteSpace: "pre-line",
+              }}
+            >
+              {getTraceaTruth()}
+            </div>
           </div>
 
           <InstallPrompt />
