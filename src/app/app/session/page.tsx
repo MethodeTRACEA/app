@@ -965,14 +965,6 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             Ta traversée
           </h1>
 
-          {/* Récap */}
-          <div className="w-full rounded-[20px] border border-[rgba(232,216,199,0.18)] bg-white/5 px-5 py-5 space-y-4">
-            <SynthRow label="Ce qui s'est passé"       value={situationLabel} />
-            <SynthRow label="Ce que tu as ressenti"    value={emotionLabel} />
-            <SynthRow label="Ce dont tu as besoin"     value={besoinLabel} />
-            <SynthRow label="Ce qui te semble juste"   value={action} />
-          </div>
-
           {/* Miroir IA */}
           {analysis && (
             <div className="w-full rounded-[20px] border border-[rgba(232,216,199,0.12)] bg-white/5 px-5 py-4 space-y-2">
