@@ -342,16 +342,6 @@ export default function HistoriquePage() {
                           </div>
                         )}
 
-                        {/* 3 — Émotion */}
-                        {s.emotionPrimaire && (
-                          <p
-                            className="font-body"
-                            style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.55)", marginBottom: 16 }}
-                          >
-                            {s.emotionPrimaire}
-                          </p>
-                        )}
-
                         {/* 5 — Note entre sessions */}
                         <div
                           style={{
