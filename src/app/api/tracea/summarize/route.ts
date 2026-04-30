@@ -86,6 +86,21 @@ Règles par champ :
 
 - suggested_actions : reprendre UNIQUEMENT les actions effectivement décrites par l'utilisateur dans les étapes Émerger ou Aligner. Maximum 3. Ne jamais ajouter une action que l'utilisateur n'a pas formulée, même si elle paraît utile. Sont interdits sauf si l'utilisateur les a réellement formulés : "méditer", "respirer", "écrire", "marcher", "appeler quelqu'un", "prendre du recul", "se reposer", "poser une limite". Si aucune action n'est décrite, retourner [].
 
+  Tu peux reformuler grammaticalement l'action pour qu'elle soit affichable directement dans une liste, à la deuxième personne du singulier ("tu...") ou à l'infinitif. Le sens doit rester strictement identique aux mots de l'utilisateur. Privilégier une formulation courte, naturelle, lisible.
+
+  Exemples autorisés (reformulation grammaticale fidèle) :
+  - "dire ce que je n'accepte plus" → "dire ce que tu n'acceptes plus"
+  - "je peux écrire avant de répondre" → "écrire avant de répondre"
+  - "je m'éloigne quelques minutes" → "t'éloigner quelques minutes"
+  - "poser une limite" → "poser une limite"
+  - "je respire avant d'envoyer le message" → "respirer avant d'envoyer le message"
+
+  Exemples interdits (interprétation, conseil ou coaching) :
+  - transformer "dire ce que je n'accepte plus" en "oser poser mes limites"
+  - transformer une action en conseil
+  - écrire une phrase de coaching
+  - reformuler en y ajoutant un sens absent du texte utilisateur
+
 - themes : maximum 3 thèmes descriptifs, mots-clés simples. Catégories autorisées :
   - situation : "travail", "famille", "couple", "argent", "santé"
   - sensation : "tension", "fatigue", "agitation", "lourdeur"

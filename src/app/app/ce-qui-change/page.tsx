@@ -8,19 +8,6 @@ import { supabase } from "@/lib/supabase";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 
-// ── NORMALISATION AFFICHAGE — je → tu ────────────────────────────
-
-function normalizeActionDisplay(action: string): string {
-  return action
-    .replace(/\bje\b/gi, "tu")
-    .replace(/\bj['']/gi, "tu ")
-    .replace(/\bme\b/gi, "te")
-    .replace(/\bmon\b/gi, "ton")
-    .replace(/\bma\b/gi, "ta")
-    .replace(/\bmes\b/gi, "tes")
-    .trim();
-}
-
 // ── APPUIS — fallback si effective_actions absentes ──────────────
 
 function computeAppuisBlock(sessions: SessionData[]): string[] {
@@ -100,12 +87,10 @@ export default function CeQuiChangePage() {
       : commonTriggers.slice(0, 3);
 
   // Bloc 2 — priorité effective_actions, fallback computeAppuisBlock
-  const fallbackAppuis = computeAppuisBlock(sessions).map(
-    normalizeActionDisplay
-  );
+  const fallbackAppuis = computeAppuisBlock(sessions);
   const block2Items =
     effectiveActions.length > 0
-      ? effectiveActions.slice(0, 3).map(normalizeActionDisplay)
+      ? effectiveActions.slice(0, 3)
       : fallbackAppuis;
 
   const hasMemoryContent = block1Items.length > 0 || block2Items.length > 0;
