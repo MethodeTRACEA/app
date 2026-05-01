@@ -212,7 +212,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
     "tristesse": [
       "noter ce que j'aurais besoin d'entendre",
       "me laisser un moment avant de répondre",
-      "écrire ce que ça a réveillé en moi",
+      "écrire ce que je ressens maintenant",
     ],
   },
   "me rapprocher de quelqu'un": {
