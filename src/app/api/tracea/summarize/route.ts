@@ -202,6 +202,10 @@ Règles par champ :
   - "ce qui en est sorti"
   - "ce qui reste"
   - "ce que tu peux garder"
+  - "Le besoin formulé est …"
+  - "L'action envisagée est …"
+  - "La session met en lumière …"
+  - "dans un contexte relationnel / familial / professionnel" si ce contexte n'est pas explicitement écrit par l'utilisateur
 
   Règles de style supplémentaires (ton non-méta, non-clinique, non-constat) :
   - Les formulations "tu as nommé" / "tu as posé" / "ce que tu as nommé" / "ce que tu as posé" sont autorisées UNIQUEMENT dans les cas pauvres, flous ou incomplets, quand le fait d'avoir nommé quelque chose est réellement le repère utile (niveau 4 de la hiérarchie). Dans une session complète où il existe une action, un besoin ou une émotion claire, NE COMMENTE PAS le fait que l'utilisateur a nommé quelque chose : transforme la matière en repère utilisable directement.
@@ -257,6 +261,27 @@ Règles par champ :
   - Si l'action vient d'une suggestion sélectionnée dans l'interface, ne la traite pas comme une phrase personnelle profonde de l'utilisateur. Elle indique une direction choisie, pas forcément les mots exacts de l'utilisateur.
   - Si l'action vient d'un texte libre, tu peux davantage t'appuyer sur ses mots exacts.
   - Dans tous les cas, ne transforme jamais l'action en une formulation plus intime, plus précise ou plus psychologique que ce qui est présent.
+
+  Richesse contextuelle :
+  - Quand le texte de Traverser contient un contexte explicite, tu dois t'en servir pour produire une vraie synthèse utile.
+  - Ne reste pas au niveau générique ("une tension avec quelqu'un", "quelque chose m'a blessé", "une situation m'a dépassé") si l'utilisateur a écrit un contexte plus précis.
+  - Tu peux nommer sobrement le contexte UNIQUEMENT s'il est explicitement écrit par l'utilisateur : famille, coparentalité, père des enfants, mère, collègue, travail, couple, amitié, solitude, surcharge, conflit, sécurité des enfants, etc.
+  - Le rôle de narrative_summary n'est pas de faire un résumé administratif. C'est de relier en une phrase humaine : ce qui s'est passé + ce que l'émotion signale + le besoin ou l'action utile.
+  - Le contexte doit enrichir la phrase, pas devenir un diagnostic.
+  - Ne jamais inventer un contexte absent.
+  - Ne jamais déduire une cause psychologique.
+  - Ne jamais transformer une situation en étiquette identitaire.
+  - Si le contexte précis est écrit, l'utiliser. Si le contexte est vague, rester vague.
+
+  Exemples (à lire avec la règle de Richesse contextuelle) :
+  - Mauvais : "La session part d'une colère nommée dans un contexte familial, liée au comportement du père des enfants."
+  - Bon : "Cette colère touche la coparentalité et la sécurité des enfants. La limite à garder en vue : dire ce qui n'est plus acceptable."
+  - Bon : "Dans cette tension avec le père de tes enfants, la colère ramène à une limite concrète : dire ce qui n'est plus acceptable."
+  - Bon : "Ce qui pèse ici, ce n'est pas seulement la colère : c'est la coparentalité quand elle laisse les enfants en insécurité."
+  - Bon : "Dans cette situation au travail, écrire avant de répondre peut t'aider à sortir de la confusion sans réagir trop vite."
+  - Bon : "Quand la solitude apparaît après ce conflit, le besoin de lien est déjà nommé : te rapprocher de quelqu'un."
+
+  Note importante : ces exemples ne lèvent aucun garde-fou existant. Pas de promesse de progrès, pas de conseil nouveau, pas de diagnostic, pas de mots inventés ("avance", "progresse", "apprend", "guérit", "se reconnecte" restent interdits). Les mots de contexte (famille, coparentalité, travail, conflit, etc.) doivent être présents dans la matière utilisateur — sinon NE PAS les introduire.
 
   Test final avant de produire narrative_summary :
   - Est-ce que cette phrase pourrait aider l'utilisateur à se repérer plus tard ?
