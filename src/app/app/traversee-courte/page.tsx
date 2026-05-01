@@ -1075,7 +1075,7 @@ function TraverseeCourteV2() {
             <div className="text-center space-y-1.5">
               <button
                 type="button"
-                onClick={() => router.push("/app/session")}
+                onClick={() => router.push("/app/session?from=traversee_courte")}
                 className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
               >
                 Approfondir ce que tu viens de vivre

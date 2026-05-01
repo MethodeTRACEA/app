@@ -47,7 +47,7 @@ const options: Option[] = [
     cardBg: "rgba(111,106,100,0.28)",
   },
   {
-    href: "/app/session",
+    href: "/app/session?from=start",
     label: "APPROFONDIR",
     title: "Aller plus loin",
     desc: "Une traversée complète avec analyse et mémoire de tes repères.",

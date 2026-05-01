@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -394,9 +394,19 @@ function SessionPageInner() {
 // CONTENU PRINCIPAL
 // ════════════════════════════════════════════════════════════
 
+const ALLOWED_SESSION_ORIGINS = ["start", "urgence", "traversee_courte", "entrainement"] as const;
+type SessionOrigin = (typeof ALLOWED_SESSION_ORIGINS)[number] | "direct";
+
 function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSession: boolean }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { session: authSession, hasPremiumAccess } = useAuth();
+
+  const fromParam = searchParams.get("from");
+  const sessionFrom: SessionOrigin =
+    fromParam && (ALLOWED_SESSION_ORIGINS as readonly string[]).includes(fromParam)
+      ? (fromParam as SessionOrigin)
+      : "direct";
 
   const [phase, setPhase] = useState<Phase>("intro");
   const [paywallDismissed, setPaywallDismissed] = useState(false);
@@ -436,7 +446,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
     const s = await createSessionDb(userId, null, "autre");
     if (s) {
       setSessionId(s.id);
-      trackEvent(userId, "session_start", { mode: "approfondi" });
+      trackEvent(userId, "session_start", { mode: "approfondi", from: sessionFrom });
     }
     setPhase("situation");
   }
