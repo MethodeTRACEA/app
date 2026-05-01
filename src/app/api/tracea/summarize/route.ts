@@ -116,37 +116,53 @@ Règles par champ :
 
 - inner_truth : reprendre STRICTEMENT une phrase réellement formulée par l'utilisateur (typiquement étape Conscientiser ou Aligner). Ne jamais reformuler, ne jamais paraphraser, ne jamais transformer une idée en phrase plus jolie. Si aucune phrase de l'utilisateur ne correspond clairement à une vérité intérieure, retourner chaîne vide.
 
-- narrative_summary : 1 à 2 phrases MAXIMUM, ADRESSÉES DIRECTEMENT À L'UTILISATEUR EN "TU". Cette ligne n'est pas un résumé de la session : c'est une TRACE À RETENIR.
+- narrative_summary : 1 à 2 phrases MAXIMUM. C'est une TRACE À RETENIR, pas un résumé complet.
 
-  Question pivot que doit répondre la trace :
-  « Qu'est-ce que l'utilisateur peut garder de cette traversée pour mieux se repérer la prochaine fois ? »
+  Question centrale :
+  « Qu'est-ce que cette traversée peut aider l'utilisateur à reconnaître la prochaine fois ? »
 
-  Principes :
-  - Ne redis pas tout. Extrais le repère utile à cette session-là.
-  - Tu peux relier émotion, besoin et action quand ils sont explicitement présents, mais sans les énumérer mécaniquement.
-  - Aide l'utilisateur à se reconnaître sans l'enfermer.
-  - Forme simple, directe, mémorisable. Varie la formulation entre les sessions, ne suis pas un format figé.
+  Le texte doit transformer les éléments explicitement présents en un repère utile :
+  - un signal à reconnaître,
+  - un besoin qui revient,
+  - une limite à repérer,
+  - un appui concret,
+  - ou un flou nommé clairement.
 
-  Règles de ton (en plus des règles générales) :
-  - Adresse directe en "tu". Jamais la 3e personne.
+  Règles de fond :
+  - Parle directement à l'utilisateur en "tu". Ne désigne JAMAIS l'utilisateur à la 3e personne.
+  - Ne fais jamais un compte rendu administratif de la session.
+  - Ne répète pas toutes les étapes. Ne liste pas mécaniquement situation + émotion + besoin + action.
+  - Ne cherche pas à tout dire : choisis l'angle le plus utile à retenir.
+  - Si une action est présente, elle peut devenir le repère.
+  - Si un besoin est présent, il peut devenir le repère.
+  - Si l'émotion est forte, elle peut être formulée comme un signal.
+  - Si la session est floue ou incomplète, nomme sobrement ce flou sans inventer.
+  - Ne jamais inventer une cause, un besoin, une action ou une vérité intérieure absente de la session.
+
+  Règles de style :
+  - Formulation humaine, simple, précise.
+  - Pas de formule automatique répétée d'une session à l'autre.
+  - Évite les débuts systématiques du type "Quand…".
+  - Évite les formulations-templates répétitives : "le repère ici est clair", "le repère à garder", "ce que tu peux garder". Tu peux les utiliser SEULEMENT si elles sortent vraiment naturellement de la session, jamais comme cliché.
   - Sont interdits : "l'utilisateur", "la personne", "cette personne", "il/elle", "iel".
   - Sont interdites les tournures de rapport : "La session montre que…", "La session part de…", "L'étape de conscientisation…", "L'action retenue…", "L'émotion nommée est…", "La session met en lumière…".
   - Sont interdites les formulations vagues : "quelque chose bouge", "un mouvement apparaît", "un chemin s'ouvre", "tu peux accueillir", "tu peux te reconnecter".
   - Sont interdites les promesses : "tu progresses", "tu avances", "ça se construit", "tu es en train de…", "tu apprends à…".
-  - Pas de conclusion forcée positive. Pas de coaching. Pas de conseil ajouté. Pas d'interprétation psychologique.
-  - Pas d'invention de cause, de besoin, d'action ou de vérité intérieure absente de la session.
-  - PAS de template systématique du type "Dans [situation], [émotion] était là avec [besoin]". Trouve l'angle utile propre à cette session.
+  - Pas de coaching, pas de conseil ajouté, pas de diagnostic, pas d'interprétation psychologique.
 
-  Exemples autorisés (varier la forme) :
-  - "Quand la colère monte dans une tension avec quelqu'un, le repère ici est clair : poser une limite. Ce que tu peux garder : dire ce que tu n'acceptes plus."
-  - "Cette traversée te laisse un repère simple : la colère signalait un besoin de limite. L'appui concret, ici, c'est dire ce que tu n'acceptes plus."
-  - "Dans la surcharge, le repère à garder est le besoin de ralentir. Rien n'a besoin d'être forcé pour que cette trace soit utile."
-  - "Quand tout est confus, ton repère ici est de ne pas répondre trop vite. L'appui concret : écrire avant de répondre."
-  - "Tu as au moins posé ce qui était là. Cette trace peut servir de point d'appui si la situation revient."
+  Exemples autorisés (formes variées, jamais de template) :
+  - "La colère signale ici une limite qui demande à être dite, pas seulement ressentie."
+  - "Dans ce flou, la trace utile est simple : tu n'avais pas encore de mots précis, mais tu l'as nommé."
+  - "Cette traversée montre surtout un besoin de ralentir avant de répondre."
+  - "Le point d'appui identifié ici, c'est de ne pas répondre tout de suite quand la confusion prend toute la place."
+  - "La solitude était présente, et la trace à garder est le besoin de l'exprimer simplement."
+  - "Quand la tension revient avec quelqu'un, l'action utile repérée ici est de dire ce qui n'est plus acceptable."
 
   Exemples interdits :
-  - "Dans cette tension avec quelqu'un, la colère était là avec un besoin clair : poser une limite. Le repère à garder : dire ce que tu n'acceptes plus." (template figé, énumération)
   - "Tu as nommé une tension avec quelqu'un. La colère était présente. L'action retenue était de dire ce que tu n'acceptes plus." (énumération plate)
+  - "Dans cette tension avec quelqu'un, la colère était là avec un besoin clair : poser une limite. Le repère à garder : dire ce que tu n'acceptes plus." (template figé)
+  - "Le repère ici est clair." (cliché vide)
+  - "Ce que tu peux garder : …" (formule automatique)
   - "L'émotion nommée est la peur, avec un besoin de relâcher la pression." (formulation rapport)
   - "La session part d'une tension avec quelqu'un, dans laquelle l'utilisateur nomme de la colère."
   - "L'utilisateur exprime un besoin de limite."
