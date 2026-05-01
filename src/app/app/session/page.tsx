@@ -1060,6 +1060,10 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             </div>
           </div>
 
+          <p className="font-body text-sm t-text-secondary text-center">
+            Cette traversée est gardée dans tes traces.
+          </p>
+
           <InstallPrompt />
 
           {isFirstSession && !paywallDismissed && !hasPremiumAccess && (
@@ -1073,7 +1077,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
           <button
             type="button"
             onClick={() => router.push("/app/historique")}
-            className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
+            className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors"
           >
             Voir mes traces →
           </button>
