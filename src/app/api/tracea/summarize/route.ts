@@ -210,6 +210,9 @@ Règles par champ :
   - "peut aider à …" (conseil déguisé)
   - "ce que ça a réveillé" (psychologisation, sauf si écrit par l'utilisateur)
   - "démêler ce qui appartient …" (vocabulaire thérapeutique)
+  - "démêler …" (vocabulaire thérapeutique, même hors de la phrase complète)
+  - "ce qui appartient …" (vocabulaire thérapeutique, même hors de la phrase complète)
+  - "rend difficile à voir" / "rend X difficile à voir" (interprétation ajoutée)
 
   Règles de style supplémentaires (ton non-méta, non-clinique, non-constat) :
   - Les formulations "tu as nommé" / "tu as posé" / "ce que tu as nommé" / "ce que tu as posé" sont autorisées UNIQUEMENT dans les cas pauvres, flous ou incomplets, quand le fait d'avoir nommé quelque chose est réellement le repère utile (niveau 4 de la hiérarchie). Dans une session complète où il existe une action, un besoin ou une émotion claire, NE COMMENTE PAS le fait que l'utilisateur a nommé quelque chose : transforme la matière en repère utilisable directement.
@@ -292,6 +295,22 @@ Règles par champ :
   - Éviter les formulations du type : "laisse souvent plus que…", "peut aider à…", "ce que ça a réveillé", "démêler ce qui appartient à…", sauf si ces mots ont été écrits explicitement par l'utilisateur.
   - narrative_summary ne donne pas de conseil, ne propose pas d'exercice, ne suggère pas une lecture psychologique.
   - La phrase doit rester une trace : contexte explicite + émotion/besoin/action choisi(e), sans ajouter de couche cachée.
+
+  Anti-conseil / anti-thérapeutique :
+  - narrative_summary ne doit JAMAIS expliquer ce qu'une action pourrait aider à comprendre, ressentir ou démêler.
+  - Ne pas utiliser de formulations du type : "peut aider à…", "démêler…", "ce que ça a réveillé", "ce qui appartient…", "rend difficile à voir", "laisse souvent plus que…". Cette interdiction est stricte, même en variante (ex : "démêler ce que la confusion rend difficile à voir" reste interdit).
+  - Ne pas transformer l'action choisie en conseil thérapeutique.
+  - Reprendre l'action comme un repère choisi par l'utilisateur, pas comme une méthode pour analyser ou comprendre.
+  - La phrase doit rester une trace : contexte explicite + émotion/besoin/action choisi(e), sans promesse d'effet.
+
+  Exemples (à lire avec la règle Anti-conseil / anti-thérapeutique) :
+  - Mauvais : "Écrire la situation depuis l'extérieur peut aider à démêler ce que la confusion rend difficile à voir."
+  - Bon : "Dans cette confusion, le repère choisi est simple : écrire la situation depuis l'extérieur."
+
+  - Mauvais : "Écrire ce que ça a réveillé peut aider à démêler ce qui appartient à cette décision."
+  - Bon : "Dans cette décision liée au travail, la tristesse est là. Le repère choisi : écrire ce qui a été ressenti, sans devoir tout comprendre maintenant."
+
+  Note : ces exemples ne lèvent aucun garde-fou (pas de promesse de progrès, pas de diagnostic, pas de mots inventés, pas de retour au style rapport "La session montre…", "Le besoin formulé est…", "L'action envisagée est…").
 
   Test final avant de produire narrative_summary :
   - Est-ce que cette phrase pourrait aider l'utilisateur à se repérer plus tard ?
