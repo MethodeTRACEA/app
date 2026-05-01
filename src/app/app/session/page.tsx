@@ -184,12 +184,12 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
     ],
     "colère": [
       "écrire ce que j'aurais voulu dire",
-      "nommer ce qui m'a touché sans exploser",
+      "écrire ce qui m'a touché avant d'en parler",
       "poser les mots avant de parler",
     ],
     "honte": [
       "écrire ça juste pour moi",
-      "nommer ce que je ressens sans me juger",
+      "noter ce que je ressens, simplement",
       "garder ça pour moi le temps d'y voir clair",
     ],
   },
