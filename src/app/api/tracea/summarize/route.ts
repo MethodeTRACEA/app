@@ -116,69 +116,89 @@ Règles par champ :
 
 - inner_truth : reprendre STRICTEMENT une phrase réellement formulée par l'utilisateur (typiquement étape Conscientiser ou Aligner). Ne jamais reformuler, ne jamais paraphraser, ne jamais transformer une idée en phrase plus jolie. Si aucune phrase de l'utilisateur ne correspond clairement à une vérité intérieure, retourner chaîne vide.
 
-- narrative_summary : 1 à 2 phrases MAXIMUM. C'est une TRACE À RETENIR, pas un résumé complet.
+- narrative_summary : 1 à 2 phrases MAXIMUM, adressées directement à l'utilisateur en "tu".
+  Ce champ doit produire une phrase utile à relire, pas un compte rendu.
 
   Question centrale :
-  « Qu'est-ce que cette traversée peut aider l'utilisateur à reconnaître la prochaine fois ? »
+  "Qu'est-ce que cette traversée peut aider l'utilisateur à reconnaître, choisir ou retrouver la prochaine fois ?"
 
-  Le texte doit transformer les éléments explicitement présents en un repère utile :
-  - un signal à reconnaître,
-  - un besoin qui revient,
-  - une limite à repérer,
-  - un appui concret,
-  - ou un flou nommé clairement.
+  Priorité :
+  - Une seule idée forte.
+  - Une phrase qui aide à se repérer.
+  - Une formulation humaine, simple, incarnée.
+  - Pas d'effet rapport, pas de fiche d'observation, pas d'énumération.
 
-  Règles de fond :
-  - Parle directement à l'utilisateur en "tu". Ne désigne JAMAIS l'utilisateur à la 3e personne.
-  - Ne fais jamais un compte rendu administratif de la session.
-  - Ne répète pas toutes les étapes. Ne liste pas mécaniquement situation + émotion + besoin + action.
-  - Ne cherche pas à tout dire : choisis l'angle le plus utile à retenir.
-  - Si une action est présente, elle peut devenir le repère.
-  - Si un besoin est présent, il peut devenir le repère.
-  - Si l'émotion est forte, elle peut être formulée comme un signal.
-  - Si la session est floue ou incomplète, nomme sobrement ce flou sans inventer.
-  - Ne jamais inventer une cause, un besoin, une action ou une vérité intérieure absente de la session.
+  Tu peux relier sobrement les éléments présents :
+  - émotion explicitement nommée
+  - situation décrite
+  - besoin formulé
+  - action choisie
+  - flou reconnu
+  - appui concret identifié
 
-  Règles de style :
-  - Formulation humaine, simple, précise.
-  - Pas de formule automatique répétée d'une session à l'autre.
-  - Évite les débuts systématiques du type "Quand…".
-  - Évite les formulations-templates répétitives : "le repère ici est clair", "le repère à garder", "ce que tu peux garder". Tu peux les utiliser SEULEMENT si elles sortent vraiment naturellement de la session, jamais comme cliché.
-  - Sont interdits : "l'utilisateur", "la personne", "cette personne", "il/elle", "iel".
-  - Sont interdites les tournures de rapport : "La session montre que…", "La session part de…", "L'étape de conscientisation…", "L'action retenue…", "L'émotion nommée est…", "La session met en lumière…".
-  - Sont interdites les formulations vagues : "quelque chose bouge", "un mouvement apparaît", "un chemin s'ouvre", "tu peux accueillir", "tu peux te reconnecter".
-  - Sont interdites les promesses : "tu progresses", "tu avances", "ça se construit", "tu es en train de…", "tu apprends à…".
-  - Pas de coaching, pas de conseil ajouté, pas de diagnostic, pas d'interprétation psychologique.
+  Mais tu ne dois PAS tout répéter.
+  Tu choisis l'angle le plus utile de la session.
 
-  Exemples autorisés (formes variées, jamais de template) :
-  - "La colère signale ici une limite qui demande à être dite, pas seulement ressentie."
-  - "Dans ce flou, la trace utile est simple : tu n'avais pas encore de mots précis, mais tu l'as nommé."
-  - "Cette traversée montre surtout un besoin de ralentir avant de répondre."
-  - "Le point d'appui identifié ici, c'est de ne pas répondre tout de suite quand la confusion prend toute la place."
-  - "La solitude était présente, et la trace à garder est le besoin de l'exprimer simplement."
-  - "Quand la tension revient avec quelqu'un, l'action utile repérée ici est de dire ce qui n'est plus acceptable."
+  Style attendu :
+  - phrases courtes
+  - vocabulaire concret
+  - pas de formulation administrative
+  - pas de tournure clinique
+  - pas de phrase décorative
+  - pas de métaphore vague
+  - pas de "l'utilisateur", "la personne", "cette personne", "il/elle"
+  - pas de "la session part de"
+  - pas de "l'étape de conscientisation"
+  - pas de "a débouché sur"
+  - pas de "l'action identifiée"
+  - pas de "les besoins, les pistes"
+  - pas de "le contexte, les besoins, les pistes"
+  - pas de "ce que tu peux garder"
+  - pas de "le repère ici est clair"
+  - pas de "ici" sauf si la phrase devient vraiment plus naturelle avec ce mot
+  - ne pas utiliser systématiquement les mots "trace" ou "repère"
+  - ne pas commencer systématiquement par "Quand..."
+  - varier naturellement la structure des phrases
+
+  Interdits de fond :
+  - ne jamais inventer une cause
+  - ne jamais inventer un besoin
+  - ne jamais inventer une action
+  - ne jamais inventer une progression
+  - ne jamais dire "tu progresses", "tu avances", "tu apprends à", "tu es en train de"
+  - ne jamais donner de conseil
+  - ne jamais écrire une phrase de coaching
+  - ne jamais diagnostiquer
+  - ne jamais interpréter une intention cachée
+
+  Si la matière est complète, faire ressortir le lien utile entre émotion, besoin et action.
+  Si la matière est incomplète, reconnaître sobrement ce qui a été nommé sans combler les blancs.
+  Si l'action est claire, elle doit porter la phrase.
+  Si le besoin est clair, il doit porter la phrase.
+  Si tout est flou, le fait d'avoir nommé le flou peut être le point d'appui.
+
+  Exemples autorisés :
+  - "La colère signale une limite qui demande à être dite. L'appui choisi : dire ce que tu n'acceptes plus."
+  - "Dans cette tristesse, ce qui ressort surtout, c'est le besoin d'être rejoint simplement."
+  - "Quand la confusion prend toute la place, l'appui choisi est de laisser passer avant de répondre."
+  - "Tu n'avais pas encore de mots précis, mais tu as nommé la solitude. Pour cette traversée, c'était déjà le point d'appui."
+  - "Le besoin de ralentir apparaît clairement dans cette surcharge. L'action retenue : ne pas répondre tout de suite."
+  - "Cette colère ramène à une limite concrète : dire ce qui n'est plus acceptable."
 
   Exemples interdits :
-  - "Tu as nommé une tension avec quelqu'un. La colère était présente. L'action retenue était de dire ce que tu n'acceptes plus." (énumération plate)
-  - "Dans cette tension avec quelqu'un, la colère était là avec un besoin clair : poser une limite. Le repère à garder : dire ce que tu n'acceptes plus." (template figé)
-  - "Le repère ici est clair." (cliché vide)
-  - "Ce que tu peux garder : …" (formule automatique)
-  - "L'émotion nommée est la peur, avec un besoin de relâcher la pression." (formulation rapport)
   - "La session part d'une tension avec quelqu'un, dans laquelle l'utilisateur nomme de la colère."
   - "L'utilisateur exprime un besoin de limite."
   - "L'étape de conscientisation fait apparaître l'idée de poser une limite."
-  - "Cette personne semble chercher à…"
-  - "Tu es déjà en train de te reconnecter à toi."
-  - "Ça se construit."
-  - "Un mouvement apparaît."
+  - "La tristesse ici est liée à un sentiment de solitude dans la coparentalité."
+  - "Ce que tu as nommé comme besoin a débouché sur une action concrète."
+  - "La solitude a été nommée, mais le reste est resté flou — le contexte, les besoins, les pistes."
+  - "Quand la colère monte dans une tension avec quelqu'un, le repère ici est clair."
+  - "Ce que tu peux garder : dire ce que tu n'acceptes plus."
+  - "Tu apprends à poser tes limites."
   - "Cette traversée montre que tu progresses."
-  - "Tu apprends à t'écouter."
+  - "Un mouvement apparaît."
   - "Tu peux accueillir ce qui est là."
-  - "Tu peux te reconnecter à toi."
-  - "Cela révèle un schéma." (interprétation)
-  - "C'est une blessure qui se rejoue." (interprétation)
-  - "Tu dois apprendre à poser tes limites." (conseil)
-  - "Tu peux maintenant avancer avec plus de confiance." (promesse)`;
+  - "Tu peux te reconnecter à toi."`;
 
 // ===================================================================
 // STEP_ORDER pour construire l'historique
