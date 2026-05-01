@@ -39,15 +39,12 @@ type Phase =
 // ── Chips ──────────────────────────────────────────────────────
 
 const SAFE_ENDING_PHRASES = [
-  "Tu peux t'appuyer là-dessus.",
-  "C'est déjà un pas.",
   "Tu viens de poser quelque chose.",
   "Tu as pris un moment pour traverser.",
   "Tu peux rester avec ça un instant.",
   "Quelque chose a été déposé.",
   "Tu n'as pas laissé ça passer sans t'arrêter.",
   "Tu peux revenir à ça si ça revient.",
-  "Tu viens de faire un mouvement.",
   "Ça peut rester simple comme ça pour l'instant.",
 ];
 
@@ -63,7 +60,6 @@ const TRACEA_TRUTHS = [
   "Dans cet état…\nle corps passe devant.\nLa clarté revient après.",
   "Tu n'es pas en train d'échouer.\nTu es en train de traverser.",
   "Ce moment ne te définit pas.\nC'est quelque chose\nqui te traverse.",
-  "Quand ça déborde…\nton système cherche à te protéger.\nPas à te nuire.",
   "L'intensité est dans le corps.\nPas dans ce que tu es.",
   "Quand tout s'accélère à l'intérieur…\nc'est normal\nque tout devienne flou.",
   "Tu es encore là.\nEt ça compte.",
