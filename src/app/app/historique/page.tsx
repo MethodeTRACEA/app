@@ -20,6 +20,7 @@ export default function HistoriquePage() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
   const [summariesById, setSummariesById] = useState<Record<string, SummaryLite>>({});
+  const [openMirrorIds, setOpenMirrorIds] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (!user) return;
@@ -181,6 +182,7 @@ export default function HistoriquePage() {
               {sessions.map((s) => {
                 const isExpanded = expandedId === s.id;
                 const summary = summariesById[s.id];
+                const mirrorOpen = !!openMirrorIds[s.id];
                 const pivotText = summary?.inner_truth || s.veriteInterieure || s.emotionPrimaire || "";
                 const pivotIsQuote = !!(summary?.inner_truth || s.veriteInterieure);
                 const previewEmotions = (summary?.dominant_emotions ?? [])
@@ -304,7 +306,7 @@ export default function HistoriquePage() {
                               className="font-sans"
                               style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 8, letterSpacing: "0.10em" }}
                             >
-                              Ce qui s&apos;est dit dans cette session
+                              Trace à retenir
                             </p>
                             <p
                               className="font-body"
@@ -315,31 +317,61 @@ export default function HistoriquePage() {
                           </div>
                         )}
 
-                        {/* 2 — Miroir IA */}
+                        {/* 2 — Miroir IA (replié par défaut) */}
                         {s.analysis && (
-                          <div
-                            style={{
-                              marginBottom: 20,
-                              background: "rgba(70,55,45,0.42)",
-                              border: "1px solid rgba(240,230,214,0.07)",
-                              borderRadius: 16,
-                              padding: "18px 20px",
-                              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.025), 0 8px 20px rgba(0,0,0,0.20)",
-                            }}
-                          >
-                            <p
+                          <>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setOpenMirrorIds((prev) => ({
+                                  ...prev,
+                                  [s.id]: !prev[s.id],
+                                }))
+                              }
                               className="font-sans"
-                              style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 12, letterSpacing: "0.10em" }}
+                              style={{
+                                fontSize: "0.78rem",
+                                color: "rgba(240,230,214,0.58)",
+                                letterSpacing: "0.04em",
+                                marginBottom: 16,
+                                marginTop: 4,
+                                cursor: "pointer",
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                textAlign: "left",
+                              }}
                             >
-                              Le miroir de cette session
-                            </p>
-                            <p
-                              className="font-body"
-                              style={{ fontSize: "1rem", color: "#F0E6D6", lineHeight: 1.65, whiteSpace: "pre-line" }}
-                            >
-                              {s.analysis}
-                            </p>
-                          </div>
+                              {mirrorOpen
+                                ? "Masquer le miroir reçu à chaud"
+                                : "Voir le miroir reçu à chaud"}
+                            </button>
+                            {mirrorOpen && (
+                              <div
+                                style={{
+                                  marginBottom: 20,
+                                  background: "rgba(70,55,45,0.42)",
+                                  border: "1px solid rgba(240,230,214,0.07)",
+                                  borderRadius: 16,
+                                  padding: "18px 20px",
+                                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.025), 0 8px 20px rgba(0,0,0,0.20)",
+                                }}
+                              >
+                                <p
+                                  className="font-sans"
+                                  style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 12, letterSpacing: "0.10em" }}
+                                >
+                                  Le miroir de cette session
+                                </p>
+                                <p
+                                  className="font-body"
+                                  style={{ fontSize: "1rem", color: "#F0E6D6", lineHeight: 1.65, whiteSpace: "pre-line" }}
+                                >
+                                  {s.analysis}
+                                </p>
+                              </div>
+                            )}
+                          </>
                         )}
 
                         {/* 5 — Note entre sessions */}
