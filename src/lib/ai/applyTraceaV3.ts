@@ -406,13 +406,26 @@ export function applyTraceaV3(text: string, emotion: string): string {
   }
 
   // ── 4. Rule D : validation unique — garder la première, supprimer les suivantes ──
-  // Couvre les doublons consécutifs ET non-consécutifs.
+  // Couvre les doublons consécutifs ET non-consécutifs. Trim pour matcher
+  // même en cas d'espaces marginaux.
   {
     let seen = false;
     visual = visual.filter((p) => {
-      if (!ALL_VALIDATIONS.has(p)) return true;
+      if (!ALL_VALIDATIONS.has(p.trim())) return true;
       if (seen) return false;
       seen = true;
+      return true;
+    });
+  }
+
+  // ── 5. Rule E : dédup générique — supprimer les phrases identiques restantes ──
+  // Compare après trim, conserve la première occurrence, sans reformuler.
+  {
+    const seen = new Set<string>();
+    visual = visual.filter((p) => {
+      const key = p.trim();
+      if (seen.has(key)) return false;
+      seen.add(key);
       return true;
     });
   }

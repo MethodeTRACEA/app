@@ -116,28 +116,37 @@ Règles par champ :
 
 - inner_truth : reprendre STRICTEMENT une phrase réellement formulée par l'utilisateur (typiquement étape Conscientiser ou Aligner). Ne jamais reformuler, ne jamais paraphraser, ne jamais transformer une idée en phrase plus jolie. Si aucune phrase de l'utilisateur ne correspond clairement à une vérité intérieure, retourner chaîne vide.
 
-- narrative_summary : 2 à 3 phrases MAXIMUM, d'observation factuelle. Le résumé n'est pas une simple répétition : il organise la session pour la rendre relisible. Il peut s'appuyer sur ces éléments quand ils sont présents :
+- narrative_summary : 2 à 3 phrases MAXIMUM, d'observation factuelle, ADRESSÉES DIRECTEMENT À L'UTILISATEUR EN "TU". Le résumé n'est pas une simple répétition : il organise la session pour la rendre relisible. Il peut s'appuyer sur ces éléments quand ils sont présents :
   - le contexte décrit
   - l'émotion ou la sensation nommée
   - le besoin exprimé s'il existe
   - l'appui ou l'action choisi s'il existe
   - le point resté ouvert si aucune résolution claire n'apparaît
-  Tu peux reformuler sobrement pour rendre la trace lisible. Tu ne dois jamais inventer une cause, un besoin, une action ou une vérité intérieure. Tu ne dois jamais conclure que l'utilisateur progresse, se transforme, ou que quelque chose "se construit". Pas de phrase inspirationnelle, pas de coaching, pas de projection sur l'avenir.
 
-Exemples de style autorisé :
-- "La session part d'une tension corporelle forte dans un contexte relationnel."
-- "L'émotion nommée est la peur, avec un besoin de relâcher la pression."
-- "L'appui choisi est de revenir à la respiration consciente."
-- "La session reste ouverte sur une sensation encore présente."
+  Règles de ton (en plus des règles générales) :
+  - Parle directement à l'utilisateur en "tu". Ne le désigne JAMAIS à la 3e personne.
+  - Sont interdits : "l'utilisateur", "la personne", "cette personne", "il/elle", "iel", ou toute tournure de rapport clinique / administratif.
+  - Sont interdites les formulations méta type "L'étape de conscientisation fait apparaître…", "La session part de … dans laquelle l'utilisateur nomme…".
+  - Tu peux reformuler sobrement pour rendre la trace lisible. Tu ne dois jamais inventer une cause, un besoin, une action ou une vérité intérieure. Tu ne dois jamais conclure que l'utilisateur progresse, se transforme, ou que quelque chose "se construit". Pas de phrase inspirationnelle, pas de coaching, pas de projection sur l'avenir.
 
-Exemples interdits :
-- "Tu es déjà en train de te reconnecter à toi."
-- "Ça se construit."
-- "Un mouvement se dessine."
-- "Tu avances."
-- "Tu progresses."
-- "Un chemin s'ouvre."
-- "Tu apprends à te respecter."`;
+  Exemples de style autorisé :
+  - "Tu as nommé une tension avec quelqu'un. La colère était présente."
+  - "Le besoin formulé était de poser une limite. L'action retenue était de dire ce que tu n'acceptes plus."
+  - "Tu as posé que tu étais épuisé(e). Le besoin de ralentir est apparu."
+  - "La session reste ouverte sur une sensation encore présente."
+
+  Exemples interdits :
+  - "Tu es déjà en train de te reconnecter à toi."
+  - "Ça se construit."
+  - "Un mouvement se dessine."
+  - "Tu avances."
+  - "Tu progresses."
+  - "Un chemin s'ouvre."
+  - "Tu apprends à te respecter."
+  - "La session part d'une tension avec quelqu'un, dans laquelle l'utilisateur nomme de la colère."
+  - "L'utilisateur exprime un besoin de limite."
+  - "L'étape de conscientisation fait apparaître l'idée de poser une limite."
+  - "Cette personne semble chercher à…"`;
 
 // ===================================================================
 // STEP_ORDER pour construire l'historique
