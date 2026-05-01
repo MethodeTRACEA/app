@@ -241,8 +241,8 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
     ],
     "épuisement": [
       "laisser ça là pour aujourd'hui",
-      "ne rien faire de plus maintenant",
-      "reprendre quand j'aurai un peu d'énergie",
+      "me reposer un moment",
+      "y revenir quand j'aurai un peu d'énergie",
     ],
     "tristesse": [
       "laisser ça là un moment",
