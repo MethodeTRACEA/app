@@ -81,21 +81,21 @@ const SITUATION_CHIPS = [
   "quelque chose m'a blessé",
   "je me suis senti(e) incompris(e)",
   "une situation m'a dépassé(e)",
-  "je ne sais pas exactement",
+  "je ne sais pas",
 ];
 
 const SITUATION_DETAIL_PLACEHOLDERS: Record<string, string> = {
   "une tension avec quelqu'un":
-    "ex : il ne m'a pas répondu…",
+    "ex : quelqu'un n'a pas répondu…",
   "une décision difficile":
-    "ex : j'ai dû choisir seule…",
+    "ex : j'ai dû choisir seul(e)…",
   "quelque chose m'a blessé":
     "ex : une phrase m'est restée…",
   "je me suis senti(e) incompris(e)":
     "ex : mes mots n'ont pas été reçus…",
   "une situation m'a dépassé(e)":
     "ex : tout est arrivé en même temps…",
-  "je ne sais pas exactement":
+  "je ne sais pas":
     "ex : c'est flou mais ça me travaille…",
 };
 
@@ -1050,16 +1050,3 @@ function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
-// ── Ligne de récap ─────────────────────────────────────────────
-function SynthRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="space-y-0.5">
-      <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest opacity-70">
-        {label}
-      </p>
-      <p className="font-body text-base t-text-secondary italic">
-        {value || "—"}
-      </p>
-    </div>
-  );
-}
