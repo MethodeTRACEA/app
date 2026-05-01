@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getCompletedSessionsDb } from "@/lib/supabase-store";
+import {
+  getCompletedSessionsDb,
+  getPremiumMemory,
+  type PremiumMemory,
+} from "@/lib/supabase-store";
 import { getMemoryProfileClient, type MemoryProfile } from "@/lib/memory";
 import { supabase } from "@/lib/supabase";
 import type { SessionData } from "@/lib/types";
@@ -30,6 +34,7 @@ export default function CeQuiChangePage() {
   const { user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<SessionData[]>([]);
   const [memoryProfile, setMemoryProfile] = useState<MemoryProfile | null>(null);
+  const [premiumMemory, setPremiumMemory] = useState<PremiumMemory | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,9 +42,11 @@ export default function CeQuiChangePage() {
     Promise.all([
       getCompletedSessionsDb(user.id),
       getMemoryProfileClient(supabase, user.id),
-    ]).then(([s, profile]) => {
+      getPremiumMemory(user.id),
+    ]).then(([s, profile, pm]) => {
       setSessions(s);
       setMemoryProfile(profile);
+      setPremiumMemory(pm);
       setLoading(false);
     });
   }, [user]);
@@ -94,6 +101,15 @@ export default function CeQuiChangePage() {
       : fallbackAppuis;
 
   const hasMemoryContent = block1Items.length > 0 || block2Items.length > 0;
+
+  // Premium memory (issue de tracea_events — surtout traversées courtes)
+  const hasPremiumContent = !!(
+    premiumMemory &&
+    (premiumMemory.ceQuiRevient ||
+      premiumMemory.ceQuiTAide ||
+      premiumMemory.ceQuiSembleDemandem)
+  );
+  const hasAnyContent = hasMemoryContent || hasPremiumContent;
 
   // ── Styles V3 ────────────────────────────────────────────────────
   const blockStyle: React.CSSProperties = {
@@ -213,7 +229,7 @@ export default function CeQuiChangePage() {
         </p>
 
         {/* ── Cas 0 — aucune session ── */}
-        {n === 0 && (
+        {n === 0 && !hasAnyContent && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Cet espace se remplira au fil de tes traversées.
@@ -222,7 +238,7 @@ export default function CeQuiChangePage() {
         )}
 
         {/* ── Cas 1 — une seule session ── */}
-        {n === 1 && (
+        {n === 1 && !hasAnyContent && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Une première trace existe.
@@ -235,7 +251,7 @@ export default function CeQuiChangePage() {
         )}
 
         {/* ── Cas 2 — sessions présentes mais mémoire pas encore prête ── */}
-        {n >= 2 && !hasMemoryContent && (
+        {n >= 2 && !hasAnyContent && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Tes traversées sont bien enregistrées.
@@ -246,8 +262,8 @@ export default function CeQuiChangePage() {
           </div>
         )}
 
-        {/* ── Cas 3 — mémoire disponible : 3 blocs ── */}
-        {n >= 2 && hasMemoryContent && (
+        {/* ── Cas 3 — mémoire disponible : blocs ── */}
+        {hasAnyContent && (
           <>
             {/* Bloc 1 — Ce qui revient souvent */}
             {block1Items.length > 0 && (
@@ -270,25 +286,49 @@ export default function CeQuiChangePage() {
               </div>
             )}
 
+            {/* Bloc — Ton corps quand ça monte (signal corporel issu des traversées courtes) */}
+            {premiumMemory?.ceQuiRevient && (
+              <div style={blockStyle}>
+                <p className="font-sans" style={kickerStyle}>
+                  Ton corps quand ça monte
+                </p>
+                <p className="font-body" style={blockTextStyle}>
+                  {premiumMemory.ceQuiRevient}
+                </p>
+              </div>
+            )}
+
             {/* Bloc 2 — Ce qui t'aide déjà */}
-            {block2Items.length > 0 && (
+            {(block2Items.length > 0 || premiumMemory?.ceQuiTAide) && (
               <div style={blockStyle}>
                 <p className="font-sans" style={kickerStyle}>
                   Ce qui t&apos;aide déjà
                 </p>
-                <p className="font-body" style={blockTextStyle}>
-                  Des appuis reviennent dans tes traversées.
-                  <br />
-                  Tu peux les retrouver quand ça remonte.
-                </p>
-                <ul style={listStyle}>
-                  {block2Items.map((item, i) => (
-                    <li key={`b2-${i}`} style={listItemStyle}>
-                      <span style={bulletStyle} aria-hidden="true">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                {premiumMemory?.ceQuiTAide && (
+                  <p
+                    className="font-body"
+                    style={{ ...blockTextStyle, fontStyle: "italic", marginBottom: 8 }}
+                  >
+                    {premiumMemory.ceQuiTAide}
+                  </p>
+                )}
+                {block2Items.length > 0 && (
+                  <>
+                    <p className="font-body" style={blockTextStyle}>
+                      Des appuis reviennent dans tes traversées.
+                      <br />
+                      Tu peux les retrouver quand ça remonte.
+                    </p>
+                    <ul style={listStyle}>
+                      {block2Items.map((item, i) => (
+                        <li key={`b2-${i}`} style={listItemStyle}>
+                          <span style={bulletStyle} aria-hidden="true">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
               </div>
             )}
 
