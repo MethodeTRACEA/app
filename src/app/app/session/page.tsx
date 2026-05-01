@@ -29,6 +29,7 @@ type Phase =
   | "intro"
   | "situation"
   | "emotion"
+  | "ancrage"
   | "besoin"
   | "alignement"
   | "action"
@@ -724,13 +725,47 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
               disabled={!emotion || (emotion === "autre" && !emotionOther.trim())}
               onClick={() => {
                 trackEvent(userId, "step_complete", { step: "emotion", mode: "approfondi", value: emotionLabel });
-                setPhase("besoin");
+                setPhase("ancrage");
               }}
             >
               Continuer
             </PrimaryButton>
 
             <BackButton onClick={() => setPhase("situation")} />
+
+          </div>
+        </div>
+      </ScreenContainer>
+    );
+  }
+
+  // ════════════════════════════════════════════════════════
+  // ANCRAGE — Pause corporelle (entre émotion et besoin)
+  // ════════════════════════════════════════════════════════
+  if (phase === "ancrage") {
+    return (
+      <ScreenContainer overlayOpacity={45}>
+        <div className="py-12">
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+
+            <div className="text-center space-y-4">
+              <h2 className="font-serif text-2xl text-t-beige leading-relaxed">
+                Un instant dans le corps
+              </h2>
+              <p className="font-body text-base t-text-secondary leading-relaxed">
+                Avant de chercher ce dont tu as besoin,<br />
+                sens simplement tes appuis.
+              </p>
+              <p className="font-inter text-xs t-text-ghost">
+                Tes pieds, ton dos, ou le point de contact le plus présent.
+              </p>
+            </div>
+
+            <PrimaryButton onClick={() => setPhase("besoin")}>
+              Continuer
+            </PrimaryButton>
+
+            <BackButton onClick={() => setPhase("emotion")} />
 
           </div>
         </div>
@@ -795,7 +830,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
               Continuer
             </PrimaryButton>
 
-            <BackButton onClick={() => setPhase("emotion")} />
+            <BackButton onClick={() => setPhase("ancrage")} />
 
           </div>
         </div>
