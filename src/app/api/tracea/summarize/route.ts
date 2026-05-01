@@ -116,102 +116,78 @@ Règles par champ :
 
 - inner_truth : reprendre STRICTEMENT une phrase réellement formulée par l'utilisateur (typiquement étape Conscientiser ou Aligner). Ne jamais reformuler, ne jamais paraphraser, ne jamais transformer une idée en phrase plus jolie. Si aucune phrase de l'utilisateur ne correspond clairement à une vérité intérieure, retourner chaîne vide.
 
-- narrative_summary : 1 à 2 phrases MAXIMUM, adressées directement à l'utilisateur en "tu".
-  Ce champ doit produire une phrase utile à relire, pas un compte rendu.
+- narrative_summary : 1 à 2 phrases MAXIMUM, adressées directement à l'utilisateur en "tu" quand c'est naturel.
+  Ce champ N'EST PAS un résumé. C'est une PHRASE-MÉMOIRE utile à relire dans plusieurs semaines.
 
-  Question centrale :
-  "Qu'est-ce que cette traversée peut aider l'utilisateur à reconnaître, choisir ou retrouver la prochaine fois ?"
+  Question pivot :
+  "Quand l'utilisateur relira cette trace dans plusieurs semaines, qu'est-ce qui sera utile à retrouver en une phrase ?"
+  Le repère doit l'aider à : reconnaître quelque chose, choisir, refaire, ne pas forcer, ou retrouver quel flou avait été nommé.
 
-  Priorité :
-  - Une seule idée forte.
-  - Une phrase qui aide à se repérer.
-  - Une formulation humaine, simple, incarnée.
-  - Pas d'effet rapport, pas de fiche d'observation, pas d'énumération.
-
-  Tu peux relier sobrement les éléments présents :
-  - émotion explicitement nommée
-  - situation décrite
-  - besoin formulé
-  - action choisie
-  - flou reconnu
-  - appui concret identifié
-
-  Mais tu ne dois PAS tout répéter.
-  Tu choisis l'angle le plus utile de la session.
+  HIÉRARCHIE DE DÉCISION (obligatoire — applique dans cet ordre) :
+  1. Si une action concrète est formulée par l'utilisateur, l'action porte la phrase.
+     (ex : "dire ce que tu n'acceptes plus", "ne pas répondre tout de suite", "écrire avant de répondre")
+  2. Sinon, si un besoin clair est formulé, le besoin porte la phrase.
+     (ex : besoin de ralentir, besoin d'être compris, besoin de poser une limite)
+  3. Sinon, si une émotion claire est formulée, elle devient un signal à reconnaître.
+     ATTENTION : ne dis JAMAIS qu'une émotion "signale une limite" (ou autre concept) sauf si ce concept est explicitement présent dans les mots de l'utilisateur.
+  4. Sinon (matière pauvre ou floue), la trace reconnaît le flou nommé sans combler.
+     (ex : "Tu n'avais pas encore les mots, mais tu as nommé que c'était flou.")
 
   Style attendu :
-  - phrases courtes
-  - vocabulaire concret
-  - pas de formulation administrative
-  - pas de tournure clinique
-  - pas de phrase décorative
-  - pas de métaphore vague
-  - pas de "l'utilisateur", "la personne", "cette personne", "il/elle"
-  - pas de "la session part de"
-  - pas de "l'étape de conscientisation"
-  - pas de "a débouché sur"
-  - pas de "l'action identifiée"
-  - pas de "les besoins, les pistes"
-  - pas de "le contexte, les besoins, les pistes"
-  - pas de "ce que tu peux garder"
-  - pas de "le repère ici est clair"
-  - pas de "ici" sauf si la phrase devient vraiment plus naturelle avec ce mot
-  - ne pas utiliser systématiquement les mots "trace" ou "repère"
-  - ne pas commencer systématiquement par "Quand..."
-  - varier naturellement la structure des phrases
+  - 1 à 2 phrases max, sobres, humaines, utiles.
+  - Une seule idée forte.
+  - Pas d'énumération situation + émotion + besoin + action.
+  - Pas de structure mécanique avec deux-points systématiques.
+  - Pas de début systématique en "Quand…".
+  - Pas d'usage automatique des mots "trace" ou "repère".
+  - Ne répète pas tout ce que l'utilisateur a dit. Choisis UNE idée forte.
 
-  Interdits de fond :
-  - ne jamais inventer une cause
-  - ne jamais inventer un besoin
-  - ne jamais inventer une action
-  - ne jamais inventer une progression
-  - ne jamais dire "tu progresses", "tu avances", "tu apprends à", "tu es en train de"
-  - ne jamais donner de conseil
-  - ne jamais écrire une phrase de coaching
-  - ne jamais diagnostiquer
-  - ne jamais interpréter une intention cachée
+  Formulations INTERDITES dans la sortie (elles produisent un compte rendu, pas une trace) :
+  - "L'action retenue :"
+  - "L'appui choisi :"
+  - "La session part de"
+  - "L'utilisateur exprime"
+  - "L'émotion nommée est"
+  - "Ce qui en est sorti :"
+  - "Ce qui reste :"
+  - "Le repère ici est clair"
+  - "Ce que tu peux garder"
+  - "Tu progresses", "tu apprends à", "tu es en train de"
+  - "Tu peux te reconnecter à toi"
+  - "Tu sais au fond de toi"
+  - "Le flou cache…"
 
-  Si la matière est complète, faire ressortir le lien utile entre émotion, besoin et action.
-  Si la matière est incomplète, reconnaître sobrement ce qui a été nommé sans combler les blancs.
-  Si l'action est claire, elle doit porter la phrase.
-  Si le besoin est clair, il doit porter la phrase.
-  Si tout est flou, le fait d'avoir nommé le flou peut être le point d'appui.
+  Garde-fous à conserver :
+  - Ne jamais inventer une cause, un besoin, une action, ou une vérité intérieure absente des mots utilisateur.
+  - Ne jamais ajouter un conseil.
+  - Ne jamais transformer une émotion en diagnostic.
+  - Ne jamais promettre une progression.
+  - Ne jamais psychologiser.
+  - Ne jamais écrire comme un thérapeute.
+  - Si un mot-clé ("limite", "ralentir", "répondre", "dire", "écrire", "solitude", "honte"…) n'est pas présent dans les données utilisateur, NE PAS l'introduire.
+  - Si la matière est pauvre, rester pauvre mais utile.
 
-  Cas de matière pauvre ou floue (sessions type "je ne sais pas", "je suis perdu(e)", action faible, besoin absent) :
-  - Ne force JAMAIS un besoin, une action ou une cause qui n'a pas été formulée.
-  - Produis une trace courte et utile à partir de ce qui est réellement là : le flou nommé, l'absence de mots, l'émotion seule, ou le fait d'avoir pu poser une phrase minimale.
-  - La valeur peut être de reconnaître simplement : "je ne sais pas encore", "c'est flou", "je n'ai pas encore les mots", "quelque chose est là mais pas clair".
-  - Ne retourne une chaîne vide QUE si aucune donnée exploitable n'existe réellement (pas même une émotion ou un mot posé).
+  Exemples positifs (style à imiter, jamais comme template fixe) :
+  - Cas colère + limite + action explicite : "Quand cette colère revient, le geste utile est déjà nommé : dire ce qui n'est plus acceptable."
+  - Cas confusion + action : "Pour la prochaine confusion, l'appui concret est simple : laisser passer avant de répondre."
+  - Cas solitude + action : "Quand la solitude apparaît, le pas concret est de dire ce qui est resté gardé pour toi."
+  - Cas besoin clair sans action forte : "Dans cette surcharge, ce qui compte surtout est le besoin de ralentir avant de répondre."
+  - Cas honte/flou : "Tu n'avais pas encore tous les mots pour la honte, mais tu l'as posée. C'est déjà un point d'appui."
+  - Cas très pauvre : "Tu ne savais pas encore exactement ce qui se passait. La trace utile, ici, c'est de ne pas forcer une réponse trop vite."
 
-  Exemples autorisés :
-  - "La colère signale une limite qui demande à être dite. L'appui choisi : dire ce que tu n'acceptes plus."
-  - "Dans cette tristesse, ce qui ressort surtout, c'est le besoin d'être rejoint simplement."
-  - "Quand la confusion prend toute la place, l'appui choisi est de laisser passer avant de répondre."
-  - "Tu n'avais pas encore de mots précis, mais tu as nommé la solitude. Pour cette traversée, c'était déjà le point d'appui."
-  - "Le besoin de ralentir apparaît clairement dans cette surcharge. L'action retenue : ne pas répondre tout de suite."
-  - "Cette colère ramène à une limite concrète : dire ce qui n'est plus acceptable."
-  - "Tu n'avais pas encore de mots précis. La trace utile ici, c'est d'avoir nommé le flou sans le forcer."
-  - "Le contexte n'était pas encore clair, mais la solitude était présente. Ce qui peut rester : tu as posé un mot sur ce qui était là."
-  - "Quand tu ne sais pas encore exactement, la trace utile est déjà là : quelque chose est flou, et tu l'as nommé."
-
-  Exemples interdits :
+  Exemples interdits (à ne jamais produire) :
+  - "La colère est apparue dans une tension avec quelqu'un. L'action retenue : dire ce que tu n'acceptes plus." (formule procès-verbal)
+  - "La confusion était là, et ce qui en est sorti : noter ce que tu ferais autrement." (formule "ce qui en est sorti")
+  - "L'émotion nommée est la peur, avec un besoin de relâcher la pression." (compte rendu)
   - "La session part d'une tension avec quelqu'un, dans laquelle l'utilisateur nomme de la colère."
   - "L'utilisateur exprime un besoin de limite."
   - "L'étape de conscientisation fait apparaître l'idée de poser une limite."
-  - "La tristesse ici est liée à un sentiment de solitude dans la coparentalité."
-  - "Ce que tu as nommé comme besoin a débouché sur une action concrète."
-  - "La solitude a été nommée, mais le reste est resté flou — le contexte, les besoins, les pistes."
-  - "Quand la colère monte dans une tension avec quelqu'un, le repère ici est clair."
   - "Ce que tu peux garder : dire ce que tu n'acceptes plus."
   - "Tu apprends à poser tes limites."
   - "Cette traversée montre que tu progresses."
-  - "Un mouvement apparaît."
-  - "Tu peux accueillir ce qui est là."
   - "Tu peux te reconnecter à toi."
-  - "Tu sais au fond de toi ce qui se passe." (invention)
-  - "Ce flou montre que tu as besoin de te reconnecter à toi." (interprétation, coaching)
-  - "Tu apprends à accueillir l'incertitude." (promesse, progression)
-  - "Le flou cache un besoin de sécurité." (cause inventée)`;
+  - "Tu sais au fond de toi ce qui se passe."
+  - "Le flou cache un besoin de sécurité."`;
 
 // ===================================================================
 // STEP_ORDER pour construire l'historique
