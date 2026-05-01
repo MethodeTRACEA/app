@@ -24,18 +24,44 @@ export default function HistoriquePage() {
 
   useEffect(() => {
     if (!user) return;
-    getCompletedSessionsDb(user.id).then((data) => {
+    const userId = user.id;
+    let cancelled = false;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+
+    // Helper local : fetch + fusion sans effacer les summaries déjà présents.
+    const loadSummaries = (ids: string[]) => {
+      if (ids.length === 0) return;
+      getSessionSummariesByIds(supabase, userId, ids)
+        .then((sums) => {
+          if (cancelled) return;
+          setSummariesById((prev) => ({ ...prev, ...sums }));
+        })
+        .catch(() => {});
+    };
+
+    getCompletedSessionsDb(userId).then((data) => {
+      if (cancelled) return;
       setSessions(data);
       setLoading(false);
 
-      // Charger les résumés des sessions affichées (best-effort, non bloquant).
       const sessionIds = data.map((s) => s.id);
-      if (sessionIds.length > 0) {
-        getSessionSummariesByIds(supabase, user.id, sessionIds)
-          .then((sums) => setSummariesById(sums))
-          .catch(() => {});
-      }
+      if (sessionIds.length === 0) return;
+
+      // Fetch immédiat.
+      loadSummaries(sessionIds);
+
+      // Refetchs différés : si /api/tracea/summarize a été déclenché en
+      // fire-and-forget juste avant l'arrivée sur Tes traces, le summary
+      // peut arriver quelques secondes après. 3 relances max, pas de polling.
+      timeouts.push(setTimeout(() => loadSummaries(sessionIds), 1500));
+      timeouts.push(setTimeout(() => loadSummaries(sessionIds), 4000));
+      timeouts.push(setTimeout(() => loadSummaries(sessionIds), 8000));
     });
+
+    return () => {
+      cancelled = true;
+      timeouts.forEach((t) => clearTimeout(t));
+    };
   }, [user]);
 
   if (authLoading || loading) {
