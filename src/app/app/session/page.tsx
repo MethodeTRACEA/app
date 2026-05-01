@@ -78,17 +78,18 @@ function getTraceaTruth() {
 
 const SITUATION_CHIPS = [
   "une tension avec quelqu'un",
-  "une décision difficile",
+  "une décision qui me pèse",
   "quelque chose m'a blessé",
   "je me suis senti(e) incompris(e)",
   "une situation m'a dépassé(e)",
+  "je me sens trop chargé(e)",
   "je ne sais pas",
 ];
 
 const SITUATION_DETAIL_PLACEHOLDERS: Record<string, string> = {
   "une tension avec quelqu'un":
     "ex : quelqu'un n'a pas répondu…",
-  "une décision difficile":
+  "une décision qui me pèse":
     "ex : j'ai dû choisir seul(e)…",
   "quelque chose m'a blessé":
     "ex : une phrase m'est restée…",
@@ -96,6 +97,8 @@ const SITUATION_DETAIL_PLACEHOLDERS: Record<string, string> = {
     "ex : mes mots n'ont pas été reçus…",
   "une situation m'a dépassé(e)":
     "ex : tout est arrivé en même temps…",
+  "je me sens trop chargé(e)":
+    "ex : c'est lourd depuis ce matin…",
   "je ne sais pas":
     "ex : c'est flou mais ça me travaille…",
 };
@@ -632,7 +635,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 <textarea
                   value={situationOther}
                   onChange={(e) => setSituationOther(e.target.value)}
-                  placeholder="En quelques mots…"
+                  placeholder="ex : ce qui me reste de cette journée…"
                   className={textareaClass}
                   rows={2}
                   autoFocus
