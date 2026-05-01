@@ -28,6 +28,80 @@ function computeAppuisBlock(sessions: SessionData[]): string[] {
     .map(([action]) => action);
 }
 
+// ── Nettoyage éditorial des actions affichées dans "Ce qui t'aide déjà" ──
+// Filtre les formulations trop introspectives/psychologisantes pour ce bloc
+// "kit de retour", déduplique les quasi-doublons (Jaccard ≥ 0.7 sur tokens
+// normalisés), et limite à 2 entrées max. Les données ne sont jamais
+// modifiées en base — uniquement masquées dans cette UI.
+
+const APPUI_BLOCKLIST = [
+  "réveillé",
+  "reveille",
+  "démêler",
+  "demeler",
+  "ce qui appartient",
+  "analyser",
+  "comprendre pourquoi",
+];
+
+const APPUI_STOPWORDS = new Set([
+  "le", "la", "les", "de", "du", "des", "un", "une", "et", "ou", "mais",
+  "ce", "cette", "ces", "mon", "ma", "mes", "ton", "ta", "tes",
+  "que", "qui", "quoi", "sur", "dans", "pour", "avec", "sans",
+  "tu", "il", "elle", "on", "me", "te", "se",
+]);
+
+function normalizeAppui(s: string): string {
+  // Suppression des marques diacritiques combinantes (U+0300 à U+036F)
+  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+function isAppuiClean(action: string): boolean {
+  const norm = normalizeAppui(action);
+  return !APPUI_BLOCKLIST.some((term) => norm.includes(normalizeAppui(term)));
+}
+
+function appuiTokens(action: string): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const w of normalizeAppui(action).split(/[^a-z0-9]+/)) {
+    if (w.length > 2 && !APPUI_STOPWORDS.has(w) && !seen.has(w)) {
+      seen.add(w);
+      out.push(w);
+    }
+  }
+  return out;
+}
+
+function cleanAppuiActions(items: string[]): string[] {
+  const filtered = items.filter(isAppuiClean);
+  const kept: { tokens: string[]; original: string }[] = [];
+  for (const item of filtered) {
+    const tokens = appuiTokens(item);
+    if (tokens.length === 0) continue;
+    let dupIndex = -1;
+    for (let i = 0; i < kept.length; i++) {
+      const prev = kept[i].tokens;
+      const prevSet = new Set(prev);
+      let inter = 0;
+      for (const t of tokens) {
+        if (prevSet.has(t)) inter++;
+      }
+      const union = new Set(prev.concat(tokens)).size;
+      if (union > 0 && inter / union >= 0.7) {
+        dupIndex = i;
+        break;
+      }
+    }
+    if (dupIndex === -1) {
+      kept.push({ tokens, original: item });
+    } else if (item.length < kept[dupIndex].original.length) {
+      kept[dupIndex] = { tokens, original: item };
+    }
+  }
+  return kept.map((k) => k.original).slice(0, 2);
+}
+
 // ── Page ─────────────────────────────────────────────────────────
 
 export default function CeQuiChangePage() {
@@ -99,6 +173,9 @@ export default function CeQuiChangePage() {
     effectiveActions.length > 0
       ? effectiveActions.slice(0, 3)
       : fallbackAppuis;
+  // Nettoyage éditorial pour le bloc "Ce qui t'aide déjà"
+  // (filtre formulations psychologisantes, dédup souple, cap à 2)
+  const cleanedBlock2Items = cleanAppuiActions(block2Items);
 
   const hasMemoryContent = block1Items.length > 0 || block2Items.length > 0;
 
@@ -299,20 +376,43 @@ export default function CeQuiChangePage() {
             )}
 
             {/* Bloc 2 — Ce qui t'aide déjà */}
-            {(block2Items.length > 0 || premiumMemory?.ceQuiTAide) && (
+            {(cleanedBlock2Items.length > 0 || premiumMemory?.ceQuiTAide) && (
               <div style={blockStyle}>
                 <p className="font-sans" style={kickerStyle}>
                   Ce qui t&apos;aide déjà
                 </p>
-                {premiumMemory?.ceQuiTAide && (
-                  <p
-                    className="font-body"
-                    style={{ ...blockTextStyle, fontStyle: "italic", marginBottom: 8 }}
-                  >
-                    {premiumMemory.ceQuiTAide}
-                  </p>
-                )}
-                {block2Items.length > 0 && (
+                {premiumMemory?.ceQuiTAide ? (
+                  <>
+                    <p className="font-body" style={blockTextStyle}>
+                      {premiumMemory.ceQuiTAide}
+                    </p>
+                    {cleanedBlock2Items.length === 0 ? (
+                      <p
+                        className="font-body"
+                        style={{ ...blockTextStyle, marginTop: 8 }}
+                      >
+                        À retrouver quand ça remonte.
+                      </p>
+                    ) : (
+                      <>
+                        <p
+                          className="font-body"
+                          style={{ ...blockTextStyle, marginTop: 8 }}
+                        >
+                          Tu peux aussi retrouver :
+                        </p>
+                        <ul style={listStyle}>
+                          {cleanedBlock2Items.map((item, i) => (
+                            <li key={`b2-${i}`} style={listItemStyle}>
+                              <span style={bulletStyle} aria-hidden="true">•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                  </>
+                ) : (
                   <>
                     <p className="font-body" style={blockTextStyle}>
                       Des appuis reviennent dans tes traversées.
@@ -320,7 +420,7 @@ export default function CeQuiChangePage() {
                       Tu peux les retrouver quand ça remonte.
                     </p>
                     <ul style={listStyle}>
-                      {block2Items.map((item, i) => (
+                      {cleanedBlock2Items.map((item, i) => (
                         <li key={`b2-${i}`} style={listItemStyle}>
                           <span style={bulletStyle} aria-hidden="true">•</span>
                           <span>{item}</span>
