@@ -177,6 +177,12 @@ Règles par champ :
   Si le besoin est clair, il doit porter la phrase.
   Si tout est flou, le fait d'avoir nommé le flou peut être le point d'appui.
 
+  Cas de matière pauvre ou floue (sessions type "je ne sais pas", "je suis perdu(e)", action faible, besoin absent) :
+  - Ne force JAMAIS un besoin, une action ou une cause qui n'a pas été formulée.
+  - Produis une trace courte et utile à partir de ce qui est réellement là : le flou nommé, l'absence de mots, l'émotion seule, ou le fait d'avoir pu poser une phrase minimale.
+  - La valeur peut être de reconnaître simplement : "je ne sais pas encore", "c'est flou", "je n'ai pas encore les mots", "quelque chose est là mais pas clair".
+  - Ne retourne une chaîne vide QUE si aucune donnée exploitable n'existe réellement (pas même une émotion ou un mot posé).
+
   Exemples autorisés :
   - "La colère signale une limite qui demande à être dite. L'appui choisi : dire ce que tu n'acceptes plus."
   - "Dans cette tristesse, ce qui ressort surtout, c'est le besoin d'être rejoint simplement."
@@ -184,6 +190,9 @@ Règles par champ :
   - "Tu n'avais pas encore de mots précis, mais tu as nommé la solitude. Pour cette traversée, c'était déjà le point d'appui."
   - "Le besoin de ralentir apparaît clairement dans cette surcharge. L'action retenue : ne pas répondre tout de suite."
   - "Cette colère ramène à une limite concrète : dire ce qui n'est plus acceptable."
+  - "Tu n'avais pas encore de mots précis. La trace utile ici, c'est d'avoir nommé le flou sans le forcer."
+  - "Le contexte n'était pas encore clair, mais la solitude était présente. Ce qui peut rester : tu as posé un mot sur ce qui était là."
+  - "Quand tu ne sais pas encore exactement, la trace utile est déjà là : quelque chose est flou, et tu l'as nommé."
 
   Exemples interdits :
   - "La session part d'une tension avec quelqu'un, dans laquelle l'utilisateur nomme de la colère."
@@ -198,7 +207,11 @@ Règles par champ :
   - "Cette traversée montre que tu progresses."
   - "Un mouvement apparaît."
   - "Tu peux accueillir ce qui est là."
-  - "Tu peux te reconnecter à toi."`;
+  - "Tu peux te reconnecter à toi."
+  - "Tu sais au fond de toi ce qui se passe." (invention)
+  - "Ce flou montre que tu as besoin de te reconnecter à toi." (interprétation, coaching)
+  - "Tu apprends à accueillir l'incertitude." (promesse, progression)
+  - "Le flou cache un besoin de sécurité." (cause inventée)`;
 
 // ===================================================================
 // STEP_ORDER pour construire l'historique
