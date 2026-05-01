@@ -95,8 +95,19 @@ function cleanAppuiActions(items: string[]): string[] {
     }
     if (dupIndex === -1) {
       kept.push({ tokens, original: item });
-    } else if (item.length < kept[dupIndex].original.length) {
-      kept[dupIndex] = { tokens, original: item };
+    } else {
+      // Entre deux quasi-doublons, garder la phrase la plus informative :
+      // priorité au nombre de tokens significatifs (nom explicite > pronom vague),
+      // puis fallback sur la longueur de chaîne (plus de détail).
+      const prevTokenCount = kept[dupIndex].tokens.length;
+      const newTokenCount = tokens.length;
+      const shouldReplace =
+        newTokenCount > prevTokenCount ||
+        (newTokenCount === prevTokenCount &&
+          item.length > kept[dupIndex].original.length);
+      if (shouldReplace) {
+        kept[dupIndex] = { tokens, original: item };
+      }
     }
   }
   return kept.map((k) => k.original).slice(0, 2);
