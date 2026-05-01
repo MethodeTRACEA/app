@@ -695,7 +695,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 Qu&apos;est-ce que tu as ressenti ?
               </p>
               <p className="font-inter text-xs t-text-ghost">
-                Le plus présent, même en approchant.
+                Choisis ce qui prend le plus de place maintenant, même si ce n&rsquo;est pas exact.
               </p>
             </div>
 
