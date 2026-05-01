@@ -170,6 +170,17 @@ Règles par champ :
   - "est déjà nommé" / "le geste est déjà nommé" (formule mécanique)
   - "ce que tu as retenu" / "pour la prochaine fois" si la phrase sonne comme un bilan scolaire
   - usage répétitif de "Quand [émotion] revient…" comme template
+  - "ce que tu as nommé" (formule méta — sauf cas pauvre/flou, cf. règle dédiée)
+  - "tu as nommé …" (formule méta — sauf cas pauvre/flou, cf. règle dédiée)
+  - "tu l'as posé" / "ce que tu as posé" (formule méta — sauf cas pauvre/flou, cf. règle dédiée)
+  - "origine clairement identifiée", "sans origine", "cause clairement identifiée" (vocabulaire froid de rapport)
+  - "ce qui s'est passé" quand la phrase sonne comme un résumé
+  - "face à cette tension" quand la phrase sonne comme un résumé
+
+  Règles de style supplémentaires (ton non-méta, non-clinique, non-constat) :
+  - Les formulations "tu as nommé" / "tu as posé" / "ce que tu as nommé" / "ce que tu as posé" sont autorisées UNIQUEMENT dans les cas pauvres, flous ou incomplets, quand le fait d'avoir nommé quelque chose est réellement le repère utile (niveau 4 de la hiérarchie). Dans une session complète où il existe une action, un besoin ou une émotion claire, NE COMMENTE PAS le fait que l'utilisateur a nommé quelque chose : transforme la matière en repère utilisable directement.
+  - N'utilise JAMAIS un vocabulaire d'analyse froide ou clinique ("origine", "cause", "identifié", "identifiée", "clairement identifié", "clairement identifiée") sauf si l'utilisateur a lui-même employé ces mots. Préfère des formulations vivantes, proches de l'expérience ("les mots n'étaient pas encore là", "c'était flou", "tu cherches encore").
+  - Quand une action concrète est formulée par l'utilisateur, la phrase doit aider à retrouver cette action comme appui concret directement utilisable, sans dire "ce que tu as nommé", "l'action retenue", "l'appui choisi" ou équivalent. L'action doit apparaître en contexte d'usage, pas comme un libellé commenté.
 
   Garde-fous à conserver :
   - Ne jamais inventer une cause, un besoin, une action, ou une vérité intérieure absente des mots utilisateur.
