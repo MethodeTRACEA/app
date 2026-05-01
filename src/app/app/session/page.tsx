@@ -965,8 +965,19 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
               </p>
               <textarea
                 value={action}
-                onChange={(e) => { setAction(e.target.value); setActionSource("free_text"); }}
-                placeholder="Quelque chose de simple…"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setAction(value);
+                  const trimmedValue = value.trim();
+                  if (!trimmedValue) {
+                    setActionSource(null);
+                    return;
+                  }
+                  setActionSource(
+                    suggestions.includes(trimmedValue) ? "suggestion" : "free_text"
+                  );
+                }}
+                placeholder="ex : ce qui me semble faisable maintenant…"
                 className={textareaClass}
                 rows={2}
               />
