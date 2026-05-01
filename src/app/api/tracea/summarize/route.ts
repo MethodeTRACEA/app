@@ -124,14 +124,31 @@ Règles par champ :
   Le repère doit l'aider à : reconnaître quelque chose, choisir, refaire, ne pas forcer, ou retrouver quel flou avait été nommé.
 
   HIÉRARCHIE DE DÉCISION (obligatoire — applique dans cet ordre) :
-  1. Si une action concrète est formulée par l'utilisateur, l'action porte la phrase.
-     (ex : "dire ce que tu n'acceptes plus", "ne pas répondre tout de suite", "écrire avant de répondre")
+  1. Si une action concrète est formulée par l'utilisateur, la phrase doit montrer où cette action peut servir, ou ce qu'elle permet de poser. L'action ne doit JAMAIS être affichée comme un simple libellé commenté. Elle doit être replacée dans un usage concret, sans inventer de contexte absent.
+     (ex de matière utilisateur : "dire ce que tu n'acceptes plus", "ne pas répondre tout de suite", "écrire avant de répondre")
   2. Sinon, si un besoin clair est formulé, le besoin porte la phrase.
      (ex : besoin de ralentir, besoin d'être compris, besoin de poser une limite)
   3. Sinon, si une émotion claire est formulée, elle devient un signal à reconnaître.
      ATTENTION : ne dis JAMAIS qu'une émotion "signale une limite" (ou autre concept) sauf si ce concept est explicitement présent dans les mots de l'utilisateur.
   4. Sinon (matière pauvre ou floue), la trace reconnaît le flou nommé sans combler.
      (ex : "Tu n'avais pas encore les mots, mais tu as nommé que c'était flou.")
+
+  SYNTAXE D'USAGE > SYNTAXE DE LIBELLÉ (règle structurelle prioritaire) :
+  Évite la syntaxe de libellé, qui sonne comme un compte rendu :
+  - "[action] : c'est ce que…"
+  - "[action] : c'est ce qui…"
+  - "c'est ce que tu peux faire…"
+  - "tu sais ce que tu peux dire : …"
+  - "l'action retenue…"
+  - "l'appui choisi…"
+  - "ce que tu as nommé…"
+  - "ce que tu as posé…"
+
+  Préfère une syntaxe d'usage :
+  - l'action replacée dans une situation de retour (ex : "quand cette tension revient, …" — sans en faire un template fixe),
+  - l'action présentée comme un geste concret porté par la phrase elle-même,
+  - le besoin formulé comme un repère, pas comme un libellé commenté,
+  - le flou reconnu sans le combler quand la matière est pauvre.
 
   Style attendu :
   - 1 à 2 phrases max, sobres, humaines, utiles.
@@ -175,7 +192,16 @@ Règles par champ :
   - "tu l'as posé" / "ce que tu as posé" (formule méta — sauf cas pauvre/flou, cf. règle dédiée)
   - "origine clairement identifiée", "sans origine", "cause clairement identifiée" (vocabulaire froid de rapport)
   - "ce qui s'est passé" quand la phrase sonne comme un résumé
-  - "face à cette tension" quand la phrase sonne comme un résumé
+  - "face à cette tension" quand utilisé comme formule générique de résumé
+  - "c'est ce que tu peux faire …"
+  - "tu sais ce que tu peux dire …"
+  - "l'action retenue"
+  - "l'appui choisi"
+  - "le geste utile est nommé"
+  - "le pas concret reste simple"
+  - "ce qui en est sorti"
+  - "ce qui reste"
+  - "ce que tu peux garder"
 
   Règles de style supplémentaires (ton non-méta, non-clinique, non-constat) :
   - Les formulations "tu as nommé" / "tu as posé" / "ce que tu as nommé" / "ce que tu as posé" sont autorisées UNIQUEMENT dans les cas pauvres, flous ou incomplets, quand le fait d'avoir nommé quelque chose est réellement le repère utile (niveau 4 de la hiérarchie). Dans une session complète où il existe une action, un besoin ou une émotion claire, NE COMMENTE PAS le fait que l'utilisateur a nommé quelque chose : transforme la matière en repère utilisable directement.
@@ -193,17 +219,19 @@ Règles par champ :
   - Ne JAMAIS transformer une action simple en une action différente, plus précise, ou plus jolie. Si l'action est vague, la garder vague et sobre. Exemples : "me rapprocher de quelqu'un" ne devient PAS "dire que tu aimerais ne pas rester seul(e)" ; "exprimer ce que j'ai ressenti" ne devient PAS "écrire ce que tu aurais voulu dire" — sauf si ces idées exactes sont explicitement formulées par l'utilisateur.
   - Si la matière est pauvre, rester pauvre mais utile.
 
-  Exemples positifs (formes variées, jamais comme template fixe) :
-  - "Cette manière de couper la parole ne te convient plus, et tu sais ce que tu peux dire en privé pour le poser."
-  - "Le dire calmement, sans reproche : ça te touche, et tu peux le formuler comme ça."
-  - "Tu n'as pas besoin de répondre tout de suite : écrire ce que tu attends vraiment t'aide à voir."
-  - "Appeler ta sœur en début de semaine : c'est ce que tu peux poser concrètement quand cette solitude pèse."
-  - "Main sur la poitrine, respiration lente : c'est ce qui t'ancre quand la peur monte le soir."
-  - "Refuser le prochain projet et bloquer une demi-journée : c'est ce que tu peux poser pour sortir de cette surcharge."
-  - "Écrire ce que tu aurais voulu dire, puis fermer le sujet : c'est ce qui arrête la rumination."
+  Exemples positifs (formes variées, jamais comme template fixe — varient en début de phrase, en présence/absence de deux-points, et sans usage automatique de "appui", "repère", "trace", "geste") :
+  - "Dire ce qui n'est plus acceptable devient le geste concret quand cette tension revient."
+  - "Cette colère ramène à une limite simple : quelque chose ne peut plus rester comme avant."
+  - "Écrire avant de répondre peut t'aider à ne pas laisser la confusion décider trop vite."
+  - "Quand la solitude pèse, te rapprocher de quelqu'un reste l'action la plus simple."
+  - "La tristesse indique surtout un besoin d'être entendu sans devoir te justifier."
+  - "Prendre du recul avant de répondre, c'est ce qui protège la suite quand la confusion monte."
+  - "Tu n'avais pas encore tous les mots. La seule chose claire, ici, c'était la solitude."
+  - "Si tout reste flou, ne pas forcer une réponse est déjà une manière de rester avec ce qui est là."
   - "Tu n'as pas encore les mots pour ce qui se passe. Et tu l'as posé. C'est suffisant pour l'instant."
   - "Bain le soir, coucher tôt : le soin minimum quand le corps lâche."
-  - "Tu n'avais pas encore tous les mots pour la honte, mais tu l'as posée. C'est déjà un point d'appui."
+
+  Attention : ces exemples montrent la FORME attendue. Ils n'autorisent jamais l'invention. Si "limite", "être entendu", "prendre du recul", "solitude", "répondre", "dire", "écrire" ne sont pas présents dans les données utilisateur, NE PAS LES INTRODUIRE.
 
   Exemples interdits (à ne jamais produire) :
   - "Quand cette colère revient, le geste utile est nommé : …" (template mécanique)
@@ -223,7 +251,13 @@ Règles par champ :
   - "Tu sais au fond de toi ce qui se passe."
   - "Le flou cache un besoin de sécurité."
   - "Ce que tu as retenu pour la prochaine fois : …" (bilan scolaire)
-  - Transformer "me rapprocher de quelqu'un" en "dire que tu aimerais ne pas rester seul(e)" si cette phrase n'a pas été formulée (reformulation trop libre).`;
+  - Transformer "me rapprocher de quelqu'un" en "dire que tu aimerais ne pas rester seul(e)" si cette phrase n'a pas été formulée (reformulation trop libre).
+
+  Test final avant de produire narrative_summary :
+  - Est-ce que cette phrase pourrait aider l'utilisateur à se repérer plus tard ?
+  - Ou est-ce qu'elle ressemble à un compte rendu de ce qu'il a fait dans la session ?
+  Si elle ressemble à un compte rendu, recommencer en plaçant l'action, le besoin ou l'émotion dans un usage concret.
+  Si la matière est trop pauvre, rester simple et ne pas combler.`;
 
 // ===================================================================
 // STEP_ORDER pour construire l'historique
