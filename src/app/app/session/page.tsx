@@ -196,7 +196,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
   "prendre du recul": {
     default: [
       "laisser passer avant de répondre",
-      "écrire la situation depuis l'extérieur",
+      "écrire la situation avec un regard extérieur",
       "noter ce que je ferais autrement",
     ],
     "colère": [
