@@ -411,6 +411,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   const [besoinOther, setBesoinOther] = useState("");
   const [alignementChoice, setAlignementChoice] = useState<"oui" | "un peu" | "pas vraiment" | "">("");
   const [action, setAction] = useState("");
+  const [actionSource, setActionSource] = useState<"suggestion" | "free_text" | null>(null);
 
   // IA
   const [analysis, setAnalysis] = useState("");
@@ -496,6 +497,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             steps,
             context: "approfondi",
             hadDoNotStore: false,
+            actionSource,
           }),
         })
           .then((res) => {
@@ -888,7 +890,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 <button
                   key={s}
                   type="button"
-                  onClick={() => setAction(s)}
+                  onClick={() => { setAction(s); setActionSource("suggestion"); }}
                   className={`w-full text-left rounded-[18px] px-5 py-3 font-inter text-sm transition-all duration-200 border ${
                     action === s
                       ? "bg-t-brume/35 border-[rgba(232,216,199,0.40)] t-text-secondary"
@@ -907,7 +909,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
               </p>
               <textarea
                 value={action}
-                onChange={(e) => setAction(e.target.value)}
+                onChange={(e) => { setAction(e.target.value); setActionSource("free_text"); }}
                 placeholder="Quelque chose de simple…"
                 className={textareaClass}
                 rows={2}

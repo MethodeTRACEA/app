@@ -253,6 +253,11 @@ Règles par champ :
   - "Ce que tu as retenu pour la prochaine fois : …" (bilan scolaire)
   - Transformer "me rapprocher de quelqu'un" en "dire que tu aimerais ne pas rester seul(e)" si cette phrase n'a pas été formulée (reformulation trop libre).
 
+  Origine de l'action (lue dans la section "Métadonnées utiles" de l'historique) :
+  - Si l'action vient d'une suggestion sélectionnée dans l'interface, ne la traite pas comme une phrase personnelle profonde de l'utilisateur. Elle indique une direction choisie, pas forcément les mots exacts de l'utilisateur.
+  - Si l'action vient d'un texte libre, tu peux davantage t'appuyer sur ses mots exacts.
+  - Dans tous les cas, ne transforme jamais l'action en une formulation plus intime, plus précise ou plus psychologique que ce qui est présent.
+
   Test final avant de produire narrative_summary :
   - Est-ce que cette phrase pourrait aider l'utilisateur à se repérer plus tard ?
   - Ou est-ce qu'elle ressemble à un compte rendu de ce qu'il a fait dans la session ?
@@ -395,6 +400,7 @@ export async function POST(request: NextRequest) {
       steps,
       context,
       hadDoNotStore,
+      actionSource,
     } = body;
 
     if (!sessionId) {
@@ -422,6 +428,15 @@ export async function POST(request: NextRequest) {
         sessionHistory += `\n${STEP_LABELS[sid] || sid} :\n"${steps[sid]}"\n`;
       }
     }
+
+    // Métadonnées utiles
+    const actionSourceLabel =
+      actionSource === "suggestion"
+        ? "suggestion sélectionnée dans l'interface"
+        : actionSource === "free_text"
+        ? "phrase écrite librement par l'utilisateur"
+        : "inconnue";
+    sessionHistory += `\nOrigine de l'action :\n- ${actionSourceLabel}\n`;
 
     // Appeler Claude pour générer le résumé
     const message = await getAnthropicClient().messages.create({
