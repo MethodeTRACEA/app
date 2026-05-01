@@ -110,6 +110,7 @@ const EMOTION_CHIPS = [
   "honte",
   "frustration",
   "solitude",
+  "épuisement",
   "confusion",
 ];
 
@@ -716,7 +717,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 <textarea
                   value={emotionOther}
                   onChange={(e) => setEmotionOther(e.target.value)}
-                  placeholder="En quelques mots…"
+                  placeholder="ex : un mot qui te vient pour le décrire…"
                   className={textareaClass}
                   rows={2}
                   autoFocus
