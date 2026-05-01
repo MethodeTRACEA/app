@@ -145,7 +145,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
   "poser une limite": {
     default: [
       "dire ce que je n'accepte plus",
-      "écrire ce que je suis prêt(e) à poser clairement",
+      "écrire ma limite avant de la dire",
       "décider ce que je vais dire et quand",
     ],
     "colère": [
@@ -179,7 +179,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
   "exprimer ce que j'ai ressenti": {
     default: [
       "écrire ce que j'aurais voulu dire",
-      "trouver les mots justes pour le nommer",
+      "écrire les premiers mots qui me viennent",
       "dire ce que j'ai gardé pour moi",
     ],
     "colère": [
@@ -206,7 +206,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
     ],
     "peur": [
       "noter ce qui me fait peur là-dedans",
-      "séparer ce que je sais de ce que j'imagine",
+      "écrire ce qui est sûr, puis ce que je suppose",
       "attendre avant de décider",
     ],
     "tristesse": [
