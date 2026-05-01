@@ -138,7 +138,7 @@ Règles par champ :
   - Une seule idée forte.
   - Pas d'énumération situation + émotion + besoin + action.
   - Pas de structure mécanique avec deux-points systématiques.
-  - Pas de début systématique en "Quand…".
+  - Pas de début systématique en "Quand…". Varie les formulations : préfère parfois une phrase directe (ex : "La colère pointe ici une limite à dire.").
   - Pas d'usage automatique des mots "trace" ou "repère".
   - Ne répète pas tout ce que l'utilisateur a dit. Choisis UNE idée forte.
 
@@ -156,6 +156,9 @@ Règles par champ :
   - "Tu peux te reconnecter à toi"
   - "Tu sais au fond de toi"
   - "Le flou cache…"
+  - "est déjà nommé" / "le geste est déjà nommé" (formule mécanique)
+  - "ce que tu as retenu" / "pour la prochaine fois" si la phrase sonne comme un bilan scolaire
+  - usage répétitif de "Quand [émotion] revient…" comme template
 
   Garde-fous à conserver :
   - Ne jamais inventer une cause, un besoin, une action, ou une vérité intérieure absente des mots utilisateur.
@@ -165,6 +168,7 @@ Règles par champ :
   - Ne jamais psychologiser.
   - Ne jamais écrire comme un thérapeute.
   - Si un mot-clé ("limite", "ralentir", "répondre", "dire", "écrire", "solitude", "honte"…) n'est pas présent dans les données utilisateur, NE PAS l'introduire.
+  - Ne JAMAIS transformer une action simple en une action différente, plus précise, ou plus jolie. Si l'action est vague, la garder vague et sobre. Exemples : "me rapprocher de quelqu'un" ne devient PAS "dire que tu aimerais ne pas rester seul(e)" ; "exprimer ce que j'ai ressenti" ne devient PAS "écrire ce que tu aurais voulu dire" — sauf si ces idées exactes sont explicitement formulées par l'utilisateur.
   - Si la matière est pauvre, rester pauvre mais utile.
 
   Exemples positifs (style à imiter, jamais comme template fixe) :
@@ -174,6 +178,9 @@ Règles par champ :
   - Cas besoin clair sans action forte : "Dans cette surcharge, ce qui compte surtout est le besoin de ralentir avant de répondre."
   - Cas honte/flou : "Tu n'avais pas encore tous les mots pour la honte, mais tu l'as posée. C'est déjà un point d'appui."
   - Cas très pauvre : "Tu ne savais pas encore exactement ce qui se passait. La trace utile, ici, c'est de ne pas forcer une réponse trop vite."
+  - Phrase directe (variation à privilégier) : "La colère pointe ici une limite à dire : ce qui n'est plus acceptable."
+  - Phrase directe sans forçage d'action : "La solitude indique un besoin de lien. L'appui reste simple : te rapprocher de quelqu'un."
+  - Phrase directe + fidélité aux mots utilisateur : "La tristesse est liée à ce qui a blessé. La trace utile : exprimer ce qui a été ressenti."
 
   Exemples interdits (à ne jamais produire) :
   - "La colère est apparue dans une tension avec quelqu'un. L'action retenue : dire ce que tu n'acceptes plus." (formule procès-verbal)
@@ -187,7 +194,10 @@ Règles par champ :
   - "Cette traversée montre que tu progresses."
   - "Tu peux te reconnecter à toi."
   - "Tu sais au fond de toi ce qui se passe."
-  - "Le flou cache un besoin de sécurité."`;
+  - "Le flou cache un besoin de sécurité."
+  - "Quand cette colère revient, le geste est déjà nommé : …" (formule mécanique)
+  - "Ce que tu as retenu pour la prochaine fois : …" (bilan scolaire)
+  - Transformer "me rapprocher de quelqu'un" en "dire que tu aimerais ne pas rester seul(e)" si cette phrase n'a pas été formulée (reformulation trop libre)`;
 
 // ===================================================================
 // STEP_ORDER pour construire l'historique
