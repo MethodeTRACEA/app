@@ -409,7 +409,6 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   const [emotionOther, setEmotionOther] = useState("");
   const [besoin, setBesoin] = useState("");
   const [besoinOther, setBesoinOther] = useState("");
-  const [alignementChoice, setAlignementChoice] = useState<"oui" | "un peu" | "pas vraiment" | "">("");
   const [action, setAction] = useState("");
   const [actionSource, setActionSource] = useState<"suggestion" | "free_text" | null>(null);
 
@@ -839,23 +838,13 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
 
             <div className="text-center space-y-2">
               <p className="font-serif text-xl text-t-beige">
-                Est-ce que quelque chose s&apos;est éclairci ?
+                Voici ce que tu viens de poser.
               </p>
             </div>
 
-            <div className="w-full space-y-2.5">
-              {(["oui", "un peu", "pas vraiment"] as const).map((choice) => (
-                <Chip
-                  key={choice}
-                  label={choice}
-                  selected={alignementChoice === choice}
-                  onClick={() => {
-                    setAlignementChoice(choice);
-                    setTimeout(() => setPhase("action"), 400);
-                  }}
-                />
-              ))}
-            </div>
+            <PrimaryButton onClick={() => setPhase("action")}>
+              Continuer
+            </PrimaryButton>
 
           </div>
         </div>
