@@ -121,6 +121,7 @@ const BESOIN_CHIPS = [
   "exprimer ce que j'ai ressenti",
   "prendre du recul",
   "me rapprocher de quelqu'un",
+  "juste poser ça",
 ];
 
 // ── Suggestions d'action par besoin (flow long uniquement) ─────
@@ -230,6 +231,23 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
       "envoyer un message simple",
       "proposer un moment sans trop expliquer",
       "dire que j'aimerais ne pas rester seul(e)",
+    ],
+  },
+  "juste poser ça": {
+    default: [
+      "laisser ça là pour aujourd'hui",
+      "ne rien faire de plus maintenant",
+      "y revenir plus tard si besoin",
+    ],
+    "épuisement": [
+      "laisser ça là pour aujourd'hui",
+      "ne rien faire de plus maintenant",
+      "reprendre quand j'aurai un peu d'énergie",
+    ],
+    "tristesse": [
+      "laisser ça là un moment",
+      "écrire juste ce qui est là",
+      "y revenir une autre fois",
     ],
   },
 };
@@ -816,7 +834,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 <textarea
                   value={besoinOther}
                   onChange={(e) => setBesoinOther(e.target.value)}
-                  placeholder="En quelques mots…"
+                  placeholder="ex : ce qui me ferait du bien là maintenant…"
                   className={textareaClass}
                   rows={2}
                   autoFocus
