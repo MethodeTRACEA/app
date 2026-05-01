@@ -127,7 +127,7 @@ type ActionEntry = { default: string[]; [emotion: string]: string[] };
 const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
   "être compris(e)": {
     default: [
-      "trouver comment l'exprimer simplement",
+      "écrire la première phrase que je pourrais dire",
       "écrire ce que j'aurais voulu dire",
       "choisir à qui en parler",
     ],
@@ -150,13 +150,13 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
     ],
     "colère": [
       "dire ce que je n'accepte plus",
-      "nommer ce que je refuse de porter",
+      "dire ce que je ne veux plus",
       "écrire ma limite avant de la poser",
     ],
     "peur": [
       "choisir la limite la plus simple à poser",
       "écrire ce que je peux dire sans me justifier",
-      "attendre d'être plus stable avant d'en parler",
+      "attendre un moment plus calme avant d'en parler",
     ],
   },
   "clarifier quelque chose": {
@@ -232,7 +232,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
 const ACTION_FALLBACK = [
   "écrire ce qui compte pour moi",
   "laisser passer avant de répondre",
-  "trouver comment l'exprimer simplement",
+  "écrire ce que je veux garder en tête",
 ];
 
 function getActionSuggestions(besoin: string, emotion?: string): string[] {
