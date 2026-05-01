@@ -139,12 +139,23 @@ Règles par champ :
   - Pas d'énumération situation + émotion + besoin + action.
   - Pas de structure mécanique avec deux-points systématiques.
   - Pas de début systématique en "Quand…". Varie les formulations : préfère parfois une phrase directe (ex : "La colère pointe ici une limite à dire.").
+  - VARIE LA FORME des phrases d'une session à l'autre. Ne produis pas toujours le pattern "Quand X, le geste/appui/pas est Y." Privilégie aussi : l'action placée en début de phrase ; une phrase directe ; une formulation proche des mots utilisateur ; une phrase sans "appui", "repère", "geste" ou "trace utile" quand ce n'est pas nécessaire.
   - Pas d'usage automatique des mots "trace" ou "repère".
   - Ne répète pas tout ce que l'utilisateur a dit. Choisis UNE idée forte.
+
+  Cas particuliers :
+  - Actions hésitantes : si l'action contient "peut-être", "je ne sais pas", "à voir", "je pourrais", ou une hésitation équivalente, NE LA TRANSFORME PAS en action ferme. Traite la session comme partiellement floue (niveau 4 de la hiérarchie). N'amplifie jamais une action fragile.
+  - Sessions banales ou simples : si la matière est simple ("mal dormi → bain"), ne produis pas un compte rendu. Extrais un petit repère concret sans surinterpréter, sans inventer de symbolique ni de cause.
+    (ex pour "prendre un bain, se coucher tôt" : "Bain le soir, coucher tôt : le soin minimum quand le corps lâche.")
 
   Formulations INTERDITES dans la sortie (elles produisent un compte rendu, pas une trace) :
   - "L'action retenue :"
   - "L'appui choisi :"
+  - "L'appui concret est :"
+  - "L'appui simple est :"
+  - "Le geste utile est nommé :"
+  - "Le pas concret reste simple :"
+  - "Pour cette [émotion], …" (en début de phrase systématique)
   - "La session part de"
   - "L'utilisateur exprime"
   - "L'émotion nommée est"
@@ -171,20 +182,25 @@ Règles par champ :
   - Ne JAMAIS transformer une action simple en une action différente, plus précise, ou plus jolie. Si l'action est vague, la garder vague et sobre. Exemples : "me rapprocher de quelqu'un" ne devient PAS "dire que tu aimerais ne pas rester seul(e)" ; "exprimer ce que j'ai ressenti" ne devient PAS "écrire ce que tu aurais voulu dire" — sauf si ces idées exactes sont explicitement formulées par l'utilisateur.
   - Si la matière est pauvre, rester pauvre mais utile.
 
-  Exemples positifs (style à imiter, jamais comme template fixe) :
-  - Cas colère + limite + action explicite : "Quand cette colère revient, le geste utile est déjà nommé : dire ce qui n'est plus acceptable."
-  - Cas confusion + action : "Pour la prochaine confusion, l'appui concret est simple : laisser passer avant de répondre."
-  - Cas solitude + action : "Quand la solitude apparaît, le pas concret est de dire ce qui est resté gardé pour toi."
-  - Cas besoin clair sans action forte : "Dans cette surcharge, ce qui compte surtout est le besoin de ralentir avant de répondre."
-  - Cas honte/flou : "Tu n'avais pas encore tous les mots pour la honte, mais tu l'as posée. C'est déjà un point d'appui."
-  - Cas très pauvre : "Tu ne savais pas encore exactement ce qui se passait. La trace utile, ici, c'est de ne pas forcer une réponse trop vite."
-  - Phrase directe (variation à privilégier) : "La colère pointe ici une limite à dire : ce qui n'est plus acceptable."
-  - Phrase directe sans forçage d'action : "La solitude indique un besoin de lien. L'appui reste simple : te rapprocher de quelqu'un."
-  - Phrase directe + fidélité aux mots utilisateur : "La tristesse est liée à ce qui a blessé. La trace utile : exprimer ce qui a été ressenti."
+  Exemples positifs (formes variées, jamais comme template fixe) :
+  - "Cette manière de couper la parole ne te convient plus, et tu sais ce que tu peux dire en privé pour le poser."
+  - "Le dire calmement, sans reproche : ça te touche, et tu peux le formuler comme ça."
+  - "Tu n'as pas besoin de répondre tout de suite : écrire ce que tu attends vraiment t'aide à voir."
+  - "Appeler ta sœur en début de semaine : c'est ce que tu peux poser concrètement quand cette solitude pèse."
+  - "Main sur la poitrine, respiration lente : c'est ce qui t'ancre quand la peur monte le soir."
+  - "Refuser le prochain projet et bloquer une demi-journée : c'est ce que tu peux poser pour sortir de cette surcharge."
+  - "Écrire ce que tu aurais voulu dire, puis fermer le sujet : c'est ce qui arrête la rumination."
+  - "Tu n'as pas encore les mots pour ce qui se passe. Et tu l'as posé. C'est suffisant pour l'instant."
+  - "Bain le soir, coucher tôt : le soin minimum quand le corps lâche."
+  - "Tu n'avais pas encore tous les mots pour la honte, mais tu l'as posée. C'est déjà un point d'appui."
 
   Exemples interdits (à ne jamais produire) :
+  - "Quand cette colère revient, le geste utile est nommé : …" (template mécanique)
+  - "Pour cette tristesse, l'appui concret est : …" (template mécanique)
+  - "Le pas concret reste simple : …" (template mécanique)
+  - "L'action retenue : …" (compte rendu)
+  - "Ce qui en est sorti : …" (compte rendu)
   - "La colère est apparue dans une tension avec quelqu'un. L'action retenue : dire ce que tu n'acceptes plus." (formule procès-verbal)
-  - "La confusion était là, et ce qui en est sorti : noter ce que tu ferais autrement." (formule "ce qui en est sorti")
   - "L'émotion nommée est la peur, avec un besoin de relâcher la pression." (compte rendu)
   - "La session part d'une tension avec quelqu'un, dans laquelle l'utilisateur nomme de la colère."
   - "L'utilisateur exprime un besoin de limite."
@@ -195,9 +211,8 @@ Règles par champ :
   - "Tu peux te reconnecter à toi."
   - "Tu sais au fond de toi ce qui se passe."
   - "Le flou cache un besoin de sécurité."
-  - "Quand cette colère revient, le geste est déjà nommé : …" (formule mécanique)
   - "Ce que tu as retenu pour la prochaine fois : …" (bilan scolaire)
-  - Transformer "me rapprocher de quelqu'un" en "dire que tu aimerais ne pas rester seul(e)" si cette phrase n'a pas été formulée (reformulation trop libre)`;
+  - Transformer "me rapprocher de quelqu'un" en "dire que tu aimerais ne pas rester seul(e)" si cette phrase n'a pas été formulée (reformulation trop libre).`;
 
 // ===================================================================
 // STEP_ORDER pour construire l'historique
