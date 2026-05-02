@@ -2,75 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
-import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 
 type Plan = "monthly" | "yearly";
-type Status = "idle" | "loading" | "success" | "error";
 
 export default function SubscribePage() {
   const router = useRouter();
-  const { session, refreshProfile } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<Plan>("yearly");
-  const [status, setStatus] = useState<Status>("idle");
-
-  async function handleSubscribe() {
-    if (!session?.access_token) {
-      router.push("/app/connexion");
-      return;
-    }
-
-    setStatus("loading");
-
-    try {
-      // TODO: replace with Stripe Checkout session creation
-      // For now: mock — directly sets is_subscribed = true server-side
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ plan: selectedPlan }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        setStatus("error");
-        return;
-      }
-
-      // Refresh auth context so isSubscribed updates immediately
-      await refreshProfile();
-      setStatus("success");
-
-      // Redirect to app after short confirmation delay
-      setTimeout(() => router.push("/app"), 1800);
-
-    } catch {
-      setStatus("error");
-    }
-  }
-
-  if (status === "success") {
-    return (
-      <ScreenContainer overlayOpacity={45}>
-        <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 py-12">
-          <div className="text-center space-y-4">
-            <p className="font-serif text-2xl text-t-beige">
-              C&apos;est en place.
-            </p>
-            <p className="font-body text-base t-text-secondary">
-              Tu repars avec TRACÉA.
-            </p>
-          </div>
-        </div>
-      </ScreenContainer>
-    );
-  }
 
   return (
     <ScreenContainer overlayOpacity={45}>
@@ -128,34 +67,27 @@ export default function SubscribePage() {
           </button>
         </div>
 
-        {/* CTA */}
-        <div className="w-full flex flex-col gap-3">
-          <PrimaryButton
-            onClick={handleSubscribe}
-            disabled={status === "loading"}
-          >
-            {status === "loading" ? "En cours…" : "Continuer avec TRACÉA"}
-          </PrimaryButton>
-
-          <p className="font-inter text-xs t-text-ghost text-center">
-            Tu peux arrêter quand tu veux.
+        {/* Bloc d'attente sobre — abonnement non encore actif */}
+        <div className="w-full rounded-2xl border border-t-beige/20 bg-black/20 p-4 text-center space-y-3">
+          <p className="font-body text-sm t-text-secondary">
+            L&apos;abonnement arrive bientôt.
           </p>
-
-          {status === "error" && (
-            <p className="font-inter text-xs text-red-400/70 text-center">
-              Une erreur est survenue. Réessaie.
-            </p>
-          )}
-
-          <SecondaryButton onClick={() => router.push("/app")}>
-            Pas maintenant
-          </SecondaryButton>
+          <p className="font-inter text-xs t-text-ghost leading-relaxed">
+            En attendant, l&apos;accès se fait uniquement avec un code bêta.
+          </p>
+          <button
+            type="button"
+            onClick={() => router.push("/app/beta")}
+            className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors underline underline-offset-4"
+          >
+            J&apos;ai un code bêta
+          </button>
         </div>
 
-        {/* Note */}
-        <p className="font-inter text-xs t-text-ghost text-center">
-          Paiement sécurisé · Résiliable à tout moment
-        </p>
+        {/* Sortie */}
+        <SecondaryButton onClick={() => router.push("/app")}>
+          Pas maintenant
+        </SecondaryButton>
 
       </div>
     </ScreenContainer>
