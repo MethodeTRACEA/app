@@ -615,7 +615,7 @@ function TraverseeCourteV2() {
               ))}
             </div>
             <p className="font-inter text-xs t-text-secondary text-center">
-              Commence par le plus concret.
+              Le plus simple suffit.
             </p>
           </div>
         );
