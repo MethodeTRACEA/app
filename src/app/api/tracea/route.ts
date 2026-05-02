@@ -61,13 +61,13 @@ async function logAiUsage(params: {
 }) {
   const cacheWrite = params.cacheCreationTokens || 0;
   const cacheRead = params.cacheReadTokens || 0;
-  const nonCachedInput = params.inputTokens - cacheWrite - cacheRead;
 
-  const cost =
-    nonCachedInput * COST_PER_INPUT_TOKEN +
-    cacheWrite * COST_PER_CACHE_WRITE_TOKEN +
-    cacheRead * COST_PER_CACHE_READ_TOKEN +
-    params.outputTokens * COST_PER_OUTPUT_TOKEN;
+  const inputCost = params.inputTokens * COST_PER_INPUT_TOKEN;
+  const cacheWriteCost = cacheWrite * COST_PER_CACHE_WRITE_TOKEN;
+  const cacheReadCost = cacheRead * COST_PER_CACHE_READ_TOKEN;
+  const outputCost = params.outputTokens * COST_PER_OUTPUT_TOKEN;
+
+  const cost = inputCost + cacheWriteCost + cacheReadCost + outputCost;
 
   // Console log (toujours visible dans Vercel logs)
   const cacheInfo = (cacheWrite || cacheRead)
