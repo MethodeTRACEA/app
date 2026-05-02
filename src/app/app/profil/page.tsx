@@ -345,16 +345,6 @@ export default function ProfilPage() {
           )}
         </div>
 
-        {/* ── Mon espace ── */}
-        <div style={blockStyle}>
-          <p className="font-sans" style={kickerStyle}>Mon espace</p>
-          <p className="font-body" style={{ ...blockTextStyle, textAlign: "center", whiteSpace: "pre-line" }}>
-            {stats.total >= 3
-              ? "Tu es déjà revenu ici plusieurs fois.\n\nEt quelque chose en toi commence à bouger."
-              : "Ton espace TRACÉA se construit au fil de tes traversées."}
-          </p>
-        </div>
-
         {/* ── Ton accès TRACÉA ── */}
         <div style={blockStyle}>
           <p className="font-sans" style={kickerStyle}>Ton accès TRACÉA</p>
@@ -427,6 +417,16 @@ export default function ProfilPage() {
               </p>
             </>
           )}
+        </div>
+
+        {/* ── Mon espace ── */}
+        <div style={blockStyle}>
+          <p className="font-sans" style={kickerStyle}>Mon espace</p>
+          <p className="font-body" style={{ ...blockTextStyle, textAlign: "center", whiteSpace: "pre-line" }}>
+            {stats.total >= 3
+              ? "Tu es déjà revenu ici plusieurs fois.\n\nEt quelque chose en toi commence à bouger."
+              : "Ton espace TRACÉA se construit au fil de tes traversées."}
+          </p>
         </div>
 
         {/* ── Données & confidentialité (accordéon) ── */}
