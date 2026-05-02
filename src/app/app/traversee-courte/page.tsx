@@ -15,20 +15,6 @@ import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
 import { getTopAnchorMethod } from "@/lib/supabase-store";
 
-// ── Flow routing constants ─────────────────────────────────
-const SHORT_FLOW_V2 = "short" as const;
-const LONG_FLOW = "long" as const;
-
-type FlowRoute = typeof SHORT_FLOW_V2 | typeof LONG_FLOW;
-
-const ACTIVATION_FLOW_MAP: Record<string, FlowRoute> = {
-  deborde: SHORT_FLOW_V2,
-  charge: SHORT_FLOW_V2,
-  encore: LONG_FLOW,
-  calme: LONG_FLOW,
-  stop: SHORT_FLOW_V2,
-};
-
 const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
   deborde: "Ok. On va ralentir ça ensemble.",
   charge: "Ok. On va ralentir avant de répondre.",
@@ -59,7 +45,6 @@ type Screen =
   | "exit-transition"
   | "soft-limit"
   | "entree"
-  | "propose-long"
   | "ressenti"
   | "corps"
   | "ancrer"
@@ -460,11 +445,7 @@ function TraverseeCourteV2() {
                       context: null,
                     });
                     setTimeout(() => {
-                      if (ACTIVATION_FLOW_MAP[value] === LONG_FLOW) {
-                        setScreen("propose-long");
-                      } else {
-                        setScreen("ressenti");
-                      }
+                      setScreen("ressenti");
                     }, 1000);
                   }}
                 />
@@ -473,23 +454,6 @@ function TraverseeCourteV2() {
             <div className="mt-4">
               <ExitLink label="Quitter" href="/app" />
             </div>
-          </div>
-        );
-
-      // ════════════════════════════════════════════════════
-      // TRANSITION COURT → LONG
-      // ════════════════════════════════════════════════════
-      case "propose-long":
-        return (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            <div className="text-center space-y-4">
-              <p className="font-body text-lg t-text-secondary leading-relaxed">
-                Pour l&apos;instant, on reste sur cette traversée.
-              </p>
-            </div>
-            <PrimaryButton onClick={() => setScreen("ressenti")}>
-              Continuer ici
-            </PrimaryButton>
           </div>
         );
 
