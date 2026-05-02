@@ -71,7 +71,6 @@ type Screen =
   | "branche-pareil-feedback"
   | "branche-agite"
   | "branche-agite-exercice"
-  | "emerger"
   | "choix-geste"
   | "geste-display"
   | "synthese";
@@ -122,63 +121,7 @@ const ANCHOR_ORDER_BY_FEELING: Partial<Record<Feeling, AnchorMethod[]>> = {
   "je-ne-sais-pas": ["autour", "appuis", "souffle"],
 };
 
-// ── ÉMERGER — Mapping ressenti → besoins → geste ────────────
-
-const ZONE_PREPOSITION: Record<BodyZone, string> = {
-  poitrine: "dans la poitrine",
-  ventre:   "dans le ventre",
-  gorge:    "dans la gorge",
-  tete:     "dans la tête",
-  epaules:  "dans les épaules",
-  partout:  "partout",
-  "je-ne-sais-pas": "",
-};
-
-function getNeedsForState(feeling: Feeling | null, zone: BodyZone | null): string[] {
-  if (feeling === "agite")
-    return ["ralentir", "revenir au corps", "faire une pause", "clarifier"];
-  if (feeling === "serre") {
-    if (zone === "tete" || zone === "epaules")
-      return ["ralentir", "revenir au corps", "faire une pause", "relâcher la tension"];
-    return ["ralentir", "me sentir en sécurité", "relâcher la pression", "prendre de l'espace"];
-  }
-  if (feeling === "lourd")
-    return ["être soutenu", "me reposer", "être tranquille", "me rapprocher de quelque chose de sûr"];
-  if (feeling === "vide")
-    return ["me reposer", "être tranquille", "être soutenu", "me rapprocher de quelque chose de sûr"];
-  if (feeling === "flou")
-    return ["ralentir", "revenir au simple", "me stabiliser", "y voir plus clair"];
-  if (feeling === "bloque")
-    return ["me dégager", "prendre de l'espace", "me stabiliser", "relâcher la tension"];
-  return ["ralentir", "faire une pause", "revenir au corps", "me stabiliser"];
-}
-
 type Gesture = { label: string; description: string; action: string };
-
-const NEED_GESTURE: Record<string, Gesture> = {
-  "ralentir":       { label: "Maintenant", description: "Ok.\n\nTu peux ralentir.\n\nJuste ce que tu es en train de faire.\nUn tout petit peu.", action: "ralentir ce que je fais" },
-  "revenir au corps": { label: "Maintenant", description: "Là…\n\nReviens dans ton corps.\n\nAssieds-toi.\nOu pose-toi quelque part.\n\nJuste deux minutes.", action: "m'asseoir 2 minutes" },
-  "faire une pause":  { label: "Maintenant", description: "Stop.\n\nPose ce que tu fais.\n\nVa boire un verre d'eau.", action: "faire une vraie pause" },
-  "clarifier":        { label: "Maintenant", description: "Prends une seconde.\n\nNote une seule phrase.\n\nJuste ce qui est important.", action: "noter une phrase" },
-  "me sentir en sécurité":               { label: "Maintenant",  description: "Va dans une autre pièce ou coupe une stimulation.", action: "changer d'espace" },
-  "relâcher la pression":                { label: "Maintenant",  description: "Remets une chose à plus tard. Juste une.", action: "remettre une chose à plus tard" },
-  "prendre de l'espace":                 { label: "Maintenant",  description: "Ouvre une fenêtre ou sors 2 minutes.", action: "prendre de l'air" },
-  "être soutenu":                          { label: "Maintenant",  description: "Envoie un message à quelqu'un de sûr.", action: "contacter quelqu'un de sûr" },
-  "me reposer":                            { label: "Maintenant",  description: "Allonge-toi ou assieds-toi sans rien faire. 5 minutes.", action: "me poser 5 minutes" },
-  "être tranquille":                       { label: "Maintenant",  description: "Coupe le bruit ou mets-toi à l'écart.", action: "trouver le calme" },
-  "me rapprocher de quelque chose de sûr":{ label: "Maintenant", description: "Rapproche-toi d'un endroit ou d'une chose calme.", action: "me rapprocher de quelque chose de sûr" },
-  "revenir au simple":                     { label: "Maintenant",  description: "Choisis une seule chose. Laisse le reste.", action: "choisir une seule chose" },
-  "me stabiliser":                         { label: "Maintenant",  description: "Assieds-toi. Ne fais rien pendant 2 minutes.", action: "m'asseoir sans rien faire" },
-  "y voir plus clair":                     { label: "Maintenant",  description: "Note ce qui est flou. Une phrase suffit.", action: "noter ce qui est flou" },
-  "me dégager":                            { label: "Maintenant",  description: "Éloigne-toi de ce qui te tend. Physiquement si possible.", action: "m'éloigner de ce qui me tend" },
-  "me protéger":                           { label: "Maintenant",  description: "Ne réponds pas tout de suite. Tu peux attendre.", action: "ne pas répondre tout de suite" },
-  "poser une limite":                      { label: "Maintenant",  description: "Dis \"pas maintenant\" ou reporte la discussion.", action: "reporter la discussion" },
-  "relâcher la tension":                   { label: "Maintenant",  description: "Recule un peu. Bois quelque chose de chaud.", action: "prendre un moment pour moi" },
-};
-
-function getGestureForNeed(need: string): Gesture {
-  return NEED_GESTURE[need] ?? { label: "Maintenant", description: "Assieds-toi 2 minutes. C'est suffisant.", action: "m'asseoir 2 minutes" };
-}
 
 // ── GESTES PAR NIVEAU D'ACTIVATION ──────────────────────────
 
@@ -312,7 +255,6 @@ function TraverseeCourteV2() {
   const [anchorEffect, setAnchorEffect] = useState<AnchorEffect | null>(null);
   const [nextAction, setNextAction] = useState<string | null>(null);
   const [showMoreFeelings, setShowMoreFeelings] = useState(false);
-  const [emergerStep, setEmergerStep] = useState<"besoin" | "transition" | "geste">("besoin");
   const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
 
   // Méthodes déjà essayées (pour ne jamais reproposer)
@@ -323,21 +265,6 @@ function TraverseeCourteV2() {
   const [altMethod, setAltMethod] = useState<AnchorMethod | null>(null);
   // Personalisation abonné — méthode dominante
   const [topMethod, setTopMethod] = useState<AnchorMethod | null>(null);
-
-  // Réinitialiser émerger à chaque entrée dans l'écran
-  useEffect(() => {
-    if (screen === "emerger") {
-      setEmergerStep("besoin");
-      setSelectedNeed(null);
-    }
-  }, [screen]);
-
-  // Timer : transition → geste (1.5 s)
-  useEffect(() => {
-    if (emergerStep !== "transition") return;
-    const t = setTimeout(() => setEmergerStep("geste"), 1500);
-    return () => clearTimeout(t);
-  }, [emergerStep]);
 
   // ── Charger méthode dominante pour abonnés ──
   useEffect(() => {
@@ -904,61 +831,6 @@ function TraverseeCourteV2() {
           altMethod || getAlternativeMethod(triedMethods.slice(0, -1), true),
           () => setScreen("choix-geste")
         );
-
-      // ════════════════════════════════════════════════════
-      // ÉCRAN 7 — ÉMERGER  ressenti → besoin → geste
-      // ════════════════════════════════════════════════════
-      case "emerger": {
-        // ── Sous-étape : BESOIN ──────────────────────────
-        if (emergerStep === "besoin") {
-          const needs = getNeedsForState(currentFeeling, bodyZone);
-          const feelingLabel =
-            currentFeeling && currentFeeling !== "je-ne-sais-pas"
-              ? FEELING_LABELS[currentFeeling]
-              : null;
-          const zoneLabel = bodyZone ? ZONE_PREPOSITION[bodyZone] : "";
-          return (
-            <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-              {/* Rappel contextuel discret */}
-              {feelingLabel && (
-                <p className="font-inter text-xs t-text-ghost text-center italic">
-                  {zoneLabel
-                    ? `Tout à l'heure, c'était surtout ${feelingLabel} ${zoneLabel}`
-                    : `Tout à l'heure, c'était surtout ${feelingLabel}`}
-                </p>
-              )}
-              {getToneContext(activationLevel) && (
-                <p className="font-inter text-xs t-text-ghost text-center opacity-70">
-                  {getToneContext(activationLevel)}
-                </p>
-              )}
-              <div className="text-center space-y-2">
-                <p className="font-body text-lg text-t-beige leading-relaxed">
-                  Là, pour continuer, ce qui te ferait du bien :
-                </p>
-                <p className="font-inter text-sm t-text-ghost">
-                  Sans trop réfléchir.
-                </p>
-              </div>
-              <div className="w-full space-y-3">
-                {needs.map((need) => (
-                  <AutoChip
-                    key={need}
-                    label={need}
-                    onClick={() => {
-                      setSelectedNeed(need);
-                      trackEvent(user?.id ?? null, "step_complete", { step: "emerger", mode: "court", value: need });
-                      setScreen("choix-geste");
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          );
-        }
-
-        return null;
-      }
 
       // ════════════════════════════════════════════════════
       // ÉCRAN — CHOIX GESTE
