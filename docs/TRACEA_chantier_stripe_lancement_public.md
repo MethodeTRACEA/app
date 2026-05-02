@@ -214,6 +214,81 @@ Aucun patch Stripe ne doit bloquer les utilisateurs testeurs tant que `STRIPE_EN
 
 ---
 
+## Configuration Stripe Dashboard test — 2026-05-03
+
+Le chantier opérationnel Stripe Dashboard a avancé en environnement **test** uniquement. Aucune bascule en mode live, aucune activation produit côté utilisateur.
+
+### Produit Stripe test
+
+- **Nom** : TRACÉA Premium
+- **Environnement** : test
+- **Type** : abonnement récurrent
+
+### Tarifs test créés
+
+| Formule | Prix | Identifiant Stripe |
+|---|---|---|
+| Mensuel | 9 €/mois | `price_1TSlF4Pq9ZggxTJY5HOfr3l4` |
+| Annuel | 78 €/an | `price_1TSlF4Pq9ZggxTJYh2l8Docp` |
+
+Ces identifiants seront posés dans les variables d'environnement Vercel uniquement au moment de la fenêtre de test bout-en-bout :
+
+```
+STRIPE_PRICE_MONTHLY_ID=price_1TSlF4Pq9ZggxTJY5HOfr3l4
+STRIPE_PRICE_YEARLY_ID=price_1TSlF4Pq9ZggxTJYh2l8Docp
+```
+
+Les `price_*` ne sont pas des secrets : ils sont publics par nature (référencés côté serveur dans `/api/subscribe` et côté webhook pour le mapping plan ↔ priceId). Ils peuvent figurer dans la documentation du repo.
+
+### Webhook test créé
+
+- **Nom** : TRACÉA webhook test
+- **URL** : `https://www.methodetracea.fr/api/stripe/webhook`
+- **Environnement** : test
+- **Statut** : actif côté Dashboard Stripe (mais inerte côté serveur tant que `STRIPE_ENABLED=false` — voir route `/api/stripe/webhook`)
+- **Événements sélectionnés** :
+  - `checkout.session.completed`
+  - `customer.subscription.created`
+  - `customer.subscription.updated`
+  - `customer.subscription.deleted`
+  - `invoice.payment_succeeded`
+  - `invoice.payment_failed`
+
+Cette liste correspond exactement aux events traités par la route webhook (PATCH 6). Aucun event supplémentaire n'est requis pour la V1.
+
+### Secrets test obtenus
+
+Les secrets suivants ont été copiés localement par Alyson :
+- `STRIPE_SECRET_KEY` (préfixe `sk_test_*`)
+- `STRIPE_WEBHOOK_SECRET` (préfixe `whsec_*`)
+
+⚠️ **Ces secrets ne doivent JAMAIS** :
+- être écrits dans le chat ;
+- être committés dans un fichier versionné (incluant `.env.example`) ;
+- être collés dans la documentation du repo ;
+- être préfixés `NEXT_PUBLIC_*`.
+
+Ils ne vivent que dans `.env.local` (ignoré par git) et, au moment voulu, dans le tableau de bord Vercel (variables d'environnement projet).
+
+### État dormant confirmé
+
+Malgré la configuration Dashboard test :
+- `STRIPE_ENABLED` reste `false`.
+- `NEXT_PUBLIC_STRIPE_ENABLED` reste `false`.
+- Aucun paiement n'est visible côté utilisateur.
+- Aucun checkout n'est actif côté UI.
+- Aucune route Stripe ne s'initialise côté serveur.
+- Aucun event webhook ne donne lieu à une écriture DB (la route renvoie 200 + `ignored: true`).
+- Aucun impact pour les testeurs : trial 7 jours, accès bêta et parcours gratuit fonctionnent à l'identique.
+
+### Prochaine étape
+
+1. **Ne pas** poser les variables Stripe dans Vercel maintenant. Les laisser dans `.env.local` (dev) jusqu'à ce qu'une fenêtre de test bout-en-bout soit ouverte.
+2. **Ne pas** activer `STRIPE_ENABLED=true` ni `NEXT_PUBLIC_STRIPE_ENABLED=true` avant que le PATCH 7 (UI `/app/subscribe`) soit livré et qu'une vérification complète du parcours souscription + webhook + résiliation soit possible.
+3. Bascule des deux drapeaux uniquement en bundle avec PATCH 7 + PATCH 8 (`/app/profil` abonnement) + PATCH 9 (route portal), idéalement en mode `sk_test_*` d'abord, puis bascule live après validation.
+
+---
+
 ## Backlog sécurité — dépendances npm
 
 Lors de l'exécution de `npm install stripe` (PATCH 3, 2026-05-02), npm a signalé **7 vulnérabilités** dans le graphe de dépendances **préexistant** :
