@@ -342,6 +342,75 @@ Malgré la configuration Dashboard test :
 
 ---
 
+## Configuration Stripe Billing Portal test — 2026-05-03
+
+Configuration opérationnelle du **Customer Portal Stripe** en mode test, requise par PATCH 9 (route `/api/subscribe/portal`) et PATCH 8b (boutons "Gérer mon abonnement" / "Mettre à jour mon paiement"). Aucun code repo n'a été modifié à ce stade.
+
+### Environnement et identifiant
+- **Environnement** : test.
+- **Configuration portail créée côté Stripe** : `bpc_*` (préfixe Stripe, identifiant complet conservé hors repo).
+- **Statut** : sauvegardée et active.
+
+### Fonctionnalités activées
+
+| Fonctionnalité | Statut | Détail |
+|---|---|---|
+| Factures / historique de facturation | ✓ | accès aux reçus et factures pour l'utilisateur |
+| Informations client | ✓ | nom, e-mail, adresse de facturation, téléphone activés ; adresse de livraison désactivée (non pertinente pour un service numérique) |
+| Moyens de paiement | ✓ | mise à jour CB possible — couvre le cas `past_due` |
+| Annulations | ✓ | annulation **à la fin de la période de facturation** ; annulation immédiate non sélectionnée ; motif d'annulation désactivé |
+| Abonnements (changement d'offre, modification de quantité) | ✗ | désactivés en V1 — bascule mensuel ↔ annuel non proposée pour l'instant, à arbitrer plus tard |
+
+### Lien de redirection après portail
+
+`https://www.methodetracea.fr/app/profil`
+
+Cohérent avec le `return_url` qui sera utilisé par PATCH 9. L'utilisateur revient sur son profil après gestion d'abonnement, où il verra l'effet de ses actions une fois le webhook synchronisé.
+
+### Couverture CGU §9 (résiliation en ligne)
+
+Cette configuration satisfait l'engagement contractuel : la résiliation est **gratuite, par voie électronique, accessible depuis l'app**. Conforme aux articles L. 215-1 et L. 224-42-1 du Code de la consommation.
+
+### Backlog opérationnel — Activation complète du compte Stripe / informations publiques de l'entreprise
+
+Pendant la configuration du Billing Portal, Stripe a redirigé vers le parcours **"Activer votre compte"**, qui exige des informations complètes (entreprise/personne, identité, statut, adresse, compte bancaire, informations fiscales). **Ce parcours n'a pas été rempli au passage** — il devient un chantier opérationnel séparé.
+
+Conséquences :
+- Les **liens juridiques Stripe** (Conditions d'utilisation, Politique de confidentialité) **ne sont pas encore renseignés** dans les informations publiques de l'entreprise côté Stripe Dashboard.
+- L'**activation du compte Stripe** (passage de mode test à mode live) n'est pas encore possible.
+
+À traiter dans un chantier dédié, **avant bascule live** :
+- compléter les informations publiques de l'entreprise (nom commercial, identité, statut, adresse, contact) ;
+- renseigner les URLs des CGU TRACEA et de la Politique de confidentialité TRACEA ;
+- traiter identité, statut, adresse, compte bancaire, informations fiscales (passage live) ;
+- ne **pas** mélanger ce chantier avec les patchs code (qui restent indépendants en mode test).
+
+Ce backlog est **indépendant** de PATCH 9 / 8b / 7 : ces patchs peuvent être livrés et testés en mode `sk_test_*` sans que le compte Stripe soit activé live.
+
+### État dormant confirmé
+
+- `STRIPE_ENABLED=false`
+- `NEXT_PUBLIC_STRIPE_ENABLED=false`
+- Aucun paiement visible.
+- Aucun checkout actif.
+- Aucun impact testeurs.
+- La configuration Portal Dashboard existe mais n'est sollicitée qu'au moment où la route `/api/subscribe/portal` (PATCH 9) sera appelée — et la route ne sera appelée que lorsque les drapeaux passeront à `true`.
+
+### Prochaine étape technique
+
+**PATCH 9 — route `/api/subscribe/portal`** peut maintenant être préparé : le Billing Portal test est configuré côté Stripe Dashboard. La route pourra créer des sessions portal sans erreur dès que les drapeaux seront activés.
+
+Recommandation chronologique inchangée :
+1. PATCH 9 (route serveur dormante).
+2. PATCH 8b (boutons portal sur `/app/profil`) — livrable en bundle avec PATCH 9.
+3. PATCH 7 (UI `/app/subscribe` checkout actif).
+4. Bascule drapeaux Vercel.
+5. Test bout-en-bout en `sk_test_*`.
+6. Activation compte Stripe (chantier opérationnel séparé).
+7. Bascule live.
+
+---
+
 ## Backlog sécurité — dépendances npm
 
 Lors de l'exécution de `npm install stripe` (PATCH 3, 2026-05-02), npm a signalé **7 vulnérabilités** dans le graphe de dépendances **préexistant** :
