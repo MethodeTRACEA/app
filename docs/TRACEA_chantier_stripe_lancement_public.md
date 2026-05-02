@@ -138,7 +138,8 @@ Précisions importantes :
 | 4 | Exposer les nouveaux champs dans `auth-context` (lecture seule, sans changer la logique premium) — ✅ FAIT — auth-context lit les champs Stripe en lecture seule, sans changer `hasPremiumAccess` | `src/lib/auth-context.tsx` |
 | 5 | Route checkout `POST /api/subscribe` ; **inactive si `STRIPE_ENABLED=false`** (renvoie 503 ou 403 explicite) — ✅ FAIT — route `/api/subscribe` checkout Stripe préparée, inactive si `STRIPE_ENABLED=false` | `src/app/api/subscribe/route.ts` |
 | 6 | Route webhook `POST /api/stripe/webhook` (vérification signature, idempotence) — ✅ FAIT — webhook Stripe créé, signature vérifiée, synchronisation `profiles`, dormant si `STRIPE_ENABLED=false` | `src/app/api/stripe/webhook/route.ts` (nouveau) |
-| 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") — ⏳ **prochaine étape** | `src/app/app/subscribe/page.tsx` |
+| 7a | Ajouter `NEXT_PUBLIC_STRIPE_ENABLED=false` dans `.env.example` + documenter le double drapeau (serveur vs UI) — ⏳ **en cours** | `.env.example`, `docs/TRACEA_chantier_stripe_lancement_public.md` |
+| 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") — ⏸️ **différé** (à reprendre quand Stripe Dashboard sera configuré) | `src/app/app/subscribe/page.tsx` |
 | 8 | UI `/app/profil` abonnement (statut, formule, date renouvellement, bouton portal) | `src/app/app/profil/page.tsx` (+ `auth-context` si nouveaux champs manquent) |
 | 9 | Route Stripe Billing Portal `/api/subscribe/portal` + bouton dédié | `src/app/api/subscribe/portal/route.ts` (nouveau), `profil/page.tsx` |
 | 10 | Sécurisation de la suppression de compte : empêcher si abonnement actif, étendre `deleteAccount` aux 5 tables manquantes (`tracea_events`, `ai_usage_logs`, `rate_limit_logs`, `session_summaries`, `user_memory_profile`), ajouter `auth.admin.deleteUser` | route serveur dédiée, `supabase-store.ts` |
@@ -146,9 +147,44 @@ Précisions importantes :
 
 Chaque étape est isolée, testable, commitable indépendamment.
 
-**Prochaine étape : PATCH 7** — UI `/app/subscribe` conditionnelle au drapeau Stripe, sans paiement visible tant que `STRIPE_ENABLED=false`. La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
+**Étape en cours : PATCH 7a** — préparer le drapeau client `NEXT_PUBLIC_STRIPE_ENABLED=false` dans `.env.example` et documenter ici le double drapeau. Aucun fichier applicatif (UI ou route) modifié.
+
+**Étape différée : PATCH 7** — UI `/app/subscribe` conditionnelle. La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
 
 Note : le webhook peut synchroniser `is_subscribed` et les champs `subscription_*` quand Stripe sera activé. Tant que `STRIPE_ENABLED=false`, il ignore les événements (200 + `ignored: true`) sans écrire en DB.
+
+---
+
+## Audit `/app/subscribe` Stripe dormant — 2026-05-02
+
+### Décision : PATCH 7 différé
+
+L'audit lecture seule de `/app/subscribe` du 2026-05-02 a conclu que la page **doit rester strictement inchangée** tant que Stripe n'est pas activé.
+
+- La page reste à son état post commit `76bb5ed` (cascade abonné → bêta → trial actif → trial utilisé → free idle).
+- Le message *"L'abonnement payant arrive bientôt."* (présent 3 fois) reste cohérent avec la phase testeurs : il dit la vérité opérationnelle.
+- Aucun bouton paiement ne doit apparaître tant que `NEXT_PUBLIC_STRIPE_ENABLED=false`.
+- Les 8 champs Stripe exposés dans `auth-context` (`stripeSubscriptionStatus`, `subscriptionPlan`, `subscriptionCurrentPeriodEnd`, etc.) **restent inutilisés côté UI** tant que Stripe est dormant — leur consommation aurait des effets nuls (champs DB tous NULL/false) mais introduirait du code mort à valider plus tard.
+
+### Double drapeau
+
+À partir de PATCH 7a :
+
+| Drapeau | Portée | Rôle |
+|---|---|---|
+| `STRIPE_ENABLED` | serveur (`process.env.*`) | bloque routes Stripe (`/api/subscribe`, `/api/stripe/webhook`) tant qu'il n'est pas à `"true"` |
+| `NEXT_PUBLIC_STRIPE_ENABLED` | client (bundlé Next.js) | bloque l'affichage des CTA paiement et la consommation des champs Stripe d'`auth-context` côté UI |
+
+Les deux doivent être basculés à `"true"` ensemble pour rendre Stripe pleinement actif. Aucun secret ne doit jamais être préfixé `NEXT_PUBLIC_*` (cf. note dans `.env.example`).
+
+### Conditions de reprise du PATCH 7
+
+À déclencher **uniquement quand l'ensemble des conditions est rempli** :
+- compte Stripe configuré (produits **TRACÉA Premium Mensuel** et **TRACÉA Premium Annuel** créés à 9 €/mois et 78 €/an) ;
+- `STRIPE_PRICE_MONTHLY_ID` et `STRIPE_PRICE_YEARLY_ID` disponibles ;
+- URL du webhook configurée dans le Stripe Dashboard et `STRIPE_WEBHOOK_SECRET` obtenu ;
+- variables d'environnement posées en production (Vercel) : `STRIPE_ENABLED`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY_ID`, `STRIPE_PRICE_YEARLY_ID`, `NEXT_PUBLIC_STRIPE_ENABLED`, `NEXT_PUBLIC_APP_URL` ;
+- fenêtre de test bout-en-bout disponible (Stripe en mode test puis bascule live).
 
 ---
 
