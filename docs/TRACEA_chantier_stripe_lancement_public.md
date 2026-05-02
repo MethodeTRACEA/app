@@ -270,6 +270,30 @@ Les secrets suivants ont été copiés localement par Alyson :
 
 Ils ne vivent que dans `.env.local` (ignoré par git) et, au moment voulu, dans le tableau de bord Vercel (variables d'environnement projet).
 
+### Variables Vercel Stripe test — mode dormant
+
+Les variables Stripe test ont été posées dans Vercel pour le projet TRACÉA, en environnement **Production and Preview**, **sans redéploiement déclenché** à ce stade.
+
+| Variable | Valeur posée | Sensitive ? |
+|---|---|---|
+| `STRIPE_ENABLED` | `false` | non |
+| `NEXT_PUBLIC_STRIPE_ENABLED` | `false` | non |
+| `STRIPE_PRICE_MONTHLY_ID` | `price_1TSlF4Pq9ZggxTJY5HOfr3l4` | non (identifiant public) |
+| `STRIPE_PRICE_YEARLY_ID` | `price_1TSlF4Pq9ZggxTJYh2l8Docp` | non (identifiant public) |
+| `STRIPE_SECRET_KEY` | `sk_test_*` | **Sensitive** |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_*` | **Sensitive** |
+| `NEXT_PUBLIC_APP_URL` | `https://www.methodetracea.fr` | non |
+
+- Les deux drapeaux à `false` empêchent **toute** activation Stripe : `/api/subscribe` retourne 403, `/api/stripe/webhook` retourne 200 + `ignored: true`, et l'UI ne montre rien tant que `NEXT_PUBLIC_STRIPE_ENABLED=false`.
+- `STRIPE_SECRET_KEY` et `STRIPE_WEBHOOK_SECRET` sont marquées **Sensitive** dans Vercel : leur valeur ne se réaffiche plus en clair dans le dashboard après écriture.
+- Un **redeploy Vercel sera nécessaire** pour que les nouvelles variables soient effectivement chargées par les fonctions serverless. **Ne pas cliquer sur Redeploy par réflexe** : le faire seulement quand une fenêtre de test bout-en-bout est ouverte (cf. "Prochaine étape" ci-dessous).
+- Tant qu'aucun redeploy n'est déclenché, les fonctions serverless tournent toujours avec l'ancien environnement (sans variables Stripe). Stripe reste donc doublement dormant : pas de variables effectives **et** drapeaux à `false`.
+
+#### Note de sécurité
+
+- `sk_test_*` et `whsec_*` **ne doivent jamais** être écrites dans le chat, le repo, `.env.example`, ni dans une variable `NEXT_PUBLIC_*`. Elles vivent uniquement dans `.env.local` (dev) et dans Vercel (prod), Sensitive.
+- `NEXT_PUBLIC_APP_URL` et les `price_*` ne sont **pas** des secrets : ils figurent dans le bundle client par construction (`NEXT_PUBLIC_*`) ou dans la config publique. Pas de risque à les documenter ici.
+
 ### État dormant confirmé
 
 Malgré la configuration Dashboard test :
@@ -283,9 +307,13 @@ Malgré la configuration Dashboard test :
 
 ### Prochaine étape
 
-1. **Ne pas** poser les variables Stripe dans Vercel maintenant. Les laisser dans `.env.local` (dev) jusqu'à ce qu'une fenêtre de test bout-en-bout soit ouverte.
-2. **Ne pas** activer `STRIPE_ENABLED=true` ni `NEXT_PUBLIC_STRIPE_ENABLED=true` avant que le PATCH 7 (UI `/app/subscribe`) soit livré et qu'une vérification complète du parcours souscription + webhook + résiliation soit possible.
-3. Bascule des deux drapeaux uniquement en bundle avec PATCH 7 + PATCH 8 (`/app/profil` abonnement) + PATCH 9 (route portal), idéalement en mode `sk_test_*` d'abord, puis bascule live après validation.
+1. Variables Stripe test **déjà posées** dans Vercel (Production and Preview), drapeaux à `false`. Aucun redeploy déclenché : décider quand le faire.
+2. **Décision à prendre** : redeploy Vercel "dormant de sécurité" (pour que les variables soient chargées par les fonctions, sans changer le comportement puisque les drapeaux sont à `false`) **OU** attendre PATCH 7 et déclencher le redeploy en bundle avec la livraison UI.
+3. **Ne pas** activer `STRIPE_ENABLED=true` ni `NEXT_PUBLIC_STRIPE_ENABLED=true` avant la livraison de :
+   - PATCH 7 — UI `/app/subscribe` conditionnelle ;
+   - PATCH 8 — UI `/app/profil` abonnement (statut, formule, date renouvellement, bouton portal) ;
+   - PATCH 9 — route Stripe Billing Portal `/api/subscribe/portal` + bouton de résiliation ;
+   - test bout-en-bout en mode Stripe test (`sk_test_*`), validation complète du parcours souscription + webhook + résiliation, puis bascule live.
 
 ---
 
