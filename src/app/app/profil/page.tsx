@@ -49,7 +49,16 @@ const blockTextStyle: React.CSSProperties = {
 };
 
 export default function ProfilPage() {
-  const { user, loading: authLoading, signOut } = useAuth();
+  const {
+    user,
+    loading: authLoading,
+    signOut,
+    isSubscribed,
+    isBetaTester,
+    isTrialActive,
+    trialEndsAt,
+    trialDeepSessionsUsed,
+  } = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
@@ -108,6 +117,37 @@ export default function ProfilPage() {
   }
 
   const hasMemory = memoryProfile && memoryProfile.total_sessions > 0;
+
+  // ── Statut d'accès TRACÉA ──
+  const formattedTrialEndDate = trialEndsAt
+    ? new Date(trialEndsAt).toLocaleDateString("fr-FR", {
+        day: "numeric",
+        month: "long",
+      })
+    : null;
+
+  const trialEnded =
+    !isTrialActive &&
+    !!trialEndsAt &&
+    new Date(trialEndsAt).getTime() <= Date.now();
+
+  const trialCapReached =
+    isTrialActive && (trialDeepSessionsUsed ?? 0) >= 5;
+
+  const accessSecondaryTextStyle: React.CSSProperties = {
+    fontSize: 14,
+    color: "rgba(240,230,214,0.55)",
+    lineHeight: 1.5,
+    textAlign: "center",
+    marginTop: 6,
+  };
+
+  const accessLinkStyle: React.CSSProperties = {
+    fontSize: 14,
+    color: "#C97B6A",
+    textDecoration: "underline",
+    textUnderlineOffset: 3,
+  };
 
   async function handleSaveName() {
     if (!user) return;
@@ -313,6 +353,80 @@ export default function ProfilPage() {
               ? "Tu es déjà revenu ici plusieurs fois.\n\nEt quelque chose en toi commence à bouger."
               : "Ton espace TRACÉA se construit au fil de tes traversées."}
           </p>
+        </div>
+
+        {/* ── Ton accès TRACÉA ── */}
+        <div style={blockStyle}>
+          <p className="font-sans" style={kickerStyle}>Ton accès TRACÉA</p>
+
+          {isSubscribed ? (
+            <>
+              <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                Abonnement Premium actif.
+              </p>
+              <p className="font-sans" style={accessSecondaryTextStyle}>
+                Ton accès Premium est actif.
+              </p>
+            </>
+          ) : isBetaTester ? (
+            <>
+              <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                Accès bêta actif.
+              </p>
+              <p className="font-sans" style={accessSecondaryTextStyle}>
+                Tu as accès à toutes les fonctionnalités.
+              </p>
+            </>
+          ) : isTrialActive ? (
+            <>
+              <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                Essai Premium en cours.
+              </p>
+              {formattedTrialEndDate && (
+                <p className="font-sans" style={accessSecondaryTextStyle}>
+                  Jusqu&apos;au {formattedTrialEndDate}.
+                </p>
+              )}
+              {trialDeepSessionsUsed !== null && (
+                <p className="font-sans" style={accessSecondaryTextStyle}>
+                  {trialDeepSessionsUsed}/5 traversées approfondies utilisées.
+                </p>
+              )}
+              {trialCapReached && (
+                <p className="font-sans" style={accessSecondaryTextStyle}>
+                  Tu peux toujours utiliser les traversées courtes et l&apos;urgence.
+                </p>
+              )}
+            </>
+          ) : trialEnded ? (
+            <>
+              <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                Essai Premium terminé.
+              </p>
+              <p className="font-sans" style={accessSecondaryTextStyle}>
+                Tu peux continuer en gratuit.
+              </p>
+              <p style={{ textAlign: "center", marginTop: 12 }}>
+                <Link href="/app/subscribe" className="font-sans" style={accessLinkStyle}>
+                  Découvrir Premium
+                </Link>
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                Accès gratuit.
+              </p>
+              <p className="font-sans" style={accessSecondaryTextStyle}>
+                Tu peux faire des traversées courtes et utiliser l&apos;urgence.
+              </p>
+              <p style={{ textAlign: "center", marginTop: 12 }}>
+                <Link href="/app/subscribe" className="font-sans" style={accessLinkStyle}>
+                  Découvrir Premium
+                </Link>
+              </p>
+            </>
+          )}
         </div>
 
         {/* ── Données & confidentialité (accordéon) ── */}
