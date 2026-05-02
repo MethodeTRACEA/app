@@ -12,7 +12,7 @@ import { useAuth } from "@/lib/auth-context";
 
 export default function BetaPage() {
   const router = useRouter();
-  const { user, session, hasPremiumAccess, isBetaTester, refreshProfile } = useAuth();
+  const { user, session, hasPremiumAccess, isBetaTester, isTrialActive, refreshProfile } = useAuth();
 
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,11 @@ export default function BetaPage() {
     return (
       <div className="max-w-md mx-auto px-6 py-20 text-center space-y-4">
         <p className="font-serif text-2xl text-espresso">
-          {isBetaTester ? "Accès bêta actif." : "Accès premium actif."}
+          {isBetaTester
+            ? "Accès bêta actif."
+            : isTrialActive
+              ? "Essai Premium en cours."
+              : "Accès premium actif."}
         </p>
         <p className="font-body text-warm-gray">
           Tu as déjà accès à toutes les fonctionnalités.

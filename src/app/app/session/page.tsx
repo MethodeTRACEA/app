@@ -1105,7 +1105,7 @@ function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
         <p>Tu avances, même quand ça revient.</p>
       </div>
       <PrimaryButton onClick={() => router.push("/app/subscribe")}>
-        Découvrir l&apos;abonnement
+        Découvrir Premium
       </PrimaryButton>
       <SecondaryButton onClick={onDismiss}>
         Continuer librement

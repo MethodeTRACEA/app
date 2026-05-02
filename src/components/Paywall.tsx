@@ -89,7 +89,7 @@ export function Paywall({ onContinue }: PaywallProps) {
 
         {/* CTA principal — explicite payant */}
         <PrimaryButton onClick={() => router.push("/app/subscribe")}>
-          Découvrir l&apos;abonnement
+          Découvrir Premium
         </PrimaryButton>
 
         {/* Prix transparent, discret */}
