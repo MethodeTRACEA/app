@@ -134,8 +134,8 @@ Précisions importantes :
 | 0 | **Document chantier Stripe** (le présent fichier) — ✅ FAIT | `docs/TRACEA_chantier_stripe_lancement_public.md` |
 | 1 | Migration DB : ajouter les 10 champs Stripe en nullable — ✅ FAIT (exécuté Supabase 2026-05-02, vérifié) | `supabase/add_stripe_subscription_fields.sql` |
 | 2 | Durcir RLS sur ces champs (policies restrictives UPDATE + INSERT) — ✅ FAIT (exécuté Supabase 2026-05-02, vérifié) | `supabase/restrict_stripe_subscription_fields_rls.sql` |
-| 3 | Installer Stripe SDK + créer `.env.example` documentant `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY_ID`, `STRIPE_PRICE_YEARLY_ID`, `STRIPE_ENABLED`, `NEXT_PUBLIC_APP_URL` — ⏳ **prochaine étape** | `package.json`, `.env.example` |
-| 4 | Exposer les nouveaux champs dans `auth-context` (lecture seule, sans changer la logique premium) | `src/lib/auth-context.tsx` |
+| 3 | Installer Stripe SDK + créer `.env.example` documentant `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY_ID`, `STRIPE_PRICE_YEARLY_ID`, `STRIPE_ENABLED`, `NEXT_PUBLIC_APP_URL` — ✅ FAIT — Stripe SDK installé + `.env.example` créé — Stripe dormant | `package.json`, `.env.example` |
+| 4 | Exposer les nouveaux champs dans `auth-context` (lecture seule, sans changer la logique premium) — ⏳ **prochaine étape** | `src/lib/auth-context.tsx` |
 | 5 | Route checkout `POST /api/subscribe` ; **inactive si `STRIPE_ENABLED=false`** (renvoie 503 ou 403 explicite) | `src/app/api/subscribe/route.ts` |
 | 6 | Route webhook `POST /api/stripe/webhook` (vérification signature, idempotence) | `src/app/api/stripe/webhook/route.ts` (nouveau) |
 | 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") | `src/app/app/subscribe/page.tsx` |
@@ -146,7 +146,7 @@ Précisions importantes :
 
 Chaque étape est isolée, testable, commitable indépendamment.
 
-**Prochaine étape : PATCH 3** — installer Stripe SDK + créer `.env.example`, sans branchement actif. La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
+**Prochaine étape : PATCH 4** — exposer les nouveaux champs Stripe dans `auth-context` en lecture seule, sans changer la logique premium ni `hasPremiumAccess`. La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
 
 ---
 
@@ -173,6 +173,37 @@ Aucun patch Stripe ne doit bloquer les utilisateurs testeurs tant que `STRIPE_EN
 - l'exposition des nouveaux champs dans `auth-context` est strictement additive, sans changer la valeur de `hasPremiumAccess`.
 
 À chaque patch : vérifier que le parcours testeur (compte gratuit, trial 7 jours, bêta) reste fonctionnel à l'identique.
+
+---
+
+## Backlog sécurité — dépendances npm
+
+Lors de l'exécution de `npm install stripe` (PATCH 3, 2026-05-02), npm a signalé **7 vulnérabilités** dans le graphe de dépendances **préexistant** :
+
+- 3 moderate
+- 3 high
+- 1 critical
+
+Ces vulnérabilités **ne proviennent pas du paquet Stripe lui-même** : elles existent déjà dans les dépendances transitive de Next.js, ESLint, Tailwind, etc. Elles n'ont pas été corrigées dans le PATCH 3 et restent **hors périmètre** du chantier Stripe.
+
+### Règles à tenir
+
+- **Ne pas lancer `npm audit fix` automatiquement** dans le cadre des chantiers Stripe.
+- **Ne pas corriger** ces vulnérabilités en passant, même si elles paraissent triviales.
+- Les corriger uniquement après un audit dédié, avec :
+  - identification exacte des paquets concernés (`npm audit --json`) ;
+  - évaluation de l'impact réel (chemin d'attaque, exploitabilité dans le contexte TRACÉA) ;
+  - recensement des risques de breaking changes (notamment Next.js et ESLint) ;
+  - décision d'un plan de correction sécurisé (mises à jour ciblées vs. `npm audit fix --force`).
+
+### Chantier séparé proposé
+
+**Audit dépendances npm / vulnérabilités** — à programmer :
+
+- soit après les chantiers Stripe prioritaires (PATCH 4 → PATCH 11), si le risque résiduel est jugé acceptable ;
+- soit **avant le lancement public large**, si l'audit révèle une vulnérabilité critique réellement exploitable côté production.
+
+À défaut, traiter au minimum la critique en priorité dès qu'un créneau dédié est ouvert.
 
 ---
 
