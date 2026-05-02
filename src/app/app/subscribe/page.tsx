@@ -12,14 +12,28 @@ type TrialStatus =
   | "idle"
   | "loading"
   | "success"
+  | "already_premium"
+  | "already_active"
   | "trial_already_used"
   | "error";
 
+type AlreadyPremiumReason = "beta" | "subscribed" | "other";
+
 export default function SubscribePage() {
   const router = useRouter();
-  const { session, refreshProfile, isTrialActive, trialEndsAt } = useAuth();
+  const {
+    session,
+    refreshProfile,
+    isSubscribed,
+    isBetaTester,
+    isTrialActive,
+    trialUsed,
+    trialEndsAt,
+  } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<Plan>("yearly");
   const [trialStatus, setTrialStatus] = useState<TrialStatus>("idle");
+  const [alreadyPremiumReason, setAlreadyPremiumReason] =
+    useState<AlreadyPremiumReason>("other");
 
   const formattedTrialEndDate = trialEndsAt
     ? new Date(trialEndsAt).toLocaleDateString("fr-FR", {
@@ -51,6 +65,31 @@ export default function SubscribePage() {
       if (res.status === 401) {
         setTrialStatus("idle");
         router.push("/app/connexion");
+        return;
+      }
+
+      if (data?.alreadyPremium === true) {
+        await refreshProfile();
+        setAlreadyPremiumReason(
+          data.reason === "beta"
+            ? "beta"
+            : data.reason === "subscribed"
+            ? "subscribed"
+            : "other"
+        );
+        setTrialStatus("already_premium");
+        setTimeout(() => {
+          router.push("/app");
+        }, 1400);
+        return;
+      }
+
+      if (data?.alreadyActive === true) {
+        await refreshProfile();
+        setTrialStatus("already_active");
+        setTimeout(() => {
+          router.push("/app");
+        }, 1400);
         return;
       }
 
@@ -131,7 +170,27 @@ export default function SubscribePage() {
         </div>
 
         {/* Bloc Trial */}
-        {isTrialActive ? (
+        {isSubscribed ? (
+          // Abonné — état informatif sobre, pas de CTA d'activation trial
+          <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 text-center space-y-2">
+            <p className="font-serif text-xl text-t-beige">
+              Ton abonnement Premium est actif.
+            </p>
+            <p className="font-body text-sm t-text-secondary">
+              Tu as accès aux fonctionnalités Premium.
+            </p>
+          </div>
+        ) : isBetaTester ? (
+          // Bêta testeur — état informatif sobre, pas de CTA d'activation trial
+          <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 text-center space-y-2">
+            <p className="font-serif text-xl text-t-beige">
+              Ton accès bêta est actif.
+            </p>
+            <p className="font-body text-sm t-text-secondary">
+              Tu as accès aux fonctionnalités Premium.
+            </p>
+          </div>
+        ) : isTrialActive ? (
           // Trial déjà actif — état d'information sobre, pas de CTA
           <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 text-center space-y-2">
             <p className="font-serif text-xl text-t-beige">
@@ -144,6 +203,16 @@ export default function SubscribePage() {
             )}
             <p className="font-body text-sm t-text-secondary">
               Ton accès Premium est actif pendant ce temps.
+            </p>
+          </div>
+        ) : trialUsed ? (
+          // Trial déjà consommé (expiré ou clôturé) — pas de CTA, message direct
+          <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 text-center space-y-2">
+            <p className="font-serif text-xl text-t-beige">
+              Tu as déjà fait ton essai gratuit.
+            </p>
+            <p className="font-body text-sm t-text-secondary">
+              L&apos;abonnement payant arrive bientôt.
             </p>
           </div>
         ) : (
@@ -161,7 +230,12 @@ export default function SubscribePage() {
             <button
               type="button"
               onClick={activateTrial}
-              disabled={trialStatus === "loading" || trialStatus === "success"}
+              disabled={
+                trialStatus === "loading" ||
+                trialStatus === "success" ||
+                trialStatus === "already_premium" ||
+                trialStatus === "already_active"
+              }
               className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-t-brume/30 text-t-beige border border-[rgba(232,216,199,0.45)] hover:bg-t-brume/55 hover:border-[rgba(232,216,199,0.70)] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {trialStatus === "loading"
@@ -172,6 +246,22 @@ export default function SubscribePage() {
             {trialStatus === "success" && (
               <p className="font-body text-sm text-t-beige">
                 C&apos;est en place. Tu peux commencer.
+              </p>
+            )}
+
+            {trialStatus === "already_premium" && (
+              <p className="font-body text-sm text-t-beige">
+                {alreadyPremiumReason === "beta"
+                  ? "Ton accès bêta est déjà actif."
+                  : alreadyPremiumReason === "subscribed"
+                  ? "Ton abonnement Premium est déjà actif."
+                  : "Ton accès Premium est déjà actif."}
+              </p>
+            )}
+
+            {trialStatus === "already_active" && (
+              <p className="font-body text-sm text-t-beige">
+                Ton essai est déjà en cours.
               </p>
             )}
 

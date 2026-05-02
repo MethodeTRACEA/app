@@ -22,6 +22,8 @@ interface AuthState {
   isBetaTester: boolean;
   /** Essai Premium 7 jours actif (basé sur trial_ends_at, pas sur le plafond) */
   isTrialActive: boolean;
+  /** Drapeau brut profiles.trial_used — sert à l'UX (ex. masquer le CTA d'activation) */
+  trialUsed: boolean;
   /** Date ISO de fin d'essai si trial_used, sinon null */
   trialEndsAt: string | null;
   /** Compteur trial — affichage UX uniquement, ne sécurise rien côté client */
@@ -45,6 +47,7 @@ const AuthContext = createContext<AuthState>({
   isSubscribed: false,
   isBetaTester: false,
   isTrialActive: false,
+  trialUsed: false,
   trialEndsAt: null,
   trialDeepSessionsUsed: null,
   hasPremiumAccess: false,
@@ -210,6 +213,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSubscribed,
         isBetaTester,
         isTrialActive,
+        trialUsed,
         trialEndsAt,
         trialDeepSessionsUsed,
         hasPremiumAccess,
