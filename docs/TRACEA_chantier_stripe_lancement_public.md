@@ -135,8 +135,8 @@ Précisions importantes :
 | 1 | Migration DB : ajouter les 10 champs Stripe en nullable — ✅ FAIT (exécuté Supabase 2026-05-02, vérifié) | `supabase/add_stripe_subscription_fields.sql` |
 | 2 | Durcir RLS sur ces champs (policies restrictives UPDATE + INSERT) — ✅ FAIT (exécuté Supabase 2026-05-02, vérifié) | `supabase/restrict_stripe_subscription_fields_rls.sql` |
 | 3 | Installer Stripe SDK + créer `.env.example` documentant `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY_ID`, `STRIPE_PRICE_YEARLY_ID`, `STRIPE_ENABLED`, `NEXT_PUBLIC_APP_URL` — ✅ FAIT — Stripe SDK installé + `.env.example` créé — Stripe dormant | `package.json`, `.env.example` |
-| 4 | Exposer les nouveaux champs dans `auth-context` (lecture seule, sans changer la logique premium) — ⏳ **prochaine étape** | `src/lib/auth-context.tsx` |
-| 5 | Route checkout `POST /api/subscribe` ; **inactive si `STRIPE_ENABLED=false`** (renvoie 503 ou 403 explicite) | `src/app/api/subscribe/route.ts` |
+| 4 | Exposer les nouveaux champs dans `auth-context` (lecture seule, sans changer la logique premium) — ✅ FAIT — auth-context lit les champs Stripe en lecture seule, sans changer `hasPremiumAccess` | `src/lib/auth-context.tsx` |
+| 5 | Route checkout `POST /api/subscribe` ; **inactive si `STRIPE_ENABLED=false`** (renvoie 503 ou 403 explicite) — ⏳ **prochaine étape** | `src/app/api/subscribe/route.ts` |
 | 6 | Route webhook `POST /api/stripe/webhook` (vérification signature, idempotence) | `src/app/api/stripe/webhook/route.ts` (nouveau) |
 | 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") | `src/app/app/subscribe/page.tsx` |
 | 8 | UI `/app/profil` abonnement (statut, formule, date renouvellement, bouton portal) | `src/app/app/profil/page.tsx` (+ `auth-context` si nouveaux champs manquent) |
@@ -146,7 +146,9 @@ Précisions importantes :
 
 Chaque étape est isolée, testable, commitable indépendamment.
 
-**Prochaine étape : PATCH 4** — exposer les nouveaux champs Stripe dans `auth-context` en lecture seule, sans changer la logique premium ni `hasPremiumAccess`. La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
+**Prochaine étape : PATCH 5** — route checkout `/api/subscribe` Stripe, **inactive si `STRIPE_ENABLED=false`** (réponse 503 ou 403 explicite). La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
+
+Note : le contexte auth est prêt pour les futures UI abonnement (`/app/subscribe`, `/app/profil`), mais aucune UI Stripe n'est encore visible et aucun paiement n'est actif.
 
 ---
 
