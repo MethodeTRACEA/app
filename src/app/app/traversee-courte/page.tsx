@@ -32,10 +32,8 @@ const RESSENTI_INTRO: Record<ActivationLevel, string> = {
 };
 
 // ═══════════════════════════════════════════════════════════
-// TRACÉA — Traversée courte V2 (3 étapes, ultra-optimisée)
-// Flow : Entrée → Ressenti → Corps → Bascule → Ancrer →
-//        Exercice → Feedback → (branche) → Émerger →
-//        Aligner → Check final → Synthèse
+// TRACÉA — Traversée courte
+// Flow : dépôt → ressenti → corps → ancrage → feedback → geste → synthèse
 // ═══════════════════════════════════════════════════════════
 
 type Screen =
@@ -299,8 +297,6 @@ function TraverseeCourteV2() {
     };
   }, [screen, router]);
 
-  const bodyLabel = bodyZone ? BODY_LABELS[bodyZone] : "";
-
   const getAlternativeMethod = useCallback(
     (exclude: AnchorMethod[], noBreath: boolean): AnchorMethod => {
       const all: AnchorMethod[] = ["appuis", "autour", "souffle"];
@@ -374,7 +370,6 @@ function TraverseeCourteV2() {
           </div>
         );
 
-      // ════════════════════════════════════════════════════
       // ════════════════════════════════════════════════════
       // TRANSITION — Micro-pause sensorielle
       // ════════════════════════════════════════════════════
@@ -708,13 +703,13 @@ function TraverseeCourteV2() {
                 Là
               </h1>
               <p className="font-body text-lg text-t-beige">
-                Là, c&apos;est comment ?
+                C&apos;est comment maintenant ?
               </p>
             </div>
             <div className="w-full space-y-3">
               {([
                 ["pareil", "pareil"],
-                ["un-peu", "un peu"],
+                ["un-peu", "un peu mieux"],
                 ["plus-agite", "plus agité"],
                 ["je-ne-sais-pas", "je ne sais pas trop"],
               ] as [AnchorEffect, string][]).map(([value, label]) => (
