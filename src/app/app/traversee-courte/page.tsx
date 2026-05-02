@@ -780,6 +780,12 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setAnchorEffect(value);
+                    trackEvent(user?.id ?? null, "step_complete", {
+                      step: "feedback",
+                      mode: "court",
+                      value,
+                      anchorMethod,
+                    });
                     if (value === "un-peu" || value === "je-ne-sais-pas") {
                       setScreen("choix-geste");
                     } else if (value === "pareil") {
@@ -845,6 +851,12 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setAnchorEffect(value);
+                    trackEvent(user?.id ?? null, "step_complete", {
+                      step: "feedback_alt",
+                      mode: "court",
+                      value,
+                      anchorMethod: altMethod,
+                    });
                     setScreen("choix-geste");
                   }}
                 />
