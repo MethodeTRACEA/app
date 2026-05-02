@@ -45,7 +45,7 @@ const BREATHING_PHASES = [
   "Ton corps enregistre ça",
 ] as const;
 
-const PREMIUM_EXERCISES: ExerciseKey[] = ["corps", "regard"];
+const PREMIUM_EXERCISES: ExerciseKey[] = [];
 
 export default function UrgencePage() {
   return (
