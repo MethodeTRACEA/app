@@ -48,6 +48,25 @@ const blockTextStyle: React.CSSProperties = {
   lineHeight: 1.6,
 };
 
+// ── Helpers locaux pour l'affichage du statut d'abonnement ─────────
+function formatLongDate(iso: string | null): string | null {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+  });
+}
+
+function formatPlanLabel(
+  plan: "monthly" | "yearly" | null
+): string | null {
+  if (plan === "monthly") return "Formule mensuelle.";
+  if (plan === "yearly") return "Formule annuelle.";
+  return null;
+}
+
 export default function ProfilPage() {
   const {
     user,
@@ -58,6 +77,11 @@ export default function ProfilPage() {
     isTrialActive,
     trialEndsAt,
     trialDeepSessionsUsed,
+    stripeSubscriptionStatus,
+    subscriptionPlan,
+    subscriptionCurrentPeriodEnd,
+    subscriptionCancelAtPeriodEnd,
+    unsubscribedAt,
   } = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [editingName, setEditingName] = useState(false);
@@ -133,6 +157,17 @@ export default function ProfilPage() {
 
   const trialCapReached =
     isTrialActive && (trialDeepSessionsUsed ?? 0) >= 5;
+
+  // ── Statut d'abonnement Stripe (lecture seule, dormant tant que les
+  //    champs Stripe restent à null/false côté DB) ─────────────────
+  const formattedSubscriptionPeriodEnd = formatLongDate(
+    subscriptionCurrentPeriodEnd
+  );
+  const formattedUnsubscribedAt = formatLongDate(unsubscribedAt);
+  const subscriptionPlanLabel = formatPlanLabel(subscriptionPlan);
+  const subscriptionEnded =
+    !isSubscribed &&
+    (stripeSubscriptionStatus === "canceled" || !!unsubscribedAt);
 
   const accessSecondaryTextStyle: React.CSSProperties = {
     fontSize: 14,
@@ -350,14 +385,57 @@ export default function ProfilPage() {
           <p className="font-sans" style={kickerStyle}>Ton accès TRACÉA</p>
 
           {isSubscribed ? (
-            <>
-              <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
-                Abonnement Premium actif.
-              </p>
-              <p className="font-sans" style={accessSecondaryTextStyle}>
-                Ton accès Premium est actif.
-              </p>
-            </>
+            subscriptionCancelAtPeriodEnd === true ? (
+              // Cas A — annulation programmée à la fin de période
+              <>
+                <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                  Abonnement Premium actif.
+                </p>
+                {formattedSubscriptionPeriodEnd && (
+                  <p className="font-sans" style={accessSecondaryTextStyle}>
+                    Ton abonnement prend fin le {formattedSubscriptionPeriodEnd}.
+                  </p>
+                )}
+                <p className="font-sans" style={accessSecondaryTextStyle}>
+                  Tu gardes l&apos;accès Premium jusque-là.
+                </p>
+              </>
+            ) : stripeSubscriptionStatus === "past_due" ? (
+              // Cas B — paiement échoué (past_due)
+              <>
+                <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                  Abonnement Premium actif.
+                </p>
+                <p className="font-sans" style={accessSecondaryTextStyle}>
+                  Un paiement n&apos;a pas pu être pris.
+                </p>
+                <p className="font-sans" style={accessSecondaryTextStyle}>
+                  Tu pourras mettre à jour ton moyen de paiement depuis ton espace abonnement.
+                </p>
+              </>
+            ) : (
+              // Cas C — abonné actif (statut nominal)
+              <>
+                <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                  Abonnement Premium actif.
+                </p>
+                {subscriptionPlanLabel && (
+                  <p className="font-sans" style={accessSecondaryTextStyle}>
+                    {subscriptionPlanLabel}
+                  </p>
+                )}
+                {formattedSubscriptionPeriodEnd && (
+                  <p className="font-sans" style={accessSecondaryTextStyle}>
+                    Renouvellement le {formattedSubscriptionPeriodEnd}.
+                  </p>
+                )}
+                {!subscriptionPlanLabel && !formattedSubscriptionPeriodEnd && (
+                  <p className="font-sans" style={accessSecondaryTextStyle}>
+                    Ton accès Premium est actif.
+                  </p>
+                )}
+              </>
+            )
           ) : isBetaTester ? (
             <>
               <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
@@ -387,6 +465,20 @@ export default function ProfilPage() {
                   Tu peux toujours utiliser les traversées courtes et l&apos;urgence.
                 </p>
               )}
+            </>
+          ) : subscriptionEnded ? (
+            // Cas D — abonnement Premium terminé (Stripe canceled ou unsubscribed_at posé)
+            <>
+              <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                {formattedUnsubscribedAt
+                  ? `Ton abonnement Premium a pris fin le ${formattedUnsubscribedAt}.`
+                  : "Ton abonnement Premium a pris fin."}
+              </p>
+              <p style={{ textAlign: "center", marginTop: 12 }}>
+                <Link href="/app/subscribe" className="font-sans" style={accessLinkStyle}>
+                  Découvrir Premium
+                </Link>
+              </p>
             </>
           ) : trialEnded ? (
             <>
