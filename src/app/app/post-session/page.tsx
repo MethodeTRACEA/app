@@ -99,7 +99,7 @@ export default function PostSessionPage() {
             {/* Copy émotionnelle — rythme serré, lecture fluide */}
             <div className="text-center space-y-4">
               <p className="font-serif text-2xl text-t-beige leading-relaxed">
-                Là, tu viens de revenir un peu.
+                Tu viens de poser quelque chose.
               </p>
               <p className="font-body text-lg t-text-secondary leading-relaxed">
                 La prochaine fois que ça monte,<br />

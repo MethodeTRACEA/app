@@ -1094,7 +1094,7 @@ function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div className="w-full space-y-5 text-center">
       <p className="font-serif text-xl text-t-beige leading-relaxed">
-        Tu viens de redescendre un peu.
+        Tu viens de poser quelque chose.
       </p>
       <div className="font-body text-base t-text-secondary leading-relaxed space-y-3">
         <p>La prochaine fois, tu pourras revenir plus vite.</p>
