@@ -294,6 +294,30 @@ Les variables Stripe test ont été posées dans Vercel pour le projet TRACÉA, 
 - `sk_test_*` et `whsec_*` **ne doivent jamais** être écrites dans le chat, le repo, `.env.example`, ni dans une variable `NEXT_PUBLIC_*`. Elles vivent uniquement dans `.env.local` (dev) et dans Vercel (prod), Sensitive.
 - `NEXT_PUBLIC_APP_URL` et les `price_*` ne sont **pas** des secrets : ils figurent dans le bundle client par construction (`NEXT_PUBLIC_*`) ou dans la config publique. Pas de risque à les documenter ici.
 
+#### Redeploy dormant Vercel — 2026-05-03
+
+- **Statut** : Ready / Latest.
+- **Environnement** : Production.
+- **Branche** : `main`.
+- **Variables effectives** : les variables Stripe test sont désormais **chargées par le déploiement** (les fonctions serverless les voient).
+- **Drapeaux** : `STRIPE_ENABLED=false` et `NEXT_PUBLIC_STRIPE_ENABLED=false` — Stripe reste **dormant**.
+- **Vérification post-déploiement** : l'application a été testée et fonctionne normalement. Aucun paiement visible, aucun checkout actif, aucun impact pour les testeurs.
+
+L'effet net du redeploy est purement préparatoire : les fonctions serverless sont prêtes à utiliser les variables Stripe **dès que les drapeaux passeront à `true`**, sans nécessiter un redéploiement supplémentaire à ce moment-là.
+
+#### Warnings de build Vercel — observés au redeploy 2026-05-03
+
+Les logs Vercel affichent au déploiement des avertissements orange :
+
+- plusieurs `npm WARN deprecated` sur des dépendances transitive ;
+- un avertissement de sécurité ciblant **`next@14.2.21`**.
+
+**Ce ne sont pas des échecs de déploiement** : le build a réussi (statut Ready). Les warnings sont informatifs.
+
+À tenir :
+- **Ne pas lancer `npm audit fix` automatiquement** dans le cadre de ce chantier Stripe.
+- Conserver le sujet dans le backlog séparé existant : *"Audit dépendances npm / vulnérabilités Next"* (cf. section "Backlog sécurité — dépendances npm" plus bas dans ce document). L'avertissement sur `next@14.2.21` y est désormais explicitement listé comme cible prioritaire d'audit.
+
 ### État dormant confirmé
 
 Malgré la configuration Dashboard test :
@@ -345,6 +369,11 @@ Ces vulnérabilités **ne proviennent pas du paquet Stripe lui-même** : elles e
 - soit **avant le lancement public large**, si l'audit révèle une vulnérabilité critique réellement exploitable côté production.
 
 À défaut, traiter au minimum la critique en priorité dès qu'un créneau dédié est ouvert.
+
+### Cibles connues à inclure
+
+- les 7 vulnérabilités initiales détectées au PATCH 3 (3 moderate, 3 high, 1 critical) ;
+- l'**avertissement de sécurité sur `next@14.2.21`** observé lors du redeploy Vercel du 2026-05-03 (cf. section "Warnings de build Vercel" ci-dessus). Toute mise à niveau de Next.js doit être faite avec précaution : changement potentiel de comportement runtime (App Router, Edge runtime, middlewares).
 
 ---
 
