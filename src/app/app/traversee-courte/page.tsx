@@ -239,7 +239,6 @@ function TraverseeCourteV2() {
   const [anchorMethod, setAnchorMethod] = useState<AnchorMethod | null>(null);
   const [anchorEffect, setAnchorEffect] = useState<AnchorEffect | null>(null);
   const [nextAction, setNextAction] = useState<string | null>(null);
-  const [showMoreFeelings, setShowMoreFeelings] = useState(false);
   const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
 
   // Méthodes déjà essayées (pour ne jamais reproposer)
@@ -472,7 +471,7 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <div className="w-full space-y-3">
-              {(["serre", "agite", "lourd", "flou"] as Feeling[]).map((f) => (
+              {(["serre", "agite", "lourd", "flou", "vide", "bloque"] as Feeling[]).map((f) => (
                 <AutoChip
                   key={f}
                   label={FEELING_LABELS[f]}
@@ -483,18 +482,6 @@ function TraverseeCourteV2() {
                   }}
                 />
               ))}
-              {showMoreFeelings &&
-                (["vide", "bloque"] as Feeling[]).map((f) => (
-                  <AutoChip
-                    key={f}
-                    label={FEELING_LABELS[f]}
-                    onClick={() => {
-                      setCurrentFeeling(f);
-                      trackEvent(user?.id ?? null, "step_complete", { step: "ressenti", mode: "court", value: f });
-                      setScreen("corps");
-                    }}
-                  />
-                ))}
               <AutoChip
                 label="je ne sais pas"
                 onClick={() => {
@@ -504,15 +491,6 @@ function TraverseeCourteV2() {
                 }}
               />
             </div>
-            {!showMoreFeelings && (
-              <button
-                type="button"
-                onClick={() => setShowMoreFeelings(true)}
-                className="font-inter text-[13px] t-text-secondary underline underline-offset-[3px]"
-              >
-                Autre mot
-              </button>
-            )}
             <p className="font-inter text-xs t-text-secondary text-center">
               Le plus proche suffit.
             </p>
