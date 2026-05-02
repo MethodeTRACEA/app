@@ -534,7 +534,7 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <div className="w-full space-y-3">
-              {(["poitrine", "ventre", "tete", "epaules"] as BodyZone[]).map((z) => (
+              {(["poitrine", "gorge", "ventre", "tete", "epaules"] as BodyZone[]).map((z) => (
                 <AutoChip
                   key={z}
                   label={BODY_LABELS[z]}
@@ -554,6 +554,9 @@ function TraverseeCourteV2() {
                 }}
               />
             </div>
+            <p className="font-inter text-xs t-text-ghost text-center">
+              Le plus proche suffit.
+            </p>
           </div>
         );
 
