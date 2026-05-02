@@ -141,18 +141,18 @@ Précisions importantes :
 | 7a | Ajouter `NEXT_PUBLIC_STRIPE_ENABLED=false` dans `.env.example` + documenter le double drapeau (serveur vs UI) — ✅ FAIT | `.env.example`, `docs/TRACEA_chantier_stripe_lancement_public.md` |
 | 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") — ⏸️ **différé** (à reprendre quand Stripe Dashboard sera configuré et que PATCH 8b + PATCH 9 sont prêts) | `src/app/app/subscribe/page.tsx` |
 | 8a | UI `/app/profil` enrichie : statuts abonnement Stripe en lecture seule (annulation programmée, past_due, formule + date de renouvellement, abonnement terminé) — ✅ FAIT — sans bouton portal, sans appel API, dormant | `src/app/app/profil/page.tsx` |
-| 8b | UI `/app/profil` : ajouter les boutons "Gérer mon abonnement" et "Mettre à jour mon paiement" — ⏸️ **différé** (à livrer en bundle avec PATCH 9) | `src/app/app/profil/page.tsx` |
-| 9 | Route Stripe Billing Portal `/api/subscribe/portal` + bouton dédié — ⏳ **prochaine étape** | `src/app/api/subscribe/portal/route.ts` (nouveau), `profil/page.tsx` |
+| 8b | UI `/app/profil` : ajouter les boutons "Gérer mon abonnement" et "Mettre à jour mon paiement" branchés sur `/api/subscribe/portal` — ⏳ **prochaine étape** | `src/app/app/profil/page.tsx` |
+| 9 | Route Stripe Billing Portal `/api/subscribe/portal` + bouton dédié — ✅ FAIT (route serveur uniquement) — route `/api/subscribe/portal` Billing Portal créée, dormante si `STRIPE_ENABLED=false`. Le bouton dédié relève de PATCH 8b. | `src/app/api/subscribe/portal/route.ts` (nouveau) |
 | 10 | Sécurisation de la suppression de compte : empêcher si abonnement actif, étendre `deleteAccount` aux 5 tables manquantes (`tracea_events`, `ai_usage_logs`, `rate_limit_logs`, `session_summaries`, `user_memory_profile`), ajouter `auth.admin.deleteUser` | route serveur dédiée, `supabase-store.ts` |
 | 11 | Audit final cohérence docs ↔ app avant activation publique : retirer commentaires "TODO Stripe", typecheck, tests manuels en mode test Stripe (`sk_test_*`) | – |
 
 Chaque étape est isolée, testable, commitable indépendamment.
 
-**Prochaine étape : PATCH 9** — route `/api/subscribe/portal` (Stripe Billing Portal) pour permettre la gestion d'abonnement et la résiliation depuis l'app, conformément à l'engagement CGU §9 (résiliation en ligne). Sera livrée en bundle avec **PATCH 8b** (boutons "Gérer mon abonnement" / "Mettre à jour mon paiement" sur `/app/profil`).
+**Prochaine étape : PATCH 8b** — ajouter les boutons "Gérer mon abonnement" et "Mettre à jour mon paiement" sur `/app/profil`, branchés sur `POST /api/subscribe/portal` (livré en PATCH 9). Le clic redirigera vers la session Stripe Billing Portal et rendra effective la résiliation en ligne (CGU §9).
 
-**Étape différée : PATCH 7** — UI `/app/subscribe` conditionnelle. À reprendre quand PATCH 8b + PATCH 9 sont prêts et que la fenêtre de test bout-en-bout est ouverte.
+**Étape différée : PATCH 7** — UI `/app/subscribe` conditionnelle. À reprendre quand PATCH 8b est livré et que la fenêtre de test bout-en-bout est ouverte.
 
-Note : le profil est désormais prêt à afficher correctement un abonnement après synchronisation webhook (PATCH 8a). En revanche, **l'utilisateur ne peut pas encore gérer ni résilier son abonnement depuis l'app tant que PATCH 9 n'est pas livré.** Tant que `STRIPE_ENABLED=false`, le webhook ignore les événements (200 + `ignored: true`) sans écrire en DB et aucun utilisateur ne se trouve en état abonné — l'absence des boutons portal reste donc invisible aux testeurs.
+Note : la route portal `/api/subscribe/portal` est désormais prête côté serveur, mais elle **n'est pas encore accessible depuis l'UI**. Les boutons seront ajoutés dans PATCH 8b. Tant que `NEXT_PUBLIC_STRIPE_ENABLED=false` et `STRIPE_ENABLED=false`, aucun bouton abonnement ne doit apparaître côté utilisateur.
 
 ---
 
