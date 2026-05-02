@@ -19,6 +19,53 @@ _Dernière mise à jour : 2026-05-02_
 
 ---
 
+## État réel Supabase — DB/RLS Stripe appliqués le 2026-05-02
+
+Les deux SQL préparés ont été exécutés en production Supabase, dans l'ordre contrôlé :
+
+1. `supabase/add_stripe_subscription_fields.sql` — succès.
+2. `supabase/restrict_stripe_subscription_fields_rls.sql` — succès, immédiatement après.
+
+### Vérifications post-exécution
+
+- `stripe_columns_count = 10` — les 10 colonnes Stripe / abonnement sont présentes dans `public.profiles`.
+- `restrictive_policies_count = 2` — les deux policies restrictives sont actives sur `public.profiles` :
+  - `only_neutral_sensitive_fields_on_insert` (RESTRICTIVE / INSERT / authenticated)
+  - `only_service_role_can_set_sensitive_fields` (RESTRICTIVE / UPDATE / authenticated)
+- `stripe_indexes_count = 4` — 2 uniques partiels (`stripe_customer_id`, `stripe_subscription_id`) + 2 simples (`stripe_subscription_status`, `subscription_current_period_end`).
+- `stripe_constraints_count = 3` — `profiles_subscription_plan_check`, `profiles_stripe_subscription_status_check`, `profiles_subscription_period_consistency_check`.
+- 9 profils existants vérifiés : tous neutres côté Stripe (champs Stripe à `NULL`, `subscription_cancel_at_period_end = false`).
+
+### Champs sensibles couverts par les deux policies (18)
+
+Les policies restrictives UPDATE et INSERT couvrent désormais l'ensemble :
+
+- `is_subscribed`, `is_beta_tester`, `is_admin`
+- `trial_started_at`, `trial_ends_at`, `trial_used`, `trial_activated_by`, `trial_deep_sessions_used`
+- `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status`, `stripe_price_id`
+- `subscription_plan`, `subscription_current_period_end`, `subscription_cancel_at_period_end`, `subscription_canceled_at`
+- `subscribed_at`, `unsubscribed_at`
+
+### Conséquences immédiates
+
+- Les colonnes Stripe sont **réellement présentes** en production Supabase.
+- Les policies RLS UPDATE et INSERT sont **effectivement appliquées** : un client authentifié ne peut plus falsifier ses champs sensibles (Stripe, trial, premium, admin).
+- Les profils existants restent neutres côté Stripe ; aucun utilisateur n'est impacté.
+- Le **service role** pourra plus tard synchroniser Stripe via webhook (bypass RLS standard sur Supabase).
+- Le client ne peut pas falsifier les champs Stripe.
+
+### Ce qui reste inchangé côté produit / UX
+
+- `STRIPE_ENABLED=false` reste la règle.
+- Aucun changement UX n'est actif côté testeurs.
+- Stripe reste **dormant**.
+- Aucun checkout n'existe encore.
+- Aucun webhook Stripe n'existe encore.
+- Aucun bouton paiement n'est visible.
+- Aucun impact testeur attendu — parcours gratuit, trial 7 jours et bêta continuent à l'identique.
+
+---
+
 ## 2. Décision de stratégie
 
 - **Préparer Stripe en mode dormant.**
@@ -84,10 +131,10 @@ Précisions importantes :
 
 | # | Objectif | Périmètre |
 |---|---|---|
-| 0 | **Document chantier Stripe** (le présent fichier) | `docs/TRACEA_chantier_stripe_lancement_public.md` |
-| 1 | Migration DB : ajouter les 10 champs Stripe en nullable | `supabase/add_stripe_subscription_fields.sql` |
-| 2 | Durcir RLS sur ces champs (policy restrictive UPDATE) | même fichier SQL ou migration dédiée |
-| 3 | Installer Stripe SDK + créer `.env.example` documentant `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY_ID`, `STRIPE_PRICE_YEARLY_ID`, `STRIPE_ENABLED`, `NEXT_PUBLIC_APP_URL` | `package.json`, `.env.example` |
+| 0 | **Document chantier Stripe** (le présent fichier) — ✅ FAIT | `docs/TRACEA_chantier_stripe_lancement_public.md` |
+| 1 | Migration DB : ajouter les 10 champs Stripe en nullable — ✅ FAIT (exécuté Supabase 2026-05-02, vérifié) | `supabase/add_stripe_subscription_fields.sql` |
+| 2 | Durcir RLS sur ces champs (policies restrictives UPDATE + INSERT) — ✅ FAIT (exécuté Supabase 2026-05-02, vérifié) | `supabase/restrict_stripe_subscription_fields_rls.sql` |
+| 3 | Installer Stripe SDK + créer `.env.example` documentant `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY_ID`, `STRIPE_PRICE_YEARLY_ID`, `STRIPE_ENABLED`, `NEXT_PUBLIC_APP_URL` — ⏳ **prochaine étape** | `package.json`, `.env.example` |
 | 4 | Exposer les nouveaux champs dans `auth-context` (lecture seule, sans changer la logique premium) | `src/lib/auth-context.tsx` |
 | 5 | Route checkout `POST /api/subscribe` ; **inactive si `STRIPE_ENABLED=false`** (renvoie 503 ou 403 explicite) | `src/app/api/subscribe/route.ts` |
 | 6 | Route webhook `POST /api/stripe/webhook` (vérification signature, idempotence) | `src/app/api/stripe/webhook/route.ts` (nouveau) |
@@ -98,6 +145,8 @@ Précisions importantes :
 | 11 | Audit final cohérence docs ↔ app avant activation publique : retirer commentaires "TODO Stripe", typecheck, tests manuels en mode test Stripe (`sk_test_*`) | – |
 
 Chaque étape est isolée, testable, commitable indépendamment.
+
+**Prochaine étape : PATCH 3** — installer Stripe SDK + créer `.env.example`, sans branchement actif. La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
 
 ---
 
