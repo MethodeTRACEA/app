@@ -28,6 +28,22 @@ interface AuthState {
   trialEndsAt: string | null;
   /** Compteur trial — affichage UX uniquement, ne sécurise rien côté client */
   trialDeepSessionsUsed: number | null;
+  /** Statut Stripe brut de l'abonnement (active, trialing, past_due, canceled, incomplete, incomplete_expired, unpaid, paused) ou null */
+  stripeSubscriptionStatus: string | null;
+  /** Identifiant prix Stripe sélectionné, ou null */
+  stripePriceId: string | null;
+  /** Formule d'abonnement, normalisée — uniquement "monthly", "yearly" ou null */
+  subscriptionPlan: "monthly" | "yearly" | null;
+  /** Date ISO de fin de période courante d'abonnement, ou null */
+  subscriptionCurrentPeriodEnd: string | null;
+  /** Drapeau "résiliation programmée à la fin de période" */
+  subscriptionCancelAtPeriodEnd: boolean;
+  /** Date ISO de la résiliation, ou null */
+  subscriptionCanceledAt: string | null;
+  /** Date ISO de première souscription, ou null */
+  subscribedAt: string | null;
+  /** Date ISO de dernière fin réelle d'accès Premium, ou null */
+  unsubscribedAt: string | null;
   /** Accès premium = isSubscribed OU isBetaTester OU isTrialActive */
   hasPremiumAccess: boolean;
   signInWithMagicLink: (email: string) => Promise<{ error: string | null }>;
@@ -50,6 +66,14 @@ const AuthContext = createContext<AuthState>({
   trialUsed: false,
   trialEndsAt: null,
   trialDeepSessionsUsed: null,
+  stripeSubscriptionStatus: null,
+  stripePriceId: null,
+  subscriptionPlan: null,
+  subscriptionCurrentPeriodEnd: null,
+  subscriptionCancelAtPeriodEnd: false,
+  subscriptionCanceledAt: null,
+  subscribedAt: null,
+  unsubscribedAt: null,
   hasPremiumAccess: false,
   signInWithMagicLink: async () => ({ error: null }),
   signUp: async () => ({ error: null, needsConfirmation: false }),
@@ -70,11 +94,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [trialUsed, setTrialUsed] = useState(false);
   const [trialEndsAt, setTrialEndsAt] = useState<string | null>(null);
   const [trialDeepSessionsUsed, setTrialDeepSessionsUsed] = useState<number | null>(null);
+  const [stripeSubscriptionStatus, setStripeSubscriptionStatus] = useState<string | null>(null);
+  const [stripePriceId, setStripePriceId] = useState<string | null>(null);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<"monthly" | "yearly" | null>(null);
+  const [subscriptionCurrentPeriodEnd, setSubscriptionCurrentPeriodEnd] = useState<string | null>(null);
+  const [subscriptionCancelAtPeriodEnd, setSubscriptionCancelAtPeriodEnd] = useState(false);
+  const [subscriptionCanceledAt, setSubscriptionCanceledAt] = useState<string | null>(null);
+  const [subscribedAt, setSubscribedAt] = useState<string | null>(null);
+  const [unsubscribedAt, setUnsubscribedAt] = useState<string | null>(null);
 
   const checkAdmin = useCallback(async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
-      .select("is_admin, is_subscribed, is_beta_tester, trial_used, trial_ends_at, trial_deep_sessions_used")
+      .select(
+        "is_admin, is_subscribed, is_beta_tester, trial_used, trial_ends_at, trial_deep_sessions_used, stripe_subscription_status, stripe_price_id, subscription_plan, subscription_current_period_end, subscription_cancel_at_period_end, subscription_canceled_at, subscribed_at, unsubscribed_at"
+      )
       .eq("id", userId)
       .single();
     setIsAdmin(data?.is_admin ?? false);
@@ -83,6 +117,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTrialUsed(data?.trial_used ?? false);
     setTrialEndsAt(data?.trial_ends_at ?? null);
     setTrialDeepSessionsUsed(data?.trial_deep_sessions_used ?? null);
+    setStripeSubscriptionStatus(data?.stripe_subscription_status ?? null);
+    setStripePriceId(data?.stripe_price_id ?? null);
+    const plan =
+      data?.subscription_plan === "monthly" || data?.subscription_plan === "yearly"
+        ? data.subscription_plan
+        : null;
+    setSubscriptionPlan(plan);
+    setSubscriptionCurrentPeriodEnd(data?.subscription_current_period_end ?? null);
+    setSubscriptionCancelAtPeriodEnd(data?.subscription_cancel_at_period_end === true);
+    setSubscriptionCanceledAt(data?.subscription_canceled_at ?? null);
+    setSubscribedAt(data?.subscribed_at ?? null);
+    setUnsubscribedAt(data?.unsubscribed_at ?? null);
   }, []);
 
   // Essai Premium 7 jours actif — basé uniquement sur la date.
@@ -120,6 +166,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setTrialUsed(false);
         setTrialEndsAt(null);
         setTrialDeepSessionsUsed(null);
+        setStripeSubscriptionStatus(null);
+        setStripePriceId(null);
+        setSubscriptionPlan(null);
+        setSubscriptionCurrentPeriodEnd(null);
+        setSubscriptionCancelAtPeriodEnd(false);
+        setSubscriptionCanceledAt(null);
+        setSubscribedAt(null);
+        setUnsubscribedAt(null);
       }
       setLoading(false);
     });
@@ -197,6 +251,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTrialUsed(false);
     setTrialEndsAt(null);
     setTrialDeepSessionsUsed(null);
+    setStripeSubscriptionStatus(null);
+    setStripePriceId(null);
+    setSubscriptionPlan(null);
+    setSubscriptionCurrentPeriodEnd(null);
+    setSubscriptionCancelAtPeriodEnd(false);
+    setSubscriptionCanceledAt(null);
+    setSubscribedAt(null);
+    setUnsubscribedAt(null);
   }
 
   async function refreshProfile() {
@@ -216,6 +278,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         trialUsed,
         trialEndsAt,
         trialDeepSessionsUsed,
+        stripeSubscriptionStatus,
+        stripePriceId,
+        subscriptionPlan,
+        subscriptionCurrentPeriodEnd,
+        subscriptionCancelAtPeriodEnd,
+        subscriptionCanceledAt,
+        subscribedAt,
+        unsubscribedAt,
         hasPremiumAccess,
         signInWithMagicLink,
         signUp,
