@@ -204,7 +204,10 @@ function buildCleanInput(steps: Record<string, string>) {
 
 // ===================================================================
 // AI LIMIT — free tier: 1 session with AI, unlimited for subscribers
+// Trial Premium 7 jours : autorise jusqu'à CAP_TRIAL_DEEP_SESSIONS traversées approfondies
 // ===================================================================
+
+const CAP_TRIAL_DEEP_SESSIONS = 5;
 
 async function checkAiLimit(userId: string): Promise<boolean> {
   if (!userId) return false;
@@ -214,10 +217,22 @@ async function checkAiLimit(userId: string): Promise<boolean> {
     // TODO: replace with Stripe subscription check when payment is integrated
     const { data: profile } = await supabase
       .from("profiles")
-      .select("is_subscribed, is_beta_tester")
+      .select("is_subscribed, is_beta_tester, trial_used, trial_ends_at, trial_deep_sessions_used")
       .eq("id", userId)
       .single();
     if (profile?.is_subscribed === true || profile?.is_beta_tester === true) return false; // subscribed or beta → unlimited
+
+    // Trial Premium 7 jours
+    if (profile?.trial_used === true) {
+      const endsAt = profile.trial_ends_at
+        ? new Date(profile.trial_ends_at as string).getTime()
+        : 0;
+      const used = (profile.trial_deep_sessions_used as number | null) ?? 0;
+      if (endsAt > Date.now() && used < CAP_TRIAL_DEEP_SESSIONS) {
+        return false; // trial actif, autorisé
+      }
+      return true; // trial expiré ou plafonné → bloqué (pas de retour à la règle gratuite)
+    }
 
     // Count completed sessions for free users
     const { count } = await supabase
@@ -229,6 +244,27 @@ async function checkAiLimit(userId: string): Promise<boolean> {
     return (count ?? 0) >= 1; // limited after 1st completed session
   } catch {
     return false; // fail open — allow if DB check fails
+  }
+}
+
+// ===================================================================
+// TRIAL — incrément atomique du compteur (RPC)
+// Appelé uniquement après succès final-analysis. Ne throw jamais.
+// ===================================================================
+
+async function incrementTrialDeepSessionsUsed(userId: string): Promise<void> {
+  try {
+    const supabase = getSupabaseService();
+    const { error } = await supabase.rpc("increment_trial_deep_sessions_used", {
+      p_user_id: userId,
+      p_cap: CAP_TRIAL_DEEP_SESSIONS,
+    });
+
+    if (error) {
+      console.error("[TRIAL] Failed to increment trial_deep_sessions_used", error);
+    }
+  } catch (error) {
+    console.error("[TRIAL] Unexpected increment error", error);
   }
 }
 
@@ -396,6 +432,10 @@ Règle :
     cacheCreationTokens: analysisUsage.cache_creation_input_tokens || 0,
     cacheReadTokens: analysisUsage.cache_read_input_tokens || 0,
   }).catch(() => {});
+
+  // Incrémenter le compteur trial (fire-and-forget — la RPC vérifie elle-même
+  // que le trial est actif et non plafonné, no-op sinon)
+  incrementTrialDeepSessionsUsed(userId).catch(() => {});
 
   return NextResponse.json({ text });
 }
