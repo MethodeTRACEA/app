@@ -314,7 +314,15 @@ export default function SessionPage() {
 }
 
 function SessionPageInner() {
-  const { user, loading, hasPremiumAccess } = useAuth();
+  const {
+    user,
+    loading,
+    hasPremiumAccess,
+    isSubscribed,
+    isBetaTester,
+    isTrialActive,
+    trialDeepSessionsUsed,
+  } = useAuth();
   const [sessionCount, setSessionCount] = useState<number | null>(null);
   const router = useRouter();
 
@@ -378,6 +386,48 @@ function SessionPageInner() {
           </Link>
         </div>
       </div>
+    );
+  }
+
+  // Trial Premium 7 jours actif mais cap 5/5 atteint :
+  // bloquer en amont pour éviter d'investir 5-8 min puis tomber sur ai_limited
+  // côté serveur. Gate local — n'inclut volontairement pas le cap dans
+  // hasPremiumAccess global pour ne pas casser les autres pages premium.
+  if (
+    isSubscribed !== true &&
+    isBetaTester !== true &&
+    isTrialActive === true &&
+    (trialDeepSessionsUsed ?? 0) >= 5
+  ) {
+    return (
+      <ScreenContainer overlayOpacity={45}>
+        <div className="py-12">
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
+            <div className="text-center space-y-4">
+              <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
+                Traversée approfondie
+              </p>
+              <h1 className="font-serif text-2xl text-t-beige leading-relaxed">
+                Ton essai approfondi est complet pour ces 7 jours.
+              </h1>
+              <p className="font-body text-base t-text-secondary leading-relaxed">
+                Tu peux toujours utiliser les traversées courtes et l&apos;urgence.
+              </p>
+              <p className="font-inter text-xs t-text-ghost">
+                Pour continuer les traversées approfondies, tu peux découvrir Premium.
+              </p>
+            </div>
+
+            <PrimaryButton onClick={() => router.push("/app")}>
+              Retour à l&apos;accueil
+            </PrimaryButton>
+
+            <SecondaryButton onClick={() => router.push("/app/subscribe")}>
+              Découvrir Premium
+            </SecondaryButton>
+          </div>
+        </div>
+      </ScreenContainer>
     );
   }
 
