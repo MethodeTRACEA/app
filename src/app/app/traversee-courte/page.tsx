@@ -859,7 +859,9 @@ function TraverseeCourteV2() {
       // ════════════════════════════════════════════════════
       // ÉCRAN — SYNTHÈSE
       // ════════════════════════════════════════════════════
-      case "synthese":
+      case "synthese": {
+        const anchorSummaryLabel =
+          anchorEffect === "un-peu" ? "Ce qui a aidé" : "Ce que tu as essayé";
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
             <h1 className="font-serif text-2xl text-t-beige text-center">
@@ -876,7 +878,7 @@ function TraverseeCourteV2() {
                 value={bodyZone === "je-ne-sais-pas" ? "pas clairement localisé" : (bodyZone ? BODY_LABELS[bodyZone] : "\—")}
               />
               <SynthRow
-                label="Ce qui a aidé"
+                label={anchorSummaryLabel}
                 value={triedMethods.length > 0 ? triedMethods.map(m => ANCHOR_LABELS[m]).join(", puis ") : (anchorMethod ? ANCHOR_LABELS[anchorMethod] : "—")}
               />
               <SynthRow
@@ -915,6 +917,7 @@ function TraverseeCourteV2() {
             </div>
           </div>
         );
+      }
 
       case "soft-limit":
         return (
