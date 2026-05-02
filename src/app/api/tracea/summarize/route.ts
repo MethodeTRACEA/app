@@ -393,6 +393,82 @@ function ensureSummaryFields(data: SummaryData): SummaryData {
 }
 
 // ===================================================================
+// AI USAGE LOGGING — mirrors logAiUsage in /api/tracea/route.ts
+// ===================================================================
+
+// Tarifs Claude Sonnet (claude-sonnet-4-6) — mai 2025
+const COST_PER_INPUT_TOKEN = 3.0 / 1_000_000;
+const COST_PER_OUTPUT_TOKEN = 15.0 / 1_000_000;
+const COST_PER_CACHE_WRITE_TOKEN = 3.75 / 1_000_000;
+const COST_PER_CACHE_READ_TOKEN = 0.30 / 1_000_000;
+
+function getSupabaseServiceForLogs() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) {
+    return createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  }
+  return createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
+async function logAiUsage(params: {
+  userId: string;
+  callType: string;
+  stepId?: string;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  cacheCreationTokens?: number;
+  cacheReadTokens?: number;
+  isRetry?: boolean;
+}) {
+  const cacheWrite = params.cacheCreationTokens || 0;
+  const cacheRead = params.cacheReadTokens || 0;
+  const nonCachedInput = params.inputTokens - cacheWrite - cacheRead;
+
+  const cost =
+    nonCachedInput * COST_PER_INPUT_TOKEN +
+    cacheWrite * COST_PER_CACHE_WRITE_TOKEN +
+    cacheRead * COST_PER_CACHE_READ_TOKEN +
+    params.outputTokens * COST_PER_OUTPUT_TOKEN;
+
+  const cacheInfo = (cacheWrite || cacheRead)
+    ? ` | cache_write: ${cacheWrite} cache_read: ${cacheRead}`
+    : "";
+  console.log(
+    `[AI COST] ${params.callType}${params.stepId ? ` (${params.stepId})` : ""}` +
+    `${params.isRetry ? " [RETRY]" : ""}` +
+    ` | in: ${params.inputTokens} out: ${params.outputTokens}${cacheInfo}` +
+    ` | $${cost.toFixed(6)}` +
+    ` | user: ${params.userId.slice(0, 8)}...`
+  );
+
+  try {
+    const supabase = getSupabaseServiceForLogs();
+    const { error: insertError } = await supabase.from("ai_usage_logs").insert({
+      user_id: params.userId,
+      call_type: params.callType,
+      step_id: params.stepId || null,
+      model: params.model,
+      input_tokens: params.inputTokens,
+      output_tokens: params.outputTokens,
+      estimated_cost_usd: cost,
+      is_retry: params.isRetry || false,
+    });
+
+    if (insertError) {
+      console.error("[AI LOG ERROR] Supabase insert failed:", insertError.message, insertError.details, insertError.hint);
+    } else {
+      console.log(`[AI LOG SAVED] ${params.userId.slice(0, 8)}... | $${cost.toFixed(6)}`);
+    }
+  } catch (err) {
+    console.error("[AI LOG ERROR] Exception:", err);
+  }
+}
+
+// ===================================================================
 // AI LIMIT — mirrors the check in /api/tracea/route.ts
 // ===================================================================
 
@@ -510,6 +586,18 @@ export async function POST(request: NextRequest) {
       message.content[0].type === "text" ? message.content[0].text : "";
 
     console.log("[TRACEA SUMMARIZE] Raw response length:", rawText.length);
+
+    // Logger l'usage IA (fire-and-forget — ne bloque pas la suite)
+    const summarizeUsage = message.usage as unknown as Record<string, number>;
+    logAiUsage({
+      userId,
+      callType: "summarize",
+      model: "claude-sonnet-4-6",
+      inputTokens: summarizeUsage.input_tokens,
+      outputTokens: summarizeUsage.output_tokens,
+      cacheCreationTokens: summarizeUsage.cache_creation_input_tokens || 0,
+      cacheReadTokens: summarizeUsage.cache_read_input_tokens || 0,
+    }).catch(() => {});
 
     // Parser le JSON
     let summaryData = parseSummaryJson(rawText);
