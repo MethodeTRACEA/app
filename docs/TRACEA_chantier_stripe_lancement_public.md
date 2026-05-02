@@ -137,8 +137,8 @@ Précisions importantes :
 | 3 | Installer Stripe SDK + créer `.env.example` documentant `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY_ID`, `STRIPE_PRICE_YEARLY_ID`, `STRIPE_ENABLED`, `NEXT_PUBLIC_APP_URL` — ✅ FAIT — Stripe SDK installé + `.env.example` créé — Stripe dormant | `package.json`, `.env.example` |
 | 4 | Exposer les nouveaux champs dans `auth-context` (lecture seule, sans changer la logique premium) — ✅ FAIT — auth-context lit les champs Stripe en lecture seule, sans changer `hasPremiumAccess` | `src/lib/auth-context.tsx` |
 | 5 | Route checkout `POST /api/subscribe` ; **inactive si `STRIPE_ENABLED=false`** (renvoie 503 ou 403 explicite) — ✅ FAIT — route `/api/subscribe` checkout Stripe préparée, inactive si `STRIPE_ENABLED=false` | `src/app/api/subscribe/route.ts` |
-| 6 | Route webhook `POST /api/stripe/webhook` (vérification signature, idempotence) — ⏳ **prochaine étape** | `src/app/api/stripe/webhook/route.ts` (nouveau) |
-| 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") | `src/app/app/subscribe/page.tsx` |
+| 6 | Route webhook `POST /api/stripe/webhook` (vérification signature, idempotence) — ✅ FAIT — webhook Stripe créé, signature vérifiée, synchronisation `profiles`, dormant si `STRIPE_ENABLED=false` | `src/app/api/stripe/webhook/route.ts` (nouveau) |
+| 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") — ⏳ **prochaine étape** | `src/app/app/subscribe/page.tsx` |
 | 8 | UI `/app/profil` abonnement (statut, formule, date renouvellement, bouton portal) | `src/app/app/profil/page.tsx` (+ `auth-context` si nouveaux champs manquent) |
 | 9 | Route Stripe Billing Portal `/api/subscribe/portal` + bouton dédié | `src/app/api/subscribe/portal/route.ts` (nouveau), `profil/page.tsx` |
 | 10 | Sécurisation de la suppression de compte : empêcher si abonnement actif, étendre `deleteAccount` aux 5 tables manquantes (`tracea_events`, `ai_usage_logs`, `rate_limit_logs`, `session_summaries`, `user_memory_profile`), ajouter `auth.admin.deleteUser` | route serveur dédiée, `supabase-store.ts` |
@@ -146,9 +146,9 @@ Précisions importantes :
 
 Chaque étape est isolée, testable, commitable indépendamment.
 
-**Prochaine étape : PATCH 6** — webhook Stripe `/api/stripe/webhook` avec signature vérifiée et synchronisation idempotente de `profiles`, sans UI. La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
+**Prochaine étape : PATCH 7** — UI `/app/subscribe` conditionnelle au drapeau Stripe, sans paiement visible tant que `STRIPE_ENABLED=false`. La règle `STRIPE_ENABLED=false` reste en vigueur ; aucun paiement ne doit être visible, aucun gating testeur ne doit changer, aucun checkout ne doit être actif.
 
-Note : la route checkout est prête mais ne peut pas activer Premium seule. L'activation de `is_subscribed` et la synchronisation des champs `subscription_*` dépendront uniquement du futur webhook Stripe.
+Note : le webhook peut synchroniser `is_subscribed` et les champs `subscription_*` quand Stripe sera activé. Tant que `STRIPE_ENABLED=false`, il ignore les événements (200 + `ignored: true`) sans écrire en DB.
 
 ---
 
