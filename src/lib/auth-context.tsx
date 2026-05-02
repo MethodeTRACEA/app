@@ -20,7 +20,13 @@ interface AuthState {
   isSubscribed: boolean;
   /** Bêta testeur activé via mot de passe */
   isBetaTester: boolean;
-  /** Accès premium = isSubscribed OU isBetaTester */
+  /** Essai Premium 7 jours actif (basé sur trial_ends_at, pas sur le plafond) */
+  isTrialActive: boolean;
+  /** Date ISO de fin d'essai si trial_used, sinon null */
+  trialEndsAt: string | null;
+  /** Compteur trial — affichage UX uniquement, ne sécurise rien côté client */
+  trialDeepSessionsUsed: number | null;
+  /** Accès premium = isSubscribed OU isBetaTester OU isTrialActive */
   hasPremiumAccess: boolean;
   signInWithMagicLink: (email: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation: boolean }>;
@@ -38,6 +44,9 @@ const AuthContext = createContext<AuthState>({
   isAdmin: false,
   isSubscribed: false,
   isBetaTester: false,
+  isTrialActive: false,
+  trialEndsAt: null,
+  trialDeepSessionsUsed: null,
   hasPremiumAccess: false,
   signInWithMagicLink: async () => ({ error: null }),
   signUp: async () => ({ error: null, needsConfirmation: false }),
@@ -55,20 +64,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isBetaTester, setIsBetaTester] = useState(false);
+  const [trialUsed, setTrialUsed] = useState(false);
+  const [trialEndsAt, setTrialEndsAt] = useState<string | null>(null);
+  const [trialDeepSessionsUsed, setTrialDeepSessionsUsed] = useState<number | null>(null);
 
   const checkAdmin = useCallback(async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
-      .select("is_admin, is_subscribed, is_beta_tester")
+      .select("is_admin, is_subscribed, is_beta_tester, trial_used, trial_ends_at, trial_deep_sessions_used")
       .eq("id", userId)
       .single();
     setIsAdmin(data?.is_admin ?? false);
     setIsSubscribed(data?.is_subscribed ?? false);
     setIsBetaTester(data?.is_beta_tester ?? false);
+    setTrialUsed(data?.trial_used ?? false);
+    setTrialEndsAt(data?.trial_ends_at ?? null);
+    setTrialDeepSessionsUsed(data?.trial_deep_sessions_used ?? null);
   }, []);
 
-  // Accès premium = abonné payant OU bêta testeur
-  const hasPremiumAccess = isSubscribed || isBetaTester;
+  // Essai Premium 7 jours actif — basé uniquement sur la date.
+  // Le plafond `trial_deep_sessions_used` est volontairement exclu :
+  // il reste enforce côté serveur (`checkAiLimit`), pas ici.
+  const isTrialActive =
+    trialUsed === true &&
+    !!trialEndsAt &&
+    new Date(trialEndsAt).getTime() > Date.now();
+
+  // Accès premium = abonné payant OU bêta testeur OU trial actif
+  const hasPremiumAccess = isSubscribed || isBetaTester || isTrialActive;
 
   useEffect(() => {
     // Get initial session
@@ -91,6 +114,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsAdmin(false);
         setIsSubscribed(false);
         setIsBetaTester(false);
+        setTrialUsed(false);
+        setTrialEndsAt(null);
+        setTrialDeepSessionsUsed(null);
       }
       setLoading(false);
     });
@@ -165,6 +191,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAdmin(false);
     setIsSubscribed(false);
     setIsBetaTester(false);
+    setTrialUsed(false);
+    setTrialEndsAt(null);
+    setTrialDeepSessionsUsed(null);
   }
 
   async function refreshProfile() {
@@ -180,6 +209,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAdmin,
         isSubscribed,
         isBetaTester,
+        isTrialActive,
+        trialEndsAt,
+        trialDeepSessionsUsed,
         hasPremiumAccess,
         signInWithMagicLink,
         signUp,
