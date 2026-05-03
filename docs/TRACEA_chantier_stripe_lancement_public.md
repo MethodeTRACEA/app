@@ -143,8 +143,8 @@ Précisions importantes :
 | 8a | UI `/app/profil` enrichie : statuts abonnement Stripe en lecture seule (annulation programmée, past_due, formule + date de renouvellement, abonnement terminé) — ✅ FAIT — sans bouton portal, sans appel API, dormant | `src/app/app/profil/page.tsx` |
 | 8b | UI `/app/profil` : ajouter les boutons "Gérer mon abonnement" et "Mettre à jour mon paiement" branchés sur `/api/subscribe/portal` — ✅ FAIT — boutons Billing Portal ajoutés dans `/app/profil`, gated par `NEXT_PUBLIC_STRIPE_ENABLED=false/true` | `src/app/app/profil/page.tsx` |
 | 9 | Route Stripe Billing Portal `/api/subscribe/portal` + bouton dédié — ✅ FAIT (route serveur uniquement) — route `/api/subscribe/portal` Billing Portal créée, dormante si `STRIPE_ENABLED=false`. Le bouton dédié relève de PATCH 8b. | `src/app/api/subscribe/portal/route.ts` (nouveau) |
-| 10 | Sécurisation de la suppression de compte : empêcher si abonnement actif, étendre `deleteAccount` aux 5 tables manquantes (`tracea_events`, `ai_usage_logs`, `rate_limit_logs`, `session_summaries`, `user_memory_profile`), ajouter `auth.admin.deleteUser` | route serveur dédiée, `supabase-store.ts` |
-| 11 | Audit final cohérence docs ↔ app avant activation publique : retirer commentaires "TODO Stripe", typecheck, tests manuels en mode test Stripe (`sk_test_*`) | – |
+| 10 | Sécurisation de la suppression de compte : empêcher si abonnement actif, étendre `deleteAccount` aux 5 tables manquantes (`tracea_events`, `ai_usage_logs`, `rate_limit_logs`, `session_summaries`, `user_memory_profile`), ajouter `auth.admin.deleteUser` — ✅ FAIT — nouvelle route `/api/account/delete` avec garde Stripe défensive, suppression des 8 tables + `auth.users`, fail-hard sur auth, branche reprise pour profils orphelins ; UI profil avec bloc de blocage non destructif vers Billing Portal | `src/app/api/account/delete/route.ts` (nouveau), `src/app/app/profil/page.tsx` |
+| 11 | Audit final cohérence docs ↔ app avant activation publique : retirer commentaires "TODO Stripe", typecheck, tests manuels en mode test Stripe (`sk_test_*`) — ⏳ **prochaine étape** | – |
 
 Chaque étape est isolée, testable, commitable indépendamment.
 
@@ -615,6 +615,119 @@ Points à corriger plus tard, sans urgence :
 - Corrections UX non bloquantes : dates avec année, *"Formule annuelle/mensuelle"*, harmonisation profil ↔ subscribe.
 - Activation complète du compte Stripe live (informations entreprise, compte bancaire, informations fiscales, liens juridiques Stripe).
 - Bascule `sk_test_*` → `sk_live_*` uniquement après PATCH 10 + PATCH 11 + validation finale.
+
+---
+
+## PATCH 10 — Suppression de compte avec abonnement Stripe actif — 2026-05-03
+
+**Statut : ✅ terminé, commité et poussé.**
+
+Avant ce patch, la suppression de compte passait par le client Supabase anon, ne supprimait que `sessions`, `consent_logs` et `profiles`, ne supprimait pas `auth.users` et **ignorait totalement Stripe** — un utilisateur abonné pouvait supprimer son compte tout en continuant d'être prélevé. Risque P1 critique avant lancement public Stripe.
+
+### Résumé
+
+- **Nouvelle route serveur** : `POST /api/account/delete`.
+- Suppression de compte **déplacée hors client Supabase anon** vers une route serveur sécurisée.
+- Bearer token Supabase obligatoire.
+- Vérification utilisateur côté serveur via `supabaseAnon.auth.getUser(token)`.
+- Usage du **service role** côté serveur uniquement (bypass RLS, accès `auth.admin`).
+- **Garde Stripe** avant toute suppression.
+- Suppression bloquée si abonnement Stripe actif, problématique ou incohérent.
+- Orientation utilisateur vers le Billing Portal depuis `/app/profil`.
+- **Pas d'annulation Stripe automatique.**
+- **Pas de remboursement automatique.**
+- **Pas de modification des routes Stripe existantes** (`/api/subscribe`, `/api/subscribe/portal`, `/api/stripe/webhook` intactes).
+
+### Règle Stripe documentée
+
+La suppression est **bloquée** si :
+
+- `is_subscribed === true` ; **ou**
+- `stripe_subscription_status` est non terminal ; **ou**
+- `stripe_subscription_id` existe sans statut clair ; **ou**
+- état Stripe incohérent.
+
+**Statuts terminaux autorisant la suppression** (si `is_subscribed === false`) :
+
+- `canceled`
+- `incomplete_expired`
+
+**Statuts ou états bloquants** :
+
+- `active`
+- `trialing`
+- `past_due`
+- `unpaid`
+- `incomplete`
+- `paused`
+- statut futur inconnu de Stripe non encore mappé
+- `status === null` avec `stripe_subscription_id` présent (état désynchronisé)
+- statut non terminal même sans `stripe_subscription_id` (état incohérent — défensif)
+
+### Données supprimées par la route (chemin nominal)
+
+Suppression séquentielle dans cet ordre :
+
+1. `session_summaries`
+2. `user_memory_profile`
+3. `tracea_events`
+4. `ai_usage_logs`
+5. `rate_limit_logs`
+6. `sessions`
+7. `consent_logs`
+8. `profiles`
+9. `auth.users` via `supabaseService.auth.admin.deleteUser(userId)`
+
+### Précisions techniques
+
+- **Suppression séquentielle contrôlée, non atomique** : les requêtes sont émises l'une après l'autre. Si une étape échoue, la route s'arrête immédiatement et retourne 500. Les étapes précédentes restent supprimées. Un retry utilisateur (relance du bouton) reprend là où il s'est arrêté.
+- **Si une suppression DB échoue, `auth.users` n'est pas supprimé** : on évite de laisser un compte d'authentification orphelin sans données alors qu'on n'est pas certain de la cohérence DB. Le retry permet de finaliser.
+- **Si `auth.admin.deleteUser` échoue, la route retourne une erreur (500 `auth_delete_failed`), pas un faux succès** : `auth.users` est traité comme une étape obligatoire de la suppression complète.
+- **Si le profil est déjà absent mais que le token Supabase est valide** : la route tente de finaliser le cleanup `auth.users` (cas de reprise après une suppression précédente où la DB a réussi mais l'auth a échoué). Si l'auth delete réussit, retour `{ success: true }`. Sinon 500 `auth_delete_failed`.
+
+### UI `/app/profil`
+
+- Le bouton **"Supprimer mon compte et toutes mes données"** appelle désormais la route serveur via `POST /api/account/delete` (et plus le client Supabase anon).
+- Si un abonnement actif est détecté côté UI **OU** si la route retourne 409 `active_subscription` :
+  - affichage d'un bloc non destructif (sans confirmation destructive) ;
+  - message *"Tu as un abonnement Premium actif."* ;
+  - bouton **"Gérer mon abonnement"** qui réutilise le handler `openBillingPortal` (PATCH 8b) → redirige vers Stripe Billing Portal ;
+  - bouton **"Annuler"** qui ferme le bloc ;
+  - **aucune donnée supprimée**, aucun appel destructif émis.
+- Si la route retourne une erreur générique (500) : affichage d'un message sobre *"La suppression n'a pas pu être terminée. Réessaie ou contacte le support."* — pas de déconnexion forcée.
+- Si la route retourne `{ success: true }` : `signOut()` puis redirect vers `/`.
+
+### Fichiers applicatifs concernés par le patch
+
+- `src/app/api/account/delete/route.ts` (nouveau, 267 lignes)
+- `src/app/app/profil/page.tsx` (+181 / −19)
+
+Note : `src/lib/supabase-store.ts` n'est pas modifié. La fonction `deleteAccount` y reste exportée mais n'est plus consommée (l'import a été retiré de `profil/page.tsx`). Pas de refactor — le nettoyage de cette fonction morte pourra être fait dans un patch backlog.
+
+### Vérifications réalisées
+
+- ✅ `npx tsc --noEmit` : exit 0.
+- ✅ `npm run build` : succès, build complet.
+- ✅ Périmètre conforme : seuls les 2 fichiers visés sont modifiés.
+- ✅ Commit `99becfe` poussé sur `origin/main`.
+
+### Limites restantes documentées
+
+- **Suppression non atomique** : amélioration possible via une fonction Postgres (RPC) transactionnelle qui supprimerait toutes les tables en une seule transaction. Hors scope V1, à évaluer plus tard si la fréquence de retry devient un sujet.
+- **Pas d'email post-suppression** : aucune confirmation transactionnelle n'est envoyée à l'utilisateur après suppression. À envisager avant lancement public large si requis.
+- **Pas d'export automatique avant suppression** : l'utilisateur peut exporter ses données via "Exporter mes données (portabilité)" mais ce flux est manuel et séparé. Cohérence à arbitrer côté produit.
+- **Tests manuels encore à exécuter** sur comptes dédiés (gratuit, trial actif, bêta, abonné active, cancel_at_period_end, past_due, canceled, défense serveur via curl).
+- **Aucun remboursement automatique prévu en V1** : conforme CGU §11. À reconsidérer si la stratégie produit change.
+
+### Prochaine étape
+
+**PATCH 11 — audit final Stripe avant live**, couvrant :
+
+- retrait des commentaires "TODO Stripe" résiduels (`tracea/route.ts:217`, `tracea/summarize/route.ts:488`, `auth-context.tsx:19`) ;
+- typecheck et build finaux ;
+- tests manuels en mode Stripe test (`sk_test_*`) couvrant les 9 cas de test du PATCH 10 ;
+- vérification cohérence docs ↔ app ;
+- préparation du dossier d'activation compte Stripe live (informations entreprise, compte bancaire, fiscal, liens juridiques).
 
 ---
 
