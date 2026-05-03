@@ -278,6 +278,18 @@ export async function POST(request: NextRequest) {
         const status = subscription.status;
         const isActive = isActiveSubscriptionStatus(status);
 
+        // Annulation programmée — Stripe peut la représenter de deux
+        // façons sémantiquement équivalentes :
+        //   - cancel_at_period_end === true (API directe legacy)
+        //   - cancel_at = <unix timestamp> avec cancel_at_period_end
+        //     === false (Billing Portal "Cancel at end of period")
+        // On reconnaît les deux pour mettre à jour le flag DB
+        // `subscription_cancel_at_period_end`.
+        const isCancelScheduled =
+          subscription.cancel_at_period_end === true ||
+          (typeof subscription.cancel_at === "number" &&
+            subscription.cancel_at > 0);
+
         // Préserver subscribed_at si déjà défini.
         const { data: existing } = await supabase
           .from("profiles")
@@ -297,8 +309,7 @@ export async function POST(request: NextRequest) {
           subscription_current_period_end: unixToIso(
             getCurrentPeriodEnd(subscription)
           ),
-          subscription_cancel_at_period_end:
-            subscription.cancel_at_period_end === true,
+          subscription_cancel_at_period_end: isCancelScheduled,
           subscription_canceled_at: unixToIso(subscription.canceled_at),
         };
         if (customerId) update.stripe_customer_id = customerId;
