@@ -434,6 +434,190 @@ Recommandation chronologique inchangée :
 
 ---
 
+## Test bout-en-bout Stripe test — 2026-05-03
+
+Premier test complet du parcours Stripe en environnement **test** (`sk_test_*` + webhook test `whsec_*`). Aucune clé live, aucun passage en production Stripe réelle.
+
+### 1. Conditions de test
+
+- **Environnement Stripe** : test.
+- **Application** : protégée par mot de passe / accès testeurs uniquement.
+- **Variables Vercel basculées temporairement** :
+  - `STRIPE_ENABLED=true`
+  - `NEXT_PUBLIC_STRIPE_ENABLED=true`
+- **Redeploy Vercel** effectué avant le début du test pour propagation des drapeaux côté serveur et côté bundle client.
+- Stripe reste en clés test (`sk_test_*` côté serveur, `whsec_*` pour la destination webhook).
+- **Aucun passage en live / production Stripe réelle.**
+- Aucun secret n'est écrit dans ce document.
+
+### 2. Checkout testé
+
+- Compte test utilisé.
+- Parcours :
+  1. ouverture de `/app/subscribe` ;
+  2. choix de l'abonnement annuel (78 €/an) ;
+  3. redirection Stripe Checkout ;
+  4. paiement avec carte test Visa `4242 4242 4242 4242` ;
+  5. retour sur `/app/subscribe?checkout=success`.
+- **Résultat Stripe** :
+  - client `cus_...` créé ;
+  - paiement de 78,00 € accepté ;
+  - abonnement `sub_...` annuel créé et actif.
+- **Résultat webhook** (consulté dans Stripe Dashboard test → Webhooks → événements envoyés) :
+  - `checkout.session.completed` → 200 OK ;
+  - `customer.subscription.created` → 200 OK ;
+  - `invoice.payment_succeeded` (ou `invoice.payment_paid` selon l'interface) visible côté Stripe.
+- **Résultat Supabase `profiles` validé en SQL** :
+  - `is_subscribed = true`
+  - `is_beta_tester = false`
+  - `stripe_subscription_status = "active"`
+  - `subscription_plan = "yearly"`
+  - `subscription_current_period_end ≈ 2027-05-03 08:27:44+00`
+  - `subscription_cancel_at_period_end = false` (initialement)
+  - `unsubscribed_at = NULL`
+
+### 3. Vérification `/app/profil` après checkout
+
+- Le bloc "Ton accès TRACÉA" affiche :
+  - *"Abonnement Premium actif."*
+  - *"Formule annuelle."*
+  - *"Renouvellement le 3 mai."*
+  - bouton *"Gérer mon abonnement"*
+- **Validation** :
+  - PATCH 8a (statut Stripe-aware) fonctionne.
+  - PATCH 8b (boutons Billing Portal gated par `NEXT_PUBLIC_STRIPE_ENABLED`) fonctionne.
+- **Point UX non bloquant** : la date affichée ne contient pas l'année (*"3 mai"* au lieu de *"3 mai 2027"*) — voir backlog UX en §9.
+
+### 4. Billing Portal testé
+
+- Depuis `/app/profil`, clic sur *"Gérer mon abonnement"*.
+- Redirection vers Stripe Billing Portal — **OK**.
+- Le portail affiche :
+  - produit **TRACÉA Premium**
+  - tarif 78,00 € / an
+  - prochaine facturation 3 mai 2027
+  - moyen de paiement **Visa 4242**
+  - ajout / mise à jour du moyen de paiement possibles
+  - **historique de facturation** visible
+  - facture 78,00 € marquée payée
+  - bouton *"Annuler l'abonnement"* présent
+- **Validation** :
+  - PATCH 9 (route `/api/subscribe/portal`) fonctionne.
+  - PATCH 8b (bouton profil → portal) fonctionne.
+  - La résiliation en ligne est accessible côté test (CGU §9 satisfaite en environnement test).
+
+### 5. Bug n°1 découvert — webhook ne détectait pas `cancel_at`
+
+Lors de la première tentative d'annulation à fin de période depuis Stripe Billing Portal, Stripe a émis un événement global :
+
+- type : `customer.subscription.updated`
+- source : Portail client
+
+**Payload observé** :
+- `status = "active"`
+- `cancel_at = 1809332864` (Unix timestamp = 2027-05-03 08:27:44 UTC)
+- `cancel_at_period_end = false`
+- `canceled_at = null`
+- `current_period_end = 1809332864`
+
+**Problème** : le webhook ne lisait que `subscription.cancel_at_period_end === true`. Supabase restait donc `subscription_cancel_at_period_end = false` malgré la résiliation programmée.
+
+**Correction appliquée** dans `src/app/api/stripe/webhook/route.ts` (commit `0e44173`) :
+- ajout d'un calcul `isCancelScheduled` :
+  ```ts
+  subscription.cancel_at_period_end === true
+    || (typeof subscription.cancel_at === "number" && subscription.cancel_at > 0)
+  ```
+- `subscription_cancel_at_period_end` désormais écrit avec `isCancelScheduled`.
+
+**Confirmations** :
+- `is_subscribed` reste basé sur `status` (inchangé).
+- Statut `active` conserve `is_subscribed = true`.
+- Aucun changement DB / RLS / UI nécessaire.
+- `npx tsc --noEmit` OK ; `npm run build` OK.
+- Patch commité et poussé.
+
+### 6. Bug n°2 découvert — `customer.subscription.updated` non sélectionné dans la destination webhook
+
+L'événement `customer.subscription.updated` était bien visible dans l'onglet global *"Événements"* de Stripe Dashboard, mais **n'apparaissait pas dans *"Événements envoyés"*** de la destination webhook TRACÉA test.
+
+**Cause** : `customer.subscription.updated` n'était pas sélectionné dans la liste des événements de la destination webhook *"TRACÉA webhook test"* (oubli initial de configuration).
+
+**Correction opérationnelle Stripe Dashboard** (aucun code modifié) :
+- ajout de `customer.subscription.updated` aux événements sélectionnés de la destination webhook ;
+- sauvegarde de la destination.
+
+**Après correction** : deux événements `customer.subscription.updated` ont été émis (replay puis nouvelle annulation), tous deux livrés en 200 OK.
+
+### 7. Annulation à fin de période testée après corrections
+
+Depuis Billing Portal :
+1. clic sur *"Ne pas annuler l'abonnement"* pour retirer l'annulation programmée précédente ;
+2. nouvelle annulation à fin de période.
+
+**Résultat Stripe** :
+- `customer.subscription.updated` → 200 OK.
+
+**Résultat Supabase `profiles` validé en SQL** :
+- `is_subscribed = true`
+- `stripe_subscription_status = "active"`
+- `subscription_plan = "yearly"`
+- `subscription_current_period_end = 2027-05-03 08:27:44+00`
+- `subscription_cancel_at_period_end = true` ✓
+- `subscription_canceled_at = NULL` (Stripe ne le pose qu'à extinction effective)
+- `unsubscribed_at = NULL`
+
+**Conclusion** :
+- l'utilisateur conserve l'accès Premium jusqu'à la fin de période ;
+- TRACÉA sait désormais que l'abonnement est programmé pour se terminer ;
+- la branche d'affichage "annulation programmée" devient atteignable côté UI.
+
+### 8. Vérification UI après annulation programmée
+
+- **`/app/profil`** affiche :
+  - *"Abonnement Premium actif."*
+  - *"Ton abonnement prend fin le 3 mai."*
+  - *"Tu gardes l'accès Premium jusque-là."*
+  - bouton *"Gérer mon abonnement"* toujours présent.
+- **`/app/subscribe`** affiche :
+  - *"Ton abonnement Premium est actif."*
+  - *"Ton abonnement prend fin le 3 mai."*
+  - lien *"Voir mon profil"*.
+- **Validation** :
+  - la branche `subscriptionCancelAtPeriodEnd === true` fonctionne sur profil **et** subscribe.
+  - le flux complet (checkout → webhook → profil → portal → annulation programmée → webhook → UI) est validé en environnement test.
+
+### 9. Backlog UX Stripe non bloquant
+
+Points à corriger plus tard, sans urgence :
+
+- **Dates d'abonnement affichées sans année** : *"3 mai"* devrait idéalement devenir *"3 mai 2027"* sur `/app/profil` et `/app/subscribe`. Le helper `formatLongDate` actuel n'inclut pas l'année.
+- **Wording `/app/subscribe`** : *"Formule annuel."* (ligne `Formule {subscriptionPlanWord}.`) devrait devenir *"Formule annuelle."* — accord grammatical à corriger (le `formatPlanWord` retourne *"annuel" / "mensuel"*, qui ne se conjugue pas avec *"Formule"*).
+- **Cartes prix toujours visibles** quand l'utilisateur est déjà abonné : non bloquant mais à auditer (UX peut prêter à confusion : un abonné voit encore les options d'achat).
+- **Harmonisation profil ↔ subscribe** : les wordings de l'état "annulation programmée" sont proches mais pas strictement identiques. À aligner pour cohérence.
+
+### 10. Verdict du test
+
+| Domaine | Statut |
+|---|---|
+| Flux checkout Stripe test | ✅ validé |
+| Webhook checkout / création abonnement | ✅ validé |
+| Synchronisation `profiles` Supabase | ✅ validée (10 colonnes Stripe correctement écrites) |
+| Affichage profil abonnement | ✅ validé |
+| Billing Portal accessible depuis profil | ✅ validé |
+| Annulation à fin de période | ✅ validée **après** correction code (`cancel_at`) + configuration webhook (sélection event) |
+
+**État global** : le flux Stripe test est fonctionnel de bout en bout.
+
+**Restent avant bascule live** :
+- PATCH 10 — sécurisation suppression de compte avec abonnement actif (empêcher suppression si Stripe sub active, étendre `deleteAccount`, ajouter `auth.admin.deleteUser`).
+- PATCH 11 — audit final cohérence (retirer commentaires "TODO Stripe", typecheck, tests manuels finaux).
+- Corrections UX non bloquantes : dates avec année, *"Formule annuelle/mensuelle"*, harmonisation profil ↔ subscribe.
+- Activation complète du compte Stripe live (informations entreprise, compte bancaire, informations fiscales, liens juridiques Stripe).
+- Bascule `sk_test_*` → `sk_live_*` uniquement après PATCH 10 + PATCH 11 + validation finale.
+
+---
+
 ## Backlog sécurité — dépendances npm
 
 Lors de l'exécution de `npm install stripe` (PATCH 3, 2026-05-02), npm a signalé **7 vulnérabilités** dans le graphe de dépendances **préexistant** :
