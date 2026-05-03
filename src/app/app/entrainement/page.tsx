@@ -194,7 +194,7 @@ function EntrainementInner() {
                   <p className="font-inter text-sm t-text-ghost text-center">
                     {BREATHING_PHASES[1]}
                   </p>
-                  <BreathingGuide onComplete={() => setPhase("close")} />
+                  <BreathingGuide onComplete={() => setPhase("close")} onCancel={backToChoose} />
                 </>
               )}
 
@@ -230,8 +230,8 @@ function EntrainementInner() {
             </button>
 
             {exercise === "corps"
-              ? <GroundingGuide onComplete={() => setScreen("done")} />
-              : <GazeGuide onComplete={() => setScreen("done")} />
+              ? <GroundingGuide onComplete={() => setScreen("done")} onCancel={backToChoose} />
+              : <GazeGuide onComplete={() => setScreen("done")} onCancel={backToChoose} />
             }
 
           </div>

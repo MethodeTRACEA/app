@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 
 interface GroundingGuideProps {
   onComplete: () => void;
+  onCancel?: () => void;
 }
 
 // ── Machine d'état ──────────────────────────────────────────
@@ -105,7 +106,7 @@ function initVoice(): boolean {
   return localStorage.getItem("tracea_grounding_voice") === "on";
 }
 
-export function GroundingGuide({ onComplete }: GroundingGuideProps) {
+export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
   const [phase,        setPhase]        = useState<Phase>("pre");
   const [expanded,     setExpanded]     = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
@@ -217,6 +218,17 @@ export function GroundingGuide({ onComplete }: GroundingGuideProps) {
       >
         {voiceEnabled ? "Voix ·" : "Voix"}
       </button>
+
+      {onCancel && phase !== "close" && (
+        <button
+          type="button"
+          onClick={onCancel}
+          className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
+          aria-label="Arrêter cet exercice et revenir au choix"
+        >
+          Faire autre chose
+        </button>
+      )}
 
     </div>
   );

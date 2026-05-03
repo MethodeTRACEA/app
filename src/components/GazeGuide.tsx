@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 
 interface GazeGuideProps {
   onComplete: () => void;
+  onCancel?: () => void;
 }
 
 // ── Séquence ───────────────────────────────────────────────
@@ -37,7 +38,7 @@ function initVoice(): boolean {
   }
 }
 
-export function GazeGuide({ onComplete }: GazeGuideProps) {
+export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
   const [phase, setPhase] = useState<Phase>("pre");
   const [step,  setStep]  = useState(0);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
@@ -201,6 +202,17 @@ export function GazeGuide({ onComplete }: GazeGuideProps) {
       >
         {voiceEnabled ? "Voix ·" : "Voix"}
       </button>
+
+      {onCancel && phase !== "close" && (
+        <button
+          type="button"
+          onClick={onCancel}
+          className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
+          aria-label="Arrêter cet exercice et revenir au choix"
+        >
+          Faire autre chose
+        </button>
+      )}
 
     </div>
   );

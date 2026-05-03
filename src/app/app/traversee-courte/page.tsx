@@ -619,7 +619,7 @@ function TraverseeCourteV2() {
       // ÉCRAN 5 — EXERCICE (conditionnel)
       // ════════════════════════════════════════════════════
       case "exercice":
-        return renderExercise(anchorMethod!, () => setScreen("feedback"));
+        return renderExercise(anchorMethod!, () => setScreen("feedback"), () => setScreen("ancrer"));
 
       // ════════════════════════════════════════════════════
       // ÉCRAN 6 — FEEDBACK
@@ -692,7 +692,8 @@ function TraverseeCourteV2() {
       case "branche-pareil-exercice":
         return renderExercise(
           altMethod || getAlternativeMethod(triedMethods.slice(0, -1), false),
-          () => setScreen("branche-pareil-feedback")
+          () => setScreen("branche-pareil-feedback"),
+          () => setScreen("ancrer")
         );
 
       case "branche-pareil-feedback":
@@ -769,6 +770,7 @@ function TraverseeCourteV2() {
       case "branche-agite-exercice":
         return renderExercise(
           altMethod || getAlternativeMethod(triedMethods.slice(0, -1), true),
+          () => setScreen("choix-geste"),
           () => setScreen("choix-geste")
         );
 
@@ -937,13 +939,13 @@ function TraverseeCourteV2() {
   };
 
   // ── Exercice conditionnel ────────────────────────────────
-  function renderExercise(method: AnchorMethod, onDone: () => void) {
+  function renderExercise(method: AnchorMethod, onDone: () => void, onCancel?: () => void) {
     switch (method) {
       case "appuis":
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-5">
             <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">Appuis</p>
-            <GroundingGuide onComplete={onDone} />
+            <GroundingGuide onComplete={onDone} onCancel={onCancel} />
           </div>
         );
 
@@ -951,7 +953,7 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-5">
             <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">Autour</p>
-            <GazeGuide onComplete={onDone} />
+            <GazeGuide onComplete={onDone} onCancel={onCancel} />
           </div>
         );
 
@@ -959,7 +961,7 @@ function TraverseeCourteV2() {
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-5">
             <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">Souffle</p>
-            <BreathingGuide onComplete={onDone} />
+            <BreathingGuide onComplete={onDone} onCancel={onCancel} />
           </div>
         );
     }

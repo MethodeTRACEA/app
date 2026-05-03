@@ -7,6 +7,7 @@ import { AudioToggle } from "@/components/ui/AudioToggle";
 
 interface BreathingGuideProps {
   onComplete: () => void;
+  onCancel?: () => void;
 }
 
 // ── Machine d'état ─────────────────────────────────────────
@@ -21,7 +22,7 @@ function initAudioLevel(): AudioLevel {
   return saved === "low" || saved === "medium" ? saved : "off";
 }
 
-export function BreathingGuide({ onComplete }: BreathingGuideProps) {
+export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
   const [phase, setPhase] = useState<Phase>("pre");
   const [cycle, setCycle] = useState(0);
   const [audioLevel, setAudioLevel] = useState<AudioLevel>(initAudioLevel);
@@ -137,6 +138,17 @@ export function BreathingGuide({ onComplete }: BreathingGuideProps) {
       <div className="pt-4 pb-1">
         <AudioToggle level={audioLevel} onChange={handleAudioChange} />
       </div>
+
+      {onCancel && phase !== "close" && (
+        <button
+          type="button"
+          onClick={onCancel}
+          className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors mt-2"
+          aria-label="Arrêter cet exercice et revenir au choix"
+        >
+          Faire autre chose
+        </button>
+      )}
     </div>
   );
 }

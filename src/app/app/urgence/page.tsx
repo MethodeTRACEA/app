@@ -171,7 +171,7 @@ function UrgenceInner() {
                   <p className="font-inter text-sm t-text-ghost text-center">
                     {BREATHING_PHASES[1]}
                   </p>
-                  <BreathingGuide onComplete={() => setScreen("done")} />
+                  <BreathingGuide onComplete={() => setScreen("done")} onCancel={backToChoose} />
                 </>
               )}
 
@@ -195,8 +195,8 @@ function UrgenceInner() {
             </button>
 
             {exercise === "corps"
-              ? <GroundingGuide onComplete={() => setScreen("done")} />
-              : <GazeGuide onComplete={() => setScreen("done")} />
+              ? <GroundingGuide onComplete={() => setScreen("done")} onCancel={backToChoose} />
+              : <GazeGuide onComplete={() => setScreen("done")} onCancel={backToChoose} />
             }
 
           </div>
