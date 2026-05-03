@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import {
   getProfileDb,
@@ -68,8 +69,10 @@ function formatPlanLabel(
 }
 
 export default function ProfilPage() {
+  const router = useRouter();
   const {
     user,
+    session,
     loading: authLoading,
     signOut,
     isSubscribed,
@@ -100,6 +103,7 @@ export default function ProfilPage() {
   const [memoryLoading, setMemoryLoading] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [portalStatus, setPortalStatus] = useState<"idle" | "loading" | "error">("idle");
 
   useEffect(() => {
     if (!user) return;
@@ -169,6 +173,11 @@ export default function ProfilPage() {
     !isSubscribed &&
     (stripeSubscriptionStatus === "canceled" || !!unsubscribedAt);
 
+  // Drapeau UI Stripe — lu uniquement côté client. Tant qu'il vaut
+  // false, aucun bouton Billing Portal ne s'affiche dans `/app/profil`.
+  const stripeUiEnabled =
+    process.env.NEXT_PUBLIC_STRIPE_ENABLED === "true";
+
   const accessSecondaryTextStyle: React.CSSProperties = {
     fontSize: 14,
     color: "rgba(240,230,214,0.55)",
@@ -182,6 +191,26 @@ export default function ProfilPage() {
     color: "#C97B6A",
     textDecoration: "underline",
     textUnderlineOffset: 3,
+  };
+
+  const portalButtonStyle: React.CSSProperties = {
+    fontSize: 14,
+    color: "#C97B6A",
+    textDecoration: "underline",
+    textUnderlineOffset: 3,
+    background: "transparent",
+    border: "none",
+    padding: 0,
+    cursor: portalStatus === "loading" ? "wait" : "pointer",
+    opacity: portalStatus === "loading" ? 0.5 : 1,
+  };
+
+  const portalErrorStyle: React.CSSProperties = {
+    fontSize: 13,
+    color: "rgba(240,230,214,0.55)",
+    lineHeight: 1.5,
+    textAlign: "center",
+    marginTop: 8,
   };
 
   async function handleSaveName() {
@@ -231,6 +260,43 @@ export default function ProfilPage() {
     setDeleteConfirm(false);
     setDeleteSuccess(true);
     setTimeout(() => setDeleteSuccess(false), 4000);
+  }
+
+  async function openBillingPortal() {
+    if (!stripeUiEnabled) return;
+
+    if (!session?.access_token) {
+      router.push("/app/connexion");
+      return;
+    }
+
+    setPortalStatus("loading");
+
+    try {
+      const res = await fetch("/api/subscribe/portal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (res.status === 401) {
+        router.push("/app/connexion");
+        return;
+      }
+
+      if (res.ok && typeof data?.url === "string") {
+        window.location.href = data.url;
+        return;
+      }
+
+      setPortalStatus("error");
+    } catch {
+      setPortalStatus("error");
+    }
   }
 
   return (
@@ -384,7 +450,45 @@ export default function ProfilPage() {
         <div style={blockStyle}>
           <p className="font-sans" style={kickerStyle}>Ton accès TRACÉA</p>
 
-          {isSubscribed ? (
+          {stripeSubscriptionStatus === "past_due" ? (
+            // Cas B — paiement échoué (past_due) — placé en tête de cascade
+            // car le webhook met `is_subscribed=false` quand le statut bascule
+            // sur past_due, donc cette branche doit pouvoir matcher
+            // indépendamment de `isSubscribed`.
+            <>
+              <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
+                Abonnement Premium actif.
+              </p>
+              <p className="font-sans" style={accessSecondaryTextStyle}>
+                Un paiement n&apos;a pas pu être pris.
+              </p>
+              <p className="font-sans" style={accessSecondaryTextStyle}>
+                Tu pourras mettre à jour ton moyen de paiement depuis ton espace abonnement.
+              </p>
+              {stripeUiEnabled && (
+                <>
+                  <p style={{ textAlign: "center", marginTop: 12 }}>
+                    <button
+                      type="button"
+                      onClick={openBillingPortal}
+                      disabled={portalStatus === "loading"}
+                      className="font-sans"
+                      style={portalButtonStyle}
+                    >
+                      {portalStatus === "loading"
+                        ? "Ouverture…"
+                        : "Mettre à jour mon paiement"}
+                    </button>
+                  </p>
+                  {portalStatus === "error" && (
+                    <p className="font-sans" style={portalErrorStyle}>
+                      Impossible d&apos;ouvrir l&apos;espace abonnement pour le moment. Réessaie dans un instant.
+                    </p>
+                  )}
+                </>
+              )}
+            </>
+          ) : isSubscribed ? (
             subscriptionCancelAtPeriodEnd === true ? (
               // Cas A — annulation programmée à la fin de période
               <>
@@ -399,19 +503,28 @@ export default function ProfilPage() {
                 <p className="font-sans" style={accessSecondaryTextStyle}>
                   Tu gardes l&apos;accès Premium jusque-là.
                 </p>
-              </>
-            ) : stripeSubscriptionStatus === "past_due" ? (
-              // Cas B — paiement échoué (past_due)
-              <>
-                <p className="font-body" style={{ ...blockTextStyle, textAlign: "center" }}>
-                  Abonnement Premium actif.
-                </p>
-                <p className="font-sans" style={accessSecondaryTextStyle}>
-                  Un paiement n&apos;a pas pu être pris.
-                </p>
-                <p className="font-sans" style={accessSecondaryTextStyle}>
-                  Tu pourras mettre à jour ton moyen de paiement depuis ton espace abonnement.
-                </p>
+                {stripeUiEnabled && (
+                  <>
+                    <p style={{ textAlign: "center", marginTop: 12 }}>
+                      <button
+                        type="button"
+                        onClick={openBillingPortal}
+                        disabled={portalStatus === "loading"}
+                        className="font-sans"
+                        style={portalButtonStyle}
+                      >
+                        {portalStatus === "loading"
+                          ? "Ouverture…"
+                          : "Gérer mon abonnement"}
+                      </button>
+                    </p>
+                    {portalStatus === "error" && (
+                      <p className="font-sans" style={portalErrorStyle}>
+                        Impossible d&apos;ouvrir l&apos;espace abonnement pour le moment. Réessaie dans un instant.
+                      </p>
+                    )}
+                  </>
+                )}
               </>
             ) : (
               // Cas C — abonné actif (statut nominal)
@@ -433,6 +546,28 @@ export default function ProfilPage() {
                   <p className="font-sans" style={accessSecondaryTextStyle}>
                     Ton accès Premium est actif.
                   </p>
+                )}
+                {stripeUiEnabled && (
+                  <>
+                    <p style={{ textAlign: "center", marginTop: 12 }}>
+                      <button
+                        type="button"
+                        onClick={openBillingPortal}
+                        disabled={portalStatus === "loading"}
+                        className="font-sans"
+                        style={portalButtonStyle}
+                      >
+                        {portalStatus === "loading"
+                          ? "Ouverture…"
+                          : "Gérer mon abonnement"}
+                      </button>
+                    </p>
+                    {portalStatus === "error" && (
+                      <p className="font-sans" style={portalErrorStyle}>
+                        Impossible d&apos;ouvrir l&apos;espace abonnement pour le moment. Réessaie dans un instant.
+                      </p>
+                    )}
+                  </>
                 )}
               </>
             )
