@@ -784,6 +784,89 @@ Si problème en production : rebascule `STRIPE_ENABLED=false` et `NEXT_PUBLIC_ST
 
 ---
 
+## Configuration Stripe live dormant — 2026-05-03
+
+**Statut** : configuration live opérationnelle **préparée** ; paiement live **non encore activé publiquement** ; drapeaux toujours dormants.
+
+### Résumé des actions réalisées (chantier opérationnel hors code)
+
+- ✅ Compte Stripe **production** activé et configuré (informations entreprise, compte bancaire, informations fiscales, liens juridiques).
+- ✅ Produit live **"TRACÉA Premium"** créé.
+- ✅ Tarif mensuel live **9 €/mois** créé.
+- ✅ Tarif annuel live **78 €/an** créé.
+- ✅ **Price IDs live** récupérés (valeurs non écrites dans ce document).
+- ✅ **Customer Portal live** configuré (mêmes 4 fonctionnalités que la version test : factures, infos client, moyens de paiement, annulation à fin de période).
+- ✅ **Webhook live** créé pointant vers `https://www.methodetracea.fr/api/stripe/webhook`, avec les 6 événements requis : `checkout.session.completed`, `customer.subscription.created/updated/deleted`, `invoice.payment_succeeded`, `invoice.payment_failed`.
+- ✅ **`STRIPE_WEBHOOK_SECRET`** live récupéré (valeur non écrite dans ce document).
+- ✅ **`STRIPE_SECRET_KEY`** live récupérée (valeur non écrite dans ce document).
+- ✅ Variables Vercel **Production** mises à jour avec les valeurs live.
+- ✅ Drapeau `STRIPE_ENABLED` conservé à `false`.
+- ✅ Drapeau `NEXT_PUBLIC_STRIPE_ENABLED` conservé à `false`.
+- ✅ `NEXT_PUBLIC_APP_URL` vérifié à `https://www.methodetracea.fr`.
+- ✅ **Redeploy Vercel Production** effectué pour propagation des nouvelles variables aux fonctions serverless.
+- ✅ Déploiement Vercel statut **Ready**.
+- ✅ App publique vérifiée OK après redeploy.
+- ✅ `/app/subscribe` vérifié **dormant** (aucun bouton paiement actif).
+- ✅ `/app/profil` vérifié OK.
+
+### Variables documentées (sans valeur)
+
+| Variable | Présente Vercel Production ? | Valeur en clair dans ce document |
+|---|---|---|
+| `STRIPE_SECRET_KEY` | ✓ live (`sk_live_*`, **Sensitive**) | ✗ jamais |
+| `STRIPE_WEBHOOK_SECRET` | ✓ live (`whsec_*`, **Sensitive**) | ✗ jamais |
+| `STRIPE_PRICE_MONTHLY_ID` | ✓ live | ✗ valeur non documentée |
+| `STRIPE_PRICE_YEARLY_ID` | ✓ live | ✗ valeur non documentée |
+| `STRIPE_ENABLED` | ✓ `false` | ✓ valeur publique sans risque |
+| `NEXT_PUBLIC_STRIPE_ENABLED` | ✓ `false` | ✓ valeur publique sans risque |
+| `NEXT_PUBLIC_APP_URL` | ✓ `https://www.methodetracea.fr` | ✓ URL publique |
+
+Les variables Stripe live (`sk_live_*`, `whsec_*`, price IDs live) **vivent uniquement dans Vercel Production en mode Sensitive**. Elles ne doivent jamais être écrites :
+- ni dans le repo,
+- ni dans `.env.example`,
+- ni dans `docs/`,
+- ni dans le chat,
+- ni dans une variable préfixée `NEXT_PUBLIC_*`.
+
+### Résultat validé après redeploy
+
+- **Mode dormant confirmé** : les variables live sont chargées par les fonctions serverless mais aucune ne s'active tant que les drapeaux restent à `false`.
+- **Aucun checkout visible** côté UI.
+- **Aucun bouton paiement actif** dans `/app/subscribe`, `/app/profil` ou ailleurs.
+- **Profil utilisateur normal** : trial, bêta, gratuit fonctionnent comme avant.
+- **Testeurs non impactés** : parcours identique à avant le redeploy.
+
+L'effet net du redeploy est purement préparatoire : les fonctions serverless seront prêtes à utiliser immédiatement les variables live **dès que les drapeaux passeront à `true`**, sans nécessiter un redéploiement supplémentaire.
+
+### Prochaine étape — test live contrôlé
+
+**Test live contrôlé** avec un compte interne :
+
+1. **Bascule temporaire** des deux drapeaux à `true` côté Vercel Production : `STRIPE_ENABLED=true` + `NEXT_PUBLIC_STRIPE_ENABLED=true`.
+2. **Redeploy** Vercel pour activation des drapeaux côté bundle client.
+3. **Vrai paiement contrôlé** sur un compte interne avec une vraie carte (montant réel, à annuler immédiatement après test).
+4. **Vérification webhook live** : réception des événements `checkout.session.completed`, `customer.subscription.created` côté Stripe Dashboard live et 200 OK côté serveur Vercel.
+5. **Vérification Supabase `profiles`** : les 10 colonnes Stripe synchronisées (`is_subscribed`, `stripe_subscription_status`, `subscription_plan`, `subscription_current_period_end`, etc.).
+6. **Vérification UI** :
+   - `/app/profil` affiche "Abonnement Premium actif." + "Formule annuelle/mensuelle." + "Renouvellement le {date 2027}." + bouton "Gérer mon abonnement".
+   - `/app/subscribe` affiche le même état cohérent.
+7. **Vérification Billing Portal** : redirection OK depuis `/app/profil`, factures visibles, accès à la résiliation.
+8. **Annulation à fin de période** depuis le Billing Portal → vérifier `subscription_cancel_at_period_end=true` (correctif `cancel_at` du commit `0e44173`) + UI bascule sur la branche "Ton abonnement prend fin le {date}".
+9. **Rollback ou maintien** :
+   - Si tout OK : maintenir les drapeaux à `true`, le compte interne reste annulé fin de période.
+   - Si problème : rebascule des drapeaux à `false` + redeploy → retour immédiat au mode dormant. Les éventuels prélèvements live faits pendant le test peuvent être remboursés via Stripe Dashboard live.
+
+### Plan de rollback
+
+À appliquer si quoi que ce soit dévie pendant ou après le test live :
+1. Côté Vercel Production : passer `STRIPE_ENABLED` à `false` et `NEXT_PUBLIC_STRIPE_ENABLED` à `false`.
+2. Redeploy Vercel.
+3. L'app revient en mode dormant en quelques minutes : aucun nouveau checkout possible, aucun bouton paiement actif.
+4. Les abonnements en cours côté Stripe live continuent (Stripe est autonome) ; les utilisateurs déjà abonnés gardent leur statut Premium tant que le webhook continue de synchroniser. Après plusieurs jours sans webhook reçu (cause : drapeau dormant côté serveur), un cron Stripe peut demander un retry — sans effet puisque la route répond 200 + `ignored: true`.
+5. Réactivation possible en quelques minutes une fois le bug résolu et les correctifs livrés.
+
+---
+
 ## Backlog sécurité — dépendances npm
 
 Lors de l'exécution de `npm install stripe` (PATCH 3, 2026-05-02), npm a signalé **7 vulnérabilités** dans le graphe de dépendances **préexistant** :
