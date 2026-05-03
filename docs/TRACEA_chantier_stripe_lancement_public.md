@@ -144,7 +144,7 @@ Précisions importantes :
 | 8b | UI `/app/profil` : ajouter les boutons "Gérer mon abonnement" et "Mettre à jour mon paiement" branchés sur `/api/subscribe/portal` — ✅ FAIT — boutons Billing Portal ajoutés dans `/app/profil`, gated par `NEXT_PUBLIC_STRIPE_ENABLED=false/true` | `src/app/app/profil/page.tsx` |
 | 9 | Route Stripe Billing Portal `/api/subscribe/portal` + bouton dédié — ✅ FAIT (route serveur uniquement) — route `/api/subscribe/portal` Billing Portal créée, dormante si `STRIPE_ENABLED=false`. Le bouton dédié relève de PATCH 8b. | `src/app/api/subscribe/portal/route.ts` (nouveau) |
 | 10 | Sécurisation de la suppression de compte : empêcher si abonnement actif, étendre `deleteAccount` aux 5 tables manquantes (`tracea_events`, `ai_usage_logs`, `rate_limit_logs`, `session_summaries`, `user_memory_profile`), ajouter `auth.admin.deleteUser` — ✅ FAIT — nouvelle route `/api/account/delete` avec garde Stripe défensive, suppression des 8 tables + `auth.users`, fail-hard sur auth, branche reprise pour profils orphelins ; UI profil avec bloc de blocage non destructif vers Billing Portal | `src/app/api/account/delete/route.ts` (nouveau), `src/app/app/profil/page.tsx` |
-| 11 | Audit final cohérence docs ↔ app avant activation publique : retirer commentaires "TODO Stripe", typecheck, tests manuels en mode test Stripe (`sk_test_*`) — ⏳ **prochaine étape** | – |
+| 11 | Audit final cohérence docs ↔ app avant activation publique : retirer commentaires "TODO Stripe", typecheck, tests manuels en mode test Stripe (`sk_test_*`) — ✅ FAIT côté audit + P11.1 nettoyage commentaires obsolètes ; il reste les étapes opérationnelles externes (compte Stripe live, dashboard, variables Vercel, test live contrôlé) | `src/lib/auth-context.tsx`, `src/app/api/tracea/route.ts`, `src/app/api/tracea/summarize/route.ts` |
 
 Chaque étape est isolée, testable, commitable indépendamment.
 
@@ -728,6 +728,59 @@ Note : `src/lib/supabase-store.ts` n'est pas modifié. La fonction `deleteAccoun
 - tests manuels en mode Stripe test (`sk_test_*`) couvrant les 9 cas de test du PATCH 10 ;
 - vérification cohérence docs ↔ app ;
 - préparation du dossier d'activation compte Stripe live (informations entreprise, compte bancaire, fiscal, liens juridiques).
+
+---
+
+## P11.1 — Nettoyage commentaires Stripe obsolètes — 2026-05-03
+
+**Statut : ✅ terminé, commité, poussé** (commit `cbc46e9`).
+
+### Résumé
+
+- Nettoyage de **3 commentaires obsolètes** liés à Stripe identifiés dans l'audit final PATCH 11.
+- **Aucune logique modifiée.**
+- **Aucun import modifié.**
+- **Aucune condition modifiée.**
+- **Aucun comportement utilisateur modifié.**
+- **Aucun changement dans les routes Stripe.**
+- ✅ `npx tsc --noEmit` : exit 0.
+- ✅ `npm run build` : succès complet (36/36 pages générées).
+
+### Fichiers concernés
+
+- `src/lib/auth-context.tsx`
+- `src/app/api/tracea/route.ts`
+- `src/app/api/tracea/summarize/route.ts`
+
+Diff total : 5 insertions, 3 suppressions sur 3 fichiers — strictement des commentaires.
+
+### Détail
+
+- **`auth-context.tsx`** : commentaire JSDoc *"Vrai abonné payant (Stripe, futur)"* remplacé par une formulation exacte : *"Vrai abonné payant, synchronisé côté serveur via Stripe webhook."*
+- **`tracea/route.ts`** et **`tracea/summarize/route.ts`** : ancien TODO *"replace with Stripe subscription check when payment is integrated"* retiré et reformulé en : *"`is_subscribed` est le booléen serveur synchronisé par le webhook Stripe (`/api/stripe/webhook`). Aucune lecture Stripe directe ici."*
+- Rappel documenté : `is_subscribed` est désormais le booléen serveur synchronisé par `/api/stripe/webhook`. Le TODO d'origine est sémantiquement obsolète puisque l'intégration Stripe est terminée.
+
+### Précisions sur les commentaires conservés
+
+- ✓ Les commentaires *"Drapeau dormant — court-circuit si Stripe pas encore activé."* dans `subscribe/route.ts:30`, `portal/route.ts:29`, `webhook/route.ts:130` restent **intacts et valides** : ils décrivent le mode dormant tant que `STRIPE_ENABLED=false`.
+- ✓ Le `TODO : ajouter une table stripe_processed_events (event_id PK)` du webhook (lignes 29 et 183) reste **volontairement en backlog** : c'est une vraie amélioration P3 d'idempotence stricte, hors scope live V1.
+
+### Prochaine étape
+
+Chantier opérationnel Stripe **live**, **sans patch code immédiat** :
+
+1. Activer / configurer le compte Stripe live (informations entreprise, compte bancaire, informations fiscales, liens juridiques côté Stripe Dashboard).
+2. Créer le produit "TRACÉA Premium" et les prix live (9 €/mois, 78 €/an) → récupérer `STRIPE_PRICE_MONTHLY_ID` et `STRIPE_PRICE_YEARLY_ID` live.
+3. Configurer le Customer Portal live (4 fonctionnalités : factures, infos client, moyens de paiement, annulation à fin de période).
+4. Configurer la destination webhook live vers `https://www.methodetracea.fr/api/stripe/webhook` avec les **6 événements** : `checkout.session.completed`, `customer.subscription.created/updated/deleted`, `invoice.payment_succeeded`, `invoice.payment_failed`. Récupérer `STRIPE_WEBHOOK_SECRET` live.
+5. Poser les variables Vercel **live** (Production) : `STRIPE_SECRET_KEY` live, `STRIPE_WEBHOOK_SECRET` live, `STRIPE_PRICE_MONTHLY_ID` live, `STRIPE_PRICE_YEARLY_ID` live. **Drapeaux toujours à `false`** à ce stade.
+6. **Redeploy Vercel** : les variables sont chargées par les fonctions serverless, mais le comportement utilisateur reste inchangé puisque `STRIPE_ENABLED=false` et `NEXT_PUBLIC_STRIPE_ENABLED=false`.
+7. **Test live contrôlé** : 1 utilisateur interne, carte réelle, abonnement annulé immédiatement après vérification (parcours checkout → webhook → profil → portal → résiliation).
+8. Seulement ensuite envisager la **bascule** des drapeaux : `STRIPE_ENABLED=true` + `NEXT_PUBLIC_STRIPE_ENABLED=true` → redeploy → ouverture publique.
+
+### Plan de rollback
+
+Si problème en production : rebascule `STRIPE_ENABLED=false` et `NEXT_PUBLIC_STRIPE_ENABLED=false` côté Vercel + redeploy. L'app revient en mode dormant en quelques minutes. Aucun nouveau checkout possible. Les abonnements en cours côté Stripe continuent (Stripe est autonome) ; les utilisateurs déjà abonnés gardent leur statut tant que la DB n'est pas touchée.
 
 ---
 
