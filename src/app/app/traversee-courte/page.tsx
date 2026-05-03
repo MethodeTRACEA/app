@@ -97,10 +97,12 @@ const ANCHOR_SUBTEXTS: Record<AnchorMethod, string> = {
 };
 
 const ANCHOR_ORDER_BY_FEELING: Partial<Record<Feeling, AnchorMethod[]>> = {
-  "agite":          ["souffle", "appuis", "autour"],
-  "serre":          ["souffle", "appuis", "autour"],
+  "agite":          ["appuis", "autour", "souffle"],
+  "serre":          ["appuis", "autour", "souffle"],
   "lourd":          ["appuis", "autour", "souffle"],
   "flou":           ["appuis", "autour", "souffle"],
+  "vide":           ["appuis", "autour", "souffle"],
+  "bloque":         ["appuis", "autour", "souffle"],
   "je-ne-sais-pas": ["autour", "appuis", "souffle"],
 };
 
