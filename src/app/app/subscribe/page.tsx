@@ -22,6 +22,9 @@ type AlreadyPremiumReason = "beta" | "subscribed" | "other";
 type CheckoutStatus = "idle" | "loading" | "success" | "cancel" | "error";
 
 // ── Helpers locaux pour l'affichage des dates et formules ─────────
+// `formatLongDate` (sans année) est conservé pour les dates du trial
+// (la date de fin d'essai est toujours dans l'année en cours, donc
+// l'année est inutile).
 function formatLongDate(iso: string | null): string | null {
   if (!iso) return null;
   const date = new Date(iso);
@@ -32,9 +35,26 @@ function formatLongDate(iso: string | null): string | null {
   });
 }
 
-function formatPlanWord(plan: "monthly" | "yearly" | null): string | null {
-  if (plan === "monthly") return "mensuel";
-  if (plan === "yearly") return "annuel";
+// `formatLongDateWithYear` est utilisé pour les dates d'abonnement
+// Stripe (renouvellement, fin programmée, fin effective). Ces dates
+// peuvent être à plusieurs années dans le futur, donc l'année est
+// affichée explicitement.
+function formatLongDateWithYear(iso: string | null): string | null {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function formatPlanLabel(
+  plan: "monthly" | "yearly" | null
+): string | null {
+  if (plan === "monthly") return "Formule mensuelle.";
+  if (plan === "yearly") return "Formule annuelle.";
   return null;
 }
 
@@ -69,11 +89,11 @@ function SubscribePageInner() {
     process.env.NEXT_PUBLIC_STRIPE_ENABLED === "true";
 
   const formattedTrialEndDate = formatLongDate(trialEndsAt);
-  const formattedSubscriptionPeriodEnd = formatLongDate(
+  const formattedSubscriptionPeriodEnd = formatLongDateWithYear(
     subscriptionCurrentPeriodEnd
   );
-  const formattedUnsubscribedAt = formatLongDate(unsubscribedAt);
-  const subscriptionPlanWord = formatPlanWord(subscriptionPlan);
+  const formattedUnsubscribedAt = formatLongDateWithYear(unsubscribedAt);
+  const subscriptionPlanLabel = formatPlanLabel(subscriptionPlan);
   const subscriptionEnded =
     !isSubscribed &&
     (stripeSubscriptionStatus === "canceled" || !!unsubscribedAt);
@@ -364,9 +384,9 @@ function SubscribePageInner() {
             <p className="font-serif text-xl text-t-beige">
               Ton abonnement Premium est actif.
             </p>
-            {subscriptionPlanWord && (
+            {subscriptionPlanLabel && (
               <p className="font-body text-sm t-text-secondary">
-                Formule {subscriptionPlanWord}.
+                {subscriptionPlanLabel}
               </p>
             )}
             {formattedSubscriptionPeriodEnd && (
@@ -376,7 +396,7 @@ function SubscribePageInner() {
                   : `Renouvellement le ${formattedSubscriptionPeriodEnd}.`}
               </p>
             )}
-            {!subscriptionPlanWord && !formattedSubscriptionPeriodEnd && (
+            {!subscriptionPlanLabel && !formattedSubscriptionPeriodEnd && (
               <p className="font-body text-sm t-text-secondary">
                 Tu as accès aux fonctionnalités Premium.
               </p>

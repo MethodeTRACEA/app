@@ -50,6 +50,10 @@ const blockTextStyle: React.CSSProperties = {
 };
 
 // ── Helpers locaux pour l'affichage du statut d'abonnement ─────────
+// `formatLongDate` est consommé uniquement par les dates Stripe
+// (renouvellement, fin programmée, abonnement terminé). Le format
+// inclut l'année pour rendre explicites les dates de fin/renouvellement
+// qui peuvent être à plusieurs années dans le futur.
 function formatLongDate(iso: string | null): string | null {
   if (!iso) return null;
   const date = new Date(iso);
@@ -57,6 +61,7 @@ function formatLongDate(iso: string | null): string | null {
   return date.toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
+    year: "numeric",
   });
 }
 
