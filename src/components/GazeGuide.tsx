@@ -13,13 +13,13 @@ interface GazeGuideProps {
 // voix joue. fallbackMs = durée d'affichage de la consigne quand
 // la voix est désactivée ou que l'audio échoue.
 const STEPS = [
-  { src: "/audio/gaze/gaze_1.mp3", text: "Lève doucement les yeux.",            pauseMs: 2500, fallbackMs: 5500 },
-  { src: "/audio/gaze/gaze_2.mp3", text: "Laisse ton regard se poser autour.",  pauseMs: 4500, fallbackMs: 7500 },
-  { src: "/audio/gaze/gaze_3.mp3", text: "Repère une couleur.",                 pauseMs: 4500, fallbackMs: 7500 },
-  { src: "/audio/gaze/gaze_4.mp3", text: "Repère une forme.",                   pauseMs: 4500, fallbackMs: 7500 },
-  { src: "/audio/gaze/gaze_5.mp3", text: "Choisis un point fixe.",              pauseMs: 3500, fallbackMs: 6500 },
-  { src: "/audio/gaze/gaze_6.mp3", text: "Reste là un moment.",                 pauseMs: 7000, fallbackMs: 9500 },
-  { src: "/audio/gaze/gaze_7.mp3", text: "Tu peux revenir quand tu veux.",      pauseMs: 0,    fallbackMs: 3000 }, // → close
+  { src: "/audio/gaze/gaze_1.mp3", text: "Tu peux lever légèrement les yeux de l'écran.", pauseMs: 2500, fallbackMs: 5500 },
+  { src: "/audio/gaze/gaze_2.mp3", text: "Regarde quelque chose de proche.",              pauseMs: 4500, fallbackMs: 7500 },
+  { src: "/audio/gaze/gaze_3.mp3", text: "Puis quelque chose un peu plus loin…",          pauseMs: 4500, fallbackMs: 7500 },
+  { src: "/audio/gaze/gaze_4.mp3", text: "Laisse ton regard se poser ailleurs.",          pauseMs: 4500, fallbackMs: 7500 },
+  { src: "/audio/gaze/gaze_5.mp3", text: "Sans avoir besoin de chercher.",                pauseMs: 3500, fallbackMs: 6500 },
+  { src: "/audio/gaze/gaze_6.mp3", text: "Juste regarder.",                               pauseMs: 7000, fallbackMs: 9500 },
+  { src: "/audio/gaze/gaze_7.mp3", text: "C'est suffisant pour maintenant.",              pauseMs: 0,    fallbackMs: 3000 }, // → close
 ] as const;
 
 // Indicateur directionnel — s'efface au fil des steps
