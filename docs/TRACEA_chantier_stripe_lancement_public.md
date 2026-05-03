@@ -867,6 +867,114 @@ L'effet net du redeploy est purement préparatoire : les fonctions serverless se
 
 ---
 
+## Test live contrôlé Stripe — 2026-05-03
+
+**Statut** :
+- ✅ Test live contrôlé **réussi**.
+- ✅ Stripe live **techniquement validé** de bout en bout.
+- ✅ Paiement public **remis en mode dormant après test**.
+
+### Résumé du test
+
+#### Bascule temporaire vers le mode actif
+
+- Drapeaux Vercel Production basculés temporairement :
+  - `STRIPE_ENABLED=true`
+  - `NEXT_PUBLIC_STRIPE_ENABLED=true`
+- Redeploy Vercel Production effectué.
+- Déploiement statut **Ready**.
+
+#### Compte de test interne — checkout live
+
+- Compte test interne utilisé.
+- Abonnement **mensuel live** testé.
+- **Paiement réel de 9 €** effectué (carte réelle ; détails non documentés).
+- Retour `?checkout=success` dans TRACÉA.
+
+#### `/app/subscribe` après retour Stripe
+
+- *"Bienvenue dans Premium."*
+- *"Abonnement Premium actif."*
+- *"Formule mensuelle."*
+- *"Renouvellement le 3 juin 2026."*
+
+#### `/app/profil` après retour Stripe
+
+- *"Abonnement Premium actif."*
+- bouton *"Gérer mon abonnement"* affiché.
+
+#### Billing Portal live
+
+- Portail ouvert depuis `/app/profil` via le bouton "Gérer mon abonnement".
+- Abonnement *"TRACÉA Premium"* visible côté Stripe Customer Portal.
+- Option *"Annuler l'abonnement"* disponible.
+- **Annulation à fin de période effectuée** depuis le portail.
+
+#### `/app/profil` et `/app/subscribe` après annulation programmée
+
+- `/app/profil` affiche la **fin prévue le 3 juin 2026** (branche annulation programmée — Cas A).
+- `/app/subscribe` affiche la **fin prévue le 3 juin 2026** (branche `subscriptionCancelAtPeriodEnd === true`).
+
+### Webhook live — événements vérifiés
+
+Les 4 événements live ont été reçus et traités en **200 OK** côté serveur Vercel + Supabase synchronisé :
+
+| Événement | Statut | Effet vérifié |
+|---|---|---|
+| `checkout.session.completed` | 200 OK | `stripe_customer_id`, `stripe_subscription_id` posés sur `profiles` |
+| `customer.subscription.created` | 200 OK | `is_subscribed=true`, `stripe_subscription_status="active"`, `subscription_plan="monthly"`, `subscription_current_period_end`, `subscribed_at` |
+| `invoice.payment_succeeded` | 200 OK | reçu (log only en V1, comme prévu) |
+| `customer.subscription.updated` | **200 OK** ⭐ | `subscription_cancel_at_period_end=true` (correctif `cancel_at` du commit `0e44173` confirmé en live) |
+
+**Point critique validé** : `customer.subscription.updated` est bien passé en 200 OK. C'était le point sensible pour l'annulation programmée — l'oubli de sélectionner cet event dans la destination webhook avait causé un bug en mode test (cf. section "Test bout-en-bout Stripe test — 2026-05-03"). En live, l'événement est correctement sélectionné et traité.
+
+**La chaîne `checkout → webhook → Supabase → UI` est validée de bout en bout en environnement Stripe live.**
+
+### Retour dormant après validation
+
+- Drapeaux Vercel Production rebasculés :
+  - `STRIPE_ENABLED=false`
+  - `NEXT_PUBLIC_STRIPE_ENABLED=false`
+- Redeploy Vercel Production effectué.
+- Déploiement statut **Ready**.
+- App vérifiée OK après redeploy.
+- `/app/subscribe` **revenu en mode dormant** (cartes décoratives, aucun bouton paiement actif).
+- `/app/profil` OK.
+- **Aucun paiement public actif.**
+
+### Point d'attention à garder en tête
+
+- L'abonnement de test réel est annulé à fin de période (3 juin 2026).
+- Si les drapeaux restent à `false` au moment où Stripe enverra l'événement final de fin d'abonnement (`customer.subscription.deleted` autour du 3 juin 2026), le webhook **dormant** retournera 200 + `ignored: true` sans écrire en DB. Le profil Supabase associé restera donc avec `is_subscribed=true` et `subscription_cancel_at_period_end=true` au lieu de basculer en `canceled`.
+- **Acceptable pour ce test interne**, mais à garder en tête :
+  - avant ouverture publique réelle, les drapeaux **devront** être remis à `true` ;
+  - si l'ouverture publique a lieu après le 3 juin 2026, **vérifier manuellement** dans Supabase/Stripe Dashboard le compte test pour nettoyer l'état désynchronisé éventuel ;
+  - alternative : repasser brièvement les drapeaux à `true` autour du 3 juin pour permettre au webhook de finaliser l'event de fin d'abonnement, puis revenir dormant.
+
+### Verdict
+
+- ✅ **Stripe live validé techniquement.**
+- 🟡 **NO GO public tant que la décision de lancement n'est pas prise** côté produit.
+- ✅ **GO technique possible** au moment choisi, après bascule volontaire des drapeaux à `true` et surveillance.
+
+### Prochaine étape
+
+Préparer une **checklist "ouverture publique Stripe"** côté produit/opérationnel :
+
+1. Décider de la date de bascule publique.
+2. Communiquer en amont (page d'accueil, email aux testeurs si pertinent).
+3. Bascule des drapeaux Vercel Production : `STRIPE_ENABLED=true` + `NEXT_PUBLIC_STRIPE_ENABLED=true`.
+4. Redeploy Vercel.
+5. **Surveillance première journée** :
+   - **Stripe events** : Dashboard live → Webhooks → événements envoyés et leur statut (200 OK attendu sur tous).
+   - **Vercel logs** : functions logs → recherche d'erreurs Stripe ou webhook.
+   - **Supabase `profiles`** : vérifier la cohérence des 10 colonnes Stripe pour les nouveaux abonnés.
+   - **Retours utilisateur** : email, support, retours informels.
+   - **Abonnements / annulations** : suivi quotidien des conversions et résiliations.
+6. Plan de rollback toujours actif : drapeaux à `false` + redeploy → mode dormant immédiat.
+
+---
+
 ## Backlog sécurité — dépendances npm
 
 Lors de l'exécution de `npm install stripe` (PATCH 3, 2026-05-02), npm a signalé **7 vulnérabilités** dans le graphe de dépendances **préexistant** :
