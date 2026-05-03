@@ -8,7 +8,6 @@ import {
   updateProfileDb,
   getUserStatsDb,
   exportUserData,
-  deleteAccount,
 } from "@/lib/supabase-store";
 import { getConsent } from "@/lib/consent";
 import { logConsent } from "@/lib/supabase-store";
@@ -109,6 +108,9 @@ export default function ProfilPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [portalStatus, setPortalStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [deleteSubBlocked, setDeleteSubBlocked] = useState(false);
+  const [deleteAccountStatus, setDeleteAccountStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [deleteAccountError, setDeleteAccountError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -183,6 +185,18 @@ export default function ProfilPage() {
   const stripeUiEnabled =
     process.env.NEXT_PUBLIC_STRIPE_ENABLED === "true";
 
+  // Garde côté client pour la suppression de compte : on bloque si un
+  // état Stripe actif ou à traiter est détecté. Mirroir du contrôle
+  // serveur (route /api/account/delete) — la défense en profondeur
+  // côté serveur reste autoritative.
+  const isStripeBlocking =
+    isSubscribed === true ||
+    stripeSubscriptionStatus === "active" ||
+    stripeSubscriptionStatus === "trialing" ||
+    stripeSubscriptionStatus === "past_due" ||
+    stripeSubscriptionStatus === "unpaid" ||
+    stripeSubscriptionStatus === "incomplete";
+
   const accessSecondaryTextStyle: React.CSSProperties = {
     fontSize: 14,
     color: "rgba(240,230,214,0.55)",
@@ -241,6 +255,15 @@ export default function ProfilPage() {
 
   async function handleDeleteAccount() {
     if (!user) return;
+
+    // Garde côté client : si un abonnement Stripe est encore actif ou
+    // à traiter, on n'enclenche aucune confirmation destructive et on
+    // affiche le bloc de blocage qui oriente vers le Billing Portal.
+    if (isStripeBlocking) {
+      setDeleteSubBlocked(true);
+      return;
+    }
+
     if (
       !confirm(
         "Supprimer définitivement ton compte et toutes tes données ? Cette action est irréversible."
@@ -250,8 +273,50 @@ export default function ProfilPage() {
     if (!confirm("Es-tu vraiment sûr(e) ? Toutes tes sessions seront perdues."))
       return;
 
-    await deleteAccount(user.id);
-    await signOut();
+    if (!session?.access_token) {
+      router.push("/app/connexion");
+      return;
+    }
+
+    setDeleteAccountStatus("loading");
+    setDeleteAccountError(null);
+
+    try {
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+      const data = await res.json().catch(() => null);
+
+      if (
+        res.status === 409 &&
+        data?.code === "active_subscription"
+      ) {
+        // Filet serveur — devrait être rare puisque l'UI a déjà filtré.
+        setDeleteSubBlocked(true);
+        setDeleteAccountStatus("idle");
+        return;
+      }
+
+      if (res.ok && data?.success === true) {
+        await signOut();
+        router.push("/");
+        return;
+      }
+
+      setDeleteAccountError(
+        "La suppression n'a pas pu être terminée. Réessaie ou contacte le support."
+      );
+      setDeleteAccountStatus("error");
+    } catch {
+      setDeleteAccountError(
+        "La suppression n'a pas pu être terminée. Réessaie ou contacte le support."
+      );
+      setDeleteAccountStatus("error");
+    }
   }
 
   async function handleDeleteMemory() {
@@ -832,22 +897,119 @@ export default function ProfilPage() {
                   >
                     Exporter mes donn&eacute;es (portabilit&eacute;)
                   </button>
-                  <button
-                    onClick={handleDeleteAccount}
-                    className="font-sans"
-                    style={{
-                      width: "100%",
-                      textAlign: "center",
-                      fontSize: 14,
-                      color: "rgba(240,230,214,0.62)",
-                      textDecoration: "underline",
-                      textUnderlineOffset: 3,
-                      padding: "8px 0",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Supprimer mon compte et toutes mes donn&eacute;es
-                  </button>
+                  {deleteSubBlocked ? (
+                    <div
+                      style={{
+                        background: "rgba(111,106,100,0.20)",
+                        border: "1px solid rgba(240,230,214,0.10)",
+                        borderRadius: 14,
+                        padding: "16px 18px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 12,
+                      }}
+                    >
+                      <p
+                        className="font-body"
+                        style={{
+                          ...blockTextStyle,
+                          textAlign: "center",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        Tu as un abonnement Premium actif.
+                      </p>
+                      <p
+                        className="font-sans"
+                        style={accessSecondaryTextStyle}
+                      >
+                        Avant de supprimer ton compte, tu dois d&apos;abord
+                        g&eacute;rer ton abonnement. Tu peux le faire depuis
+                        ton espace abonnement.
+                      </p>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 16,
+                          justifyContent: "center",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDeleteSubBlocked(false);
+                            openBillingPortal();
+                          }}
+                          disabled={portalStatus === "loading"}
+                          className="font-sans"
+                          style={portalButtonStyle}
+                        >
+                          {portalStatus === "loading"
+                            ? "Ouverture…"
+                            : "Gérer mon abonnement"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteSubBlocked(false)}
+                          className="font-sans"
+                          style={{
+                            fontSize: 14,
+                            color: "rgba(240,230,214,0.45)",
+                            background: "transparent",
+                            border: "none",
+                            padding: 0,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={handleDeleteAccount}
+                        disabled={deleteAccountStatus === "loading"}
+                        className="font-sans"
+                        style={{
+                          width: "100%",
+                          textAlign: "center",
+                          fontSize: 14,
+                          color: "rgba(240,230,214,0.62)",
+                          textDecoration: "underline",
+                          textUnderlineOffset: 3,
+                          padding: "8px 0",
+                          cursor:
+                            deleteAccountStatus === "loading"
+                              ? "wait"
+                              : "pointer",
+                          background: "transparent",
+                          border: "none",
+                          opacity:
+                            deleteAccountStatus === "loading" ? 0.5 : 1,
+                        }}
+                      >
+                        {deleteAccountStatus === "loading"
+                          ? "Suppression…"
+                          : "Supprimer mon compte et toutes mes données"}
+                      </button>
+                      {deleteAccountStatus === "error" && deleteAccountError && (
+                        <p
+                          className="font-sans"
+                          style={{
+                            fontSize: 13,
+                            color: "rgba(240,230,214,0.55)",
+                            lineHeight: 1.5,
+                            textAlign: "center",
+                            marginTop: 8,
+                          }}
+                        >
+                          {deleteAccountError}
+                        </p>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
