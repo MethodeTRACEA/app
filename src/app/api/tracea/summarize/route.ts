@@ -485,7 +485,8 @@ async function checkAiLimit(userId: string): Promise<boolean> {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    // TODO: replace with Stripe subscription check when payment is integrated
+    // `is_subscribed` est le booléen serveur synchronisé par le webhook
+    // Stripe (`/api/stripe/webhook`). Aucune lecture Stripe directe ici.
     const { data: profile } = await supabase
       .from("profiles")
       .select("is_subscribed, is_beta_tester, trial_used, trial_ends_at, trial_deep_sessions_used")

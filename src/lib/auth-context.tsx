@@ -16,7 +16,7 @@ interface AuthState {
   session: Session | null;
   loading: boolean;
   isAdmin: boolean;
-  /** Vrai abonné payant (Stripe, futur) */
+  /** Vrai abonné payant, synchronisé côté serveur via Stripe webhook. */
   isSubscribed: boolean;
   /** Bêta testeur activé via mot de passe */
   isBetaTester: boolean;
