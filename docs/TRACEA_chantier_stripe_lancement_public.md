@@ -139,7 +139,7 @@ Précisions importantes :
 | 5 | Route checkout `POST /api/subscribe` ; **inactive si `STRIPE_ENABLED=false`** (renvoie 503 ou 403 explicite) — ✅ FAIT — route `/api/subscribe` checkout Stripe préparée, inactive si `STRIPE_ENABLED=false` | `src/app/api/subscribe/route.ts` |
 | 6 | Route webhook `POST /api/stripe/webhook` (vérification signature, idempotence) — ✅ FAIT — webhook Stripe créé, signature vérifiée, synchronisation `profiles`, dormant si `STRIPE_ENABLED=false` | `src/app/api/stripe/webhook/route.ts` (nouveau) |
 | 7a | Ajouter `NEXT_PUBLIC_STRIPE_ENABLED=false` dans `.env.example` + documenter le double drapeau (serveur vs UI) — ✅ FAIT | `.env.example`, `docs/TRACEA_chantier_stripe_lancement_public.md` |
-| 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") — ⏸️ **différé** (à reprendre quand Stripe Dashboard sera configuré et que PATCH 8b + PATCH 9 sont prêts) | `src/app/app/subscribe/page.tsx` |
+| 7 | UI `/app/subscribe` conditionnelle au drapeau (cartes prix cliquables, états Stripe, suppression des "arrive bientôt") — ✅ FAIT — UI `/app/subscribe` checkout Stripe conditionnelle, gated par `NEXT_PUBLIC_STRIPE_ENABLED` ; correctif Suspense ajouté pour `useSearchParams` (pattern `SubscribePageInner` + `<Suspense>`, cohérent avec `/app/session`) ; `npm run build` validé. | `src/app/app/subscribe/page.tsx` |
 | 8a | UI `/app/profil` enrichie : statuts abonnement Stripe en lecture seule (annulation programmée, past_due, formule + date de renouvellement, abonnement terminé) — ✅ FAIT — sans bouton portal, sans appel API, dormant | `src/app/app/profil/page.tsx` |
 | 8b | UI `/app/profil` : ajouter les boutons "Gérer mon abonnement" et "Mettre à jour mon paiement" branchés sur `/api/subscribe/portal` — ✅ FAIT — boutons Billing Portal ajoutés dans `/app/profil`, gated par `NEXT_PUBLIC_STRIPE_ENABLED=false/true` | `src/app/app/profil/page.tsx` |
 | 9 | Route Stripe Billing Portal `/api/subscribe/portal` + bouton dédié — ✅ FAIT (route serveur uniquement) — route `/api/subscribe/portal` Billing Portal créée, dormante si `STRIPE_ENABLED=false`. Le bouton dédié relève de PATCH 8b. | `src/app/api/subscribe/portal/route.ts` (nouveau) |
@@ -148,18 +148,34 @@ Précisions importantes :
 
 Chaque étape est isolée, testable, commitable indépendamment.
 
-**Prochaine étape : PATCH 7** — UI `/app/subscribe` conditionnelle, checkout Stripe, gated par `NEXT_PUBLIC_STRIPE_ENABLED`. Cartes prix cliquables sur `/api/subscribe`, gestion `?checkout=success/cancel`, états Stripe-aware (abonné, past_due, annulation programmée, terminé), suppression des "L'abonnement payant arrive bientôt". Sans paiement visible tant que les drapeaux Stripe sont à `false`.
+**Prochaine étape : Plan de test bout-en-bout Stripe test** — préparer et valider un plan de test couvrant :
 
-Note : le parcours de gestion/résiliation est désormais **prêt côté route + UI profil** :
+- bascule des drapeaux Vercel (test) : `STRIPE_ENABLED=true` + `NEXT_PUBLIC_STRIPE_ENABLED=true` ;
+- redeploy Vercel pour propagation ;
+- checkout Stripe (cartes test `4242 4242 4242 4242`) → `/api/subscribe` → Stripe Checkout → retour `?checkout=success` ;
+- webhook (`/api/stripe/webhook`) reçu et synchronise `profiles` (`is_subscribed=true`, `stripe_subscription_status=active`, `subscription_plan`, `subscription_current_period_end`, `subscribed_at`) ;
+- profil `/app/profil` : statut, formule, date de renouvellement affichés correctement ;
+- Billing Portal `/api/subscribe/portal` accessible depuis `/app/profil` ;
+- résiliation depuis le portail (cancel at period end) → webhook `customer.subscription.updated` → `subscriptionCancelAtPeriodEnd=true`, `subscription_canceled_at` posé ;
+- vérification Supabase `profiles` (état des 10 colonnes Stripe + `is_subscribed`).
 
-- ✅ PATCH 9 (route `/api/subscribe/portal`) livré.
-- ✅ PATCH 8b (boutons "Gérer mon abonnement" / "Mettre à jour mon paiement" sur `/app/profil`) livré, gated par `NEXT_PUBLIC_STRIPE_ENABLED === "true"`.
+### État global du chantier Stripe
 
-En mode dormant (`NEXT_PUBLIC_STRIPE_ENABLED=false` et `STRIPE_ENABLED=false`), les boutons **restent invisibles**, la route `/api/subscribe/portal` retourne 403, et aucun chemin Stripe n'est exposé aux testeurs.
+- ✅ DB Stripe (colonnes nullable) appliquée en production Supabase.
+- ✅ RLS Stripe (UPDATE + INSERT restrictives) appliquée et vérifiée.
+- ✅ Stripe SDK installé.
+- ✅ `.env.example` documenté avec `STRIPE_ENABLED` (serveur) et `NEXT_PUBLIC_STRIPE_ENABLED` (UI).
+- ✅ Variables Stripe test posées dans Vercel (Production and Preview), redeploy dormant validé.
+- ✅ Configuration Stripe Dashboard test : produit Premium, prix mensuel/annuel, webhook actif, Billing Portal configuré.
+- ✅ `auth-context` expose les champs Stripe en lecture seule.
+- ✅ Route checkout `/api/subscribe` prête, dormante si `STRIPE_ENABLED=false`.
+- ✅ Route webhook `/api/stripe/webhook` prête, dormante si `STRIPE_ENABLED=false`.
+- ✅ Route Billing Portal `/api/subscribe/portal` prête, dormante si `STRIPE_ENABLED=false`.
+- ✅ UI `/app/profil` Stripe-aware (statut, formule, date, boutons portal gated par `NEXT_PUBLIC_STRIPE_ENABLED`).
+- ✅ UI `/app/subscribe` Stripe-aware (cartes cliquables, bandeaux success/cancel/error, états past_due / abonné / terminé / trial terminé), gated par `NEXT_PUBLIC_STRIPE_ENABLED`.
+- ✅ Stripe reste **doublement dormant** tant que les drapeaux sont à `false` : aucun paiement visible, aucun appel API actif, aucun impact testeurs.
 
-**Ne pas basculer `STRIPE_ENABLED=true` ni `NEXT_PUBLIC_STRIPE_ENABLED=true` avant** :
-- la livraison de PATCH 7 (UI `/app/subscribe` checkout actif) ;
-- un test bout-en-bout complet en environnement Stripe test (`sk_test_*`) couvrant : trial → checkout → webhook → profil → portal → résiliation.
+**Ne pas basculer `STRIPE_ENABLED=true` ni `NEXT_PUBLIC_STRIPE_ENABLED=true` tant qu'un plan de test bout-en-bout n'est pas préparé et validé.** Le plan ci-dessus doit être exécuté en environnement Stripe **test** (`sk_test_*`) avant toute bascule live (`sk_live_*`). PATCH 10 (sécurisation suppression de compte) et PATCH 11 (audit final) restent à compléter avant la bascule live.
 
 ---
 
