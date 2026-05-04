@@ -69,6 +69,7 @@ function SubscribePageInner() {
     isTrialActive,
     trialUsed,
     trialEndsAt,
+    trialDeepSessionsUsed,
     stripeSubscriptionStatus,
     subscriptionPlan,
     subscriptionCurrentPeriodEnd,
@@ -97,6 +98,8 @@ function SubscribePageInner() {
   const subscriptionEnded =
     !isSubscribed &&
     (stripeSubscriptionStatus === "canceled" || !!unsubscribedAt);
+  const isTrialDeepCapReached =
+    isTrialActive && (trialDeepSessionsUsed ?? 0) >= 5;
 
   // Gestion des retours Stripe Checkout — uniquement quand l'UI Stripe
   // est activée. En mode dormant, l'URL ne peut pas contenir ces query
@@ -419,6 +422,22 @@ function SubscribePageInner() {
             </p>
             <p className="font-body text-sm t-text-secondary">
               Tu as accès aux fonctionnalités Premium.
+            </p>
+          </div>
+        ) : isTrialDeepCapReached ? (
+          // Trial encore actif en date, mais 5/5 traversées approfondies utilisées
+          <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 text-center space-y-2">
+            <p className="font-serif text-xl text-t-beige">
+              Ton essai approfondi est complet pour ces 7 jours.
+            </p>
+            <p className="font-body text-sm t-text-secondary">
+              Tu as utilisé les 5 traversées approfondies incluses dans l&apos;essai.
+            </p>
+            <p className="font-body text-sm t-text-secondary">
+              Tu peux toujours utiliser les traversées courtes et l&apos;urgence.
+            </p>
+            <p className="font-body text-sm t-text-secondary">
+              Pour continuer les traversées approfondies, tu peux passer à Premium.
             </p>
           </div>
         ) : isTrialActive ? (
