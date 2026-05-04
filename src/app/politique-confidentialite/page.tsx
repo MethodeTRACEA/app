@@ -823,6 +823,48 @@ export default function PolitiqueConfidentialite() {
             <li>contacter TRACÉA pour toute demande complémentaire.</li>
           </ul>
           <p className="mt-3">
+            L&apos;export des données personnelles liées au compte et à
+            l&apos;usage de TRACÉA est disponible depuis l&apos;espace
+            Profil, via le bouton{" "}
+            <strong>« Exporter mes données (portabilité) »</strong>.
+            L&apos;export est fourni au format JSON.
+          </p>
+          <p className="mt-2">
+            Lorsque ces données existent, l&apos;export peut contenir
+            notamment :
+          </p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li>les informations de compte minimales ;</li>
+            <li>le profil utilisateur ;</li>
+            <li>
+              l&apos;état d&apos;abonnement lisible, sans identifiants
+              techniques Stripe ;
+            </li>
+            <li>les informations relatives à l&apos;essai ;</li>
+            <li>les sessions et traversées ;</li>
+            <li>les synthèses de sessions ;</li>
+            <li>le profil mémoire utilisateur ;</li>
+            <li>les événements d&apos;usage liés au compte ;</li>
+            <li>les logs d&apos;usage IA ;</li>
+            <li>
+              les logs de limitation d&apos;usage, sans adresse IP brute ;
+            </li>
+            <li>les journaux de consentement.</li>
+          </ul>
+          <p className="mt-3">
+            Certaines données techniques ou sensibles ne sont pas
+            incluses dans l&apos;export, notamment les mots de passe,
+            tokens, secrets techniques, identifiants Stripe internes,
+            droits administrateur, adresses IP brutes et données
+            relatives à d&apos;autres utilisateurs.
+          </p>
+          <p className="mt-3">
+            Les demandes relatives aux droits sur les données
+            personnelles sont traitées dans un délai maximal d&apos;un
+            mois à compter de leur réception, pouvant être prolongé dans
+            les cas prévus par la réglementation applicable.
+          </p>
+          <p className="mt-3">
             Pour toute demande relative à ses données personnelles,
             l&apos;utilisateur peut écrire à :{" "}
             <strong>confidentialite@methodetracea.fr</strong>
