@@ -184,6 +184,7 @@ export function RevokeConsentButton() {
     localStorage.removeItem("tracea_sessions");
     localStorage.removeItem("tracea_profile");
     localStorage.removeItem("tracea_cookie_consent");
+    localStorage.removeItem("tracea_anonymous_id");
     window.location.href = "/";
   }
 
