@@ -703,6 +703,12 @@ export default function PolitiqueConfidentialite() {
             Les données sont conservées pendant la durée nécessaire aux
             finalités pour lesquelles elles sont traitées.
           </p>
+          <p className="mt-2">
+            Les durées indiquées ci-dessous constituent des durées
+            maximales de conservation, sauf obligation légale contraire.
+            TRACÉA peut supprimer, anonymiser ou agréger les données
+            concernées à l&apos;issue de ces durées.
+          </p>
 
           <h3 className="font-serif text-lg text-espresso mt-6 mb-2">
             10.1 Données de compte et de profil
@@ -746,33 +752,81 @@ export default function PolitiqueConfidentialite() {
             contractuelles ou à la défense des droits de TRACÉA.
           </p>
           <p className="mt-2">
+            Les pièces comptables et justificatives peuvent être
+            conservées jusqu&apos;à <strong>10 ans</strong>, conformément
+            aux obligations légales applicables.
+          </p>
+          <p className="mt-2">
             Les données de paiement détaillées sont traitées principalement
-            par Stripe.
+            par Stripe. Certaines données de paiement ou de facturation
+            peuvent être conservées par Stripe selon ses propres
+            obligations légales et contractuelles, indépendamment de la
+            suppression du compte TRACÉA.
           </p>
 
           <h3 className="font-serif text-lg text-espresso mt-6 mb-2">
             10.5 Données techniques et journaux
           </h3>
           <p>
-            Les journaux techniques, les journaux d&apos;usage de l&apos;IA,
-            les événements internes et les données de limitation d&apos;usage
-            sont conservés pendant une durée nécessaire à la sécurité, à la
-            prévention des abus, au suivi technique et à la maîtrise des
-            coûts.
+            Les journaux techniques sont conservés pour des durées
+            limitées, adaptées à leur finalité :
+          </p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li>
+              <strong>logs d&apos;usage IA</strong> : 6 mois maximum, à
+              des fins de suivi technique et de maîtrise des coûts ;
+            </li>
+            <li>
+              <strong>logs de limitation d&apos;usage et anti-abus</strong>
+              {" "}: 3 mois maximum, à des fins de sécurité et de
+              prévention des abus ;
+            </li>
+            <li>
+              <strong>événements d&apos;usage liés au compte</strong> :
+              12 mois maximum, à des fins de suivi technique et
+              fonctionnel.
+            </li>
+          </ul>
+          <p className="mt-3">
+            Lorsque des adresses IP brutes sont traitées dans le cadre
+            de la limitation d&apos;usage, elles sont conservées pour la
+            durée la plus courte nécessaire à la sécurité et ne sont pas
+            incluses dans l&apos;export utilisateur.
           </p>
           <p className="mt-2">
-            Ils peuvent être supprimés, anonymisés ou agrégés lorsque leur
-            conservation sous forme directement rattachée au compte n&apos;est
-            plus nécessaire.
+            Ces données peuvent être supprimées, anonymisées ou agrégées
+            lorsque leur conservation sous forme directement rattachée
+            au compte n&apos;est plus nécessaire.
           </p>
 
           <h3 className="font-serif text-lg text-espresso mt-6 mb-2">
             10.6 Données de consentement
           </h3>
           <p>
-            Les données de consentement peuvent être conservées pendant la
-            durée nécessaire à la preuve du consentement et au respect des
-            obligations légales.
+            Les journaux de consentement sont conservés pendant{" "}
+            <strong>3 ans</strong> à compter du dernier consentement ou
+            de son retrait, afin de conserver une preuve du consentement
+            conformément aux obligations légales applicables.
+          </p>
+
+          <h3 className="font-serif text-lg text-espresso mt-6 mb-2">
+            10.7 Stockage local et préférences navigateur
+          </h3>
+          <p>
+            Certaines préférences ou informations techniques décrites en
+            section 4 sont stockées localement sur l&apos;appareil de
+            l&apos;utilisateur (localStorage, cookies). Ces éléments
+            peuvent rester sur l&apos;appareil jusqu&apos;à suppression
+            par l&apos;utilisateur, réinitialisation du navigateur,
+            retrait du consentement lorsque applicable, ou suppression
+            du compte selon les cas.
+          </p>
+
+          <p className="mt-6">
+            Lorsque l&apos;utilisateur supprime son compte, les données
+            liées à son compte sont supprimées ou anonymisées, sous
+            réserve des données devant être conservées pour respecter
+            une obligation légale, comptable, de sécurité ou de preuve.
           </p>
         </section>
 
