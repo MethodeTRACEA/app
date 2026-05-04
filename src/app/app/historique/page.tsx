@@ -195,6 +195,45 @@ export default function HistoriquePage() {
           La mémoire de tes traversées, une à une.
         </p>
 
+        {/* ── État vide ── */}
+        {sessions.length === 0 && (
+          <div
+            style={{
+              ...blockStyle,
+              marginTop: 16,
+              textAlign: "center",
+            }}
+          >
+            <p
+              className="font-body"
+              style={{
+                fontSize: "1.15rem",
+                fontWeight: 300,
+                color: "#F0E6D6",
+                lineHeight: 1.4,
+                marginBottom: 10,
+              }}
+            >
+              Aucune traversée pour le moment.
+            </p>
+            <p
+              className="font-body"
+              style={{
+                fontSize: "0.95rem",
+                fontWeight: 300,
+                color: "rgba(240,230,214,0.62)",
+                lineHeight: 1.55,
+                marginBottom: 24,
+              }}
+            >
+              Quand tu en auras fait une, tu la retrouveras ici.
+            </p>
+            <Link href="/app/start" className="btn-primary inline-block">
+              Commencer une traversée
+            </Link>
+          </div>
+        )}
+
         {/* ── Liste des sessions ── */}
         {sessions.length > 0 && (
           <div style={{ marginTop: 16 }}>
