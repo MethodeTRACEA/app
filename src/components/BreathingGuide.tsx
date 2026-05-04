@@ -72,7 +72,10 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
   return (
     <div className="flex flex-col items-center" style={{ minHeight: 320 }}>
       {/* Contenu centré */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-6 w-full">
+      <div
+        className="flex-1 flex flex-col items-center justify-center gap-6 w-full"
+        aria-live="polite"
+      >
 
         {phase === "pre" && (
           <p key="pre" className="font-body text-xl t-text-secondary text-center animate-fade-in">
@@ -89,16 +92,34 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
         {isBreathing && (
           <div className="flex flex-col items-center gap-6 animate-fade-in">
             <div
+              aria-hidden="true"
               style={{
-                width: 160, height: 160, borderRadius: "50%",
-                background: "rgba(214,165,106,0.12)",
-                border: "1px solid rgba(214,165,106,0.30)",
-                boxShadow: "0 0 40px rgba(214,165,106,0.08)",
-                transform: `scale(${expanded ? 1 : 0.45})`,
+                width: 200, height: 200,
+                transform: `scale(${expanded ? 1 : 0.5})`,
                 transition: `transform ${expanded ? "4s" : "6s"} ease-in-out`,
                 willChange: "transform",
               }}
-            />
+            >
+              <svg viewBox="0 0 200 200" width="100%" height="100%" className="overflow-visible">
+                <defs>
+                  <radialGradient id="breath-fill" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stopColor="rgba(214,165,106,0.22)" />
+                    <stop offset="60%"  stopColor="rgba(214,165,106,0.10)" />
+                    <stop offset="100%" stopColor="rgba(214,165,106,0)" />
+                  </radialGradient>
+                  <radialGradient id="breath-halo" cx="50%" cy="50%" r="50%">
+                    <stop offset="55%"  stopColor="rgba(214,165,106,0.18)" />
+                    <stop offset="100%" stopColor="rgba(214,165,106,0)" />
+                  </radialGradient>
+                </defs>
+                {/* Halo extérieur très diffus */}
+                <circle cx="100" cy="100" r="98" fill="url(#breath-halo)" />
+                {/* Cercle principal — radial gradient doux */}
+                <circle cx="100" cy="100" r="78" fill="url(#breath-fill)" />
+                {/* Liseré discret */}
+                <circle cx="100" cy="100" r="78" fill="none" stroke="rgba(214,165,106,0.28)" strokeWidth="0.6" />
+              </svg>
+            </div>
             <div className="flex flex-col items-center gap-2">
               <p
                 key={`${phase}-${cycle}`}
@@ -109,9 +130,6 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
               </p>
               <p className="font-inter text-xs t-text-secondary">
                 Laisse ton souffle suivre le mouvement
-              </p>
-              <p className="font-inter text-xs t-text-ghost">
-                {cycle + 1}&thinsp;/&thinsp;{CYCLES}
               </p>
             </div>
           </div>
