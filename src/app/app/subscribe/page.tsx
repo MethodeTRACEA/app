@@ -472,6 +472,9 @@ function SubscribePageInner() {
               <p className="font-body text-sm t-text-secondary">
                 Sans carte bancaire. L&apos;essai s&apos;arrête tout seul.
               </p>
+              <p className="font-body text-sm t-text-secondary">
+                Tu peux lancer jusqu&apos;à 5 traversées approfondies durant l&apos;essai.
+              </p>
             </div>
 
             <button
