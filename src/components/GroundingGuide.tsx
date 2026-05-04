@@ -81,24 +81,25 @@ const PHASE_AUDIO: Partial<Record<Phase, string>> = {
   close:     "/audio/grounding/grounding_16.mp3",
 };
 
-// Halo de sol — grandit avec l'ancrage, se contracte au relâchement
-const HALO: Record<Phase, { w: number; h: number; glow: number; alpha: number }> = {
-  pre:       { w: 56,  h: 8,  glow: 12, alpha: 0.08 },
-  install:   { w: 76,  h: 12, glow: 18, alpha: 0.13 },
-  contact:   { w: 100, h: 16, glow: 24, alpha: 0.18 },
-  press:     { w: 130, h: 20, glow: 36, alpha: 0.30 },
-  tiny:      { w: 130, h: 20, glow: 36, alpha: 0.30 },
-  release:   { w: 96,  h: 14, glow: 20, alpha: 0.16 },
-  repeat:    { w: 110, h: 17, glow: 28, alpha: 0.22 },
-  "press-2": { w: 130, h: 20, glow: 36, alpha: 0.30 },
-  settle:    { w: 136, h: 21, glow: 38, alpha: 0.30 },
-  ground:    { w: 140, h: 22, glow: 40, alpha: 0.31 },
-  sense:     { w: 140, h: 22, glow: 40, alpha: 0.31 },
-  body:      { w: 144, h: 23, glow: 42, alpha: 0.32 },
-  descend:   { w: 150, h: 24, glow: 46, alpha: 0.34 },
-  "soft-1":  { w: 140, h: 22, glow: 38, alpha: 0.28 },
-  "soft-2":  { w: 140, h: 22, glow: 38, alpha: 0.28 },
-  close:     { w: 128, h: 20, glow: 32, alpha: 0.24 },
+// Halo de sol — ellipse SVG basse, s'élargit avec l'appui, se replie au relâchement.
+// Soutient sensoriellement « sous tes pieds » sans devenir illustratif.
+const HALO_SVG: Record<Phase, { rx: number; ry: number; opacity: number }> = {
+  pre:       { rx:  90, ry: 12, opacity: 0.10 },
+  install:   { rx: 120, ry: 14, opacity: 0.16 },
+  contact:   { rx: 150, ry: 18, opacity: 0.22 },
+  press:     { rx: 175, ry: 22, opacity: 0.32 },
+  tiny:      { rx: 175, ry: 22, opacity: 0.32 },
+  release:   { rx: 130, ry: 16, opacity: 0.18 },
+  repeat:    { rx: 150, ry: 19, opacity: 0.24 },
+  "press-2": { rx: 175, ry: 22, opacity: 0.32 },
+  settle:    { rx: 180, ry: 22, opacity: 0.30 },
+  ground:    { rx: 185, ry: 23, opacity: 0.30 },
+  sense:     { rx: 185, ry: 23, opacity: 0.30 },
+  body:      { rx: 195, ry: 25, opacity: 0.28 },
+  descend:   { rx: 200, ry: 26, opacity: 0.30 },
+  "soft-1":  { rx: 190, ry: 24, opacity: 0.22 },
+  "soft-2":  { rx: 190, ry: 24, opacity: 0.20 },
+  close:     { rx: 170, ry: 21, opacity: 0.18 },
 };
 
 function initVoice(): boolean {
@@ -108,7 +109,6 @@ function initVoice(): boolean {
 
 export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
   const [phase,        setPhase]        = useState<Phase>("pre");
-  const [expanded,     setExpanded]     = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
 
   const audioRef   = useRef<HTMLAudioElement | null>(null);
@@ -132,12 +132,6 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
         audioRef.current.src = "";
       }
     };
-  }, []);
-
-  // Pulsation lente du halo
-  useEffect(() => {
-    const id = setInterval(() => setExpanded((e) => !e), 4000);
-    return () => clearInterval(id);
   }, []);
 
   // Auto-avance des phases (timer)
@@ -171,7 +165,7 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
     return () => { audio.pause(); };
   }, [phase, voiceEnabled]);
 
-  const halo = HALO[phase];
+  const halo = HALO_SVG[phase];
   const text = PHASE_TEXT[phase];
 
   return (
@@ -182,6 +176,7 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
         key={phase}
         className="text-center space-y-2 animate-fade-in"
         style={{ minHeight: "4rem" }}
+        aria-live="polite"
       >
         <p className="font-body text-xl t-text-primary">{text.main}</p>
         {text.sub && (
@@ -195,19 +190,6 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
         </button>
       )}
 
-      {/* Halo de sol — chaud, stable, grandit avec l'ancrage */}
-      <div
-        style={{
-          width:        expanded ? halo.w + 12 : halo.w - 6,
-          height:       expanded ? halo.h + 3  : halo.h - 2,
-          borderRadius: "50%",
-          background:   `rgba(214,165,106,${halo.alpha})`,
-          boxShadow:    `0 0 ${halo.glow}px rgba(214,165,106,${(halo.alpha * 1.35).toFixed(2)})`,
-          transition:   "all 4s ease-in-out",
-          marginTop:    4,
-        }}
-      />
-
       {/* Contrôle voix */}
       <button
         type="button"
@@ -215,6 +197,7 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
         className="font-inter text-[10px] uppercase tracking-widest transition-opacity duration-300"
         style={{ opacity: voiceEnabled ? 0.65 : 0.35 }}
         aria-label={voiceEnabled ? "Voix activée" : "Voix désactivée"}
+        aria-pressed={voiceEnabled}
       >
         {voiceEnabled ? "Voix ·" : "Voix"}
       </button>
@@ -229,6 +212,35 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
           Faire autre chose
         </button>
       )}
+
+      {/* Halo de sol — ellipse SVG basse, suggère l'appui sans illustration littérale */}
+      <svg
+        viewBox="0 0 400 100"
+        width="100%"
+        height="100"
+        aria-hidden="true"
+        className="overflow-visible"
+        style={{ maxWidth: 400, pointerEvents: "none", marginTop: 8 }}
+      >
+        <defs>
+          <radialGradient id="grounding-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor="rgba(214,165,106,0.55)" />
+            <stop offset="60%"  stopColor="rgba(214,165,106,0.25)" />
+            <stop offset="100%" stopColor="rgba(214,165,106,0)" />
+          </radialGradient>
+        </defs>
+        <ellipse
+          cx="200"
+          cy="80"
+          rx={halo.rx}
+          ry={halo.ry}
+          fill="url(#grounding-glow)"
+          style={{
+            opacity: halo.opacity,
+            transition: "opacity 3s ease, rx 3s ease, ry 3s ease",
+          }}
+        />
+      </svg>
 
     </div>
   );
