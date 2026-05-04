@@ -550,6 +550,21 @@ export async function trackEvent(
   if (typeof window === "undefined") return;
   if (localStorage.getItem("tracea_consent") !== "true") return;
 
+  // Gate CookieBanner — respecter `functional` si l'utilisateur a fait
+  // un choix dans le bandeau cookies. Si `tracea_cookie_consent` est
+  // absent, on conserve le comportement legacy (gate `tracea_consent`
+  // seul suffit). Si la valeur est invalide ou non parseable, on bloque
+  // par prudence pour ne jamais tracer en cas de doute.
+  const cookieConsentRaw = localStorage.getItem("tracea_cookie_consent");
+  if (cookieConsentRaw) {
+    try {
+      const cookieConsent = JSON.parse(cookieConsentRaw);
+      if (cookieConsent?.functional !== true) return;
+    } catch {
+      return;
+    }
+  }
+
   // Token anti-bot — échec silencieux, jamais de crash UX
   const trackToken = await getTrackToken();
   if (!trackToken) return;
