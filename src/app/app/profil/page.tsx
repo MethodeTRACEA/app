@@ -7,7 +7,6 @@ import {
   getProfileDb,
   updateProfileDb,
   getUserStatsDb,
-  exportUserData,
 } from "@/lib/supabase-store";
 import { getConsent } from "@/lib/consent";
 import { logConsent } from "@/lib/supabase-store";
@@ -101,6 +100,7 @@ export default function ProfilPage() {
   });
   const [loading, setLoading] = useState(true);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   // Mémoire TRACÉA — state remonté pour rendu dans l'accordéon
   const [memoryProfile, setMemoryProfile] = useState<MemoryProfile | null>(null);
@@ -240,17 +240,39 @@ export default function ProfilPage() {
   }
 
   async function handleExport() {
-    if (!user) return;
-    const data = await exportUserData(user.id);
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `tracea-export-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    setExportError(null);
+    const token = session?.access_token;
+    if (!token) {
+      setExportError("Impossible d'exporter tes données pour le moment.");
+      return;
+    }
+    try {
+      const res = await fetch("/api/export", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        // Tentative de lecture du JSON d'erreur — best-effort, sans
+        // l'exposer à l'utilisateur (message générique).
+        await res.json().catch(() => null);
+        setExportError("Impossible d'exporter tes données pour le moment.");
+        return;
+      }
+      const blob = await res.blob();
+      const cd = res.headers.get("content-disposition") ?? "";
+      const match = cd.match(/filename="([^"]+)"/);
+      const filename =
+        match?.[1] ??
+        `tracea-export-${new Date().toISOString().slice(0, 10)}.json`;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setExportError("Impossible d'exporter tes données pour le moment.");
+    }
   }
 
   async function handleDeleteAccount() {
@@ -897,6 +919,18 @@ export default function ProfilPage() {
                   >
                     Exporter mes donn&eacute;es (portabilit&eacute;)
                   </button>
+                  {exportError && (
+                    <p
+                      className="font-sans"
+                      style={{
+                        ...accessSecondaryTextStyle,
+                        textAlign: "center",
+                        marginTop: -8,
+                      }}
+                    >
+                      {exportError}
+                    </p>
+                  )}
                   {deleteSubBlocked ? (
                     <div
                       style={{
