@@ -23,8 +23,17 @@ const STEPS = [
   { src: "/audio/gaze/gaze_7.mp3", text: "C'est suffisant pour maintenant.",              pauseMs: 0,    fallbackMs: 3000 }, // → close
 ] as const;
 
-// Indicateur directionnel — s'efface au fil des steps
-const STEP_OPACITY = [0.80, 0.50, 0.25, 0.10, 0.03, 0.00, 0.00];
+// Halo lumineux horizontal — s'élargit puis se dissipe au fil des steps.
+// Soutient le script « proche → loin → ailleurs » sans devenir hypnotique.
+const HALO: { rx: number; ry: number; opacity: number }[] = [
+  { rx:  40, ry: 16, opacity: 0.18 }, // step 0 — petit, centré
+  { rx:  70, ry: 22, opacity: 0.22 }, // step 1 — proche
+  { rx: 110, ry: 28, opacity: 0.24 }, // step 2 — loin
+  { rx: 150, ry: 34, opacity: 0.22 }, // step 3 — ailleurs
+  { rx: 180, ry: 40, opacity: 0.16 }, // step 4 — sans chercher
+  { rx: 200, ry: 44, opacity: 0.10 }, // step 5 — juste regarder
+  { rx: 200, ry: 44, opacity: 0.00 }, // step 6 — disparition
+];
 
 type Phase = "pre" | "active" | "close";
 
@@ -139,35 +148,44 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
     };
   }, [phase, step, voiceEnabled]);
 
-  const indicatorOpacity =
-    phase === "pre"    ? 0.80
-    : phase === "close"  ? 0.00
-    : (STEP_OPACITY[step] ?? 0.00);
+  const halo =
+    phase === "active"
+      ? HALO[step] ?? HALO[HALO.length - 1]
+      : { rx: 40, ry: 16, opacity: 0 };
 
   const stepText = phase === "active" ? STEPS[step]?.text ?? "" : "";
 
   return (
     <div className="flex flex-col items-center gap-8" style={{ minHeight: 200 }}>
 
-      {/* Indicateur directionnel — disparaît progressivement */}
-      <div
-        style={{
-          display: "flex", flexDirection: "column", alignItems: "center",
-          gap: 5, height: 36, justifyContent: "flex-end",
-          opacity:    indicatorOpacity,
-          transition: "opacity 3s ease",
-        }}
+      {/* Halo lumineux horizontal — s'élargit puis se dissipe */}
+      <svg
+        viewBox="0 0 400 100"
+        width="100%"
+        height="100"
+        aria-hidden="true"
+        className="overflow-visible"
+        style={{ maxWidth: 400 }}
       >
-        {([0.55, 0.35, 0.16] as const).map((alpha, i) => (
-          <div
-            key={i}
-            style={{
-              width: 1.5, height: 9, borderRadius: 1,
-              background: `rgba(214,165,106,${alpha})`,
-            }}
-          />
-        ))}
-      </div>
+        <defs>
+          <radialGradient id="gaze-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor="rgba(214,165,106,0.55)" />
+            <stop offset="60%"  stopColor="rgba(214,165,106,0.25)" />
+            <stop offset="100%" stopColor="rgba(214,165,106,0)" />
+          </radialGradient>
+        </defs>
+        <ellipse
+          cx="200"
+          cy="50"
+          rx={halo.rx}
+          ry={halo.ry}
+          fill="url(#gaze-glow)"
+          style={{
+            opacity: halo.opacity,
+            transition: "opacity 2.5s ease, rx 3s ease, ry 3s ease",
+          }}
+        />
+      </svg>
 
       {/* Consigne textuelle — toujours visible pendant l'exercice */}
       <div
