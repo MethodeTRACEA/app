@@ -148,6 +148,13 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
             <button type="button" onClick={onComplete} className="t-btn-secondary mt-2">
               C&apos;est fait
             </button>
+            <button
+              type="button"
+              onClick={() => { setCycle(0); setPhase("inspire"); }}
+              className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
+            >
+              Continuer encore un peu
+            </button>
           </div>
         )}
       </div>
