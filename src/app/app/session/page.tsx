@@ -63,7 +63,7 @@ const TRACEA_TRUTHS = [
   "L'intensité est dans le corps.\nPas dans ce que tu es.",
   "Quand tout s'accélère à l'intérieur…\nc'est normal\nque tout devienne flou.",
   "Tu es encore là.\nEt ça compte.",
-  "Même si c'est encore présent…\nquelque chose\na déjà bougé.",
+  "Tu n'es pas obligé(e) d'avoir tout compris.\nTu as déjà posé quelque chose.",
 ];
 
 function getTraceaTruth() {
