@@ -67,7 +67,7 @@ export default function Accueil() {
             letterSpacing: "-0.01em",
           }}
         >
-          Bienvenue dans TRACEA
+          Quand &ccedil;a d&eacute;borde
         </h1>
         <p
           className="font-sans leading-relaxed"
@@ -77,7 +77,7 @@ export default function Accueil() {
             color: "rgba(240,230,214,0.60)",
           }}
         >
-          Un espace pour revenir &agrave; quelque chose de plus supportable.
+          Quand &ccedil;a serre, que &ccedil;a tourne, ou avant de r&eacute;pondre trop vite, choisis le chemin le plus simple.
         </p>
       </div>
 
@@ -99,7 +99,7 @@ export default function Accueil() {
               "0 8px 28px rgba(184,99,79,0.30), 0 2px 8px rgba(0,0,0,0.35)",
           }}
         >
-          Faire une travers&eacute;e
+          Choisir ma travers&eacute;e
         </Link>
         <Link
           href="/app/urgence"
