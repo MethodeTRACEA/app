@@ -304,6 +304,17 @@ export default function ConditionsUtilisation() {
             certaines synthèses, reformulations ou traces à partir des
             informations renseignées par l&apos;utilisateur.
           </p>
+          <p className="mt-3">
+            TRACÉA peut faire appel à un prestataire d&apos;intelligence
+            artificielle, <strong>Anthropic</strong>, pour générer
+            certains contenus d&apos;accompagnement, notamment le miroir
+            de fin de traversée et les synthèses ou traces de session.
+            Ces contenus ne constituent pas un diagnostic, un avis
+            médical, une thérapie ou une décision automatisée produisant
+            des effets juridiques au sens de la réglementation
+            applicable. L&apos;utilisateur reste libre de ne pas suivre
+            les propositions ou formulations générées.
+          </p>
           <p className="mt-3">L&apos;IA peut notamment traiter :</p>
           <ul className="list-disc list-inside mt-2 space-y-1">
             <li>la situation décrite ;</li>
@@ -510,9 +521,18 @@ export default function ConditionsUtilisation() {
             10. Droit de rétractation
           </h2>
           <p>
-            L&apos;utilisateur consommateur peut disposer d&apos;un droit de
-            rétractation dans les conditions prévues par la réglementation
-            applicable aux contrats conclus à distance.
+            Conformément aux règles applicables aux contrats conclus à
+            distance, l&apos;utilisateur consommateur dispose en principe
+            d&apos;un délai légal de rétractation de{" "}
+            <strong>quatorze jours</strong>.
+          </p>
+          <p className="mt-3">
+            Toutefois, lorsque l&apos;accès au service numérique commence
+            avant l&apos;expiration de ce délai, certaines exceptions
+            peuvent s&apos;appliquer, notamment si l&apos;utilisateur a
+            donné son accord préalable exprès et reconnu la perte de son
+            droit de rétractation dans les conditions prévues par la
+            réglementation applicable.
           </p>
           <p className="mt-3">
             Lorsque l&apos;utilisateur souscrit un abonnement Premium, les
@@ -751,11 +771,23 @@ export default function ConditionsUtilisation() {
             prévues par la Politique de confidentialité.
           </p>
           <p className="mt-3">
-            La suppression du compte ne vaut pas nécessairement résiliation
-            immédiate d&apos;un abonnement géré par Stripe si la résiliation
-            n&apos;a pas été effectuée dans le parcours prévu à cet effet.
-            L&apos;utilisateur est invité à résilier son abonnement avant de
-            demander la suppression de son compte.
+            Si un abonnement Premium est actif, l&apos;utilisateur doit
+            d&apos;abord résilier cet abonnement via l&apos;espace prévu
+            à cet effet (Billing Portal) avant de demander la suppression
+            définitive de son compte. La demande de suppression du compte
+            ne peut pas être utilisée comme moyen de résiliation
+            implicite d&apos;un abonnement actif.
+          </p>
+          <p className="mt-3">
+            Après résiliation, l&apos;accès Premium peut rester
+            disponible jusqu&apos;à la fin de la période payée, dans les
+            conditions de l&apos;abonnement.
+          </p>
+          <p className="mt-3">
+            Certaines données de facturation peuvent rester conservées
+            par Stripe ou par TRACÉA, dans les limites strictement
+            nécessaires au respect des obligations légales, comptables
+            ou de preuve applicables.
           </p>
           <p className="mt-3">
             TRACÉA peut suspendre ou fermer un accès utilisateur en cas :
