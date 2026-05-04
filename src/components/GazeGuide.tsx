@@ -47,10 +47,23 @@ function initVoice(): boolean {
   }
 }
 
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return reduced;
+}
+
 export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
   const [phase, setPhase] = useState<Phase>("pre");
   const [step,  setStep]  = useState(0);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
+  const reducedMotion = usePrefersReducedMotion();
 
   const audioRef   = useRef<HTMLAudioElement | null>(null);
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -165,7 +178,7 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
         height="100"
         aria-hidden="true"
         className="overflow-visible"
-        style={{ maxWidth: 400 }}
+        style={{ maxWidth: 400, pointerEvents: "none" }}
       >
         <defs>
           <radialGradient id="gaze-glow" cx="50%" cy="50%" r="50%">
@@ -182,7 +195,9 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
           fill="url(#gaze-glow)"
           style={{
             opacity: halo.opacity,
-            transition: "opacity 2.5s ease, rx 3s ease, ry 3s ease",
+            transition: reducedMotion
+              ? "none"
+              : "opacity 2.5s ease, rx 3s ease, ry 3s ease",
           }}
         />
       </svg>

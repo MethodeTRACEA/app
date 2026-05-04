@@ -107,9 +107,22 @@ function initVoice(): boolean {
   return localStorage.getItem("tracea_grounding_voice") === "on";
 }
 
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return reduced;
+}
+
 export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
   const [phase,        setPhase]        = useState<Phase>("pre");
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
+  const reducedMotion                   = usePrefersReducedMotion();
 
   const audioRef   = useRef<HTMLAudioElement | null>(null);
   const mountedRef = useRef(true);
@@ -237,7 +250,9 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
           fill="url(#grounding-glow)"
           style={{
             opacity: halo.opacity,
-            transition: "opacity 3s ease, rx 3s ease, ry 3s ease",
+            transition: reducedMotion
+              ? "none"
+              : "opacity 3s ease, rx 3s ease, ry 3s ease",
           }}
         />
       </svg>

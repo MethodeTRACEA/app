@@ -22,10 +22,23 @@ function initAudioLevel(): AudioLevel {
   return saved === "low" || saved === "medium" ? saved : "off";
 }
 
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return reduced;
+}
+
 export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
   const [phase, setPhase] = useState<Phase>("pre");
   const [cycle, setCycle] = useState(0);
   const [audioLevel, setAudioLevel] = useState<AudioLevel>(initAudioLevel);
+  const reducedMotion = usePrefersReducedMotion();
 
   useBreathingAudio(phase, audioLevel);
 
@@ -96,8 +109,11 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
               style={{
                 width: 200, height: 200,
                 transform: `scale(${expanded ? 1 : 0.5})`,
-                transition: `transform ${expanded ? "4s" : "6s"} ease-in-out`,
+                transition: reducedMotion
+                  ? "none"
+                  : `transform ${expanded ? "4s" : "6s"} ease-in-out`,
                 willChange: "transform",
+                pointerEvents: "none",
               }}
             >
               <svg viewBox="0 0 200 200" width="100%" height="100%" className="overflow-visible">
