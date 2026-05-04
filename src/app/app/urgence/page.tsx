@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { trackEvent } from "@/lib/supabase-store";
 import { Paywall } from "@/components/Paywall";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
@@ -47,6 +48,12 @@ const BREATHING_PHASES = [
 
 const PREMIUM_EXERCISES: ExerciseKey[] = [];
 
+const ANCHOR_VALUE: Record<ExerciseKey, "souffle" | "appuis" | "autour"> = {
+  respiration: "souffle",
+  corps: "appuis",
+  regard: "autour",
+};
+
 export default function UrgencePage() {
   return (
     <Suspense>
@@ -57,8 +64,8 @@ export default function UrgencePage() {
 
 function UrgenceInner() {
   const router = useRouter();
-  const { hasPremiumAccess } = useAuth();
-  const [screen, setScreen] = useState<Screen>("depot");
+  const { user, hasPremiumAccess } = useAuth();
+  const [screen, setScreen] = useState<Screen>("choose");
   const [exercise, setExercise] = useState<ExerciseKey | null>(null);
   const [phase, setPhase] = useState<Phase>("intro");
   const [suggestedExercise, setSuggestedExercise] = useState<ExerciseKey | null>(null);
@@ -68,6 +75,11 @@ function UrgenceInner() {
       setScreen("paywall");
       return;
     }
+    void trackEvent(user?.id ?? null, "step_complete", {
+      step: "ancrer",
+      mode: "urgence",
+      value: ANCHOR_VALUE[key],
+    });
     setExercise(key);
     setPhase("intro");
     setScreen("practice");
@@ -131,6 +143,14 @@ function UrgenceInner() {
               );
             })}
           </div>
+
+          <button
+            type="button"
+            onClick={() => setScreen("depot")}
+            className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
+          >
+            Écrire ce qui se passe d&apos;abord
+          </button>
 
           <ExitLink label="Retour" href="/app" />
         </div>
