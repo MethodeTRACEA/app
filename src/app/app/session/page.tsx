@@ -1147,12 +1147,9 @@ function PaywallSection({ onDismiss }: { onDismiss: () => void }) {
         Tu viens de poser quelque chose.
       </p>
       <div className="font-body text-base t-text-secondary leading-relaxed space-y-3">
-        <p>La prochaine fois, tu pourras revenir plus vite.</p>
-        <p>
-          Tu verras ce qui revient.<br />
-          Et ce qui change en toi.
-        </p>
-        <p>Tu avances, même quand ça revient.</p>
+        <p>Avec Premium, tes traversées restent reliées dans le temps.</p>
+        <p>Tu peux retrouver tes traces, tes repères, et ce qui revient souvent.</p>
+        <p>Sans analyse. Sans conclusion imposée.</p>
       </div>
       <PrimaryButton onClick={() => router.push("/app/subscribe")}>
         Découvrir Premium
