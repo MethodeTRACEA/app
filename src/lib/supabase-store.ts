@@ -548,7 +548,28 @@ export async function trackEvent(
 ) {
   // Gate consentement côté client — first line of defense
   if (typeof window === "undefined") return;
-  if (localStorage.getItem("tracea_consent") !== "true") return;
+
+  // `tracea_consent` peut exister sous deux formats :
+  //   1. legacy ConsentBanner : string `"true"`
+  //   2. ConsentGate (RGPD art. 9) : JSON sérialisé d'un objet
+  //      `{ dataProcessing, sensitiveData, localStorageUsage, date, version }`
+  // Le format JSON n'autorise le tracking que si les trois drapeaux
+  // sont strictement à `true` (consentement complet ConsentGate).
+  // Tout autre format ou valeur bloque le tracking par prudence.
+  const consentRaw = localStorage.getItem("tracea_consent");
+  let hasTrackingConsent = consentRaw === "true";
+  if (!hasTrackingConsent && consentRaw) {
+    try {
+      const parsedConsent = JSON.parse(consentRaw);
+      hasTrackingConsent =
+        parsedConsent?.dataProcessing === true &&
+        parsedConsent?.sensitiveData === true &&
+        parsedConsent?.localStorageUsage === true;
+    } catch {
+      hasTrackingConsent = false;
+    }
+  }
+  if (!hasTrackingConsent) return;
 
   // Gate CookieBanner — respecter `functional` si l'utilisateur a fait
   // un choix dans le bandeau cookies. Si `tracea_cookie_consent` est
