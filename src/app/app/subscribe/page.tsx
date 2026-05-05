@@ -82,6 +82,7 @@ function SubscribePageInner() {
     useState<AlreadyPremiumReason>("other");
   const [checkoutStatus, setCheckoutStatus] = useState<CheckoutStatus>("idle");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [acceptWithdrawalWaiver, setAcceptWithdrawalWaiver] = useState(false);
 
   // Drapeau UI Stripe — lu uniquement côté client. Tant qu'il vaut
   // false, aucun bouton de paiement n'est actif et aucun appel
@@ -200,6 +201,14 @@ function SubscribePageInner() {
       return;
     }
 
+    if (!acceptWithdrawalWaiver) {
+      setCheckoutError(
+        "Pour continuer, confirme l'accès immédiat au service Premium."
+      );
+      setCheckoutStatus("error");
+      return;
+    }
+
     setSelectedPlan(plan);
     setCheckoutStatus("loading");
     setCheckoutError(null);
@@ -211,7 +220,7 @@ function SubscribePageInner() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, acceptWithdrawalWaiver: true }),
       });
 
       const data = await res.json().catch(() => null);
@@ -297,6 +306,59 @@ function SubscribePageInner() {
           </div>
         )}
 
+        {/* Bloc d'information rétractation + accord exprès — affiché
+            uniquement quand le checkout payant est réellement actif
+            (Stripe UI activée, utilisateur non déjà abonné, non bêta).
+            La checkbox doit être cochée pour activer les boutons de
+            souscription payante. */}
+        {stripeUiEnabled && !isSubscribed && !isBetaTester && (
+          <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 space-y-3">
+            <p className="font-serif text-xl text-t-beige text-center">
+              Avant de continuer
+            </p>
+            <p className="font-body text-sm t-text-secondary">
+              L&apos;accès à TRACÉA Premium commence immédiatement après
+              le paiement. En validant, tu reconnais que ton droit de
+              rétractation peut être perdu une fois l&apos;accès
+              commencé, dans les conditions prévues par les{" "}
+              <a
+                href="/conditions-utilisation"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-t-beige"
+              >
+                conditions d&apos;utilisation
+              </a>{" "}
+              et la{" "}
+              <a
+                href="/politique-confidentialite"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-t-beige"
+              >
+                politique de confidentialité
+              </a>
+              .
+            </p>
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={acceptWithdrawalWaiver}
+                onChange={(e) =>
+                  setAcceptWithdrawalWaiver(e.target.checked)
+                }
+                className="mt-1 cursor-pointer"
+              />
+              <span className="font-body text-sm t-text-secondary">
+                Je demande l&apos;accès immédiat à TRACÉA Premium et je
+                reconnais que mon droit de rétractation peut être perdu
+                une fois l&apos;accès commencé, dans les conditions
+                prévues par les CGU.
+              </span>
+            </label>
+          </div>
+        )}
+
         {/* Plans — décoratifs en mode dormant, cliquables pour checkout
             quand stripeUiEnabled et que l'utilisateur n'est pas déjà
             abonné ou bêta */}
@@ -310,7 +372,13 @@ function SubscribePageInner() {
                 setSelectedPlan("yearly");
               }
             }}
-            disabled={stripeUiEnabled && checkoutStatus === "loading"}
+            disabled={
+              (stripeUiEnabled && checkoutStatus === "loading") ||
+              (stripeUiEnabled &&
+                !isSubscribed &&
+                !isBetaTester &&
+                !acceptWithdrawalWaiver)
+            }
             className={`w-full p-5 rounded-2xl border text-center transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
               selectedPlan === "yearly"
                 ? "border-[rgba(232,216,199,0.50)] bg-[rgba(214,165,106,0.08)]"
@@ -340,7 +408,13 @@ function SubscribePageInner() {
                 setSelectedPlan("monthly");
               }
             }}
-            disabled={stripeUiEnabled && checkoutStatus === "loading"}
+            disabled={
+              (stripeUiEnabled && checkoutStatus === "loading") ||
+              (stripeUiEnabled &&
+                !isSubscribed &&
+                !isBetaTester &&
+                !acceptWithdrawalWaiver)
+            }
             className={`w-full p-5 rounded-2xl border text-center transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
               selectedPlan === "monthly"
                 ? "border-[rgba(232,216,199,0.50)] bg-[rgba(214,165,106,0.08)]"

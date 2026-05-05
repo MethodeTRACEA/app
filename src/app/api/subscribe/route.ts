@@ -71,12 +71,25 @@ export async function POST(request: NextRequest) {
     const userEmail = authUser.email ?? undefined;
 
     // 3. Validation du body
+    //    Le client doit envoyer { plan, acceptWithdrawalWaiver: true }.
+    //    L'accord exprès sur la perte du droit de rétractation est
+    //    recueilli côté UI via une checkbox dédiée (cf. CGU §10) ;
+    //    la route refuse toute requête sans cette preuve.
     let plan: Plan;
     try {
       const body = await request.json();
       if (!isValidPlan(body?.plan)) {
         return NextResponse.json(
           { error: "Plan invalide.", code: "invalid_plan" },
+          { status: 400 }
+        );
+      }
+      if (body?.acceptWithdrawalWaiver !== true) {
+        return NextResponse.json(
+          {
+            error: "Accord requis avant la souscription.",
+            code: "withdrawal_waiver_required",
+          },
           { status: 400 }
         );
       }
@@ -193,14 +206,23 @@ export async function POST(request: NextRequest) {
     }
 
     // 10. Création de la Checkout Session — mode subscription
+    //     Les metadata Stripe (top-level + subscription_data) tracent
+    //     l'accord exprès recueilli côté UI : preuve V1 du renoncement
+    //     éventuel au droit de rétractation pour accès immédiat (CGU §10).
+    const acceptedAt = new Date().toISOString();
+    const withdrawalMetadata = {
+      withdrawal_exception_accepted: "true",
+      withdrawal_exception_accepted_at: acceptedAt,
+      withdrawal_exception_version: "v1",
+    };
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: stripeCustomerId,
       line_items: [{ price: priceId, quantity: 1 }],
       client_reference_id: userId,
-      metadata: { user_id: userId, plan },
+      metadata: { user_id: userId, plan, ...withdrawalMetadata },
       subscription_data: {
-        metadata: { user_id: userId, plan },
+        metadata: { user_id: userId, plan, ...withdrawalMetadata },
       },
       success_url: `${appUrl}/app/subscribe?checkout=success`,
       cancel_url: `${appUrl}/app/subscribe?checkout=cancel`,
