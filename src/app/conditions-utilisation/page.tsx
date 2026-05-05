@@ -548,6 +548,14 @@ export default function ConditionsUtilisation() {
             les conséquences de cette demande sur son droit de rétractation.
           </p>
           <p className="mt-3">
+            Lorsque l&apos;utilisateur souscrit à TRACÉA Premium avec accès
+            immédiat au service, il lui est demandé de confirmer, au moyen
+            d&apos;une case dédiée avant la redirection vers le paiement,
+            qu&apos;il demande cet accès immédiat et reconnaît que son droit
+            de rétractation peut être perdu une fois l&apos;accès commencé,
+            dans les conditions prévues par la réglementation applicable.
+          </p>
+          <p className="mt-3">
             Pour toute question relative à la rétractation, l&apos;utilisateur
             peut écrire à :
           </p>
