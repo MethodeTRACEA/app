@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { SafetyResources } from "@/components/SafetyResources";
 
 // ── Styles V3 ────────────────────────────────────────────────────────────────
@@ -82,6 +82,32 @@ const stepTextStyle: CSSProperties = {
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CommentCaMarchePage() {
+  const methodRef = useRef<HTMLDivElement | null>(null);
+  const [methodVisible, setMethodVisible] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) {
+      setReducedMotion(true);
+      setMethodVisible(true);
+      return;
+    }
+    const el = methodRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setMethodVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const sensations = [
     "ça serre dans ta poitrine",
     "ton souffle se coupe",
@@ -235,7 +261,7 @@ export default function CommentCaMarchePage() {
         </div>
 
         {/* ── Bloc Méthode T·R·A·C·E·A ── */}
-        <div style={blockStyle}>
+        <div ref={methodRef} style={blockStyle}>
           <p style={kickerText}>La m&eacute;thode</p>
           <p
             className="font-body"
@@ -262,6 +288,17 @@ export default function CommentCaMarchePage() {
                     i < steps.length - 1
                       ? "1px solid rgba(240,230,214,0.06)"
                       : "none",
+                  opacity: reducedMotion ? 1 : methodVisible ? 1 : 0,
+                  transform: reducedMotion
+                    ? "none"
+                    : methodVisible
+                    ? "translateY(0)"
+                    : "translateY(12px)",
+                  transitionProperty: reducedMotion ? "none" : "opacity, transform",
+                  transitionDuration: reducedMotion ? "0ms" : "500ms",
+                  transitionTimingFunction: "ease-out",
+                  transitionDelay: reducedMotion ? "0ms" : `${i * 80}ms`,
+                  willChange: reducedMotion ? "auto" : "opacity, transform",
                 }}
               >
                 <div
