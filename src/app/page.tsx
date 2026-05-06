@@ -2,12 +2,18 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { SafetyResources } from "@/components/SafetyResources";
 
 export default function LandingPage() {
   const finalCtaRef = useRef<HTMLDivElement | null>(null);
   const [finalCtaVisible, setFinalCtaVisible] = useState(false);
 
   useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) {
+      setFinalCtaVisible(true);
+      return;
+    }
     const el = finalCtaRef.current;
     if (!el) return;
 
@@ -25,6 +31,39 @@ export default function LandingPage() {
 
     return () => observer.disconnect();
   }, []);
+
+  const traceaSteps: { letter: string; name: string; text: string }[] = [
+    { letter: "T", name: "Traverser",   text: "Tu restes là, sans fuir." },
+    { letter: "R", name: "Reconnaître", text: "Tu nommes ce que tu ressens." },
+    { letter: "A", name: "Ancrer",      text: "Tu reviens au corps." },
+    { letter: "C", name: "Comprendre",  text: "Tu vois un peu mieux ce qui se passe." },
+    { letter: "E", name: "Émerger",     text: "Tu identifies ce dont tu as besoin." },
+    { letter: "A", name: "Aligner",     text: "Tu choisis un geste simple." },
+  ];
+
+  const faqs: { q: string; a: string }[] = [
+    {
+      q: "Quelle est la différence avec une appli de méditation ?",
+      a: "Une appli de méditation t'aide à gérer le stress sur le long terme, souvent via une pratique régulière. TRACEA est conçu pour un moment précis : quand ça déborde déjà. Tu n'as pas besoin de t'asseoir, de fermer les yeux ou d'avoir 20 minutes. Tu l'ouvres quand tu es en plein dedans.",
+    },
+    {
+      q: "Est-ce que c'est de la thérapie ?",
+      a: "Non. TRACEA n'est pas un outil thérapeutique et ne remplace pas un suivi psychologique. C'est un appui pour traverser un moment intense. Pas une analyse, pas un traitement. Si tu traverses des difficultés importantes, un professionnel de santé reste la bonne ressource.",
+    },
+    {
+      q: "Combien ça coûte ?",
+      a: "L'essai est gratuit pendant 7 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACEA est à 9€/mois, sans engagement, résiliable à tout moment.",
+    },
+    {
+      q: "Est-ce que ça marche quand je suis vraiment submergée ?",
+      a: "C'est pour ça qu'il a été conçu. TRACEA part du corps, pas de la tête, ce qui le rend utilisable même quand tu n'arrives plus à réfléchir. Les exercices sont courts et guidés. Certaines personnes remarquent que quelque chose change. D'autres moins. Dans tous les cas, tu as quelque chose à faire dans le moment.",
+    },
+    {
+      q: "Est-ce que mes données sont protégées ?",
+      a: "Oui. Ce que tu traverses dans l'app reste confidentiel. Nous ne vendons pas tes données. Tu peux consulter notre politique de confidentialité pour les détails.",
+    },
+  ];
+
   return (
     <div
       className="min-h-screen relative overflow-hidden"
@@ -79,7 +118,7 @@ export default function LandingPage() {
               className="text-[13px] tracking-wide"
               style={{ color: "rgba(240,230,214,0.62)" }}
             >
-              1re traversée gratuite · 2 à 5 minutes
+              Essai gratuit 7 jours · sans carte bancaire
             </span>
           </div>
 
@@ -178,7 +217,7 @@ export default function LandingPage() {
               boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
             }}
           >
-            Lancer ma 1re travers&eacute;e
+            Commencer gratuitement
           </Link>
 
           {/* CTA secondaire */}
@@ -194,7 +233,7 @@ export default function LandingPage() {
 
           {/* Micro-texte */}
           <p className="text-[13px] mt-5 md:mt-8 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            1re travers&eacute;e gratuite · sans engagement
+            7 jours gratuits · puis 9€/mois · sans engagement
           </p>
         </div>
       </section>
@@ -268,7 +307,7 @@ export default function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          FONCTIONNEMENT
+          FONCTIONNEMENT — 6 étapes T·R·A·C·E·A
       ════════════════════════════════════════════════════════════ */}
       <section id="fonctionnement" className="relative px-6 py-14 md:py-18 scroll-mt-8" style={{ zIndex: 1 }}>
         <div
@@ -283,38 +322,61 @@ export default function LandingPage() {
           }}
         >
           <h2 className="text-[24px] md:text-[30px] tracking-tight mb-6 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
-            Tu prends 2 minutes
+            La m&eacute;thode T&middot;R&middot;A&middot;C&middot;E&middot;A en 2 minutes
           </h2>
 
           <p className="text-base text-center mb-8" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
-            En quelques minutes, voil&agrave; ce qui se passe&nbsp;:
+            6 &eacute;tapes. Dans l&apos;ordre. Pour ne pas &ecirc;tre emport&eacute;e.
           </p>
 
-          <div className="space-y-3 mb-8">
-            {[
-              "Tu poses ce qui est là",
-              "Tu reviens à ton corps",
-              "Tu ralentis un peu",
-              "Tu comprends ce qui se joue",
-              "Tu vois ce qui aiderait",
-              "Tu choisis un geste simple",
-            ].map((text, i) => (
-              <div key={i} className="flex items-center gap-4">
+          <div className="flex flex-col gap-5 mb-8">
+            {traceaSteps.map((step, i) => (
+              <div
+                key={i}
+                style={{
+                  paddingBottom: i < traceaSteps.length - 1 ? 18 : 0,
+                  borderBottom:
+                    i < traceaSteps.length - 1
+                      ? "1px solid rgba(240,230,214,0.06)"
+                      : "none",
+                }}
+              >
                 <div
-                  className="flex items-center justify-center text-sm font-medium shrink-0"
+                  className="flex items-baseline gap-2 mb-2"
+                  style={{ color: "#C97B6A" }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+                      fontSize: "1.5rem",
+                      fontWeight: 400,
+                      letterSpacing: "0.02em",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {step.letter}
+                  </span>
+                  <span style={{ color: "rgba(201,123,106,0.55)" }}>·</span>
+                  <span
+                    className="font-sans"
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {step.name}
+                  </span>
+                </div>
+                <p
                   style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    background: "rgba(201,123,106,0.15)",
-                    border: "1px solid rgba(201,123,106,0.25)",
-                    color: "#C97B6A",
+                    color: "rgba(240,230,214,0.68)",
+                    fontSize: 15,
+                    lineHeight: 1.55,
+                    margin: 0,
                   }}
                 >
-                  {i + 1}
-                </div>
-                <p className="text-base leading-relaxed" style={{ color: "rgba(240,230,214,0.68)" }}>
-                  {text}
+                  {step.text}
                 </p>
               </div>
             ))}
@@ -433,6 +495,136 @@ export default function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
+          PRICING
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
+        <div
+          style={{
+            maxWidth: 480,
+            margin: "0 auto",
+            background: "rgba(111,106,100,0.18)",
+            border: "1px solid rgba(240,230,214,0.10)",
+            borderRadius: 24,
+            padding: "32px 28px",
+            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+            textAlign: "center",
+          }}
+        >
+          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-8" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+            Pour commencer
+          </h2>
+
+          <div className="flex flex-col gap-3 mb-8">
+            <p style={{ color: "#F0E6D6", fontWeight: 500, fontSize: "1.05rem", lineHeight: 1.5, margin: 0 }}>
+              Essai gratuit 7 jours
+            </p>
+            <p style={{ color: "rgba(240,230,214,0.66)", fontWeight: 300, fontSize: "0.98rem", lineHeight: 1.5, margin: 0 }}>
+              5 travers&eacute;es approfondies incluses
+            </p>
+            <p style={{ color: "rgba(240,230,214,0.66)", fontWeight: 300, fontSize: "0.98rem", lineHeight: 1.5, margin: 0 }}>
+              Sans carte bancaire
+            </p>
+          </div>
+
+          <div
+            aria-hidden="true"
+            style={{
+              height: 1,
+              background: "rgba(240,230,214,0.10)",
+              margin: "0 auto 24px",
+              maxWidth: 200,
+            }}
+          />
+
+          <div className="flex flex-col gap-2 mb-8">
+            <p style={{ color: "#F0E6D6", fontWeight: 500, fontSize: "1.05rem", lineHeight: 1.5, margin: 0 }}>
+              9€ / mois. Sans engagement.
+            </p>
+            <p style={{ color: "rgba(240,230,214,0.55)", fontWeight: 300, fontSize: "0.92rem", lineHeight: 1.5, margin: 0 }}>
+              R&eacute;siliable &agrave; tout moment.
+            </p>
+          </div>
+
+          <Link
+            href="/start"
+            className="font-sans inline-block w-full sm:w-auto text-center text-base"
+            style={{
+              background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+              color: "#1A120D",
+              borderRadius: 40,
+              padding: "14px 32px",
+              fontWeight: 600,
+              textDecoration: "none",
+              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.30)",
+            }}
+          >
+            Commencer gratuitement
+          </Link>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          FAQ
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-8 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+            Questions fr&eacute;quentes
+          </h2>
+
+          <div className="flex flex-col gap-3">
+            {faqs.map((faq, i) => (
+              <details
+                key={i}
+                className="group"
+                style={{
+                  background: "rgba(111,106,100,0.18)",
+                  border: "1px solid rgba(240,230,214,0.10)",
+                  borderRadius: 16,
+                  padding: "18px 22px",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
+                }}
+              >
+                <summary
+                  className="cursor-pointer flex items-center justify-between gap-4 list-none [&::-webkit-details-marker]:hidden"
+                  style={{
+                    color: "#F0E6D6",
+                    fontWeight: 500,
+                    fontSize: "1rem",
+                    lineHeight: 1.45,
+                  }}
+                >
+                  <span>{faq.q}</span>
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform duration-200 group-open:rotate-180"
+                    style={{
+                      color: "#C97B6A",
+                      fontSize: 14,
+                      flexShrink: 0,
+                    }}
+                  >
+                    ▾
+                  </span>
+                </summary>
+                <p
+                  style={{
+                    marginTop: 14,
+                    color: "rgba(240,230,214,0.66)",
+                    fontWeight: 300,
+                    fontSize: "0.96rem",
+                    lineHeight: 1.65,
+                  }}
+                >
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
           CTA FINAL
       ════════════════════════════════════════════════════════════ */}
       <section className="relative z-10 px-6 pt-4 pb-10" style={{ zIndex: 1 }}>
@@ -466,12 +658,21 @@ export default function LandingPage() {
               marginBottom: 20,
             }}
           >
-            Lancer ma travers&eacute;e
+            Commencer gratuitement
           </Link>
 
           <p className="text-[13px] tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            Premi&egrave;re travers&eacute;e gratuite
+            7 jours gratuits · sans carte bancaire
           </p>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          SAFETY RESOURCES (avant footer, discret)
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 pb-10" style={{ zIndex: 1 }}>
+        <div style={{ maxWidth: 480, margin: "0 auto" }}>
+          <SafetyResources />
         </div>
       </section>
 
