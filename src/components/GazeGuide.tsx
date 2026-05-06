@@ -8,42 +8,68 @@ interface GazeGuideProps {
 }
 
 // ── Séquence ───────────────────────────────────────────────
-// 7 segments. Chaque segment porte une consigne textuelle visible
+// 6 phases. Chaque phase porte une consigne textuelle visible
 // pour rester utilisable même sans audio (autoplay bloqué, mute,
 // préférence "Sans voix"). pauseMs = pause après l'audio quand la
 // voix joue. fallbackMs = durée d'affichage de la consigne quand
 // la voix est désactivée ou que l'audio échoue.
-const STEPS = [
-  { src: "/audio/gaze/gaze_1.mp3", text: "Tu peux lever légèrement les yeux de l'écran.", pauseMs: 2500, fallbackMs: 5500 },
-  { src: "/audio/gaze/gaze_2.mp3", text: "Regarde quelque chose de proche.",              pauseMs: 4500, fallbackMs: 7500 },
-  { src: "/audio/gaze/gaze_3.mp3", text: "Puis quelque chose un peu plus loin…",          pauseMs: 4500, fallbackMs: 7500 },
-  { src: "/audio/gaze/gaze_4.mp3", text: "Laisse ton regard se poser ailleurs.",          pauseMs: 4500, fallbackMs: 7500 },
-  { src: "/audio/gaze/gaze_5.mp3", text: "Sans avoir besoin de chercher.",                pauseMs: 3500, fallbackMs: 6500 },
-  { src: "/audio/gaze/gaze_6.mp3", text: "Juste regarder.",                               pauseMs: 7000, fallbackMs: 9500 },
-  { src: "/audio/gaze/gaze_7.mp3", text: "C'est suffisant pour maintenant.",              pauseMs: 0,    fallbackMs: 3000 }, // → close
-] as const;
+//
+// Les fichiers gaze_7.mp3, gaze_full.mp3 et gaze_source.mp3 ne sont
+// plus mappés ici mais restent physiquement présents dans
+// public/audio/gaze/ pour usage futur ou archivage.
+type Phase = "pre" | "scan" | "stable" | "rest" | "notice" | "close";
 
-// Halo lumineux horizontal — s'élargit puis se dissipe au fil des steps.
-// Soutient le script « proche → loin → ailleurs » sans devenir hypnotique.
-const HALO: { rx: number; ry: number; opacity: number }[] = [
-  { rx:  40, ry: 16, opacity: 0.18 }, // step 0 — petit, centré
-  { rx:  70, ry: 22, opacity: 0.22 }, // step 1 — proche
-  { rx: 110, ry: 28, opacity: 0.24 }, // step 2 — loin
-  { rx: 150, ry: 34, opacity: 0.22 }, // step 3 — ailleurs
-  { rx: 180, ry: 40, opacity: 0.16 }, // step 4 — sans chercher
-  { rx: 200, ry: 44, opacity: 0.10 }, // step 5 — juste regarder
-  { rx: 200, ry: 44, opacity: 0.00 }, // step 6 — disparition
-];
+const PHASE_SEQUENCE: Phase[] = ["pre", "scan", "stable", "rest", "notice", "close"];
 
-type Phase = "pre" | "active" | "close";
+const SEGMENTS: Record<Phase, {
+  text: { main: string; sub?: string[] };
+  src: string;
+  pauseMs: number;
+  fallbackMs: number;
+}> = {
+  pre: {
+    text: { main: "Tu peux lever les yeux de l'écran.", sub: ["Tu peux revenir ici à tout moment."] },
+    src: "/audio/gaze/gaze_1.mp3", pauseMs: 2500, fallbackMs: 5000,
+  },
+  scan: {
+    text: { main: "Laisse ton regard se déplacer lentement dans la pièce.", sub: ["Sans chercher quelque chose de précis."] },
+    src: "/audio/gaze/gaze_2.mp3", pauseMs: 4000, fallbackMs: 8000,
+  },
+  stable: {
+    text: { main: "Vois si quelque chose attire ton regard — quelque chose qui ne bouge pas.", sub: ["Un meuble. Une surface. Un coin de mur."] },
+    src: "/audio/gaze/gaze_3.mp3", pauseMs: 5000, fallbackMs: 10000,
+  },
+  rest: {
+    text: { main: "Tu peux rester là, avec ce point fixe.", sub: ["Juste voir, sans analyser."] },
+    src: "/audio/gaze/gaze_4.mp3", pauseMs: 5000, fallbackMs: 10000,
+  },
+  notice: {
+    text: { main: "Vois si tu remarques une couleur ou une forme simple.", sub: ["Tu n'as rien à faire de plus que ça."] },
+    src: "/audio/gaze/gaze_5.mp3", pauseMs: 4000, fallbackMs: 8000,
+  },
+  close: {
+    text: { main: "C'est suffisant pour maintenant." },
+    src: "/audio/gaze/gaze_6.mp3", pauseMs: 0, fallbackMs: 0,
+  },
+};
+
+// Halo lumineux horizontal — s'élargit puis se dissipe au fil des phases.
+// Soutient le script sans devenir hypnotique.
+const HALO: Record<Phase, { rx: number; ry: number; opacity: number }> = {
+  pre:    { rx:  40, ry: 16, opacity: 0.18 },
+  scan:   { rx:  90, ry: 24, opacity: 0.24 },
+  stable: { rx: 140, ry: 32, opacity: 0.28 },
+  rest:   { rx: 170, ry: 38, opacity: 0.24 },
+  notice: { rx: 190, ry: 42, opacity: 0.16 },
+  close:  { rx: 200, ry: 44, opacity: 0.00 },
+};
 
 function initVoice(): boolean {
-  if (typeof window === "undefined") return true;
+  if (typeof window === "undefined") return false;
   try {
-    const saved = localStorage.getItem("tracea_gaze_voice");
-    return saved !== "off";
+    return localStorage.getItem("tracea_gaze_voice") === "on";
   } catch {
-    return true;
+    return false;
   }
 }
 
@@ -61,7 +87,6 @@ function usePrefersReducedMotion(): boolean {
 
 export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
   const [phase, setPhase] = useState<Phase>("pre");
-  const [step,  setStep]  = useState(0);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
   const reducedMotion = usePrefersReducedMotion();
 
@@ -80,6 +105,13 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
     });
   }
 
+  // Avance manuelle à la phase suivante (sans quitter l'exercice)
+  function handleSkip() {
+    const idx = PHASE_SEQUENCE.indexOf(phase);
+    const next = PHASE_SEQUENCE[idx + 1];
+    if (next) setPhase(next);
+  }
+
   // ── Nettoyage au démontage ──────────────────────────────
   useEffect(() => {
     mountedRef.current = true;
@@ -95,61 +127,73 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
     };
   }, []);
 
-  // ── Pre → courte pause avant le premier segment ─────────
-  useEffect(() => {
-    if (phase !== "pre") return;
-    timerRef.current = setTimeout(() => {
-      if (mountedRef.current) setPhase("active");
-    }, 1200);
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [phase]);
-
   // ── Lecture séquentielle ────────────────────────────────
   useEffect(() => {
-    if (phase !== "active") return;
-
-    const stepData = STEPS[step];
-    if (!stepData) return;
+    const seg = SEGMENTS[phase];
+    const idx = PHASE_SEQUENCE.indexOf(phase);
+    const nextPhase = PHASE_SEQUENCE[idx + 1] ?? null;
 
     function advance() {
-      if (!mountedRef.current) return;
-      const isLast = step >= STEPS.length - 1;
-      if (isLast) {
-        setPhase("close");
-      } else {
-        timerRef.current = setTimeout(() => {
-          if (mountedRef.current) setStep((s) => s + 1);
-        }, stepData.pauseMs);
+      if (!mountedRef.current || !nextPhase) return;
+      setPhase(nextPhase);
+    }
+
+    function scheduleAdvance(delay: number) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(advance, delay);
+    }
+
+    // Phase close : on joue éventuellement l'audio mais on n'avance pas.
+    // L'utilisateur sort en cliquant « C'est noté ».
+    if (phase === "close") {
+      if (voiceEnabled) {
+        if (!audioRef.current) audioRef.current = new Audio();
+        const audio = audioRef.current;
+        audio.pause();
+        audio.onended = null;
+        audio.onerror = null;
+        audio.src    = seg.src;
+        audio.volume = 1.0;
+        audio.play().catch(() => {});
       }
+      return () => {
+        if (audioRef.current) {
+          audioRef.current.onended = null;
+          audioRef.current.onerror = null;
+        }
+      };
     }
 
     // Mode "Sans voix" — la consigne reste affichée, avancement par timer
     if (!voiceEnabled) {
-      timerRef.current = setTimeout(advance, stepData.fallbackMs);
+      scheduleAdvance(seg.fallbackMs);
       return () => { if (timerRef.current) clearTimeout(timerRef.current); };
     }
 
+    // Mode "Avec voix"
     if (!audioRef.current) audioRef.current = new Audio();
     const audio = audioRef.current;
 
     audio.pause();
     audio.onended = null;
     audio.onerror = null;
-    audio.src    = stepData.src;
+    audio.src    = seg.src;
     audio.volume = 1.0;
 
-    audio.onended = advance;
-    audio.onerror = () => {
-      // Échec de chargement audio — on laisse le texte et on avance via timer
+    audio.onended = () => {
+      // À la fin de l'audio, courte pause puis avance.
       if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(advance, stepData.fallbackMs);
+      timerRef.current = setTimeout(advance, seg.pauseMs);
+    };
+    audio.onerror = () => {
+      // Échec de chargement audio — on laisse le texte et on avance via timer.
+      scheduleAdvance(seg.fallbackMs);
     };
 
     audio.play().catch(() => {
       // Autoplay bloqué ou erreur de lecture : la consigne reste lisible,
       // on avance proprement via timer (durée fallback du segment).
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(advance, stepData.fallbackMs);
+      scheduleAdvance(seg.fallbackMs);
     });
 
     return () => {
@@ -159,14 +203,37 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
       }
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [phase, step, voiceEnabled]);
+  }, [phase, voiceEnabled]);
 
-  const halo =
-    phase === "active"
-      ? HALO[step] ?? HALO[HALO.length - 1]
-      : { rx: 40, ry: 16, opacity: 0 };
+  // Empêcher la mise en veille de l'écran pendant l'exercice.
+  // Le wake lock est libéré au démontage et réacquis si la page redevient
+  // visible (le navigateur le libère automatiquement en arrière-plan).
+  useEffect(() => {
+    let wakeLock: WakeLockSentinel | null = null;
 
-  const stepText = phase === "active" ? STEPS[step]?.text ?? "" : "";
+    const requestWakeLock = async () => {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLock = await navigator.wakeLock.request("screen");
+        }
+      } catch {}
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") requestWakeLock();
+    };
+
+    requestWakeLock();
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      wakeLock?.release().catch(() => {});
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, []);
+
+  const halo = HALO[phase];
+  const text = SEGMENTS[phase].text;
 
   return (
     <div className="flex flex-col items-center gap-8" style={{ minHeight: 200 }}>
@@ -204,13 +271,25 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
 
       {/* Consigne textuelle — toujours visible pendant l'exercice */}
       <div
-        key={`gaze-text-${phase}-${step}`}
-        className="text-center animate-fade-in"
-        style={{ minHeight: "4rem" }}
+        key={`gaze-text-${phase}`}
+        className="w-full flex flex-col items-center text-center space-y-6 animate-fade-in"
         aria-live="polite"
       >
-        {stepText && (
-          <p className="font-body text-xl t-text-primary">{stepText}</p>
+        <p className="font-body text-2xl t-text-primary max-w-xs">
+          {text.main}
+        </p>
+        {text.sub && (
+          <div className="flex flex-col items-center space-y-2">
+            {text.sub.map((line, i) => (
+              <p
+                key={i}
+                className="font-body text-lg t-text-primary max-w-xs"
+                style={{ opacity: 0.75 }}
+              >
+                {line}
+              </p>
+            ))}
+          </div>
         )}
       </div>
 
@@ -235,6 +314,18 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
       >
         {voiceEnabled ? "Voix ·" : "Voix"}
       </button>
+
+      {phase !== "close" && (
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="font-inter text-xs t-text-ghost transition-opacity hover:opacity-100"
+          style={{ opacity: 0.55 }}
+          aria-label="Passer à l'étape suivante"
+        >
+          Passer
+        </button>
+      )}
 
       {onCancel && phase !== "close" && (
         <button

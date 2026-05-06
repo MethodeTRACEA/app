@@ -47,6 +47,26 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
     localStorage.setItem("tracea_audio_level", next);
   }
 
+  // Avance manuelle à la phase suivante (sans quitter l'exercice)
+  function handleSkip() {
+    if (phase === "pre") {
+      setPhase("install");
+    } else if (phase === "install") {
+      setCycle(0);
+      setPhase("inspire");
+    } else if (phase === "inspire") {
+      setPhase("expire");
+    } else if (phase === "expire") {
+      const next = cycle + 1;
+      if (next >= CYCLES) {
+        setPhase("close");
+      } else {
+        setCycle(next);
+        setPhase("inspire");
+      }
+    }
+  }
+
   // pre → install (2s)
   useEffect(() => {
     if (phase !== "pre") return;
@@ -78,6 +98,33 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
     }, 6000);
     return () => clearTimeout(t);
   }, [phase, cycle]);
+
+  // Empêcher la mise en veille de l'écran pendant l'exercice.
+  // Le wake lock est libéré au démontage et réacquis si la page redevient
+  // visible (le navigateur le libère automatiquement en arrière-plan).
+  useEffect(() => {
+    let wakeLock: WakeLockSentinel | null = null;
+
+    const requestWakeLock = async () => {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLock = await navigator.wakeLock.request("screen");
+        }
+      } catch {}
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") requestWakeLock();
+    };
+
+    requestWakeLock();
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      wakeLock?.release().catch(() => {});
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, []);
 
   const isBreathing = phase === "inspire" || phase === "expire";
   const expanded    = phase === "inspire";
@@ -142,10 +189,10 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
                 className="font-body text-2xl t-text-secondary italic animate-fade-in"
                 style={{ minHeight: "2rem" }}
               >
-                {expanded ? "Inspire" : "Expire"}
+                {expanded ? "Laisse l'air entrer." : "Laisse l'air sortir."}
               </p>
               <p className="font-inter text-xs t-text-secondary">
-                Laisse ton souffle suivre le mouvement
+                {expanded ? "Comme il peut, sans forcer." : "Un peu plus longtemps si tu peux."}
               </p>
             </div>
           </div>
@@ -179,6 +226,18 @@ export function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
       <div className="pt-4 pb-1">
         <AudioToggle level={audioLevel} onChange={handleAudioChange} />
       </div>
+
+      {phase !== "close" && (
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="font-inter text-xs t-text-ghost transition-opacity hover:opacity-100 mt-2"
+          style={{ opacity: 0.55 }}
+          aria-label="Passer à l'étape suivante"
+        >
+          Passer
+        </button>
+      )}
 
       {onCancel && phase !== "close" && (
         <button
