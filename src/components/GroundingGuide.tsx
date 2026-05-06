@@ -31,12 +31,20 @@ const PHASE_DURATIONS: Partial<Record<Phase, number>> = {
   // close → manuel
 };
 
-const PHASE_TEXT: Record<Phase, { main: string; sub?: string }> = {
+const PHASE_TEXT: Record<Phase, { main: string; sub?: string[] }> = {
   pre:     { main: "On va revenir à quelque chose de simple." },
-  install: { main: "Si tu es assis(e), tu peux poser les pieds à plat.", sub: "Garde les yeux ouverts si tu veux." },
+  install: { main: "Si tu es assis(e), tu peux poser les pieds à plat.", sub: ["Garde les yeux ouverts si tu veux."] },
   orient:  { main: "Pose ton attention vers tes pieds." },
-  contact: { main: "Vois si tu peux sentir un contact avec le sol.", sub: "Même si c'est flou, c'est OK." },
-  press:   { main: "Appuie très légèrement —", sub: "pas fort, juste assez pour sentir qu'il y a quelque chose sous toi. Tu peux relâcher quand tu veux." },
+  contact: { main: "Vois si tu peux sentir un contact avec le sol.", sub: ["Même si c'est flou, c'est OK."] },
+  press:   {
+    main: "Appuie très légèrement.",
+    sub: [
+      "Pas fort.",
+      "Juste assez pour sentir",
+      "qu'il y a quelque chose sous toi.",
+      "Tu peux relâcher quand tu veux.",
+    ],
+  },
   close:   { main: "C'est suffisant pour maintenant." },
 };
 
@@ -159,9 +167,21 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
         className="w-full flex flex-col items-center justify-center text-center space-y-6 animate-fade-in min-h-[50vh]"
         aria-live="polite"
       >
-        <p className="font-body text-2xl t-text-primary">{text.main}</p>
+        <p className="font-body text-2xl t-text-primary max-w-xs">
+          {text.main}
+        </p>
         {text.sub && (
-          <p className="font-body text-xl t-text-primary">{text.sub}</p>
+          <div className="flex flex-col items-center space-y-2">
+            {text.sub.map((line, i) => (
+              <p
+                key={i}
+                className="font-body text-lg t-text-primary max-w-xs"
+                style={{ opacity: 0.75 }}
+              >
+                {line}
+              </p>
+            ))}
+          </div>
         )}
       </div>
 
