@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { SafetyResources } from "@/components/SafetyResources";
 
 // ── Styles V3 ────────────────────────────────────────────────────────────────
 
@@ -49,6 +50,35 @@ const listStyle: CSSProperties = {
   gap: 8,
 };
 
+// ── Styles dédiés au bloc méthode ────────────────────────────────────────────
+
+const stepLetterStyle: CSSProperties = {
+  fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+  fontSize: "1.75rem",
+  fontWeight: 400,
+  color: "#F0E6D6",
+  lineHeight: 1,
+  letterSpacing: "0.02em",
+};
+
+const stepNameStyle: CSSProperties = {
+  fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+  fontSize: 14,
+  fontWeight: 500,
+  color: "#C97B6A",
+  letterSpacing: "0.04em",
+};
+
+const stepTextStyle: CSSProperties = {
+  fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+  fontSize: "1.05rem",
+  fontWeight: 300,
+  lineHeight: 1.55,
+  color: "rgba(240,230,214,0.78)",
+  margin: 0,
+  whiteSpace: "pre-line",
+};
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CommentCaMarchePage() {
@@ -56,6 +86,39 @@ export default function CommentCaMarchePage() {
     "ça serre dans ta poitrine",
     "ton souffle se coupe",
     "tes pensées tournent en boucle",
+  ];
+
+  const steps: { letter: string; name: string; text: string }[] = [
+    {
+      letter: "T",
+      name: "Traverser",
+      text: "Tu restes face à ce qui est là, sans fuir.\nC'est le point de départ — pas une performance.",
+    },
+    {
+      letter: "R",
+      name: "Reconnaître",
+      text: "Tu nommes ce que tu ressens.\nL'émotion, la sensation, l'intensité. Sans te juger.",
+    },
+    {
+      letter: "A",
+      name: "Ancrer",
+      text: "Tu reviens au corps avec un geste court.\nUtilisable partout, même en 30 secondes.",
+    },
+    {
+      letter: "C",
+      name: "Comprendre",
+      text: "Tu vois un peu mieux ce qui se passe.\nPas une analyse — juste un peu de clarté sur ce qui a déclenché ça.",
+    },
+    {
+      letter: "E",
+      name: "Émerger",
+      text: "Tu identifies ce dont tu as besoin dans ce moment.\nQuelque chose de concret, pas une solution complète.",
+    },
+    {
+      letter: "A",
+      name: "Aligner",
+      text: "Tu choisis un micro-geste, le plus petit possible,\ncohérent avec ce que tu viens de traverser.",
+    },
   ];
 
   return (
@@ -119,9 +182,7 @@ export default function CommentCaMarchePage() {
             marginTop: -4,
           }}
         >
-          Un protocole simple. En revenant au corps.
-          <br />
-          Sans analyser.
+          6 &eacute;tapes. Pour ne pas &ecirc;tre emport&eacute;.
         </p>
 
         {/* ── Bloc 1 — Sensations ── */}
@@ -171,6 +232,54 @@ export default function CommentCaMarchePage() {
             <br />
             Le corps sait quoi faire.
           </p>
+        </div>
+
+        {/* ── Bloc Méthode T·R·A·C·E·A ── */}
+        <div style={blockStyle}>
+          <p style={kickerText}>La m&eacute;thode</p>
+          <p
+            className="font-body"
+            style={{
+              fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+              fontSize: "1.1rem",
+              fontWeight: 400,
+              color: "#F0E6D6",
+              lineHeight: 1.4,
+              margin: 0,
+              marginBottom: 24,
+            }}
+          >
+            La m&eacute;thode T&middot;R&middot;A&middot;C&middot;E&middot;A structure chaque travers&eacute;e.
+          </p>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+            {steps.map((step, i) => (
+              <div
+                key={i}
+                style={{
+                  paddingBottom: i < steps.length - 1 ? 22 : 0,
+                  borderBottom:
+                    i < steps.length - 1
+                      ? "1px solid rgba(240,230,214,0.06)"
+                      : "none",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 12,
+                    marginBottom: 10,
+                  }}
+                >
+                  <span style={stepLetterStyle}>{step.letter}</span>
+                  <span style={{ color: "rgba(240,230,214,0.40)" }}>—</span>
+                  <span style={stepNameStyle}>{step.name}</span>
+                </div>
+                <p style={stepTextStyle}>{step.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── Bloc usages ── */}
@@ -287,32 +396,8 @@ export default function CommentCaMarchePage() {
           </p>
         </div>
 
-        {/* ── Repère important (texte simple) ── */}
-        <div style={{ padding: "4px 4px" }}>
-          <p
-            style={{
-              fontSize: 12,
-              fontWeight: 400,
-              letterSpacing: "0.20em",
-              textTransform: "uppercase" as const,
-              color: "#C97B6A",
-              marginBottom: 14,
-            }}
-          >
-            Un rep&egrave;re important
-          </p>
-          <p style={{ ...pNormal, marginBottom: 10 }}>
-            TRAC&Eacute;A est un appui.
-          </p>
-          <p style={pNormal}>
-            Si tu es compl&egrave;tement submerg&eacute;(e) ou en d&eacute;tresse,{" "}
-            <span style={{ color: "#F0E6D6", fontWeight: 600 }}>
-              ne reste pas seul(e).
-            </span>
-            <br />
-            Ce que tu vis m&eacute;rite aussi d&apos;&ecirc;tre accompagn&eacute;.
-          </p>
-        </div>
+        {/* ── Bloc sécurité (composant unifié) ── */}
+        <SafetyResources />
 
         {/* ── Tension ── */}
         <p
