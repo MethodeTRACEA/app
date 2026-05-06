@@ -348,10 +348,10 @@ function TraverseeCourteV2() {
               {/* Reframe émotionnel — les deux lignes forment une paire */}
               <div className="space-y-1">
                 <p className="font-serif text-2xl text-t-beige leading-relaxed">
-                  Tu ne vas pas mal.
+                  Quelque chose est là.
                 </p>
                 <p className="font-serif text-2xl text-t-beige leading-relaxed">
-                  Tu es en surcharge.
+                  On va juste y poser une attention.
                 </p>
               </div>
               {/* Promesse — plus douce, suit naturellement */}

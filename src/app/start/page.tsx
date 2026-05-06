@@ -18,6 +18,7 @@ type Option = {
   labelColor: string;
   recommended?: true;
   badge?: string;
+  badgeNote?: string;
   cardOpacity?: number;
   cardBorder?: string;
   cardBg?: string;
@@ -53,6 +54,7 @@ const options: Option[] = [
     desc: "Une traversée complète pour mettre des mots et garder une trace.",
     tag: "5 à 8 min",
     badge: "Compte requis",
+    badgeNote: "Inclus dans ton essai gratuit 7 jours",
     labelColor: "rgba(240,230,214,0.38)",
     cardBorder: "rgba(255,255,255,0.08)",
     cardBg: "rgba(255,255,255,0.06)",
@@ -205,6 +207,14 @@ export default function StartPage() {
                   style={{ color: "rgba(240,230,214,0.38)", margin: "4px 0 0" }}
                 >
                   {opt.badge}
+                </p>
+              )}
+              {opt.badgeNote && (
+                <p
+                  className="font-sans text-[11px]"
+                  style={{ color: "rgba(240,230,214,0.38)", margin: "2px 0 0" }}
+                >
+                  {opt.badgeNote}
                 </p>
               )}
             </Link>

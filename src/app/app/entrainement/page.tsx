@@ -35,7 +35,7 @@ const EXERCISES: { key: ExerciseKey; label: string; micro: string }[] = [
 const BREATHING_PHASES = [
   "Tu peux simplement suivre le mouvement",
   "Laisse l'expire durer un peu plus longtemps",
-  "Ton corps enregistre ça",
+  "Tu peux recommencer quand tu veux.",
 ] as const;
 
 export default function EntrainementPage() {
@@ -248,8 +248,7 @@ function EntrainementInner() {
 
           <div className="text-center space-y-4">
             <p className="font-body text-xl t-text-primary leading-relaxed">
-              Plus tu le fais ici,<br />
-              plus ça revient quand tu en as besoin.
+              À force de répétitions, tu remarques que quelque chose change.
             </p>
             <p className="font-inter text-sm t-text-ghost">
               Même quelques secondes suffisent.
