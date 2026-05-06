@@ -155,6 +155,33 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
     return () => { audio.pause(); };
   }, [phase, voiceEnabled]);
 
+  // Empêcher la mise en veille de l'écran pendant l'exercice.
+  // Le wake lock est libéré au démontage et réacquis si la page redevient
+  // visible (le navigateur le libère automatiquement en arrière-plan).
+  useEffect(() => {
+    let wakeLock: WakeLockSentinel | null = null;
+
+    const requestWakeLock = async () => {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLock = await navigator.wakeLock.request("screen");
+        }
+      } catch {}
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") requestWakeLock();
+    };
+
+    requestWakeLock();
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      wakeLock?.release().catch(() => {});
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, []);
+
   const halo = HALO_SVG[phase];
   const text = PHASE_TEXT[phase];
 
