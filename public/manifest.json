@@ -26,5 +26,19 @@
       "sizes": "180x180",
       "type": "image/png"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "M'aider maintenant",
+      "short_name": "Urgence",
+      "url": "/app/urgence",
+      "icons": [
+        {
+          "src": "/images/tracea-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
   ]
 }
