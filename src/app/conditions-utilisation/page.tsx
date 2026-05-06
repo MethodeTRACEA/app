@@ -9,12 +9,9 @@ export default function ConditionsUtilisation() {
       <h1 className="section-title">
         Conditions d&apos;utilisation et d&apos;abonnement — TRACÉA
       </h1>
-      <p className="font-body text-base text-espresso leading-relaxed mt-2">
-        Version cible lancement public avec paiement Stripe actif
-      </p>
       <div className="text-xs text-warm-gray mt-4 mb-8 space-y-1">
         <p>
-          <strong>Dernière mise à jour :</strong> 2 mai 2026
+          <strong>Dernière mise à jour :</strong> 6 mai 2026
         </p>
         <p>
           <strong>Site :</strong> www.methodetracea.fr
@@ -253,7 +250,7 @@ export default function ConditionsUtilisation() {
             <li>Traverser ;</li>
             <li>Reconnaître ;</li>
             <li>Ancrer ;</li>
-            <li>Conscientiser ;</li>
+            <li>Comprendre ;</li>
             <li>Émerger ;</li>
             <li>Aligner.</li>
           </ul>

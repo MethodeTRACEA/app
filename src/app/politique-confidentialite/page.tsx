@@ -7,12 +7,9 @@ export default function PolitiqueConfidentialite() {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <p className="section-label">Protection des données</p>
       <h1 className="section-title">Politique de confidentialité — TRACÉA</h1>
-      <p className="font-body text-base text-espresso leading-relaxed mt-2">
-        Version cible lancement public avec paiement Stripe actif
-      </p>
       <div className="text-xs text-warm-gray mt-4 mb-8 space-y-1">
         <p>
-          <strong>Dernière mise à jour :</strong> 2 mai 2026
+          <strong>Dernière mise à jour :</strong> 6 mai 2026
         </p>
         <p>
           <strong>Site :</strong> www.methodetracea.fr
