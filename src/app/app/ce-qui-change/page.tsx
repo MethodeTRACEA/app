@@ -7,7 +7,12 @@ import {
   getPremiumMemory,
   type PremiumMemory,
 } from "@/lib/supabase-store";
-import { getMemoryProfileClient, type MemoryProfile } from "@/lib/memory";
+import {
+  getMemoryProfileClient,
+  getRecurringEmotions,
+  getRecurringNeeds,
+  type MemoryProfile,
+} from "@/lib/memory";
 import { supabase } from "@/lib/supabase";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
@@ -120,6 +125,8 @@ export default function CeQuiChangePage() {
   const [sessions, setSessions] = useState<SessionData[]>([]);
   const [memoryProfile, setMemoryProfile] = useState<MemoryProfile | null>(null);
   const [premiumMemory, setPremiumMemory] = useState<PremiumMemory | null>(null);
+  const [recurringEmotion, setRecurringEmotion] = useState<{ emotion: string; count: number } | null>(null);
+  const [recurringNeed, setRecurringNeed] = useState<{ need: string; count: number } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -128,10 +135,14 @@ export default function CeQuiChangePage() {
       getCompletedSessionsDb(user.id),
       getMemoryProfileClient(supabase, user.id),
       getPremiumMemory(user.id),
-    ]).then(([s, profile, pm]) => {
+      getRecurringEmotions(supabase, user.id),
+      getRecurringNeeds(supabase, user.id),
+    ]).then(([s, profile, pm, emo, need]) => {
       setSessions(s);
       setMemoryProfile(profile);
       setPremiumMemory(pm);
+      setRecurringEmotion(emo);
+      setRecurringNeed(need);
       setLoading(false);
     });
   }, [user]);
@@ -197,7 +208,8 @@ export default function CeQuiChangePage() {
       premiumMemory.ceQuiTAide ||
       premiumMemory.ceQuiSembleDemandem)
   );
-  const hasAnyContent = hasMemoryContent || hasPremiumContent;
+  const hasRecurringSummaryContent = !!(recurringEmotion || recurringNeed);
+  const hasAnyContent = hasMemoryContent || hasPremiumContent || hasRecurringSummaryContent;
 
   // ── Styles V3 ────────────────────────────────────────────────────
   const blockStyle: React.CSSProperties = {
@@ -371,6 +383,30 @@ export default function CeQuiChangePage() {
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {/* Bloc — Tu nommes souvent (émotion récurrente issue des résumés long flow) */}
+            {recurringEmotion && (
+              <div style={blockStyle}>
+                <p className="font-sans" style={kickerStyle}>
+                  Tu nommes souvent
+                </p>
+                <p className="font-body" style={blockTextStyle}>
+                  {recurringEmotion.emotion}
+                </p>
+              </div>
+            )}
+
+            {/* Bloc — Ce besoin revient (besoin récurrent issu des résumés long flow) */}
+            {recurringNeed && (
+              <div style={blockStyle}>
+                <p className="font-sans" style={kickerStyle}>
+                  Ce besoin revient
+                </p>
+                <p className="font-body" style={blockTextStyle}>
+                  {recurringNeed.need}
+                </p>
               </div>
             )}
 

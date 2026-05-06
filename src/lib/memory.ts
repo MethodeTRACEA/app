@@ -631,3 +631,95 @@ export async function deleteMemoryData(
     .delete()
     .eq("user_id", userId);
 }
+
+// ===================================================================
+// Phase B — Agrégations récurrentes (long flow)
+// Lectures côté client : authentification RLS via le client browser.
+// Seuils stricts : pas de carte si la donnée n'est pas significative.
+// ===================================================================
+
+const RECURRING_WINDOW = 5;        // 5 derniers résumés non exclus
+const RECURRING_MIN_SESSIONS = 3;  // pas de signal sous 3 sessions résolues
+const RECURRING_MIN_OCCURRENCES = 2; // doit apparaître dans >= 2 sessions
+
+function aggregateTopFromArrayField(
+  rows: { values: string[] | null }[]
+): { value: string; count: number } | null {
+  const counts: Record<string, number> = {};
+  for (const row of rows) {
+    const seenInRow = new Set<string>();
+    for (const raw of row.values || []) {
+      const key = (raw || "").toLowerCase().trim();
+      if (!key || seenInRow.has(key)) continue;
+      seenInRow.add(key);
+      counts[key] = (counts[key] || 0) + 1;
+    }
+  }
+  const top = Object.entries(counts).sort(([, a], [, b]) => b - a)[0];
+  if (!top || top[1] < RECURRING_MIN_OCCURRENCES) return null;
+  return { value: top[0], count: top[1] };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getRecurringEmotions(
+  supabaseClient: any,
+  userId: string
+): Promise<{ emotion: string; count: number } | null> {
+  try {
+    const { data, error } = await supabaseClient
+      .from("session_summaries")
+      .select("dominant_emotions")
+      .eq("user_id", userId)
+      .eq("excluded_from_memory", false)
+      .order("created_at", { ascending: false })
+      .limit(RECURRING_WINDOW);
+
+    if (error) {
+      console.warn("[TRACEA Memory] getRecurringEmotions error:", error.message);
+      return null;
+    }
+    if (!data || data.length < RECURRING_MIN_SESSIONS) return null;
+
+    const top = aggregateTopFromArrayField(
+      (data as { dominant_emotions: string[] | null }[]).map((r) => ({
+        values: r.dominant_emotions,
+      }))
+    );
+    if (!top) return null;
+    return { emotion: top.value, count: top.count };
+  } catch {
+    return null;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getRecurringNeeds(
+  supabaseClient: any,
+  userId: string
+): Promise<{ need: string; count: number } | null> {
+  try {
+    const { data, error } = await supabaseClient
+      .from("session_summaries")
+      .select("expressed_needs")
+      .eq("user_id", userId)
+      .eq("excluded_from_memory", false)
+      .order("created_at", { ascending: false })
+      .limit(RECURRING_WINDOW);
+
+    if (error) {
+      console.warn("[TRACEA Memory] getRecurringNeeds error:", error.message);
+      return null;
+    }
+    if (!data || data.length < RECURRING_MIN_SESSIONS) return null;
+
+    const top = aggregateTopFromArrayField(
+      (data as { expressed_needs: string[] | null }[]).map((r) => ({
+        values: r.expressed_needs,
+      }))
+    );
+    if (!top) return null;
+    return { need: top.value, count: top.count };
+  } catch {
+    return null;
+  }
+}
