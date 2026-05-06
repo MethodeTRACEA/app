@@ -118,7 +118,7 @@ export default function CommentCaMarchePage() {
     {
       letter: "T",
       name: "Traverser",
-      text: "Tu restes face à ce qui est là, sans fuir.\nC'est le point de départ — pas une performance.",
+      text: "Tu restes face à ce qui est là, sans fuir.\nC'est le point de départ.\nPas une performance.",
     },
     {
       letter: "R",
@@ -133,7 +133,7 @@ export default function CommentCaMarchePage() {
     {
       letter: "C",
       name: "Comprendre",
-      text: "Tu vois un peu mieux ce qui se passe.\nPas une analyse — juste un peu de clarté sur ce qui a déclenché ça.",
+      text: "Tu vois un peu mieux ce qui se passe.\nPas une analyse.\nJuste un peu de clarté sur ce qui a déclenché ça.",
     },
     {
       letter: "E",
@@ -227,7 +227,7 @@ export default function CommentCaMarchePage() {
                     flexShrink: 0,
                   }}
                 >
-                  —
+                  ·
                 </span>
                 <span style={pNormal}>{item}</span>
               </li>
@@ -310,7 +310,7 @@ export default function CommentCaMarchePage() {
                   }}
                 >
                   <span style={stepLetterStyle}>{step.letter}</span>
-                  <span style={{ color: "rgba(240,230,214,0.40)" }}>—</span>
+                  <span style={{ color: "rgba(240,230,214,0.40)" }}>·</span>
                   <span style={stepNameStyle}>{step.name}</span>
                 </div>
                 <p style={stepTextStyle}>{step.text}</p>
