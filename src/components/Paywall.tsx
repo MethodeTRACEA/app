@@ -87,17 +87,25 @@ export function Paywall({ onContinue }: PaywallProps) {
           </ul>
         </div>
 
-        {/* CTA principal — explicite payant */}
+        {/* Mention essai gratuit, au-dessus du CTA */}
+        <p
+          className="font-sans text-[12px] leading-[16px]"
+          style={{ color: "rgba(240,230,214,0.55)" }}
+        >
+          7 jours gratuits · 5 traversées incluses · sans carte bancaire
+        </p>
+
+        {/* CTA principal — entrée dans l'essai */}
         <PrimaryButton onClick={() => router.push("/app/subscribe")}>
-          Découvrir Premium
+          Commencer mon essai gratuit
         </PrimaryButton>
 
-        {/* Prix transparent, discret */}
+        {/* Prix transparent, sous le CTA */}
         <p
           className="font-sans text-[11px]"
           style={{ color: "rgba(240,230,214,0.38)" }}
         >
-          À partir de 9&nbsp;€/mois
+          Puis 9€/mois · sans engagement · résiliable à tout moment
         </p>
       </div>
 
