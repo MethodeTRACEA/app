@@ -151,23 +151,22 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
   const text = PHASE_TEXT[phase];
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col items-center min-h-screen w-full px-8 py-12">
 
-      {/* Texte guidé — une phrase à la fois */}
+      {/* Texte guidé — centré verticalement dans la moitié supérieure */}
       <div
         key={phase}
-        className="text-center space-y-2 animate-fade-in"
-        style={{ minHeight: "4rem" }}
+        className="w-full flex flex-col items-center justify-center text-center space-y-6 animate-fade-in min-h-[50vh]"
         aria-live="polite"
       >
-        <p className="font-body text-xl t-text-primary">{text.main}</p>
+        <p className="font-body text-2xl t-text-primary">{text.main}</p>
         {text.sub && (
           <p className="font-body text-xl t-text-primary">{text.sub}</p>
         )}
       </div>
 
       {phase === "close" && (
-        <button type="button" onClick={onComplete} className="t-btn-secondary">
+        <button type="button" onClick={onComplete} className="t-btn-secondary mt-8">
           C&apos;est fait
         </button>
       )}
@@ -187,59 +186,64 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
       </button>
       */}
 
-      {phase !== "close" && (
-        <button
-          type="button"
-          onClick={handleSkip}
-          className="font-inter text-xs t-text-ghost transition-opacity hover:opacity-100"
-          style={{ opacity: 0.55 }}
-          aria-label="Passer à l'étape suivante"
-        >
-          Passer
-        </button>
-      )}
+      {/* Bloc bas — boutons + halo poussés vers le bas de l'écran */}
+      <div className="mt-auto flex flex-col items-center w-full">
 
-      {onCancel && phase !== "close" && (
-        <button
-          type="button"
-          onClick={onCancel}
-          className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
-          aria-label="Arrêter cet exercice et revenir au choix"
-        >
-          Faire autre chose
-        </button>
-      )}
+        {phase !== "close" && (
+          <button
+            type="button"
+            onClick={handleSkip}
+            className="font-inter text-xs t-text-ghost transition-opacity hover:opacity-100"
+            style={{ opacity: 0.55 }}
+            aria-label="Passer à l'étape suivante"
+          >
+            Passer
+          </button>
+        )}
 
-      {/* Halo de sol — ellipse SVG basse, suggère l'appui sans illustration littérale */}
-      <svg
-        viewBox="0 0 400 100"
-        width="100%"
-        height="100"
-        aria-hidden="true"
-        className="overflow-visible"
-        style={{ maxWidth: 400, pointerEvents: "none", marginTop: 8 }}
-      >
-        <defs>
-          <radialGradient id="grounding-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor="rgba(214,165,106,0.55)" />
-            <stop offset="60%"  stopColor="rgba(214,165,106,0.25)" />
-            <stop offset="100%" stopColor="rgba(214,165,106,0)" />
-          </radialGradient>
-        </defs>
-        <ellipse
-          cx="200"
-          cy="80"
-          rx={halo.rx}
-          ry={halo.ry}
-          fill="url(#grounding-glow)"
-          style={{
-            opacity: halo.opacity,
-            transition: reducedMotion
-              ? "none"
-              : "opacity 3s ease, rx 3s ease, ry 3s ease",
-          }}
-        />
-      </svg>
+        {onCancel && phase !== "close" && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors mt-4"
+            aria-label="Arrêter cet exercice et revenir au choix"
+          >
+            Faire autre chose
+          </button>
+        )}
+
+        {/* Halo de sol — ellipse SVG basse, suggère l'appui sans illustration littérale */}
+        <svg
+          viewBox="0 0 400 100"
+          width="100%"
+          height="100"
+          aria-hidden="true"
+          className="overflow-visible mt-6"
+          style={{ maxWidth: 400, pointerEvents: "none" }}
+        >
+          <defs>
+            <radialGradient id="grounding-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   stopColor="rgba(214,165,106,0.55)" />
+              <stop offset="60%"  stopColor="rgba(214,165,106,0.25)" />
+              <stop offset="100%" stopColor="rgba(214,165,106,0)" />
+            </radialGradient>
+          </defs>
+          <ellipse
+            cx="200"
+            cy="80"
+            rx={halo.rx}
+            ry={halo.ry}
+            fill="url(#grounding-glow)"
+            style={{
+              opacity: halo.opacity,
+              transition: reducedMotion
+                ? "none"
+                : "opacity 3s ease, rx 3s ease, ry 3s ease",
+            }}
+          />
+        </svg>
+
+      </div>
 
     </div>
   );
