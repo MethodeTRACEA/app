@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getStats, getLastSession } from "@/lib/store";
 import { SafetyResources } from "@/components/SafetyResources";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import type { SessionData } from "@/lib/types";
 
 export default function Accueil() {
@@ -249,6 +250,8 @@ export default function Accueil() {
             </div>
           </div>
         )}
+
+        {stats.total >= 1 && <InstallPrompt />}
 
         <SafetyResources />
 
