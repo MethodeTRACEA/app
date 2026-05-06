@@ -234,7 +234,7 @@ function UrgenceInner() {
 
           <div className="text-center space-y-4">
             <p className="font-serif text-lg text-t-beige">
-              Quand ça monte, ouvre ici.
+              Tu as posé un appui.
             </p>
             <div className="space-y-2">
               <p className="font-body text-xl t-text-primary leading-relaxed">
