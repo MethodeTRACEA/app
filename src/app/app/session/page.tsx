@@ -16,6 +16,7 @@ import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { SafetyResources } from "@/components/SafetyResources";
 
 // ════════════════════════════════════════════════════════════
 // TRACÉA — Traversée approfondie V2
@@ -1131,6 +1132,8 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
           >
             Voir mes traces →
           </button>
+
+          <SafetyResources />
 
         </div>
       </div>

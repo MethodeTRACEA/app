@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getStats, getLastSession } from "@/lib/store";
+import { SafetyResources } from "@/components/SafetyResources";
 import type { SessionData } from "@/lib/types";
 
 export default function Accueil() {
@@ -248,6 +249,8 @@ export default function Accueil() {
             </div>
           </div>
         )}
+
+        <SafetyResources />
 
       </div>
     </div>

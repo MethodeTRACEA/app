@@ -13,6 +13,7 @@ import { InstallPrompt } from "@/components/InstallPrompt";
 import { BreathingGuide } from "@/components/BreathingGuide";
 import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
+import { SafetyResources } from "@/components/SafetyResources";
 import { getTopAnchorMethod } from "@/lib/supabase-store";
 
 const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
@@ -973,6 +974,7 @@ function TraverseeCourteV2() {
     <ScreenContainer overlayOpacity={45}>
       <div className="py-12">
         {renderScreen()}
+        <SafetyResources />
       </div>
     </ScreenContainer>
   );

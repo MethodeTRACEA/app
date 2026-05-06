@@ -14,6 +14,7 @@ import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
 import { MiniDepot } from "@/components/MiniDepot";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { SafetyResources } from "@/components/SafetyResources";
 
 // ════════════════════════════════════════════════════════════
 // TRACÉA — Accès immédiat aux exercices
@@ -272,6 +273,8 @@ function UrgenceInner() {
               Prendre un moment pour y voir plus clair
             </p>
           </div>
+
+          <SafetyResources />
 
         </div>
       </div>
