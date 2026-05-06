@@ -177,7 +177,7 @@ export default function BienvenuePage() {
               style={{ color: "rgba(240,230,214,0.38)" }}
             >
               TRACÉA ne remplace pas un suivi thérapeutique. En cas de crise, appelle le{" "}
-              <span style={{ color: "rgba(240,230,214,0.62)" }}>3114</span>.
+              <a href="tel:3114" style={{ color: "rgba(240,230,214,0.62)" }}>3114</a>.
             </p>
           </div>
         </div>
