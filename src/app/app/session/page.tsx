@@ -17,6 +17,7 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { SafetyResources } from "@/components/SafetyResources";
+import { StepIndicator } from "@/components/StepIndicator";
 
 // ════════════════════════════════════════════════════════════
 // TRACÉA — Traversée approfondie V2
@@ -480,6 +481,8 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
 
   const [phase, setPhase] = useState<Phase>("intro");
   const [paywallDismissed, setPaywallDismissed] = useState(false);
+  const [ancrageUnlocked, setAncrageUnlocked] = useState(false);
+  const [ancrageProgress, setAncrageProgress] = useState(false);
 
   // Données collectées
   const [situation, setSituation] = useState("");
@@ -510,6 +513,23 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   const besoinLabel = besoin === "autre" && besoinOther.trim()
     ? besoinOther.trim() : besoin;
   const suggestions = getActionSuggestions(besoinLabel, emotionLabel);
+
+  // ── Déverrouillage 8 s sur la phase Ancrer ───────────────────
+  useEffect(() => {
+    if (phase !== "ancrage") {
+      setAncrageUnlocked(false);
+      setAncrageProgress(false);
+      return;
+    }
+    setAncrageUnlocked(false);
+    setAncrageProgress(false);
+    const raf = requestAnimationFrame(() => setAncrageProgress(true));
+    const timer = setTimeout(() => setAncrageUnlocked(true), 8000);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+    };
+  }, [phase]);
 
   // ── Démarrer session en DB ───────────────────────────────────
   async function startSession() {
@@ -663,7 +683,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   }
 
   // ════════════════════════════════════════════════════════
-  // SITUATION — 1 / 4
+  // SITUATION — 1 / 6 (T - Traverser)
   // ════════════════════════════════════════════════════════
   if (phase === "situation") {
     return (
@@ -671,9 +691,11 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
         <div className="py-12">
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
 
+            <StepIndicator currentStep={0} completedSteps={[]} />
+
             <div className="text-center space-y-2">
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
-                1 / 4
+                1 / 6
               </p>
               <p className="font-body text-lg t-text-secondary">
                 Qu&apos;est-ce qui s&apos;est passé ?
@@ -744,7 +766,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   }
 
   // ════════════════════════════════════════════════════════
-  // ÉMOTION — 2 / 4
+  // ÉMOTION — 2 / 6 (R - Reconnaître)
   // ════════════════════════════════════════════════════════
   if (phase === "emotion") {
     return (
@@ -752,9 +774,11 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
         <div className="py-12">
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
 
+            <StepIndicator currentStep={1} completedSteps={[0]} />
+
             <div className="text-center space-y-2">
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
-                2 / 4
+                2 / 6
               </p>
               <p className="font-body text-lg t-text-secondary">
                 Qu&apos;est-ce que tu as ressenti ?
@@ -809,7 +833,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   }
 
   // ════════════════════════════════════════════════════════
-  // ANCRAGE — Pause corporelle (entre émotion et besoin)
+  // ANCRAGE — 3 / 6 (A - Ancrer) — Pause corporelle
   // ════════════════════════════════════════════════════════
   if (phase === "ancrage") {
     return (
@@ -817,21 +841,43 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
         <div className="py-12">
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
 
-            <div className="text-center space-y-4">
+            <StepIndicator currentStep={2} completedSteps={[0, 1]} />
+
+            <div className="text-center space-y-2">
+              <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
+                3 / 6
+              </p>
               <h2 className="font-serif text-2xl text-t-beige leading-relaxed">
                 Un instant dans le corps
               </h2>
               <p className="font-body text-base t-text-secondary leading-relaxed">
-                Avant de chercher ce dont tu as besoin,<br />
-                sens simplement tes appuis.
+                Vois si tu peux sentir un appui — tes pieds, ton dos, ce qui est là.
               </p>
               <p className="font-inter text-xs t-text-ghost">
-                Tes pieds, ton dos, ou le point de contact le plus présent.
+                Même si c&apos;est flou, c&apos;est suffisant.
               </p>
             </div>
 
-            <PrimaryButton onClick={() => setPhase("besoin")}>
-              Continuer
+            <div
+              className="w-40 h-px bg-t-creme/15 overflow-hidden"
+              aria-hidden="true"
+            >
+              <div
+                className="h-full bg-t-dore/50 ease-linear"
+                style={{
+                  width: ancrageProgress ? "100%" : "0%",
+                  transitionProperty: "width",
+                  transitionDuration: "8000ms",
+                  transitionTimingFunction: "linear",
+                }}
+              />
+            </div>
+
+            <PrimaryButton
+              disabled={!ancrageUnlocked}
+              onClick={() => setPhase("besoin")}
+            >
+              J&apos;ai posé mes appuis
             </PrimaryButton>
 
             <BackButton onClick={() => setPhase("emotion")} />
@@ -843,7 +889,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   }
 
   // ════════════════════════════════════════════════════════
-  // BESOIN — 3 / 4
+  // BESOIN — 4 / 6 (C - Comprendre)
   // ════════════════════════════════════════════════════════
   if (phase === "besoin") {
     return (
@@ -851,9 +897,11 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
         <div className="py-12">
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
 
+            <StepIndicator currentStep={3} completedSteps={[0, 1, 2]} />
+
             <div className="text-center space-y-2">
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
-                3 / 4
+                4 / 6
               </p>
               <p className="font-body text-lg t-text-secondary">
                 Ce dont tu aurais besoin :
@@ -908,13 +956,24 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   }
 
   // ════════════════════════════════════════════════════════
-  // ALIGNEMENT — Miroir de clarification
+  // ALIGNEMENT — 5 / 6 (E - Émerger) — Miroir de clarification
   // ════════════════════════════════════════════════════════
   if (phase === "alignement") {
     return (
       <ScreenContainer overlayOpacity={45}>
         <div className="py-12">
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
+
+            <StepIndicator currentStep={4} completedSteps={[0, 1, 2, 3]} />
+
+            <div className="text-center space-y-2">
+              <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
+                5 / 6
+              </p>
+              <p className="font-body text-base t-text-secondary leading-relaxed">
+                Tu peux laisser ce que tu viens de poser se déposer un instant.
+              </p>
+            </div>
 
             {/* Miroir contextuel */}
             <div className="w-full rounded-[20px] border border-[rgba(232,216,199,0.15)] bg-white/5 px-5 py-5 space-y-3">
@@ -952,7 +1011,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
 
             <div className="text-center space-y-2">
               <p className="font-serif text-xl text-t-beige">
-                Voici ce que tu viens de poser.
+                Quelque chose commence peut-être à apparaître.
               </p>
             </div>
 
@@ -967,7 +1026,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   }
 
   // ════════════════════════════════════════════════════════
-  // ACTION — 4 / 4
+  // ACTION — 6 / 6 (A - Aligner)
   // ════════════════════════════════════════════════════════
   if (phase === "action") {
     return (
@@ -975,9 +1034,11 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
         <div className="py-12">
           <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
 
+            <StepIndicator currentStep={5} completedSteps={[0, 1, 2, 3, 4]} />
+
             <div className="text-center space-y-2">
               <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
-                4 / 4
+                6 / 6
               </p>
               <p className="font-body text-lg t-text-secondary">
                 Qu&apos;est-ce qui te semble juste maintenant ?
