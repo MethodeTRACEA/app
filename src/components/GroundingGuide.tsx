@@ -8,98 +8,58 @@ interface GroundingGuideProps {
 }
 
 // ── Machine d'état ──────────────────────────────────────────
-// 16 phases : 15 auto-avancées + close (manuel)
+// 6 phases : 5 auto-avancées + close (manuel)
 // Chaque phrase = une phase = un segment audio optionnel.
 type Phase =
-  | "pre"      | "install"  | "contact"
-  | "press"    | "tiny"     | "release"  | "repeat"  | "press-2"
-  | "settle"   | "ground"   | "sense"    | "body"    | "descend"
-  | "soft-1"   | "soft-2"   | "close";
+  | "pre"
+  | "install"
+  | "orient"
+  | "contact"
+  | "press"
+  | "close";
 
 const PHASE_SEQUENCE: Phase[] = [
-  "pre", "install", "contact",
-  "press", "tiny", "release", "repeat", "press-2",
-  "settle", "ground", "sense", "body", "descend",
-  "soft-1", "soft-2", "close",
+  "pre", "install", "orient", "contact", "press", "close",
 ];
 
 const PHASE_DURATIONS: Partial<Record<Phase, number>> = {
-  pre:       3000,
-  install:   6000,
-  contact:   5000,
-  press:     4000,
-  tiny:      2500,
-  release:   3500,
-  repeat:    4000,
-  "press-2": 6000,
-  settle:    6000,
-  ground:    5000,
-  sense:     6000,
-  body:      5000,
-  descend:   7000,
-  "soft-1":  3500,
-  "soft-2":  4000,
+  pre:     3000,
+  install: 8000,
+  orient:  8000,
+  contact: 12000,
+  press:   12000,
   // close → manuel
 };
 
 const PHASE_TEXT: Record<Phase, { main: string; sub?: string }> = {
-  pre:       { main: "On revient doucement dans le corps." },
-  install:   { main: "Si tu es assis(e),", sub: "pose les pieds bien à plat au sol." },
-  contact:   { main: "Sens le contact sous tes pieds." },
-  press:     { main: "Presse légèrement tes pieds dans le sol." },
-  tiny:      { main: "Un tout petit peu." },
-  release:   { main: "Relâche." },
-  repeat:    { main: "Et recommence une fois." },
-  "press-2": { main: "Presse… puis relâche." },
-  settle:    { main: "Tu peux simplement rester là un instant." },
-  ground:    { main: "Garde les pieds en contact avec le sol." },
-  sense:     { main: "Sens ce point d'appui." },
-  body:      { main: "Le reste du corps peut se poser autour." },
-  descend:   { main: "Ce qui est là peut descendre un peu,", sub: "jusqu'aux appuis." },
-  "soft-1":  { main: "Sans forcer." },
-  "soft-2":  { main: "Juste laisser passer." },
-  close:     { main: "C'est suffisant pour maintenant." },
+  pre:     { main: "On va revenir à quelque chose de simple." },
+  install: { main: "Si tu es assis(e), tu peux poser les pieds à plat.", sub: "Garde les yeux ouverts si tu veux." },
+  orient:  { main: "Pose ton attention vers tes pieds." },
+  contact: { main: "Vois si tu peux sentir un contact avec le sol.", sub: "Même si c'est flou, c'est OK." },
+  press:   { main: "Appuie très légèrement —", sub: "pas fort, juste assez pour sentir qu'il y a quelque chose sous toi. Tu peux relâcher quand tu veux." },
+  close:   { main: "C'est suffisant pour maintenant." },
 };
 
 // Segment audio par phase (optionnel selon toggle voix)
+// Les fichiers grounding_7.mp3 à grounding_16.mp3 ne sont plus utilisés.
 const PHASE_AUDIO: Partial<Record<Phase, string>> = {
-  pre:       "/audio/grounding/grounding_1.mp3",
-  install:   "/audio/grounding/grounding_2.mp3",
-  contact:   "/audio/grounding/grounding_3.mp3",
-  press:     "/audio/grounding/grounding_4.mp3",
-  tiny:      "/audio/grounding/grounding_5.mp3",
-  release:   "/audio/grounding/grounding_6.mp3",
-  repeat:    "/audio/grounding/grounding_7.mp3",
-  "press-2": "/audio/grounding/grounding_8.mp3",
-  settle:    "/audio/grounding/grounding_9.mp3",
-  ground:    "/audio/grounding/grounding_10.mp3",
-  sense:     "/audio/grounding/grounding_11.mp3",
-  body:      "/audio/grounding/grounding_12.mp3",
-  descend:   "/audio/grounding/grounding_13.mp3",
-  "soft-1":  "/audio/grounding/grounding_14.mp3",
-  "soft-2":  "/audio/grounding/grounding_15.mp3",
-  close:     "/audio/grounding/grounding_16.mp3",
+  pre:     "/audio/grounding/grounding_1.mp3",
+  install: "/audio/grounding/grounding_2.mp3",
+  orient:  "/audio/grounding/grounding_3.mp3",
+  contact: "/audio/grounding/grounding_4.mp3",
+  press:   "/audio/grounding/grounding_5.mp3",
+  close:   "/audio/grounding/grounding_6.mp3",
 };
 
 // Halo de sol — ellipse SVG basse, s'élargit avec l'appui, se replie au relâchement.
 // Soutient sensoriellement « sous tes pieds » sans devenir illustratif.
 const HALO_SVG: Record<Phase, { rx: number; ry: number; opacity: number }> = {
-  pre:       { rx:  90, ry: 12, opacity: 0.10 },
-  install:   { rx: 120, ry: 14, opacity: 0.16 },
-  contact:   { rx: 150, ry: 18, opacity: 0.22 },
-  press:     { rx: 175, ry: 22, opacity: 0.32 },
-  tiny:      { rx: 175, ry: 22, opacity: 0.32 },
-  release:   { rx: 130, ry: 16, opacity: 0.18 },
-  repeat:    { rx: 150, ry: 19, opacity: 0.24 },
-  "press-2": { rx: 175, ry: 22, opacity: 0.32 },
-  settle:    { rx: 180, ry: 22, opacity: 0.30 },
-  ground:    { rx: 185, ry: 23, opacity: 0.30 },
-  sense:     { rx: 185, ry: 23, opacity: 0.30 },
-  body:      { rx: 195, ry: 25, opacity: 0.28 },
-  descend:   { rx: 200, ry: 26, opacity: 0.30 },
-  "soft-1":  { rx: 190, ry: 24, opacity: 0.22 },
-  "soft-2":  { rx: 190, ry: 24, opacity: 0.20 },
-  close:     { rx: 170, ry: 21, opacity: 0.18 },
+  pre:     { rx:  90, ry: 12, opacity: 0.10 },
+  install: { rx: 130, ry: 16, opacity: 0.18 },
+  orient:  { rx: 150, ry: 18, opacity: 0.22 },
+  contact: { rx: 175, ry: 22, opacity: 0.30 },
+  press:   { rx: 195, ry: 25, opacity: 0.34 },
+  close:   { rx: 170, ry: 21, opacity: 0.18 },
 };
 
 function initVoice(): boolean {
@@ -121,7 +81,9 @@ function usePrefersReducedMotion(): boolean {
 
 export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
   const [phase,        setPhase]        = useState<Phase>("pre");
-  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
+  // Voix désactivée en dur le temps de la refonte audio. initVoice() et la
+  // logique de play/pause restent en place pour une réactivation future.
+  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
   const reducedMotion                   = usePrefersReducedMotion();
 
   const audioRef   = useRef<HTMLAudioElement | null>(null);
@@ -133,6 +95,13 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
       localStorage.setItem("tracea_grounding_voice", next ? "on" : "off");
       return next;
     });
+  }
+
+  // Avance manuelle à la phase suivante (sans quitter l'exercice)
+  function handleSkip() {
+    const idx = PHASE_SEQUENCE.indexOf(phase);
+    const next = PHASE_SEQUENCE[idx + 1];
+    if (next) setPhase(next);
   }
 
   // Nettoyage au démontage
@@ -203,7 +172,9 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
         </button>
       )}
 
-      {/* Contrôle voix */}
+      {/* Contrôle voix — masqué le temps de la refonte audio. handleVoiceToggle
+          reste défini pour réactivation future. */}
+      {/*
       <button
         type="button"
         onClick={handleVoiceToggle}
@@ -214,6 +185,19 @@ export function GroundingGuide({ onComplete, onCancel }: GroundingGuideProps) {
       >
         {voiceEnabled ? "Voix ·" : "Voix"}
       </button>
+      */}
+
+      {phase !== "close" && (
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="font-inter text-xs t-text-ghost transition-opacity hover:opacity-100"
+          style={{ opacity: 0.55 }}
+          aria-label="Passer à l'étape suivante"
+        >
+          Passer
+        </button>
+      )}
 
       {onCancel && phase !== "close" && (
         <button
