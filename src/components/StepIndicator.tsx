@@ -51,25 +51,40 @@ export function StepIndicator({
   // ── Mode standard (étapes 2–6) ──
   return (
     <>
-      {/* ── MOBILE : dots compacts + label ── */}
+      {/* ── MOBILE : lettres T·R·A·C·E·A lisibles ── */}
       <div className="md:hidden">
-        <div className="flex items-center justify-center gap-2 py-3">
+        <div
+          className="flex items-center justify-center gap-1.5 py-3"
+          aria-label="Étapes T·R·A·C·E·A"
+        >
           {filteredSteps.map((step, i) => {
             const originalIndex = activeSteps ? activeSteps[i] : i;
             const isCompleted = completedSteps.includes(originalIndex);
             const isCurrent = originalIndex === currentStep;
 
             return (
-              <div
-                key={step.id}
-                className={`rounded-full transition-all duration-300 ${
-                  isCurrent
-                    ? "w-8 h-2.5 bg-terra"
-                    : isCompleted
-                    ? "w-2.5 h-2.5 bg-sage"
-                    : "w-2.5 h-2.5 bg-beige-dark"
-                }`}
-              />
+              <span key={step.id} className="flex items-center gap-1.5">
+                <span
+                  aria-current={isCurrent ? "step" : undefined}
+                  className={`font-serif transition-all duration-300 inline-block leading-none ${
+                    isCurrent
+                      ? "text-base font-semibold text-terra scale-110"
+                      : isCompleted
+                      ? "text-sm text-sage"
+                      : "text-sm text-warm-gray/45"
+                  }`}
+                >
+                  {step.verb}
+                </span>
+                {i < filteredSteps.length - 1 && (
+                  <span
+                    aria-hidden="true"
+                    className="text-xs leading-none select-none text-terra/30"
+                  >
+                    ·
+                  </span>
+                )}
+              </span>
             );
           })}
         </div>
