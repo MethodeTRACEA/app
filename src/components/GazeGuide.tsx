@@ -22,33 +22,39 @@ type Phase = "pre" | "scan" | "stable" | "rest" | "notice" | "close";
 const PHASE_SEQUENCE: Phase[] = ["pre", "scan", "stable", "rest", "notice", "close"];
 
 const SEGMENTS: Record<Phase, {
-  text: { main: string; sub?: string[] };
+  text: { main: string[]; sub?: string[] };
   src: string;
   pauseMs: number;
   fallbackMs: number;
 }> = {
   pre: {
-    text: { main: "Tu peux lever les yeux de l'écran.", sub: ["Tu peux revenir ici à tout moment."] },
+    text: { main: ["Tu peux lever les yeux de l'écran."] },
     src: "/audio/gaze/gaze_1.mp3", pauseMs: 2500, fallbackMs: 5000,
   },
   scan: {
-    text: { main: "Laisse ton regard se déplacer lentement dans la pièce.", sub: ["Sans chercher quelque chose de précis."] },
+    text: { main: ["Laisse ton regard se déplacer lentement dans la pièce."], sub: ["Sans chercher quelque chose de précis."] },
     src: "/audio/gaze/gaze_2.mp3", pauseMs: 4000, fallbackMs: 8000,
   },
   stable: {
-    text: { main: "Vois si quelque chose attire ton regard — quelque chose qui ne bouge pas.", sub: ["Un meuble. Une surface. Un coin de mur."] },
+    text: {
+      main: [
+        "Vois si quelque chose attire ton regard",
+        "quelque chose qui ne bouge pas.",
+      ],
+      sub: ["Un meuble. Une surface. Un coin de mur."],
+    },
     src: "/audio/gaze/gaze_3.mp3", pauseMs: 5000, fallbackMs: 10000,
   },
   rest: {
-    text: { main: "Tu peux rester là, avec ce point fixe.", sub: ["Juste voir, sans analyser."] },
+    text: { main: ["Tu peux rester là, avec ce point fixe."], sub: ["Juste voir, sans analyser."] },
     src: "/audio/gaze/gaze_4.mp3", pauseMs: 5000, fallbackMs: 10000,
   },
   notice: {
-    text: { main: "Vois si tu remarques une couleur ou une forme simple.", sub: ["Tu n'as rien à faire de plus que ça."] },
+    text: { main: ["Vois si tu remarques une couleur ou une forme simple."], sub: ["Tu n'as rien à faire de plus que ça."] },
     src: "/audio/gaze/gaze_5.mp3", pauseMs: 4000, fallbackMs: 8000,
   },
   close: {
-    text: { main: "C'est suffisant pour maintenant." },
+    text: { main: ["C'est suffisant pour maintenant."] },
     src: "/audio/gaze/gaze_6.mp3", pauseMs: 0, fallbackMs: 0,
   },
 };
@@ -236,54 +242,30 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
   const text = SEGMENTS[phase].text;
 
   return (
-    <div className="flex flex-col items-center gap-8" style={{ minHeight: 200 }}>
+    <div className="flex flex-col items-center min-h-screen w-full px-8 py-12">
 
-      {/* Halo lumineux horizontal — s'élargit puis se dissipe */}
-      <svg
-        viewBox="0 0 400 100"
-        width="100%"
-        height="100"
-        aria-hidden="true"
-        className="overflow-visible"
-        style={{ maxWidth: 400, pointerEvents: "none" }}
-      >
-        <defs>
-          <radialGradient id="gaze-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor="rgba(214,165,106,0.55)" />
-            <stop offset="60%"  stopColor="rgba(214,165,106,0.25)" />
-            <stop offset="100%" stopColor="rgba(214,165,106,0)" />
-          </radialGradient>
-        </defs>
-        <ellipse
-          cx="200"
-          cy="50"
-          rx={halo.rx}
-          ry={halo.ry}
-          fill="url(#gaze-glow)"
-          style={{
-            opacity: halo.opacity,
-            transition: reducedMotion
-              ? "none"
-              : "opacity 2.5s ease, rx 3s ease, ry 3s ease",
-          }}
-        />
-      </svg>
-
-      {/* Consigne textuelle — toujours visible pendant l'exercice */}
+      {/* Consigne textuelle — centrée verticalement dans la moitié supérieure */}
       <div
         key={`gaze-text-${phase}`}
-        className="w-full flex flex-col items-center text-center space-y-6 animate-fade-in"
+        className="w-full flex flex-col items-center justify-center text-center space-y-6 animate-fade-in min-h-[50vh]"
         aria-live="polite"
       >
-        <p className="font-body text-2xl t-text-primary max-w-xs">
-          {text.main}
-        </p>
+        <div className="flex flex-col items-center space-y-2">
+          {text.main.map((line, i) => (
+            <p
+              key={i}
+              className="font-body text-2xl t-text-primary max-w-xs text-balance"
+            >
+              {line}
+            </p>
+          ))}
+        </div>
         {text.sub && (
           <div className="flex flex-col items-center space-y-2">
             {text.sub.map((line, i) => (
               <p
                 key={i}
-                className="font-body text-lg t-text-primary max-w-xs"
+                className="font-body text-lg t-text-primary max-w-xs text-balance"
                 style={{ opacity: 0.75 }}
               >
                 {line}
@@ -297,46 +279,82 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
         <button
           type="button"
           onClick={onComplete}
-          className="t-btn-secondary animate-fade-in"
+          className="t-btn-secondary mt-8 animate-fade-in"
         >
           C&apos;est noté
         </button>
       )}
 
-      {/* Toggle voix — discret, persisté */}
-      <button
-        type="button"
-        onClick={handleVoiceToggle}
-        className="font-inter text-[10px] uppercase tracking-widest transition-opacity duration-300"
-        style={{ opacity: voiceEnabled ? 0.65 : 0.35 }}
-        aria-label={voiceEnabled ? "Voix activée" : "Sans voix"}
-        aria-pressed={voiceEnabled}
-      >
-        {voiceEnabled ? "Voix ·" : "Voix"}
-      </button>
+      {/* Bloc bas — boutons + halo poussés vers le bas de l'écran */}
+      <div className="mt-auto flex flex-col items-center w-full">
 
-      {phase !== "close" && (
+        {/* Toggle voix — discret, persisté */}
         <button
           type="button"
-          onClick={handleSkip}
-          className="font-inter text-xs t-text-ghost transition-opacity hover:opacity-100"
-          style={{ opacity: 0.55 }}
-          aria-label="Passer à l'étape suivante"
+          onClick={handleVoiceToggle}
+          className="font-inter text-[10px] uppercase tracking-widest transition-opacity duration-300"
+          style={{ opacity: voiceEnabled ? 0.65 : 0.35 }}
+          aria-label={voiceEnabled ? "Voix activée" : "Sans voix"}
+          aria-pressed={voiceEnabled}
         >
-          Passer
+          {voiceEnabled ? "Voix ·" : "Voix"}
         </button>
-      )}
 
-      {onCancel && phase !== "close" && (
-        <button
-          type="button"
-          onClick={onCancel}
-          className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors"
-          aria-label="Arrêter cet exercice et revenir au choix"
+        {phase !== "close" && (
+          <button
+            type="button"
+            onClick={handleSkip}
+            className="font-inter text-xs t-text-ghost transition-opacity hover:opacity-100 mt-4"
+            style={{ opacity: 0.55 }}
+            aria-label="Passer à l'étape suivante"
+          >
+            Passer
+          </button>
+        )}
+
+        {onCancel && phase !== "close" && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="font-inter text-sm t-text-secondary underline underline-offset-[3px] hover:text-t-beige transition-colors mt-4"
+            aria-label="Arrêter cet exercice et revenir au choix"
+          >
+            Faire autre chose
+          </button>
+        )}
+
+        {/* Halo lumineux horizontal — s'élargit puis se dissipe */}
+        <svg
+          viewBox="0 0 400 100"
+          width="100%"
+          height="100"
+          aria-hidden="true"
+          className="overflow-visible mt-6"
+          style={{ maxWidth: 400, pointerEvents: "none" }}
         >
-          Faire autre chose
-        </button>
-      )}
+          <defs>
+            <radialGradient id="gaze-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   stopColor="rgba(214,165,106,0.55)" />
+              <stop offset="60%"  stopColor="rgba(214,165,106,0.25)" />
+              <stop offset="100%" stopColor="rgba(214,165,106,0)" />
+            </radialGradient>
+          </defs>
+          <ellipse
+            cx="200"
+            cy="50"
+            rx={halo.rx}
+            ry={halo.ry}
+            fill="url(#gaze-glow)"
+            style={{
+              opacity: halo.opacity,
+              transition: reducedMotion
+                ? "none"
+                : "opacity 2.5s ease, rx 3s ease, ry 3s ease",
+            }}
+          />
+        </svg>
+
+      </div>
 
     </div>
   );
