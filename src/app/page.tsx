@@ -131,7 +131,7 @@ export default function LandingPage() {
                 margin: 0,
               }}
             >
-              TRAC&Eacute;A t&apos;aide &agrave; redescendre.
+              TRAC&Eacute;A te donne un point d&apos;appui.
             </p>
 
             {/* Promesse */}
@@ -325,10 +325,10 @@ export default function LandingPage() {
               &Agrave; la fin&hellip;
             </p>
             <p style={{ color: "rgba(240,230,214,0.56)", fontWeight: 300, fontSize: "1rem", lineHeight: 1.6 }}>
-              quelque chose redescend.
+              quelque chose se pose.
             </p>
             <p style={{ color: "#D99A84", fontStyle: "italic", fontWeight: 600, fontSize: "1rem", lineHeight: 1.6 }}>
-              Quelque chose change.
+              C&apos;est suffisant pour maintenant.
             </p>
           </div>
         </div>
@@ -398,15 +398,15 @@ export default function LandingPage() {
           </h2>
 
           <p className="text-base text-center mb-6" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
-            Tu le sens tout de suite&nbsp;:
+            Ce que certains remarquent&nbsp;:
           </p>
 
           <div className="grid grid-cols-2 gap-3 mb-8">
             {[
-              "Ça relâche un peu",
-              "Tu respires mieux",
-              "C'est plus clair",
-              "Tu sais quoi faire",
+              "Quelque chose relâche, parfois.",
+              "La respiration change un peu.",
+              "Un peu de clarté, peut-être.",
+              "Un geste devient possible.",
             ].map((text, i) => (
               <div
                 key={i}

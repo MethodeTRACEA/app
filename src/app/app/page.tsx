@@ -119,7 +119,7 @@ export default function Accueil() {
           }}
         >
           <span style={{ fontSize: "19px", color: "#D4A96A", textShadow: "0 0 12px rgba(212,169,106,0.85)" }}>⚡</span>
-          <span>Redescendre, maintenant</span>
+          <span>M&apos;aider maintenant</span>
         </Link>
       </div>
 
