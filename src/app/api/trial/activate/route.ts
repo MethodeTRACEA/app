@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { emailTrialStarted } from "@/lib/email";
 
 // ===================================================================
 // POST /api/trial/activate
@@ -209,6 +210,15 @@ export async function POST(request: NextRequest) {
       "| source:",
       source
     );
+
+    try {
+      if (authUser.email) {
+        emailTrialStarted(
+          authUser.email,
+          new Date(updated.trial_ends_at as string)
+        ).catch(() => {});
+      }
+    } catch {}
 
     return NextResponse.json({
       success: true,
