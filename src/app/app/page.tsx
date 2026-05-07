@@ -130,7 +130,6 @@ export default function Accueil() {
               transition: "all 0.2s ease",
             }}
           >
-            <span style={{ fontSize: "19px", color: "#D4A96A", textShadow: "0 0 12px rgba(212,169,106,0.85)" }}>⚡</span>
             <span>M&apos;aider maintenant</span>
           </Link>
         </div>
@@ -294,7 +293,7 @@ export default function Accueil() {
         {stats.total >= 1 && <InstallPrompt />}
         {stats.total >= 1 && <ReminderPrompt />}
 
-        <div className="pt-[15vh]">
+        <div className="pt-[8vh]">
           <SafetyResources />
         </div>
         <ReportProblem />
