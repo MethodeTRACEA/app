@@ -13,10 +13,6 @@ interface GazeGuideProps {
 // préférence "Sans voix"). pauseMs = pause après l'audio quand la
 // voix joue. fallbackMs = durée d'affichage de la consigne quand
 // la voix est désactivée ou que l'audio échoue.
-//
-// Les fichiers gaze_7.mp3, gaze_full.mp3 et gaze_source.mp3 ne sont
-// plus mappés ici mais restent physiquement présents dans
-// public/audio/gaze/ pour usage futur ou archivage.
 type Phase = "pre" | "scan" | "stable" | "rest" | "notice" | "close";
 
 const PHASE_SEQUENCE: Phase[] = ["pre", "scan", "stable", "rest", "notice", "close"];
