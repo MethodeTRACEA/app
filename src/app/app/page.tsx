@@ -66,70 +66,75 @@ export default function Accueil() {
         }}
       />
 
-      {/* Zone 1 — titre + texte, centrés verticalement */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center px-6 gap-6 relative z-[1]">
-        <h1
-          className="font-body leading-tight"
-          style={{
-            fontSize: "clamp(32px, 8vw, 42px)",
-            fontWeight: 300,
-            color: "#F0E6D6",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Quand &ccedil;a d&eacute;borde
-        </h1>
-        <p
-          className="font-sans leading-relaxed"
-          style={{
-            fontSize: "18px",
-            fontWeight: 300,
-            color: "rgba(240,230,214,0.60)",
-          }}
-        >
-          Quand &ccedil;a serre, que &ccedil;a tourne, ou avant de r&eacute;pondre trop vite, choisis le chemin le plus simple.
-        </p>
-      </div>
+      {/* Hero — titre + sous-titre + CTAs centrés verticalement dans le viewport */}
+      <div className="min-h-[calc(100svh-56px)] flex flex-col items-center justify-center gap-12 px-6 relative z-[1]">
 
-      {/* Zone 2 — boutons ancrés en bas */}
-      <div className="w-full max-w-md mx-auto px-6 pb-14 flex flex-col gap-5 relative z-[1]">
-        <Link
-          href="/start"
-          className="w-full block text-center"
-          style={{
-            borderRadius: "999px",
-            padding: "17px 26px",
-            fontSize: "18px",
-            fontWeight: 400,
-            letterSpacing: "0.03em",
-            color: "#1A120D",
-            background:
-              "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
-            boxShadow:
-              "0 8px 28px rgba(184,99,79,0.30), 0 2px 8px rgba(0,0,0,0.35)",
-          }}
-        >
-          Choisir ma travers&eacute;e
-        </Link>
-        <Link
-          href="/app/urgence"
-          className="w-full flex items-center justify-center gap-3 transition-all duration-200 active:scale-[0.98]"
-          style={{
-            borderRadius: "999px",
-            padding: "17px 26px",
-            fontSize: "18px",
-            fontWeight: 500,
-            letterSpacing: "0.03em",
-            color: "rgba(240,230,214,0.97)",
-            background: "linear-gradient(180deg, rgba(212,169,106,0.22), rgba(139,63,45,0.35))",
-            border: "1.5px solid rgba(212,169,106,0.50)",
-            boxShadow: "0 0 22px rgba(212,169,106,0.40), 0 8px 24px rgba(0,0,0,0.60)",
-            transition: "all 0.2s ease",
-          }}
-        >
-          <span style={{ fontSize: "19px", color: "#D4A96A", textShadow: "0 0 12px rgba(212,169,106,0.85)" }}>⚡</span>
-          <span>M&apos;aider maintenant</span>
-        </Link>
+        {/* Titre + sous-titre */}
+        <div className="text-center flex flex-col items-center gap-6">
+          <h1
+            className="font-body leading-tight"
+            style={{
+              fontSize: "clamp(32px, 8vw, 42px)",
+              fontWeight: 300,
+              color: "#F0E6D6",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Quand &ccedil;a d&eacute;borde
+          </h1>
+          <p
+            className="font-sans leading-relaxed"
+            style={{
+              fontSize: "18px",
+              fontWeight: 300,
+              color: "rgba(240,230,214,0.60)",
+            }}
+          >
+            Quand &ccedil;a serre, que &ccedil;a tourne, ou avant de r&eacute;pondre trop vite, choisis le chemin le plus simple.
+          </p>
+        </div>
+
+        {/* CTAs */}
+        <div className="w-full max-w-md flex flex-col gap-5">
+          <Link
+            href="/start"
+            className="w-full block text-center"
+            style={{
+              borderRadius: "999px",
+              padding: "17px 26px",
+              fontSize: "18px",
+              fontWeight: 400,
+              letterSpacing: "0.03em",
+              color: "#1A120D",
+              background:
+                "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+              boxShadow:
+                "0 8px 28px rgba(184,99,79,0.30), 0 2px 8px rgba(0,0,0,0.35)",
+            }}
+          >
+            Choisir ma travers&eacute;e
+          </Link>
+          <Link
+            href="/app/urgence"
+            className="w-full flex items-center justify-center gap-3 transition-all duration-200 active:scale-[0.98]"
+            style={{
+              borderRadius: "999px",
+              padding: "17px 26px",
+              fontSize: "18px",
+              fontWeight: 500,
+              letterSpacing: "0.03em",
+              color: "rgba(240,230,214,0.97)",
+              background: "linear-gradient(180deg, rgba(212,169,106,0.22), rgba(139,63,45,0.35))",
+              border: "1.5px solid rgba(212,169,106,0.50)",
+              boxShadow: "0 0 22px rgba(212,169,106,0.40), 0 8px 24px rgba(0,0,0,0.60)",
+              transition: "all 0.2s ease",
+            }}
+          >
+            <span style={{ fontSize: "19px", color: "#D4A96A", textShadow: "0 0 12px rgba(212,169,106,0.85)" }}>⚡</span>
+            <span>M&apos;aider maintenant</span>
+          </Link>
+        </div>
+
       </div>
 
       {/* Zone 3 — sections secondaires */}
