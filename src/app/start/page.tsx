@@ -221,13 +221,22 @@ export default function StartPage() {
           ))}
         </div>
 
-        {/* FOOTER MICROTEXTE */}
-        <p
-          className="font-sans text-[11px] text-center"
-          style={{ color: "rgba(240,230,214,0.38)" }}
-        >
-          Tu peux commencer sans compte. Tu restes libre d&apos;arrêter.
-        </p>
+        {/* FOOTER MICROTEXTE + RETOUR */}
+        <div className="flex flex-col items-center gap-3">
+          <p
+            className="font-sans text-[11px] text-center"
+            style={{ color: "rgba(240,230,214,0.38)" }}
+          >
+            Tu peux commencer sans compte. Tu restes libre d&apos;arrêter.
+          </p>
+          <Link
+            href="/"
+            className="font-sans text-[11px] underline"
+            style={{ color: "rgba(240,230,214,0.38)" }}
+          >
+            ← Revenir à l&apos;accueil
+          </Link>
+        </div>
 
       </div>
     </div>

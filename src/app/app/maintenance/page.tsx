@@ -23,6 +23,12 @@ export default function MaintenancePage() {
         <input type="password" name="password" placeholder="Mot de passe" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #333', background: '#1a1a1a', color: '#fff', fontSize: '1rem' }} />
         <button type="submit" style={{ padding: '0.75rem', borderRadius: '8px', background: '#fff', color: '#000', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>Accéder</button>
       </form>
+      <a
+        href="/"
+        style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}
+      >
+        Revenir au site
+      </a>
     </main>
   )
 }
