@@ -5,7 +5,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { NightMode } from "@/components/NightMode";
 
 const publicLinks = [
   { href: "/", label: "Accueil" },
@@ -45,15 +44,7 @@ export function Navigation() {
               alt="TRACÉA"
               width={120}
               height={36}
-              className="h-8 w-auto dark:hidden"
-              priority
-            />
-            <Image
-              src="/images/tracea-logo-blanc-transparent.png"
-              alt="TRACÉA"
-              width={120}
-              height={36}
-              className="h-8 w-auto hidden dark:block"
+              className="h-8 w-auto"
               priority
             />
           </Link>
@@ -89,12 +80,10 @@ export function Navigation() {
                 Connexion
               </Link>
             )}
-            <NightMode />
           </div>
 
-          {/* Mobile right: NightMode + hamburger */}
+          {/* Mobile right: hamburger */}
           <div className="flex md:hidden items-center gap-2">
-            <NightMode />
             <button
               onClick={() => setMenuOpen((o) => !o)}
               aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}

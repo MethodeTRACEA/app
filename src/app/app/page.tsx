@@ -289,7 +289,9 @@ export default function Accueil() {
         {stats.total >= 1 && <InstallPrompt />}
         {stats.total >= 1 && <ReminderPrompt />}
 
-        <SafetyResources />
+        <div className="pt-4">
+          <SafetyResources />
+        </div>
         <ReportProblem />
 
       </div>
