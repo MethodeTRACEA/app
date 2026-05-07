@@ -118,7 +118,7 @@ export default function StartPage() {
               color: "#F0E6D6",
             }}
           >
-            Tu veux redescendre comment&nbsp;?
+            Tu veux traverser comment&nbsp;?
           </h1>
 
           <p
