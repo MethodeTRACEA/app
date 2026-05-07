@@ -3,6 +3,7 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { ConsentBanner } from "@/components/ConsentBanner";
 import { AuthProvider } from "@/lib/auth-context";
 import { OnboardingRedirect } from "@/components/OnboardingRedirect";
+import { ForceNightMode } from "@/components/ForceNightMode";
 import Link from "next/link";
 
 export default function AppLayout({
@@ -10,6 +11,7 @@ export default function AppLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <AuthProvider>
+      <ForceNightMode />
       <Navigation />
       <OnboardingRedirect />
       <main className="flex-1">{children}</main>
