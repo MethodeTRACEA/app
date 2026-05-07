@@ -7,6 +7,7 @@ import { shouldShowNudge, markNudgeShownToday } from "@/lib/reminder";
 import { SafetyResources } from "@/components/SafetyResources";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { ReminderPrompt } from "@/components/ReminderPrompt";
+import { ReportProblem } from "@/components/ReportProblem";
 import type { SessionData } from "@/lib/types";
 
 export default function Accueil() {
@@ -289,6 +290,7 @@ export default function Accueil() {
         {stats.total >= 1 && <ReminderPrompt />}
 
         <SafetyResources />
+        <ReportProblem />
 
       </div>
     </div>
