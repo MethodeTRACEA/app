@@ -28,7 +28,7 @@ const options: Option[] = [
   {
     href: "/app/urgence",
     label: "URGENCE",
-    title: "Je veux redescendre vite",
+    title: "Retrouver un appui vite",
     desc: "Quand c'est trop intense. Directement par le corps.",
     tag: "2 min",
     labelColor: "#C97B6A",
@@ -39,7 +39,7 @@ const options: Option[] = [
   {
     href: "/app/traversee-courte",
     label: "TRAVERSÉE",
-    title: "Me poser et redescendre",
+    title: "Me poser et traverser",
     desc: "Pour déposer, revenir au corps, puis choisir un geste simple.",
     tag: "5 min",
     recommended: true,

@@ -20,7 +20,7 @@ const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
   deborde: "Ok. On va ralentir ça ensemble.",
   charge: "Ok. On va ralentir avant de répondre.",
   encore: "Ok. On va se poser un instant avant d'y aller.",
-  calme: "Ok. On va laisser redescendre un peu.",
+  calme: "Ok. On pose juste un instant.",
   stop: "Ok. On ralentit juste un instant.",
 };
 

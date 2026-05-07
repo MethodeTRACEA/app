@@ -62,7 +62,7 @@ const steps: StepResource[] = [
       "• le système parasympathique : repos, récupération, sécurité",
       "Quand une émotion intense surgit, le sympathique prend le dessus.",
       "Respirer lentement, et surtout expirer plus longtemps, aide à réactiver le parasympathique.",
-      "C'est ce qui permet au corps de redescendre.",
+      "C'est ce qui permet au corps de retrouver un appui.",
     ],
   },
   {
@@ -391,7 +391,7 @@ export default function RessourcesPage() {
                           Et quand &ccedil;a arrive, le r&eacute;flexe naturel est de fuir&nbsp;: penser &agrave; autre chose, s&apos;occuper, minimiser. Mais fuir ne fait pas dispara&icirc;tre l&apos;&eacute;motion. Elle reste, elle revient autrement.
                         </p>
                         <p className="font-sans mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
-                          Traverser, c&apos;est autre chose. C&apos;est rester l&agrave;, pr&eacute;sent, pendant que &ccedil;a passe. Pas pour souffrir davantage, mais parce que c&apos;est le seul chemin pour que &ccedil;a redescende vraiment.
+                          Traverser, c&apos;est autre chose. C&apos;est rester l&agrave;, pr&eacute;sent, pendant que &ccedil;a passe. Pas pour souffrir davantage, mais parce que c&apos;est le seul chemin pour traverser vraiment.
                         </p>
                       </div>
 
@@ -402,7 +402,7 @@ export default function RessourcesPage() {
                           Ton corps passe en mode alerte.
                         </p>
                         <p className="font-sans leading-relaxed" style={pNormal}>
-                          Tu peux l&apos;aider &agrave; redescendre.
+                          Tu peux lui donner un appui.
                         </p>
                         <p className="font-sans leading-relaxed" style={pNormal}>
                           Respire lentement. Expire plus longtemps que tu n&apos;inspires. C&apos;est comme &ccedil;a que ton syst&egrave;me nerveux retrouve un signal de s&eacute;curit&eacute;.

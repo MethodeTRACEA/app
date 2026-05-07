@@ -851,7 +851,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 Un instant dans le corps
               </h2>
               <p className="font-body text-base t-text-secondary leading-relaxed">
-                Vois si tu peux sentir un appui — tes pieds, ton dos, ce qui est là.
+                Vois si tu peux sentir un appui. Tes pieds, ton dos, ce qui est là.
               </p>
               <p className="font-inter text-xs t-text-ghost">
                 Même si c&apos;est flou, c&apos;est suffisant.
