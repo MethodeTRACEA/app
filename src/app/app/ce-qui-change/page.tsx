@@ -325,7 +325,7 @@ export default function CeQuiChangePage() {
             marginTop: -8,
           }}
         >
-          Ce qui revient, ce qui t&apos;aide, ce que tes traversées montrent.
+          Ce qui se dépose, ce qui t&apos;aide, ce que tu poses ici.
         </p>
 
         {/* ── Cas 0 — aucune session ── */}
@@ -494,9 +494,11 @@ export default function CeQuiChangePage() {
                 </p>
               ) : (
                 <p className="font-body" style={blockTextStyle}>
-                  Plusieurs traversées sont déjà enregistrées.
+                  Une trace est déjà ici.
                   <br />
-                  Elles restent ici, sans avoir besoin d&apos;être interprétées.
+                  Elle reste ici, sans avoir besoin d&apos;être interprétée.
+                  <br />
+                  Au fil des traversées, ce qui revient souvent commencera à apparaître ici.
                 </p>
               )}
             </div>
