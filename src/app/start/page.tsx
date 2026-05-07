@@ -55,7 +55,7 @@ const options: Option[] = [
     tag: "5 à 8 min",
     badge: "Compte requis",
     badgeNote: "Inclus dans ton essai gratuit 7 jours",
-    labelColor: "rgba(240,230,214,0.65)",
+    labelColor: "#C97B6A",
     cardBorder: "rgba(212,169,106,0.35)",
     cardBg: "rgba(255,255,255,0.06)",
   },
