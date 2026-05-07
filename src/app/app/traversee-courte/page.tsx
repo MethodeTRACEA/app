@@ -970,9 +970,30 @@ function TraverseeCourteV2() {
     }
   }
 
+  // Phases sans lien Quitter global :
+  // - entree : a déjà son propre ExitLink
+  // - synthese : a son bouton "Retour à l'accueil"
+  // - soft-limit : a son "Continuer librement" (paywall doux)
+  // - transition / exit-transition : animations auto-advance (~1.2s), pas de sens d'y proposer un lien
+  const HIDE_GLOBAL_EXIT: Screen[] = [
+    "entree",
+    "synthese",
+    "soft-limit",
+    "transition",
+    "exit-transition",
+  ];
+  const showGlobalExit = !HIDE_GLOBAL_EXIT.includes(screen);
+
   return (
     <ScreenContainer overlayOpacity={45}>
-      <div className="py-12">
+      <div className="py-12 relative">
+        {showGlobalExit && (
+          <ExitLink
+            label="← Quitter"
+            href="/app"
+            className="absolute top-3 left-4 z-10"
+          />
+        )}
         {renderScreen()}
         <SafetyResources />
       </div>
