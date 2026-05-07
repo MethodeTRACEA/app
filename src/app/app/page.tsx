@@ -90,7 +90,7 @@ export default function Accueil() {
               color: "rgba(240,230,214,0.60)",
             }}
           >
-            Quand &ccedil;a serre, que &ccedil;a tourne, ou avant de r&eacute;pondre trop vite, choisis le chemin le plus simple.
+            Quand &ccedil;a serre, que &ccedil;a tourne en boucle, ou avant de r&eacute;pondre trop vite, choisis le chemin le plus simple.
           </p>
         </div>
 
@@ -294,7 +294,7 @@ export default function Accueil() {
         {stats.total >= 1 && <InstallPrompt />}
         {stats.total >= 1 && <ReminderPrompt />}
 
-        <div className="pt-[40vh]">
+        <div className="pt-[15vh]">
           <SafetyResources />
         </div>
         <ReportProblem />
