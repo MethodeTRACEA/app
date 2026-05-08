@@ -46,28 +46,33 @@ export default function Accueil() {
 
   return (
     <div
-      className="min-h-[calc(100svh-56px)] flex flex-col relative"
-      style={{
-        background:
-          "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
-          "radial-gradient(ellipse at 15% 0%, rgba(111,106,100,0.16) 0%, transparent 58%), " +
-          "#1A120D",
-      }}
+      className="min-h-screen relative overflow-hidden"
+      style={{ background: "#1A120D" }}
     >
-
-      {/* Halo V3 */}
+      {/* Background gradients V3 — calqués sur la landing */}
       <div
+        className="fixed inset-0 pointer-events-none"
+        aria-hidden="true"
         style={{
-          position: "absolute",
-          inset: 0,
+          background:
+            "radial-gradient(ellipse at 50% 100%, rgba(184,99,79,0.13) 0%, rgba(184,99,79,0.05) 34%, transparent 66%), " +
+            "radial-gradient(ellipse at 15% 0%, rgba(111,106,100,0.16) 0%, transparent 58%)",
+        }}
+      />
+
+      {/* Halo V3 — calqué sur la landing (terra ellipse top, persistant au scroll) */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 0%, rgba(201,123,106,0.28) 0%, rgba(201,123,106,0) 75%)",
           zIndex: 0,
-          pointerEvents: "none",
-          background: "radial-gradient(circle at 50% 42%, rgba(255,180,120,0.18) 0%, rgba(255,140,90,0.10) 28%, rgba(28,20,16,0) 62%)",
         }}
       />
 
       {/* Hero — titre + sous-titre + CTAs centrés verticalement dans le viewport */}
-      <div className="min-h-[calc(100svh-56px)] flex flex-col items-center justify-center gap-12 px-6 relative z-[1]">
+      <div className="min-h-[75vh] flex flex-col items-center justify-center gap-12 px-6 relative z-[1]">
 
         {/* Titre + sous-titre */}
         <div className="text-center flex flex-col items-center gap-6">
