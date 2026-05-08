@@ -71,8 +71,8 @@ export default function Accueil() {
         }}
       />
 
-      {/* Hero — titre + sous-titre + CTAs centrés verticalement dans le viewport */}
-      <div className="min-h-[75vh] flex flex-col items-center justify-center gap-12 px-6 relative z-[1]">
+      {/* Hero — titre + sous-titre en haut, CTAs en bas du premier écran */}
+      <div className="min-h-[calc(100svh-56px)] flex flex-col items-center justify-between gap-12 pt-12 pb-8 px-6 relative z-[1]">
 
         {/* Titre + sous-titre */}
         <div className="text-center flex flex-col items-center gap-6">
@@ -90,12 +90,15 @@ export default function Accueil() {
           <p
             className="font-sans leading-relaxed"
             style={{
-              fontSize: "18px",
+              fontSize: "clamp(15px, 4.5vw, 18px)",
               fontWeight: 300,
               color: "rgba(240,230,214,0.60)",
             }}
           >
-            Quand &ccedil;a serre, que &ccedil;a tourne en boucle, ou avant de r&eacute;pondre trop vite, choisis le chemin le plus simple.
+            Quand &ccedil;a serre,<br />
+            que &ccedil;a tourne en boucle,<br />
+            ou avant de r&eacute;pondre trop vite,<br />
+            choisis le chemin le plus simple.
           </p>
         </div>
 
@@ -298,7 +301,7 @@ export default function Accueil() {
         {stats.total >= 1 && <InstallPrompt />}
         {stats.total >= 1 && <ReminderPrompt />}
 
-        <div className="pt-6">
+        <div className="pt-0">
           <SafetyResources />
         </div>
         <ReportProblem />
