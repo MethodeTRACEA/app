@@ -97,8 +97,10 @@ export default function Accueil() {
           >
             Quand &ccedil;a serre,<br />
             que &ccedil;a tourne en boucle,<br />
-            ou avant de r&eacute;pondre trop vite,<br />
-            choisis le chemin le plus simple.
+            ou avant de r&eacute;pondre trop vite,
+            <span className="block mt-4" style={{ fontWeight: 600 }}>
+              choisis le chemin le plus simple.
+            </span>
           </p>
         </div>
 
