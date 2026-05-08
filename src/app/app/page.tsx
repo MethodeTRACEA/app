@@ -79,7 +79,7 @@ export default function Accueil() {
           <h1
             className="font-body leading-tight"
             style={{
-              fontSize: "clamp(38px, 9vw, 50px)",
+              fontSize: "clamp(30px, 8vw, 44px)",
               fontWeight: 300,
               color: "#F0E6D6",
               letterSpacing: "-0.01em",
