@@ -71,11 +71,11 @@ export default function Accueil() {
         }}
       />
 
-      {/* Hero — titre + sous-titre dans le tiers supérieur, CTAs en bas, spacer fluide */}
-      <div className="min-h-[calc(100svh-56px)] flex flex-col items-center pt-[8vh] pb-[6vh] px-6 relative z-[1]">
+      {/* Hero — titre haut, sous-titre centré au milieu, CTAs en bas */}
+      <div className="min-h-[calc(100svh-56px)] flex flex-col items-center px-6 relative z-[1]">
 
-        {/* Titre + sous-titre */}
-        <div className="text-center flex flex-col items-center gap-8">
+        {/* Zone 1 — titre en haut */}
+        <div className="text-center pt-[10vh]">
           <h1
             className="font-body leading-tight"
             style={{
@@ -85,10 +85,14 @@ export default function Accueil() {
               letterSpacing: "-0.01em",
             }}
           >
-            Quand &ccedil;a d&eacute;borde
+            Quand &ccedil;a d&eacute;borde<br />en toi
           </h1>
+        </div>
+
+        {/* Zone 2 — sous-titre centré verticalement */}
+        <div className="flex-1 flex items-center justify-center">
           <p
-            className="font-sans leading-loose"
+            className="font-sans leading-loose text-center"
             style={{
               fontSize: "clamp(16px, 4.5vw, 19px)",
               fontWeight: 300,
@@ -104,11 +108,8 @@ export default function Accueil() {
           </p>
         </div>
 
-        {/* Spacer fluide */}
-        <div className="flex-1" />
-
-        {/* CTAs */}
-        <div className="w-full max-w-md flex flex-col gap-5">
+        {/* Zone 3 — CTAs en bas */}
+        <div className="w-full max-w-md flex flex-col gap-5 pb-[6vh]">
           <Link
             href="/start"
             className="w-full block text-center"
