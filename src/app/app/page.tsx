@@ -71,15 +71,15 @@ export default function Accueil() {
         }}
       />
 
-      {/* Hero — titre + sous-titre en haut, CTAs en bas du premier écran */}
-      <div className="min-h-[calc(100svh-56px)] flex flex-col items-center justify-between gap-12 pt-12 pb-8 px-6 relative z-[1]">
+      {/* Hero — titre + sous-titre dans le tiers supérieur, CTAs en bas, spacer fluide */}
+      <div className="min-h-[calc(100svh-56px)] flex flex-col items-center pt-[8vh] pb-[6vh] px-6 relative z-[1]">
 
         {/* Titre + sous-titre */}
-        <div className="text-center flex flex-col items-center gap-6">
+        <div className="text-center flex flex-col items-center gap-8">
           <h1
             className="font-body leading-tight"
             style={{
-              fontSize: "clamp(32px, 8vw, 42px)",
+              fontSize: "clamp(38px, 9vw, 50px)",
               fontWeight: 300,
               color: "#F0E6D6",
               letterSpacing: "-0.01em",
@@ -88,9 +88,9 @@ export default function Accueil() {
             Quand &ccedil;a d&eacute;borde
           </h1>
           <p
-            className="font-sans leading-relaxed"
+            className="font-sans leading-loose"
             style={{
-              fontSize: "clamp(15px, 4.5vw, 18px)",
+              fontSize: "clamp(16px, 4.5vw, 19px)",
               fontWeight: 300,
               color: "rgba(240,230,214,0.60)",
             }}
@@ -101,6 +101,9 @@ export default function Accueil() {
             choisis le chemin le plus simple.
           </p>
         </div>
+
+        {/* Spacer fluide */}
+        <div className="flex-1" />
 
         {/* CTAs */}
         <div className="w-full max-w-md flex flex-col gap-5">
