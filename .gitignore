@@ -31,3 +31,6 @@ npm-debug.log*
 next-env.d.ts
 
 .vercel
+
+# Claude local skills checkout (non-versionnable, propre à chaque dev)
+.claude/skills/skills-main/

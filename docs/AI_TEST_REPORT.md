@@ -1,7 +1,7 @@
 # Rapport de test IA TRACÉA
 
-**Généré le :** 2026-04-25 15:08:59 UTC
-**Durée totale :** 311.0s
+**Généré le :** 2026-04-25 18:25:43 UTC
+**Durée totale :** 228.7s
 **Modèle :** claude-sonnet-4-6
 **Post-traitement :** applyTraceaV3
 
@@ -12,10 +12,10 @@
 | Métrique | Valeur |
 |----------|--------|
 | Cas testés | 30 |
-| ✅ Réussites | 30 |
-| ❌ Échecs | 0 |
+| ✅ Réussites | 29 |
+| ❌ Échecs | 1 |
 | ⚠️ Erreurs API | 0 |
-| Taux de réussite | 100% |
+| Taux de réussite | 97% |
 
 ---
 
@@ -49,16 +49,40 @@
 | 24 | action formulée avec je | ✅ PASS | — |
 | 25 | situation très courte | ✅ PASS | — |
 | 26 | situation très courte | ✅ PASS | — |
-| 27 | situation longue | ✅ PASS | — |
+| 27 | situation longue | ❌ FAIL | max_4_phrases |
 | 28 | situation longue | ✅ PASS | — |
 | 29 | contradiction émotion/besoin | ✅ PASS | — |
 | 30 | contradiction émotion/besoin | ✅ PASS | — |
 
 ---
 
-## ✅ Tous les 30 cas ont réussi
+## Détail des cas échoués (1)
 
-L'IA TRACÉA respecte toutes les règles de robustesse sur cette suite de tests.
+### Cas 27 — situation longue
+
+**Situation :** Cela fait maintenant trois mois que je gère un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route. Chaque semaine de nouveaux obstacles surgissent. J'ai l'impression de nager à contre-courant en permanence, de devoir justifier chaque décision et de n'avoir aucun soutien réel. Ce matin on m'a encore demandé de faire plus avec moins.
+
+**Émotion :** `frustration`
+
+**Besoin :** être reconnu pour ce que j'accomplis réellement
+
+**Action :** demander un entretien formel avec ma direction cette semaine
+
+**Réponse IA (après applyTraceaV3) :**
+
+> Depuis trois mois, tu gères un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route. Ce matin on t'a encore demandé de faire plus avec moins.
+> 
+> Tu ressens de la frustration, et ce qui te manque, c'est être reconnu pour ce que tu accomplis réellement.
+> 
+> Ce qui te semble juste, c'est demander un entretien formel avec ta direction cette semaine.
+> 
+> Tu peux le voir.
+
+**Règles cassées :**
+
+- ❌ `max_4_phrases` : 5 phrases détectées (max autorisé : 4)
+
+---
 
 ## Détail complet — tous les cas
 
@@ -73,7 +97,7 @@ L'IA TRACÉA respecte toutes les règles de robustesse sur cette suite de tests.
 
 **Action :** en parler directement avec lui demain
 
-**Durée :** 7563ms
+**Durée :** 1814ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -93,9 +117,9 @@ Tu peux t'appuyer là-dessus.
 > 
 > Ton chef a annulé ta présentation au dernier moment devant toute l'équipe.
 > 
-> Ce qui te semble juste, c'est en parler directement avec lui demain.
+> Ça touche quelque chose.
 > 
-> Tu peux t'écouter.
+> Ce qui te semble juste, c'est en parler directement avec lui demain.
 
 **Règles :** toutes respectées ✅
 
@@ -112,7 +136,7 @@ Tu peux t'appuyer là-dessus.
 
 **Action :** poser mes limites clairement
 
-**Durée :** 16642ms
+**Durée :** 1701ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -129,6 +153,8 @@ Tu peux t'appuyer là-dessus.
 **Réponse finale (après applyTraceaV3) :**
 
 > Tu as découvert que ton colocataire avait utilisé tes affaires sans demander.
+> 
+> Ça ne passe pas.
 > 
 > Ce qui te semble juste, c'est poser tes limites clairement.
 > 
@@ -149,16 +175,14 @@ Tu peux t'appuyer là-dessus.
 
 **Action :** lui envoyer un message ce soir
 
-**Durée :** 15389ms
+**Durée :** 1604ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Ton meilleur ami a déménagé à l'autre bout de la France ce week-end.
 
-Tu as ressenti de la tristesse.
-
-Ça touche.
+Tu ressens de la tristesse, et tu veux maintenir ce lien malgré la distance.
 
 Ce qui te semble juste, c'est lui envoyer un message ce soir.
 
@@ -169,11 +193,11 @@ Ce qui te semble juste, c'est lui envoyer un message ce soir.
 
 > Ton meilleur ami a déménagé à l'autre bout de la France ce week-end.
 > 
-> Ça fait quelque chose.
-> 
-> Tu as ressenti de la tristesse.
+> Tu ressens de la tristesse, et tu veux maintenir ce lien malgré la distance.
 > 
 > Ce qui te semble juste, c'est lui envoyer un message ce soir.
+> 
+> Tu peux prendre ce temps.
 
 **Règles :** toutes respectées ✅
 
@@ -190,14 +214,14 @@ Ce qui te semble juste, c'est lui envoyer un message ce soir.
 
 **Action :** prendre du temps pour moi ce week-end
 
-**Durée :** 25242ms
+**Durée :** 1626ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Tu as raté une opportunité professionnelle importante sur laquelle tu comptais vraiment.
 
-Tu ressens de la tristesse.
+Tu as ressenti de la tristesse.
 
 C'est lourd.
 
@@ -210,7 +234,7 @@ Tu peux prendre ce temps.
 
 > Tu as raté une opportunité professionnelle importante sur laquelle tu comptais vraiment.
 > 
-> Tu ressens de la tristesse.
+> C'est lourd, et tu as ressenti de la tristesse.
 > 
 > Ce qui te semble juste, c'est prendre du temps pour toi ce week-end.
 > 
@@ -231,7 +255,7 @@ Tu peux prendre ce temps.
 
 **Action :** faire une répétition avec un ami de confiance
 
-**Durée :** 16864ms
+**Durée :** 1813ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -270,7 +294,7 @@ Tu peux rester là.
 
 **Action :** appeler le cabinet médical ce matin
 
-**Durée :** 29180ms
+**Durée :** 1797ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -287,6 +311,8 @@ Tu peux rester là.
 **Réponse finale (après applyTraceaV3) :**
 
 > Tu as reçu des résultats médicaux inquiétants à discuter avec ton médecin.
+> 
+> Il y a une tension là.
 > 
 > Ce qui te semble juste, c'est appeler le cabinet médical ce matin.
 > 
@@ -307,7 +333,7 @@ Tu peux rester là.
 
 **Action :** m'excuser sincèrement dès ce soir
 
-**Durée :** 2558ms
+**Durée :** 1697ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -346,7 +372,7 @@ Tu peux y aller doucement.
 
 **Action :** m'accorder de la compassion
 
-**Durée :** 8094ms
+**Durée :** 1636ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -387,29 +413,29 @@ Tu peux rester avec toi.
 
 **Action :** l'appeler aujourd'hui et lui offrir quelque chose de sincère
 
-**Durée :** 7692ms
+**Durée :** 2783ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Tu as complètement oublié l'anniversaire de ta sœur cette année.
 
-Tu ressens de la culpabilité, et tu veux réparer ce que tu as négligé.
+Tu ressens de la culpabilité, et tu vois qu'il y a quelque chose à réparer.
 
 Ce qui te semble juste, c'est l'appeler aujourd'hui et lui offrir quelque chose de sincère.
 
-Ça a du sens.
+Ça compte.
 ```
 
 **Réponse finale (après applyTraceaV3) :**
 
 > Tu as complètement oublié l'anniversaire de ta sœur cette année.
 > 
-> Tu ressens de la culpabilité, et tu veux réparer ce que tu as négligé.
+> Tu ressens de la culpabilité, et tu vois qu'il y a quelque chose à réparer.
 > 
 > Ce qui te semble juste, c'est l'appeler aujourd'hui et lui offrir quelque chose de sincère.
 > 
-> Ça compte.
+> Tu peux y aller doucement.
 
 **Règles :** toutes respectées ✅
 
@@ -426,14 +452,14 @@ Ce qui te semble juste, c'est l'appeler aujourd'hui et lui offrir quelque chose 
 
 **Action :** être honnête avec mon manager sur mes limites réelles
 
-**Durée :** 7784ms
+**Durée :** 1759ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Tu as accepté une mission que tu savais ne pas pouvoir honorer dans les délais.
 
-Tu as ressenti de la culpabilité, et tu vois que ce qui compte pour toi, c'est agir en accord avec tes valeurs.
+Tu as ressenti de la culpabilité.
 
 Ce qui te semble juste, c'est être honnête avec ton manager sur tes limites réelles.
 
@@ -444,11 +470,11 @@ Ce qui te semble juste, c'est être honnête avec ton manager sur tes limites r�
 
 > Tu as accepté une mission que tu savais ne pas pouvoir honorer dans les délais.
 > 
-> Tu as ressenti de la culpabilité, et tu vois que ce qui compte pour toi, c'est agir en accord avec tes valeurs.
+> Ça pèse un peu.
+> 
+> Tu as ressenti de la culpabilité.
 > 
 > Ce qui te semble juste, c'est être honnête avec ton manager sur tes limites réelles.
-> 
-> Ça a du sens.
 
 **Règles :** toutes respectées ✅
 
@@ -465,7 +491,7 @@ Ce qui te semble juste, c'est être honnête avec ton manager sur tes limites r�
 
 **Action :** demander une réunion de clarification cette semaine
 
-**Durée :** 7693ms
+**Durée :** 1449ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -473,8 +499,6 @@ Ce qui te semble juste, c'est être honnête avec ton manager sur tes limites r�
 Tu reçois des messages contradictoires de ton manager concernant les priorités du projet.
 
 C'est flou.
-
-Tu ressens de la confusion, et tu as besoin d'avoir une direction claire.
 
 Ce qui te semble juste, c'est demander une réunion de clarification cette semaine.
 
@@ -489,7 +513,7 @@ Ce qui te semble juste, c'est demander une réunion de clarification cette semai
 > 
 > Ce qui te semble juste, c'est demander une réunion de clarification cette semaine.
 > 
-> Tu n'as pas besoin de savoir tout de suite.
+> Ça peut rester comme ça.
 
 **Règles :** toutes respectées ✅
 
@@ -506,7 +530,7 @@ Ce qui te semble juste, c'est demander une réunion de clarification cette semai
 
 **Action :** prendre quelques jours sans pression pour moi
 
-**Durée :** 8971ms
+**Durée :** 12215ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -547,7 +571,7 @@ Tu n'as pas besoin de savoir tout de suite.
 
 **Action :** escalader directement au niveau supérieur
 
-**Durée :** 6835ms
+**Durée :** 7922ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -588,16 +612,14 @@ C'est là.
 
 **Action :** exprimer clairement ce que cette situation me coûte
 
-**Durée :** 8179ms
+**Durée :** 8010ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Tu prépares ce projet depuis des mois et il est constamment repoussé sans explication.
 
-Tu ressens de la frustration — que ton travail soit reconnu à sa juste valeur.
-
-Ça bloque.
+Tu ressens de la frustration — et tu as besoin que ton travail soit reconnu à sa juste valeur.
 
 Ce qui te semble juste, c'est exprimer clairement ce que cette situation te coûte.
 
@@ -608,7 +630,7 @@ C'est là.
 
 > Tu prépares ce projet depuis des mois et il est constamment repoussé sans explication.
 > 
-> Tu ressens de la frustration — que ton travail soit reconnu à sa juste valeur.
+> Tu ressens de la frustration — et tu as besoin que ton travail soit reconnu à sa juste valeur.
 > 
 > Ce qui te semble juste, c'est exprimer clairement ce que cette situation te coûte.
 > 
@@ -629,7 +651,7 @@ C'est là.
 
 **Action :** m'inscrire à une activité de groupe cette semaine
 
-**Durée :** 7170ms
+**Durée :** 7839ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -651,7 +673,7 @@ Ce qui te semble juste, c'est t'inscrire à une activité de groupe cette semain
 > 
 > Ce qui te semble juste, c'est t'inscrire à une activité de groupe cette semaine.
 > 
-> Ça a du sens.
+> Ça a sa place.
 
 **Règles :** toutes respectées ✅
 
@@ -668,7 +690,7 @@ Ce qui te semble juste, c'est t'inscrire à une activité de groupe cette semain
 
 **Action :** avoir une vraie conversation avec une personne de confiance
 
-**Durée :** 8356ms
+**Durée :** 7430ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -690,7 +712,7 @@ Ce qui te semble juste, c'est avoir une vraie conversation avec une personne de 
 > 
 > Ce qui te semble juste, c'est avoir une vraie conversation avec une personne de confiance.
 > 
-> Ça compte.
+> Tu peux t'appuyer là-dessus.
 
 **Règles :** toutes respectées ✅
 
@@ -707,7 +729,7 @@ Ce qui te semble juste, c'est avoir une vraie conversation avec une personne de 
 
 **Action :** m'asseoir avec ce sentiment sans chercher à le résoudre tout de suite
 
-**Durée :** 7481ms
+**Durée :** 10764ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -746,7 +768,7 @@ Tu peux prendre ce temps.
 
 **Action :** me reposer et voir ce qui émerge
 
-**Durée :** 7121ms
+**Durée :** 1510ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -785,7 +807,7 @@ Tu n'as pas besoin de savoir tout de suite.
 
 **Action :** lui parler directement ou attendre que ça se tasse
 
-**Durée :** 8916ms
+**Durée :** 11950ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -793,8 +815,6 @@ Tu n'as pas besoin de savoir tout de suite.
 Ta relation avec ton collègue est tendue depuis une semaine sans raison claire.
 
 Tu ressens de la frustration, et tu as besoin de clarifier la situation.
-
-Quelque chose résiste.
 
 Ce qui te semble juste, c'est lui parler directement ou attendre que ça se tasse.
 
@@ -809,7 +829,7 @@ C'est là.
 > 
 > Ce qui te semble juste, c'est lui parler directement ou attendre que ça se tasse.
 > 
-> Tu peux le voir.
+> C'est là.
 
 **Règles :** toutes respectées ✅
 
@@ -826,7 +846,7 @@ C'est là.
 
 **Action :** faire une liste de critères ou en parler à quelqu'un de confiance
 
-**Durée :** 8618ms
+**Durée :** 7166ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -867,14 +887,14 @@ Tu n'as pas besoin de savoir tout de suite.
 
 **Action :** je vais l'appeler demain soir quand je serai plus calme
 
-**Durée :** 3169ms
+**Durée :** 8676ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Tu as eu une dispute avec ton frère ce matin avant le travail.
 
-Tu as ressenti de la colère — et tu as besoin qu'on puisse se parler vraiment sans s'agresser.
+Tu as ressenti de la colère, et tu as besoin qu'on puisse se parler vraiment sans s'agresser.
 
 Ce qui te semble juste, c'est l'appeler demain soir quand tu seras plus calme.
 
@@ -884,8 +904,6 @@ Tu peux t'appuyer là-dessus.
 **Réponse finale (après applyTraceaV3) :**
 
 > Tu as eu une dispute avec ton frère ce matin avant le travail.
-> 
-> Tu as ressenti de la colère — et tu as besoin qu'on puisse se parler vraiment sans s'agresser.
 > 
 > Ce qui te semble juste, c'est l'appeler demain soir quand tu seras plus calme.
 > 
@@ -906,14 +924,14 @@ Tu peux t'appuyer là-dessus.
 
 **Action :** je vais contacter un coach professionnel la semaine prochaine
 
-**Durée :** 11269ms
+**Durée :** 7548ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Tu traverses une période de transition professionnelle difficile et incertaine.
 
-Tu as ressenti de la peur, et tu sens le besoin de trouver une direction qui correspond à qui tu es.
+Tu as ressenti de la peur, et tu cherches à trouver une direction qui correspond à qui tu es.
 
 Ce qui te semble juste, c'est contacter un coach professionnel la semaine prochaine.
 
@@ -922,13 +940,13 @@ Tu peux rester là.
 
 **Réponse finale (après applyTraceaV3) :**
 
-> Tu as ressenti de la peur, et tu sens le besoin de trouver une direction qui correspond à qui tu es.
-> 
 > Tu traverses une période de transition professionnelle difficile et incertaine.
 > 
-> Ce qui te semble juste, c'est contacter un coach professionnel la semaine prochaine.
+> Ça serre un peu.
 > 
-> Tu peux rester là.
+> Tu as ressenti de la peur, et tu cherches à trouver une direction qui correspond à qui tu es.
+> 
+> Ce qui te semble juste, c'est contacter un coach professionnel la semaine prochaine.
 
 **Règles :** toutes respectées ✅
 
@@ -945,7 +963,7 @@ Tu peux rester là.
 
 **Action :** je lui envoie un message pour qu'on se retrouve
 
-**Durée :** 7059ms
+**Durée :** 7154ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -984,14 +1002,14 @@ Ce qui te semble juste, c'est lui envoyer un message pour qu'on se retrouve.
 
 **Action :** je prends une journée pour moi sans obligation
 
-**Durée :** 8225ms
+**Durée :** 16306ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Tu es épuisé(e) par la surcharge de travail accumulée ce mois-ci.
 
-Tu ressens de la frustration, et le besoin de te ressourcer vraiment.
+Tu ressens de la frustration, et tu as besoin de te ressourcer vraiment.
 
 Ce qui te semble juste, c'est prendre une journée pour toi sans obligation.
 
@@ -1002,7 +1020,7 @@ C'est là.
 
 > Tu es épuisé(e) par la surcharge de travail accumulée ce mois-ci.
 > 
-> Tu ressens de la frustration, et le besoin de te ressourcer vraiment.
+> Tu ressens de la frustration, et tu as besoin de te ressourcer vraiment.
 > 
 > Ce qui te semble juste, c'est prendre une journée pour toi sans obligation.
 > 
@@ -1023,7 +1041,7 @@ C'est là.
 
 **Action :** en parler
 
-**Durée :** 7883ms
+**Durée :** 9034ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -1062,7 +1080,7 @@ Tu peux t'appuyer là-dessus.
 
 **Action :** appeler quelqu'un
 
-**Durée :** 6969ms
+**Durée :** 15840ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -1091,7 +1109,7 @@ Ce qui te semble juste, c'est appeler quelqu'un.
 </details>
 
 <details>
-<summary><strong>Cas 27 — situation longue</strong> &nbsp; ✅ PASS</summary>
+<summary><strong>Cas 27 — situation longue</strong> &nbsp; ❌ FAIL</summary>
 
 **Situation :** Cela fait maintenant trois mois que je gère un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route. Chaque semaine de nouveaux obstacles surgissent. J'ai l'impression de nager à contre-courant en permanence, de devoir justifier chaque décision et de n'avoir aucun soutien réel. Ce matin on m'a encore demandé de faire plus avec moins.
 
@@ -1101,14 +1119,14 @@ Ce qui te semble juste, c'est appeler quelqu'un.
 
 **Action :** demander un entretien formel avec ma direction cette semaine
 
-**Durée :** 17420ms
+**Durée :** 12024ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
-Depuis trois mois, tu gères un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route — et ce matin on t'a encore demandé de faire plus avec moins.
+Depuis trois mois, tu gères un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route. Ce matin on t'a encore demandé de faire plus avec moins.
 
-Tu ressens de la frustration, et ce qui manque, c'est être reconnu pour ce que tu accomplis réellement.
+Tu ressens de la frustration, et ce qui te manque, c'est être reconnu pour ce que tu accomplis réellement.
 
 Ça bloque.
 
@@ -1119,15 +1137,17 @@ C'est là.
 
 **Réponse finale (après applyTraceaV3) :**
 
-> Depuis trois mois, tu gères un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route — et ce matin on t'a encore demandé de faire plus avec moins.
+> Depuis trois mois, tu gères un projet très complexe impliquant plusieurs équipes, des délais impossibles, des demandes contradictoires de la direction et un budget réduit de moitié en cours de route. Ce matin on t'a encore demandé de faire plus avec moins.
 > 
-> Tu ressens de la frustration, et ce qui manque, c'est être reconnu pour ce que tu accomplis réellement.
+> Tu ressens de la frustration, et ce qui te manque, c'est être reconnu pour ce que tu accomplis réellement.
 > 
 > Ce qui te semble juste, c'est demander un entretien formel avec ta direction cette semaine.
 > 
 > Tu peux le voir.
 
-**Règles :** toutes respectées ✅
+**Règles cassées :**
+
+- ❌ `max_4_phrases` : 5 phrases détectées (max autorisé : 4)
 
 </details>
 
@@ -1142,16 +1162,14 @@ C'est là.
 
 **Action :** consulter un thérapeute de couple pour y voir plus clair
 
-**Durée :** 2467ms
+**Durée :** 16334ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 Ta relation traverse une phase très difficile depuis un an, et tu ne sais plus vraiment ce que tu veux.
 
-Tu ressens de la confusion.
-
-C'est flou.
+Tu ressens de la confusion, et quelque chose échappe à la clarté.
 
 Ce qui te semble juste, c'est consulter un thérapeute de couple pour y voir plus clair.
 
@@ -1162,11 +1180,11 @@ Tu n'as pas besoin de savoir tout de suite.
 
 > Ta relation traverse une phase très difficile depuis un an, et tu ne sais plus vraiment ce que tu veux.
 > 
-> Tu ressens de la confusion.
+> Tu ressens de la confusion, et quelque chose échappe à la clarté.
 > 
 > Ce qui te semble juste, c'est consulter un thérapeute de couple pour y voir plus clair.
 > 
-> Ça peut rester comme ça.
+> Tu n'as pas besoin de savoir tout de suite.
 
 **Règles :** toutes respectées ✅
 
@@ -1183,7 +1201,7 @@ Tu n'as pas besoin de savoir tout de suite.
 
 **Action :** dresser une liste de mes forces et de mes premiers objectifs
 
-**Durée :** 1893ms
+**Durée :** 6832ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
@@ -1222,25 +1240,23 @@ Tu peux rester là.
 
 **Action :** lui dire à mon tour ce que je ressens vraiment
 
-**Durée :** 10611ms
+**Durée :** 16877ms
 
 **Réponse brute (avant applyTraceaV3) :**
 
 ```
 La personne que tu aimes t'a dit pour la première fois qu'elle t'aimait.
 
-Tu as ressenti de la tristesse, et tu as besoin de t'assurer que c'est réel et que ça va durer.
+Tu as ressenti de la tristesse, et le besoin de t'assurer que c'est réel et que ça va durer.
 
 Ce qui te semble juste, c'est lui dire à ton tour ce que tu ressens vraiment.
 
-Ça a sa place.
+Tu peux prendre ce temps.
 ```
 
 **Réponse finale (après applyTraceaV3) :**
 
 > La personne que tu aimes t'a dit pour la première fois qu'elle t'aimait.
-> 
-> C'est lourd.
 > 
 > Ce qui te semble juste, c'est lui dire à ton tour ce que tu ressens vraiment.
 > 
