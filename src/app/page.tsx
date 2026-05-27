@@ -220,6 +220,28 @@ export default function LandingPage() {
             Commencer gratuitement
           </Link>
 
+          {/* CTA waitlist — lien externe vers la subscribe page */}
+          <div className="mt-3 md:mt-4 w-full sm:w-auto">
+            <Link
+              href="https://tracea-waitlist.subscribepage.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans inline-block w-full sm:w-auto text-center text-base px-8"
+              style={{
+                background: "transparent",
+                color: "#C97B6A",
+                border: "1.5px solid rgba(201,123,106,0.55)",
+                borderRadius: 40,
+                padding: "14.5px 40px",
+                fontWeight: 500,
+                textDecoration: "none",
+                minHeight: 48,
+              }}
+            >
+              S&apos;inscrire &agrave; la liste d&apos;attente
+            </Link>
+          </div>
+
           {/* CTA secondaire */}
           <div className="mt-4 md:mt-5">
             <Link
