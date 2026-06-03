@@ -1,8 +1,15 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const FROM = "TRACÉA <bonjour@methodetracea.fr>";
+
+// Instanciation paresseuse : évite que new Resend() soit appelé au niveau
+// module lors du build Next.js (next build évalue les imports à froid et
+// lève "Missing API key" si RESEND_API_KEY est absente au build time).
+function getResend(): Resend {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) throw new Error("[email] RESEND_API_KEY manquante");
+  return new Resend(key);
+}
 
 export async function sendEmail(params: {
   from: string;
@@ -11,6 +18,7 @@ export async function sendEmail(params: {
   text: string;
 }): Promise<void> {
   try {
+    const resend = getResend();
     const { error } = await resend.emails.send(params);
     if (error) console.error("[email] send failed", error);
   } catch (err) {

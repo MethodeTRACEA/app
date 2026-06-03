@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { emailTrialExpiring } from "@/lib/email";
 
+// force-dynamic : empêche Next.js d'évaluer cette route statiquement au build.
+// Sans ça, next build tente de "collect page data" sur les routes GET et
+// peut lever des erreurs si des dépendances attendent des variables d'env runtime.
+export const dynamic = "force-dynamic";
+
 // =====================================================================
 // GET /api/cron/trial-expiry
 //
