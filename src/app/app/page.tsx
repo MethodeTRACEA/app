@@ -8,6 +8,7 @@ import { SafetyResources } from "@/components/SafetyResources";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { ReminderPrompt } from "@/components/ReminderPrompt";
 import { ReportProblem } from "@/components/ReportProblem";
+import { RefletCompact } from "@/components/RefletCompact";
 import type { SessionData } from "@/lib/types";
 
 export default function Accueil() {
@@ -191,6 +192,9 @@ export default function Accueil() {
             )}
           </div>
         )}
+
+        {/* Reflet compact — n'affiche rien tant qu'il n'y a pas assez de données */}
+        <RefletCompact />
 
         {/* Stats compactes (si sessions existantes) */}
         {stats.total > 0 && (
