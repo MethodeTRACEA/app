@@ -32,6 +32,11 @@ export default function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
+  // LAUNCH_MODE : 'prelaunch' → liste d'attente prioritaire, /app inaccessible au public.
+  // 'live' (ou absent) → comportement normal, "Commencer gratuitement" actif.
+  // Pour basculer le 12 juin : changer NEXT_PUBLIC_LAUNCH_MODE=prelaunch → live dans Vercel.
+  const isPrelaunch = process.env.NEXT_PUBLIC_LAUNCH_MODE === 'prelaunch'
+
   const traceaSteps: { letter: string; name: string; text: string }[] = [
     { letter: "T", name: "Traverser",   text: "Tu restes là, sans fuir." },
     { letter: "R", name: "Reconnaître", text: "Tu nommes ce que tu ressens." },
@@ -203,44 +208,68 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* CTA principal */}
-          <Link
-            href="/start"
-            className="font-sans inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
-            style={{
-              background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
-              color: "#1A120D",
-              borderRadius: 40,
-              padding: "16px 40px",
-              fontWeight: 600,
-              textDecoration: "none",
-              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
-            }}
-          >
-            Commencer gratuitement
-          </Link>
-
-          {/* CTA waitlist — lien externe vers la subscribe page */}
-          <div className="mt-3 md:mt-4 w-full sm:w-auto">
+          {/* CTA principal —
+              live      : "Commencer gratuitement" (gradient plein)
+              prelaunch : "S'inscrire à la liste d'attente" (gradient plein, même style) */}
+          {!isPrelaunch ? (
+            <Link
+              href="/start"
+              className="font-sans inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
+              style={{
+                background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+                color: "#1A120D",
+                borderRadius: 40,
+                padding: "16px 40px",
+                fontWeight: 600,
+                textDecoration: "none",
+                boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
+              }}
+            >
+              Commencer gratuitement
+            </Link>
+          ) : (
             <Link
               href="https://tracea-waitlist.subscribepage.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-sans inline-block w-full sm:w-auto text-center text-base px-8"
+              className="font-sans inline-block w-full sm:w-auto text-center text-base md:text-lg px-8"
               style={{
-                background: "transparent",
-                color: "#C97B6A",
-                border: "1.5px solid rgba(201,123,106,0.55)",
+                background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+                color: "#1A120D",
                 borderRadius: 40,
-                padding: "14.5px 40px",
-                fontWeight: 500,
+                padding: "16px 40px",
+                fontWeight: 600,
                 textDecoration: "none",
-                minHeight: 48,
+                boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
               }}
             >
               S&apos;inscrire &agrave; la liste d&apos;attente
             </Link>
-          </div>
+          )}
+
+          {/* CTA waitlist secondaire — live uniquement */}
+          {!isPrelaunch && (
+            <div className="mt-3 md:mt-4 w-full sm:w-auto">
+              <Link
+                href="https://tracea-waitlist.subscribepage.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-sans inline-block w-full sm:w-auto text-center text-base px-8"
+                style={{
+                  background: "transparent",
+                  color: "#C97B6A",
+                  border: "1.5px solid rgba(201,123,106,0.55)",
+                  borderRadius: 40,
+                  padding: "14.5px 40px",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  minHeight: 48,
+                }}
+              >
+                S&apos;inscrire &agrave; la liste d&apos;attente
+              </Link>
+            </div>
+          )}
 
           {/* CTA secondaire */}
           <div className="mt-4 md:mt-5">
@@ -567,21 +596,42 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <Link
-            href="/start"
-            className="font-sans inline-block w-full sm:w-auto text-center text-base"
-            style={{
-              background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
-              color: "#1A120D",
-              borderRadius: 40,
-              padding: "14px 32px",
-              fontWeight: 600,
-              textDecoration: "none",
-              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.30)",
-            }}
-          >
-            Commencer gratuitement
-          </Link>
+          {/* Pricing CTA — live: "Commencer gratuitement" / prelaunch: waitlist */}
+          {!isPrelaunch ? (
+            <Link
+              href="/start"
+              className="font-sans inline-block w-full sm:w-auto text-center text-base"
+              style={{
+                background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+                color: "#1A120D",
+                borderRadius: 40,
+                padding: "14px 32px",
+                fontWeight: 600,
+                textDecoration: "none",
+                boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.30)",
+              }}
+            >
+              Commencer gratuitement
+            </Link>
+          ) : (
+            <Link
+              href="https://tracea-waitlist.subscribepage.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans inline-block w-full sm:w-auto text-center text-base"
+              style={{
+                background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+                color: "#1A120D",
+                borderRadius: 40,
+                padding: "14px 32px",
+                fontWeight: 600,
+                textDecoration: "none",
+                boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.30)",
+              }}
+            >
+              S&apos;inscrire &agrave; la liste d&apos;attente
+            </Link>
+          )}
         </div>
       </section>
 
@@ -656,36 +706,67 @@ export default function LandingPage() {
             finalCtaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <h2 className="text-[26px] md:text-[32px] tracking-tight" style={{ fontWeight: 300, color: "#F0E6D6", marginBottom: 24 }}>
-            Essaye maintenant
-          </h2>
+          {/* CTA final — live : "Essaye maintenant" + "Commencer gratuitement"
+                          prelaunch : waitlist uniquement */}
+          {!isPrelaunch ? (
+            <>
+              <h2 className="text-[26px] md:text-[32px] tracking-tight" style={{ fontWeight: 300, color: "#F0E6D6", marginBottom: 24 }}>
+                Essaye maintenant
+              </h2>
 
-          <p className="text-base" style={{ color: "rgba(240,230,214,0.60)", marginBottom: 32 }}>
-            Juste 2 minutes.
-            <br />
-            Juste voir.
-          </p>
+              <p className="text-base" style={{ color: "rgba(240,230,214,0.60)", marginBottom: 32 }}>
+                Juste 2 minutes.
+                <br />
+                Juste voir.
+              </p>
 
-          <Link
-            href="/start"
-            className="font-sans inline-block w-full sm:w-auto text-center text-base md:text-lg"
-            style={{
-              background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
-              color: "#1A120D",
-              borderRadius: 40,
-              padding: "16px 40px",
-              fontWeight: 600,
-              textDecoration: "none",
-              boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
-              marginBottom: 20,
-            }}
-          >
-            Commencer gratuitement
-          </Link>
+              <Link
+                href="/start"
+                className="font-sans inline-block w-full sm:w-auto text-center text-base md:text-lg"
+                style={{
+                  background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+                  color: "#1A120D",
+                  borderRadius: 40,
+                  padding: "16px 40px",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
+                  marginBottom: 20,
+                }}
+              >
+                Commencer gratuitement
+              </Link>
 
-          <p className="text-[13px] tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            7 jours gratuits · sans carte bancaire
-          </p>
+              <p className="text-[13px] tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
+                7 jours gratuits · sans carte bancaire
+              </p>
+            </>
+          ) : (
+            <>
+              <Link
+                href="https://tracea-waitlist.subscribepage.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-sans inline-block w-full sm:w-auto text-center text-base md:text-lg"
+                style={{
+                  background: "linear-gradient(135deg, #D4A96A 0%, #C97B6A 42%, #B8634F 72%, #A5503E 100%)",
+                  color: "#1A120D",
+                  borderRadius: 40,
+                  padding: "16px 40px",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
+                  marginBottom: 16,
+                }}
+              >
+                S&apos;inscrire &agrave; la liste d&apos;attente
+              </Link>
+
+              <p className="text-[13px] tracking-wide" style={{ color: "rgba(240,230,214,0.42)" }}>
+                Tu auras un message &agrave; l&apos;ouverture du 12 juin.
+              </p>
+            </>
+          )}
         </div>
       </section>
 
