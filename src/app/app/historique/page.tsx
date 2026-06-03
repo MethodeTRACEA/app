@@ -7,6 +7,7 @@ import type { SessionData } from "@/lib/types";
 import Link from "next/link";
 import { getSessionSummariesByIds } from "@/lib/memory";
 import { supabase } from "@/lib/supabase";
+import { RefletCompact } from "@/components/RefletCompact";
 
 type SummaryLite = Awaited<
   ReturnType<typeof getSessionSummariesByIds>
@@ -194,6 +195,9 @@ export default function HistoriquePage() {
         >
           La mémoire de tes traversées, une à une.
         </p>
+
+        {/* Reflet compact — n'affiche rien tant qu'il n'y a pas assez de données */}
+        <RefletCompact />
 
         {/* ── État vide ── */}
         {sessions.length === 0 && (
