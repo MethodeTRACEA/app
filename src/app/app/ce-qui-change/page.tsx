@@ -311,7 +311,7 @@ export default function CeQuiChangePage() {
             marginBottom: 0,
           }}
         >
-          Ce qui change
+          Ton reflet
         </h1>
 
         {/* Sous-titre */}
