@@ -398,17 +398,8 @@ export default function CeQuiChangePage() {
               </div>
             )}
 
-            {/* Bloc — Ce besoin revient (besoin récurrent issu des résumés long flow) */}
-            {recurringNeed && (
-              <div style={blockStyle}>
-                <p className="font-sans" style={kickerStyle}>
-                  Ce besoin revient
-                </p>
-                <p className="font-body" style={blockTextStyle}>
-                  {recurringNeed.need}
-                </p>
-              </div>
-            )}
+            {/* Bloc autonome « Ce besoin revient » retiré : le besoin récurrent
+                est désormais relocalisé dans « Ce qui se construit ». */}
 
             {/* Bloc — Ton corps quand ça monte (signal corporel issu des traversées courtes) */}
             {premiumMemory?.ceQuiRevient && (
@@ -499,6 +490,20 @@ export default function CeQuiChangePage() {
                   Elle reste ici, sans avoir besoin d&apos;être interprétée.
                   <br />
                   Au fil des traversées, ce qui revient souvent commencera à apparaître ici.
+                </p>
+              )}
+
+              {/* Besoin récurrent — relocalisé ici depuis le bloc autonome retiré.
+                  Affiché uniquement si getRecurringNeeds renvoie un besoin (seuils
+                  existants : fenêtre 5, min 3 sessions, min 2 occurrences). */}
+              {recurringNeed && (
+                <p
+                  className="font-body"
+                  style={{ ...blockTextStyle, marginTop: 14 }}
+                >
+                  Au fil de tes traversées, un besoin revient souvent : {recurringNeed.need}.
+                  <br />
+                  Est-ce qu&apos;il y a eu une place pour ce besoin, ces derniers temps ? Il n&apos;y a pas de bonne réponse.
                 </p>
               )}
             </div>
