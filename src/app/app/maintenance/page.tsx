@@ -10,7 +10,7 @@ async function checkPassword(formData: FormData) {
       secure: true,
       maxAge: 60 * 60 * 24
     })
-    redirect('/')
+    redirect('/start')
   }
 }
 
