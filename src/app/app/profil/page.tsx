@@ -9,7 +9,6 @@ import {
   getUserStatsDb,
 } from "@/lib/supabase-store";
 import { getConsent } from "@/lib/consent";
-import { logConsent } from "@/lib/supabase-store";
 import { RevokeConsentButton } from "@/components/ConsentGate";
 import {
   getMemoryProfileClient,

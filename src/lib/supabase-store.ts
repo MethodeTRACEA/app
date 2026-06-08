@@ -107,22 +107,6 @@ export async function updateProfileDb(
   await supabase.from("profiles").update(updates).eq("id", userId);
 }
 
-// --- Consent logs ---
-
-export async function logConsent(
-  userId: string,
-  consentType: string,
-  granted: boolean,
-  version: string
-) {
-  await supabase.from("consent_logs").insert({
-    user_id: userId,
-    consent_type: consentType,
-    granted,
-    version,
-  });
-}
-
 // --- Stats (for user) ---
 
 export async function getUserStatsDb(userId: string) {
@@ -180,38 +164,6 @@ export async function getAdminWeeklyStats() {
     .order("week", { ascending: false })
     .limit(12);
   return data ?? [];
-}
-
-// --- Data export (portabilite RGPD) ---
-
-export async function exportUserData(userId: string) {
-  const [profile, sessions, consents] = await Promise.all([
-    getProfileDb(userId),
-    getSessionsDb(userId),
-    supabase
-      .from("consent_logs")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false })
-      .then(({ data }) => data ?? []),
-  ]);
-
-  return {
-    export_date: new Date().toISOString(),
-    profile,
-    sessions,
-    consent_logs: consents,
-  };
-}
-
-// --- Delete account (droit a l'effacement) ---
-
-export async function deleteAccount(userId: string) {
-  // Cascade will handle sessions and consent_logs
-  // But we delete sessions explicitly first for clarity
-  await supabase.from("sessions").delete().eq("user_id", userId);
-  await supabase.from("consent_logs").delete().eq("user_id", userId);
-  await supabase.from("profiles").delete().eq("id", userId);
 }
 
 // --- LocalStorage migration ---
