@@ -76,8 +76,7 @@ ALTER TABLE public.withdrawal_consents ENABLE ROW LEVEL SECURITY;
 -- que la posture de sécurité ne dépende pas uniquement de la policy
 -- RLS (défense en profondeur).
 
-REVOKE ALL ON public.withdrawal_consents FROM anon;
-REVOKE ALL ON public.withdrawal_consents FROM authenticated;
+REVOKE ALL ON public.withdrawal_consents FROM anon, authenticated;
 
 GRANT SELECT, INSERT ON public.withdrawal_consents TO service_role;
 -- Pas de DELETE / UPDATE : la preuve est immuable une fois écrite.

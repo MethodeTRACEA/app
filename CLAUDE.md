@@ -181,3 +181,25 @@ statement to apply. Report this to Alyson in plain French before applying.
 Existing TRACEA tables keep their current grants until October 30 2026.
 No retroactive change needed today — but every NEW table from now on must
 follow the rules above.
+
+### Régime pré-30-mai-2026 — REVOKE obligatoire à la création
+
+Tant que le projet TRACÉA reste antérieur au 30 mai 2026, toute nouvelle
+table créée dans le schéma `public` reçoit AUTOMATIQUEMENT, par défaut
+Postgres/Supabase, l'intégralité des privilèges (SELECT, INSERT, UPDATE,
+DELETE, TRUNCATE, REFERENCES, TRIGGER) pour les rôles `anon` ET
+`authenticated`. Une RLS policy seule (même RESTRICTIVE deny-all) laisse
+ces GRANTs ouverts en arrière-plan : c'est une ceinture sans bretelles.
+
+→ Toute nouvelle migration qui crée une table `public.<nom>` DOIT inclure,
+juste après le `CREATE TABLE` et avant les `GRANT ... TO service_role`,
+la révocation explicite :
+
+  REVOKE ALL ON public.<nom> FROM anon, authenticated;
+
+Puis n'accorder à `anon` / `authenticated` que les privilèges strictement
+nécessaires via `GRANT` ciblé (souvent : rien si la table est 100 % serveur).
+
+Cette règle s'éteindra automatiquement après le 30 octobre 2026, quand
+Supabase imposera le régime "aucun GRANT par défaut" sur le projet TRACÉA.
+D'ici là, FLAG en P0 toute migration qui omet ce REVOKE.
