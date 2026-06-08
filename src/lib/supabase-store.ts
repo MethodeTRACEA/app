@@ -549,41 +549,20 @@ export async function trackEvent(
   // Gate consentement côté client — first line of defense
   if (typeof window === "undefined") return;
 
-  // `tracea_consent` peut exister sous deux formats :
-  //   1. legacy ConsentBanner : string `"true"`
-  //   2. ConsentGate (RGPD art. 9) : JSON sérialisé d'un objet
-  //      `{ dataProcessing, sensitiveData, localStorageUsage, date, version }`
-  // Le format JSON n'autorise le tracking que si les trois drapeaux
-  // sont strictement à `true` (consentement complet ConsentGate).
-  // Tout autre format ou valeur bloque le tracking par prudence.
-  const consentRaw = localStorage.getItem("tracea_consent");
-  let hasTrackingConsent = consentRaw === "true";
-  if (!hasTrackingConsent && consentRaw) {
-    try {
-      const parsedConsent = JSON.parse(consentRaw);
-      hasTrackingConsent =
-        parsedConsent?.dataProcessing === true &&
-        parsedConsent?.sensitiveData === true &&
-        parsedConsent?.localStorageUsage === true;
-    } catch {
-      hasTrackingConsent = false;
-    }
-  }
-  if (!hasTrackingConsent) return;
-
-  // Gate CookieBanner — respecter `functional` si l'utilisateur a fait
-  // un choix dans le bandeau cookies. Si `tracea_cookie_consent` est
-  // absent, on conserve le comportement legacy (gate `tracea_consent`
-  // seul suffit). Si la valeur est invalide ou non parseable, on bloque
-  // par prudence pour ne jamais tracer en cas de doute.
+  // Gate unique : CookieBanner avec `functional === true`.
+  // - Si `tracea_cookie_consent` est absent → l'utilisatrice n'a pas
+  //   encore fait de choix dans le bandeau cookies → pas de tracking.
+  // - Si JSON invalide ou `functional !== true` → pas de tracking.
+  // La clé `tracea_consent` n'est plus consultée ici : elle est
+  // désormais réservée exclusivement au ConsentGate (RGPD art. 9),
+  // qui couvre les données sensibles de session, pas la télémétrie.
   const cookieConsentRaw = localStorage.getItem("tracea_cookie_consent");
-  if (cookieConsentRaw) {
-    try {
-      const cookieConsent = JSON.parse(cookieConsentRaw);
-      if (cookieConsent?.functional !== true) return;
-    } catch {
-      return;
-    }
+  if (!cookieConsentRaw) return;
+  try {
+    const cookieConsent = JSON.parse(cookieConsentRaw);
+    if (cookieConsent?.functional !== true) return;
+  } catch {
+    return;
   }
 
   // Token anti-bot — échec silencieux, jamais de crash UX

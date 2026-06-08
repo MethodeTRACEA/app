@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { hasCookieConsent, saveCookieConsent } from "@/lib/consent";
+import { getOrCreateAnonymousId } from "@/lib/anonymous-id";
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
@@ -19,6 +20,10 @@ export function CookieBanner() {
       functional: true,
       date: new Date().toISOString(),
     });
+    // Génération de l'ID anonyme uniquement quand l'utilisatrice accepte
+    // les cookies "Fonctionnels". Sur le refus partiel (necessary uniquement),
+    // aucun identifiant de suivi n'est créé.
+    getOrCreateAnonymousId();
     setVisible(false);
   }
 
