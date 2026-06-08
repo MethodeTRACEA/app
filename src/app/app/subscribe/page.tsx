@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
+import { getCurrentWithdrawalWording } from "@/lib/legal/withdrawal-wordings";
 
 type Plan = "monthly" | "yearly";
 
@@ -350,10 +351,7 @@ function SubscribePageInner() {
                 className="mt-1 cursor-pointer"
               />
               <span className="font-body text-sm t-text-secondary">
-                Je demande l&apos;accès immédiat à TRACÉA Premium et je
-                reconnais que mon droit de rétractation peut être perdu
-                une fois l&apos;accès commencé, dans les conditions
-                prévues par les CGU.
+                {getCurrentWithdrawalWording().text}
               </span>
             </label>
           </div>

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
+import { createHash } from "crypto";
+import { getCurrentWithdrawalWording } from "@/lib/legal/withdrawal-wordings";
+import { getClientIp } from "@/lib/rate-limit";
 
 // ===================================================================
 // POST /api/subscribe
@@ -239,6 +242,61 @@ export async function POST(request: NextRequest) {
         { error: "Erreur serveur.", code: "no_session_url" },
         { status: 500 }
       );
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // Persistance du consentement de renonciation au droit de
+    // rétractation (Chantier 32, table public.withdrawal_consents).
+    //
+    // À ce stade :
+    //   - acceptWithdrawalWaiver === true a été vérifié plus haut ;
+    //   - la Checkout Session Stripe est créée avec succès ;
+    //   - les metadata Stripe contiennent déjà la trace v1.
+    //
+    // On ajoute une preuve côté Supabase, indépendante de Stripe,
+    // avec le snapshot exact du wording présenté à l'utilisatrice.
+    //
+    // En cas d'échec d'insert : on log mais on NE bloque PAS la
+    // souscription. La preuve Stripe (metadata horodatées) reste
+    // le filet juridique principal ; la perte d'une ligne DB est
+    // acceptable pour ne pas pénaliser l'utilisatrice.
+    // ────────────────────────────────────────────────────────────
+    try {
+      const { version: wordingVersion, text: wordingSnapshot } =
+        getCurrentWithdrawalWording();
+      const userAgent = request.headers.get("user-agent") ?? null;
+      const clientIp = getClientIp(request.headers);
+      const ipHash = clientIp
+        ? createHash("sha256")
+            .update(clientIp + (process.env.TRACK_TOKEN_SECRET ?? ""))
+            .digest("hex")
+        : null;
+
+      const { error: consentInsertError } = await supabaseService
+        .from("withdrawal_consents")
+        .insert({
+          user_id: userId,
+          accepted_at: acceptedAt,
+          wording_version: wordingVersion,
+          wording_snapshot: wordingSnapshot,
+          stripe_checkout_session_id: session.id,
+          user_agent: userAgent,
+          ip_hash: ipHash,
+        });
+
+      if (consentInsertError) {
+        console.error(
+          "[SUBSCRIBE] Échec persistance withdrawal_consents pour:",
+          userId.slice(0, 8),
+          consentInsertError.message
+        );
+        // On continue : la preuve Stripe reste valide.
+      }
+    } catch (consentErr) {
+      const msg =
+        consentErr instanceof Error ? consentErr.message : String(consentErr);
+      console.error("[SUBSCRIBE] Exception withdrawal_consents:", msg);
+      // On continue : la preuve Stripe reste valide.
     }
 
     return NextResponse.json({ url: session.url });
