@@ -47,19 +47,19 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
   const faqs: { q: string; a: string }[] = [
     {
       q: "Quelle est la différence avec une appli de méditation ?",
-      a: "Une appli de méditation t'aide à gérer le stress sur le long terme, souvent via une pratique régulière. TRACEA est conçu pour un moment précis : quand ça déborde déjà. Tu n'as pas besoin de t'asseoir, de fermer les yeux ou d'avoir 20 minutes. Tu l'ouvres quand tu es en plein dedans.",
+      a: "Une appli de méditation t'aide à gérer le stress sur le long terme, souvent via une pratique régulière. TRACÉA est conçu pour un moment précis : quand ça déborde déjà. Tu n'as pas besoin de t'asseoir, de fermer les yeux ou d'avoir 20 minutes. Tu l'ouvres quand tu es en plein dedans.",
     },
     {
       q: "Est-ce que c'est de la thérapie ?",
-      a: "Non. TRACEA n'est pas un outil thérapeutique et ne remplace pas un suivi psychologique. C'est un appui pour traverser un moment intense. Pas une analyse, pas un traitement. Si tu traverses des difficultés importantes, un professionnel de santé reste la bonne ressource.",
+      a: "Non. TRACÉA n'est pas un outil thérapeutique et ne remplace pas un suivi psychologique. C'est un appui pour traverser un moment intense. Pas une analyse, pas un traitement. Si tu traverses des difficultés importantes, un professionnel de santé reste la bonne ressource.",
     },
     {
       q: "Combien ça coûte ?",
-      a: "L'essai est gratuit pendant 7 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACEA est à 9€/mois, sans engagement, résiliable à tout moment.",
+      a: "L'essai est gratuit pendant 7 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACÉA est à 9€/mois, sans engagement, résiliable à tout moment.",
     },
     {
       q: "Est-ce que ça marche quand je suis vraiment submergée ?",
-      a: "C'est pour ça qu'il a été conçu. TRACEA part du corps, pas de la tête, ce qui le rend utilisable même quand tu n'arrives plus à réfléchir. Les exercices sont courts et guidés. Certaines personnes remarquent que quelque chose change. D'autres moins. Dans tous les cas, tu as quelque chose à faire dans le moment.",
+      a: "C'est pour ça qu'il a été conçu. TRACÉA part du corps, pas de la tête, ce qui le rend utilisable même quand tu n'arrives plus à réfléchir. Les exercices sont courts et guidés. Certaines personnes remarquent que quelque chose change. D'autres moins. Dans tous les cas, tu as quelque chose à faire dans le moment.",
     },
     {
       q: "Est-ce que mes données sont protégées ?",

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Commencer | TRACEA",
+  title: "Commencer | TRACÉA",
   description:
     "Commence ta traversee emotionnelle guidee. 2 a 10 minutes, gratuit, sans engagement.",
 };

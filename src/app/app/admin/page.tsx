@@ -79,7 +79,7 @@ export default function AdminPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <p className="section-label">Administration</p>
-          <h1 className="section-title">Dashboard TRACEA</h1>
+          <h1 className="section-title">Dashboard TRACÉA</h1>
         </div>
         <div className="card-sage !py-2 !px-4 text-xs font-medium text-[#4A6B3A]">
           Données anonymisées

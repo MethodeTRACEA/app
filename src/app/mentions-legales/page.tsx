@@ -34,7 +34,7 @@ export default function MentionsLegales() {
             </p>
             <p>Entrepreneur individuel</p>
             <p>
-              Nom commercial : <strong>TRACEA</strong>
+              Nom commercial : <strong>TRACÉA</strong>
             </p>
             <p>
               SIREN : <strong>512 468 174</strong>

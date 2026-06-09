@@ -39,7 +39,7 @@ export default function Accueil() {
           className="font-body text-4xl animate-pulse-gentle"
           style={{ color: "var(--step-traverser)" }}
         >
-          TRACEA
+          TRACÉA
         </div>
       </div>
     );

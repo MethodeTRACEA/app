@@ -848,7 +848,7 @@ export default function ProfilPage() {
                       className="font-body"
                       style={{ fontSize: "0.9rem", color: "#8A9E7A", fontStyle: "italic" }}
                     >
-                      Ta m&eacute;moire TRACEA a &eacute;t&eacute; effac&eacute;e. Tes sessions restent dans ton historique.
+                      Ta m&eacute;moire TRAC&Eacute;A a &eacute;t&eacute; effac&eacute;e. Tes sessions restent dans ton historique.
                     </p>
                   ) : deleteConfirm ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -888,7 +888,7 @@ export default function ProfilPage() {
                         textAlign: "center",
                       }}
                     >
-                      Effacer ma m&eacute;moire TRACEA
+                      Effacer ma m&eacute;moire TRAC&Eacute;A
                     </button>
                   )}
                 </div>
@@ -1084,7 +1084,7 @@ export default function ProfilPage() {
               }}
             />
             <p className="font-body" style={{ ...blockTextStyle, color: "rgba(240,230,214,0.85)" }}>
-              TRACEA est un outil d&apos;exploration &eacute;motionnelle structur&eacute;e. Il ne
+              TRAC&Eacute;A est un outil d&apos;exploration &eacute;motionnelle structur&eacute;e. Il ne
               remplace pas un suivi psychologique ou th&eacute;rapeutique.
             </p>
           </div>

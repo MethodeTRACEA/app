@@ -462,7 +462,7 @@ function AuthHeader() {
     <div style={{ textAlign: "center", marginBottom: 36 }}>
       <img
         src="/images/tracea-logo-terra-transparent.png"
-        alt="TRACEA"
+        alt="TRACÉA"
         style={{ height: 48, margin: "0 auto 14px", objectFit: "contain" }}
       />
       <p className="font-sans" style={{ fontSize: 13, color: DS.texteMuted, fontStyle: "italic" }}>
