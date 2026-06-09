@@ -1001,6 +1001,21 @@ export default function ProfilPage() {
                     </div>
                   ) : (
                     <>
+                      <p
+                        className="font-sans"
+                        style={{
+                          fontSize: 13,
+                          color: "rgba(240,230,214,0.62)",
+                          lineHeight: 1.55,
+                          textAlign: "center",
+                          marginBottom: 12,
+                        }}
+                      >
+                        Apr&egrave;s suppression, TRAC&Eacute;A conserve
+                        uniquement, pour ses obligations l&eacute;gales, la
+                        preuve de ton consentement et tes donn&eacute;es de
+                        facturation.
+                      </p>
                       <button
                         onClick={handleDeleteAccount}
                         disabled={deleteAccountStatus === "loading"}

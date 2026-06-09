@@ -46,11 +46,32 @@ export const RGPD_WORDINGS = {
         "Mes données de session seront conservées dans une base de données sécurisée hébergée en Union européenne (Francfort, Allemagne) via Supabase.",
     },
   },
+  // v2 (chantier 35) : identique à v1, sauf TRACEA → TRACÉA dans la
+  // description data_processing. Seule différence textuelle entre les
+  // deux versions. v1 reste IMMUABLE — preuve juridique versionnée.
+  v2: {
+    data_processing: {
+      label: "J'accepte le traitement de mes données personnelles",
+      description:
+        "Prénom/pseudonyme, données de session et de progression, dans le cadre de l'utilisation de l'application TRACÉA.",
+    },
+    sensitive_data: {
+      label:
+        "J'accepte le traitement de mes données émotionnelles sensibles",
+      description:
+        "Descriptions d'émotions, ressentis corporels, vérités intérieures, données relevant de l'article 9 du RGPD (données de santé psychologique).",
+    },
+    local_storage_usage: {
+      label: "J'accepte le stockage sécurisé de mes données",
+      description:
+        "Mes données de session seront conservées dans une base de données sécurisée hébergée en Union européenne (Francfort, Allemagne) via Supabase.",
+    },
+  },
 } as const satisfies Record<string, Record<RgpdConsentType, RgpdConsentCopy>>;
 
 export type RgpdWordingVersion = keyof typeof RGPD_WORDINGS;
 
-export const RGPD_WORDING_CURRENT_VERSION: RgpdWordingVersion = "v1";
+export const RGPD_WORDING_CURRENT_VERSION: RgpdWordingVersion = "v2";
 
 export function getCurrentRgpdWordings(): {
   version: RgpdWordingVersion;

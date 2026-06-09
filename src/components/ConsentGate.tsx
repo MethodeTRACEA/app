@@ -162,7 +162,7 @@ function ConsentForm({
         Avant de commencer ta première session
       </h1>
       <p className="text-warm-gray mb-6 leading-relaxed">
-        TRACEA traite des données personnelles et émotionnelles sensibles. Avant
+        TRACÉA traite des données personnelles et émotionnelles sensibles. Avant
         d&apos;utiliser le protocole, nous avons besoin de ton consentement
         explicite, conformément à l&apos;article 9 du RGPD.
       </p>
@@ -175,7 +175,7 @@ function ConsentForm({
           </span>
         </div>
         <p className="font-body text-sm text-espresso leading-relaxed">
-          Lors d&apos;une session TRACEA, tu seras invité(e) à décrire tes
+          Lors d&apos;une session TRACÉA, tu seras invité(e) à décrire tes
           émotions, identifier des ressentis corporels et formuler des prises de
           conscience. Ces informations constituent des{" "}
           <strong>données relatives à ta santé psychologique</strong> au sens
@@ -367,8 +367,13 @@ export function RevokeConsentButton() {
             </span>
           </div>
           <p className="font-body text-sm text-espresso leading-relaxed mb-4">
-            Cette action supprimera définitivement toutes tes sessions, ton
-            profil et ton consentement. Cette action est irréversible.
+            Cette action supprimera définitivement toutes tes sessions et
+            ton profil. Cette action est irréversible.
+          </p>
+          <p className="font-body text-sm text-espresso leading-relaxed mb-4">
+            Après suppression, TRACÉA conserve uniquement, pour ses
+            obligations légales, la preuve de ton consentement et tes
+            données de facturation.
           </p>
           <div className="flex gap-3">
             <button

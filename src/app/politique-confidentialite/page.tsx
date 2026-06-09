@@ -920,6 +920,13 @@ export default function PolitiqueConfidentialite() {
             l&apos;utilisateur peut écrire à :{" "}
             <strong>confidentialite@methodetracea.fr</strong>
           </p>
+          <p className="mt-3">
+            Lorsque tu supprimes ton compte, tes données personnelles
+            et de session sont effacées. TRACÉA conserve uniquement,
+            pour répondre à ses obligations légales, la preuve de ton
+            consentement et tes données de facturation, pour la durée
+            prévue par la loi.
+          </p>
         </section>
 
         <section>
