@@ -302,16 +302,32 @@ export function RevokeConsentButton() {
     setRevoking(true);
     setRevokeError(null);
 
-    // 1. Révoquer côté DB d'abord. Si échec → on bloque le clear
-    //    local pour ne pas désynchroniser cache et DB.
+    // 1. Si connectée : suppression complète côté serveur via
+    //    /api/account/delete. Les preuves de consentement
+    //    (consent_logs + withdrawal_consents) SURVIVENT à cette
+    //    suppression (chantier 34, art. 17.3 RGPD).
+    //    Garde Stripe : si abonnement actif → 409 → message + stop,
+    //    on ne touche pas au local pour ne rien désynchroniser.
     if (session?.access_token) {
       try {
-        const res = await fetch("/api/consent", {
-          method: "DELETE",
+        const res = await fetch("/api/account/delete", {
+          method: "POST",
           headers: { Authorization: `Bearer ${session.access_token}` },
         });
         if (!res.ok) {
-          setRevokeError("Erreur lors de la révocation. Réessaie.");
+          let body: { code?: string } | null = null;
+          try {
+            body = await res.json();
+          } catch {
+            // pas de JSON parseable → message générique
+          }
+          if (res.status === 409 && body?.code === "active_subscription") {
+            setRevokeError(
+              "Un abonnement est encore actif sur ton compte. Tu peux le résilier depuis ton profil, puis revenir ici."
+            );
+          } else {
+            setRevokeError("Erreur lors de la suppression. Réessaie.");
+          }
           setRevoking(false);
           return;
         }
@@ -322,7 +338,9 @@ export function RevokeConsentButton() {
       }
     }
 
-    // 2. Clear local (cache + données client)
+    // 2. Clear local (cache + données client). La session Supabase
+    //    devient invalide après /api/account/delete, mais on nettoie
+    //    explicitement les clés localStorage qui pourraient subsister.
     revokeConsent();
     localStorage.removeItem("tracea_sessions");
     localStorage.removeItem("tracea_profile");

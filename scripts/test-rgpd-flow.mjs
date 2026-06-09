@@ -35,6 +35,12 @@ let testUserId = null;
 let accessToken = null;
 
 async function preCleanup() {
+  // Cleanup ciblé : on ne purge QUE les users de test (email préfixé
+  // rgpd-test-) et leurs proofs. Volontairement PAS de purge des
+  // proofs orphelines (user_id sans auth.users vivant) — ces orphans
+  // peuvent appartenir à de vraies utilisatrices ayant supprimé leur
+  // compte (rétention art. 17.3 RGPD, chantier 34). Le test reste
+  // strictement à l'intérieur de son périmètre.
   try {
     const { data } = await admin.auth.admin.listUsers({ perPage: 200 });
     const leftover = (data?.users ?? []).filter((u) =>
@@ -43,6 +49,7 @@ async function preCleanup() {
     for (const u of leftover) {
       console.log(`[cleanup-pre] removing leftover ${u.email}`);
       await admin.from("consent_logs").delete().eq("user_id", u.id);
+      await admin.from("withdrawal_consents").delete().eq("user_id", u.id);
       await admin.from("profiles").delete().eq("id", u.id);
       await admin.auth.admin.deleteUser(u.id);
     }
@@ -209,13 +216,17 @@ async function step7_accountDelete() {
     .from("consent_logs")
     .select("*")
     .eq("user_id", testUserId);
-  const okGone = !stillExists && (consentRows?.length ?? 0) === 0;
+  // Chantier 34 : les preuves de consentement DOIVENT survivre.
+  // Le test a inséré 3 lignes granted=true (POST) + 3 lignes
+  // granted=false (DELETE), donc on attend 6 lignes intactes.
+  const okPreserved =
+    !stillExists && (consentRows?.length ?? 0) === 6;
   record(
-    "7b. user + consent_logs supprimés",
-    okGone,
+    "7b. user supprimé MAIS consent_logs préservés (art. 17.3)",
+    okPreserved,
     `user_exists=${!!stillExists} consent_count=${consentRows?.length ?? 0}`
   );
-  return okGone;
+  return okPreserved;
 }
 
 async function step8_finalCleanup() {
@@ -224,8 +235,16 @@ async function step8_finalCleanup() {
     return;
   }
   try {
-    // Best-effort. If step 7 worked, all this is no-op.
+    // Best-effort. Post-chantier 34 :
+    //   - consent_logs/withdrawal_consents pour testUserId survivent
+    //     à step 7 (rétention art. 17.3) → on les nettoie ici
+    //     explicitement pour ne pas accumuler d'orphans en
+    //     environnement de TEST. En prod cette purge ne se produit
+    //     jamais (l'orphan est volontaire) ;
+    //   - profiles + auth.users sont déjà supprimés par step 7 (no-op
+    //     côté API, juste un signal d'OK silencieux ici).
     await admin.from("consent_logs").delete().eq("user_id", testUserId);
+    await admin.from("withdrawal_consents").delete().eq("user_id", testUserId);
     await admin.from("profiles").delete().eq("id", testUserId);
     await admin.auth.admin.deleteUser(testUserId);
     record("8. Final cleanup", true);

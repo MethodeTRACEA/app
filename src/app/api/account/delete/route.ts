@@ -35,6 +35,14 @@ const TERMINAL_STRIPE_STATUSES = new Set([
 
 // Tables enfants à supprimer avant `profiles`. Toutes utilisent
 // `user_id` comme clé de filtrage (vérifié dans le code applicatif).
+//
+// Volontairement EXCLUS de cette liste (chantier 34, art. 17.3 RGPD) :
+//   - consent_logs        (preuves de consentement RGPD art. 9)
+//   - withdrawal_consents (preuves de renoncement droit rétractation)
+// Ces deux tables n'ont plus de FK CASCADE vers profiles (migration
+// keep_consent_proof_on_account_delete.sql) — les lignes survivent
+// à la suppression du compte. user_id reste posé comme "orphan UUID"
+// pour rattachabilité en cas de litige (cross-ref via metadata Stripe).
 const CHILD_TABLES = [
   "session_summaries",
   "user_memory_profile",
@@ -42,7 +50,6 @@ const CHILD_TABLES = [
   "ai_usage_logs",
   "rate_limit_logs",
   "sessions",
-  "consent_logs",
 ] as const;
 
 export async function POST(request: NextRequest) {
