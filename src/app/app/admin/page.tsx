@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getAdminStats, getAdminWeeklyStats } from "@/lib/supabase-store";
 import { useRouter } from "next/navigation";
 
 interface AdminStatsData {
@@ -30,7 +29,7 @@ interface WeeklyStats {
 }
 
 export default function AdminPage() {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin, loading, session } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState<AdminStatsData | null>(null);
   const [weekly, setWeekly] = useState<WeeklyStats[]>([]);
@@ -42,14 +41,21 @@ export default function AdminPage() {
       router.push("/app");
       return;
     }
-    Promise.all([getAdminStats(), getAdminWeeklyStats()]).then(
-      ([s, w]) => {
-        setStats(s as AdminStatsData);
-        setWeekly(w as WeeklyStats[]);
+    if (!session?.access_token) {
+      setLoadingData(false);
+      return;
+    }
+    fetch("/api/admin/stats", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+      .then((r) => r.json())
+      .then(({ stats: s, weekly: w }) => {
+        setStats((s as AdminStatsData | null) ?? null);
+        setWeekly(Array.isArray(w) ? (w as WeeklyStats[]) : []);
         setLoadingData(false);
-      }
-    );
-  }, [user, isAdmin, loading, router]);
+      })
+      .catch(() => setLoadingData(false));
+  }, [user, isAdmin, loading, router, session?.access_token]);
 
   if (loading || loadingData) {
     return (

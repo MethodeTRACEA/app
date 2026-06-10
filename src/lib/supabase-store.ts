@@ -150,22 +150,6 @@ export async function getUserStatsDb(userId: string) {
   return { total, avgRecovery, topEmotions, lastWeekCount };
 }
 
-// --- Admin stats ---
-
-export async function getAdminStats() {
-  const { data } = await supabase.from("admin_stats").select("*").single();
-  return data;
-}
-
-export async function getAdminWeeklyStats() {
-  const { data } = await supabase
-    .from("admin_weekly_stats")
-    .select("*")
-    .order("week", { ascending: false })
-    .limit(12);
-  return data ?? [];
-}
-
 // --- LocalStorage migration ---
 
 export async function migrateFromLocalStorage(userId: string) {
