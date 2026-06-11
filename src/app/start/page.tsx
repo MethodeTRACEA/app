@@ -54,7 +54,7 @@ const options: Option[] = [
     desc: "Une traversée complète pour mettre des mots et garder une trace.",
     tag: "5 à 8 min",
     badge: "Compte requis",
-    badgeNote: "Inclus dans ton essai gratuit 7 jours",
+    badgeNote: "Inclus dans ton essai gratuit 14 jours",
     labelColor: "#C97B6A",
     cardBorder: "rgba(212,169,106,0.35)",
     cardBg: "rgba(255,255,255,0.06)",

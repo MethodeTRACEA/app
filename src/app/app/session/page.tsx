@@ -411,7 +411,7 @@ function SessionPageInner() {
                 Traversée approfondie
               </p>
               <h1 className="font-serif text-2xl text-t-beige leading-relaxed">
-                Ton essai approfondi est complet pour ces 7 jours.
+                Ton essai approfondi est complet pour ces 14 jours.
               </h1>
               <p className="font-body text-base t-text-secondary leading-relaxed">
                 Tu peux toujours utiliser les traversées courtes et l&apos;urgence.

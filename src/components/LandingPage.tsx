@@ -55,7 +55,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
     },
     {
       q: "Combien ça coûte ?",
-      a: "L'essai est gratuit pendant 7 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACÉA est à 9€/mois, sans engagement, résiliable à tout moment.",
+      a: "L'essai est gratuit pendant 14 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACÉA est à 9€/mois, sans engagement, résiliable à tout moment.",
     },
     {
       q: "Est-ce que ça marche quand je suis vraiment submergée ?",
@@ -121,7 +121,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
               className="text-[13px] tracking-wide"
               style={{ color: "rgba(240,230,214,0.62)" }}
             >
-              Essai gratuit 7 jours · sans carte bancaire
+              Essai gratuit 14 jours · sans carte bancaire
             </span>
           </div>
 
@@ -282,7 +282,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
 
           {/* Micro-texte */}
           <p className="text-[13px] mt-5 md:mt-8 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            7 jours gratuits · puis 9€/mois · sans engagement
+            14 jours gratuits · puis 9€/mois · sans engagement
           </p>
         </div>
       </section>
@@ -565,7 +565,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
 
           <div className="flex flex-col gap-3 mb-8">
             <p style={{ color: "#F0E6D6", fontWeight: 500, fontSize: "1.05rem", lineHeight: 1.5, margin: 0 }}>
-              Essai gratuit 7 jours
+              Essai gratuit 14 jours
             </p>
             <p style={{ color: "rgba(240,230,214,0.66)", fontWeight: 300, fontSize: "0.98rem", lineHeight: 1.5, margin: 0 }}>
               5 travers&eacute;es approfondies incluses
@@ -736,7 +736,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
               </Link>
 
               <p className="text-[13px] tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-                7 jours gratuits · sans carte bancaire
+                14 jours gratuits · sans carte bancaire
               </p>
             </>
           ) : (

@@ -41,7 +41,7 @@ export async function emailTrialStarted(
 
 Ton essai gratuit vient de démarrer.
 
-Tu as 7 jours et jusqu'à 5 traversées approfondies pour explorer TRACÉA quand tu en as envie.
+Tu as 14 jours et jusqu'à 5 traversées approfondies pour explorer TRACÉA quand tu en as envie.
 
 Il se termine le ${formatted}.
 

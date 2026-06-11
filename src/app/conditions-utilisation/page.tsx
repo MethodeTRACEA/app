@@ -356,10 +356,10 @@ export default function ConditionsUtilisation() {
           </p>
 
           <h3 className="font-serif text-lg text-espresso mt-6 mb-2">
-            8.2 Essai Premium 7 jours
+            8.2 Essai Premium 14 jours
           </h3>
           <p>
-            TRACÉA propose un essai Premium gratuit de <strong>7 jours</strong>.
+            TRACÉA propose un essai Premium gratuit de <strong>14 jours</strong>.
           </p>
           <p className="mt-3">Cet essai est :</p>
           <ul className="list-disc list-inside mt-2 space-y-1">

@@ -204,7 +204,7 @@ export default function PolitiqueConfidentialite() {
             3.5 Données liées à l&apos;essai Premium
           </h3>
           <p>
-            TRACÉA propose un essai Premium de 7 jours, sans carte bancaire et
+            TRACÉA propose un essai Premium de 14 jours, sans carte bancaire et
             sans prélèvement automatique.
           </p>
           <p className="mt-2">Pour gérer cet essai, TRACÉA traite notamment :</p>
@@ -1010,11 +1010,11 @@ export default function PolitiqueConfidentialite() {
           </h2>
           <p>
             L&apos;essai Premium TRACÉA permet de découvrir certaines
-            fonctionnalités Premium pendant 7 jours.
+            fonctionnalités Premium pendant 14 jours.
           </p>
           <p className="mt-2">Caractéristiques de l&apos;essai :</p>
           <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>durée : 7 jours ;</li>
+            <li>durée : 14 jours ;</li>
             <li>sans carte bancaire ;</li>
             <li>sans prélèvement automatique ;</li>
             <li>un seul essai par compte ;</li>

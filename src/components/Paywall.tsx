@@ -92,7 +92,7 @@ export function Paywall({ onContinue }: PaywallProps) {
           className="font-sans text-[12px] leading-[16px]"
           style={{ color: "rgba(240,230,214,0.55)" }}
         >
-          7 jours gratuits · 5 traversées incluses · sans carte bancaire
+          14 jours gratuits · 5 traversées incluses · sans carte bancaire
         </p>
 
         {/* CTA principal — entrée dans l'essai */}

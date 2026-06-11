@@ -500,7 +500,7 @@ function SubscribePageInner() {
           // Trial encore actif en date, mais 5/5 traversées approfondies utilisées
           <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 text-center space-y-2">
             <p className="font-serif text-xl text-t-beige">
-              Ton essai approfondi est complet pour ces 7 jours.
+              Ton essai approfondi est complet pour ces 14 jours.
             </p>
             <p className="font-body text-sm t-text-secondary">
               Tu as utilisé les 5 traversées approfondies incluses dans l&apos;essai.
@@ -558,7 +558,7 @@ function SubscribePageInner() {
           <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 text-center space-y-4">
             <div className="space-y-1">
               <p className="font-serif text-xl text-t-beige">
-                7 jours pour découvrir Premium.
+                14 jours pour découvrir Premium.
               </p>
               <p className="font-body text-sm t-text-secondary">
                 Sans carte bancaire. L&apos;essai s&apos;arrête tout seul.
@@ -581,7 +581,7 @@ function SubscribePageInner() {
             >
               {trialStatus === "loading"
                 ? "Activation…"
-                : "Activer mes 7 jours gratuits"}
+                : "Activer mes 14 jours gratuits"}
             </button>
 
             {trialStatus === "success" && (
