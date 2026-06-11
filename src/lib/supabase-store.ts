@@ -1,5 +1,6 @@
 import { supabase } from "./supabase";
 import type { SessionData, StepId } from "./types";
+import { hasValidConsent } from "./consent";
 
 // --- Sessions ---
 
@@ -467,6 +468,26 @@ async function getTrackToken(): Promise<string | null> {
   }
 }
 
+// ── Gate art. 9 (RGPD données sensibles) ────────────────────────────
+// Steps dont la `value` peut porter un libellé émotionnel ou un verbatim.
+// Ces events n'existent que si le consentement ConsentGate (art. 9) est
+// donné — pas seulement le cookie « functional ». Les steps techniques
+// (ancrer → souffle/appuis/autour) et les events sans contenu
+// (session_start / session_end) restent au régime du cookie functional.
+const CONTENT_STEPS = new Set([
+  "ressenti", "corps", "emerger",
+  "situation", "emotion", "besoin", "action",
+]);
+
+function isContentBearingEvent(
+  event: string,
+  data?: Record<string, unknown>
+): boolean {
+  if (event !== "step_complete") return false;
+  const step = data?.step;
+  return typeof step === "string" && CONTENT_STEPS.has(step);
+}
+
 /**
  * Envoie un event de tracking via la route serveur /api/track-event.
  *
@@ -501,6 +522,13 @@ export async function trackEvent(
     return;
   }
 
+  // Gate art. 9 — un event porteur de contenu émotionnel/verbatim n'est
+  // écrit que si le consentement ConsentGate est donné. Sinon : abandon
+  // silencieux, sans erreur, sans casser le parcours.
+  if (isContentBearingEvent(event, data) && !hasValidConsent()) {
+    return;
+  }
+
   // Token anti-bot — échec silencieux, jamais de crash UX
   const trackToken = await getTrackToken();
   if (!trackToken) return;
@@ -510,16 +538,31 @@ export async function trackEvent(
     ? (localStorage.getItem("tracea_anonymous_id") ?? undefined)
     : undefined;
 
+  // Token d'auth — envoyé en header quand une session existe, pour que la
+  // route dérive l'identité côté serveur (jamais via le body). Absence ou
+  // échec silencieux : le parcours anonyme part sans header.
+  let accessToken: string | null = null;
+  if (userId) {
+    try {
+      const { data } = await supabase.auth.getSession();
+      accessToken = data.session?.access_token ?? null;
+    } catch {
+      accessToken = null;
+    }
+  }
+
   // Envoi via route serveur — silencieux en cas d'erreur réseau ou serveur
   try {
     const res = await fetch("/api/track-event", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
       body: JSON.stringify({
         tracea_consent: true,
         track_token: trackToken,
         event,
-        user_id: userId,
         data: data ?? {},
         ...(anonymousId ? { anonymous_id: anonymousId } : {}),
       }),

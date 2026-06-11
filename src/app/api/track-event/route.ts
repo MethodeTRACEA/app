@@ -128,9 +128,27 @@ export async function POST(request: NextRequest) {
     }
     const event = body.event;
 
-    // 5. user_id — ignoré depuis le body, toujours null côté serveur
-    //    (l'identité est portée par anonymous_id dans data, pas par le body client)
-    const userId: string | null = null;
+    // 5. user_id — dérivé UNIQUEMENT du header Authorization (jamais du body).
+    //    Même pattern que /api/tracea/summarize. Token absent ou invalide →
+    //    user_id null et l'événement passe quand même : le parcours anonyme
+    //    n'est jamais cassé (pas de 401, pas d'erreur).
+    let userId: string | null = null;
+    const token =
+      request.headers.get("authorization")?.replace("Bearer ", "") ?? null;
+    if (token) {
+      try {
+        const supabaseAnon = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
+        const {
+          data: { user: authUser },
+        } = await supabaseAnon.auth.getUser(token);
+        if (authUser) userId = authUser.id; // uuid stocké tel quel (colonne text)
+      } catch {
+        userId = null; // jamais bloquant
+      }
+    }
 
     // 6. Champ data (optionnel — objet plat)
     let data: Record<string, unknown> = {};
