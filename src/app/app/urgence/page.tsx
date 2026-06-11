@@ -91,11 +91,30 @@ function UrgenceInner() {
     setScreen("choose");
   }
 
+  // Sortie d'un exercice terminé : trace la fin du parcours d'urgence
+  // (event technique sans contenu → régime cookie functional). Puis l'écran
+  // de sortie douce. Tiré une seule fois, au moment de la complétion.
+  function completeExercise() {
+    void trackEvent(user?.id ?? null, "session_end", { mode: "urgence" });
+    setScreen("done");
+  }
+
   // ── DÉPÔT ─────────────────────────────────────────────────
   if (screen === "depot") {
     return (
       <ScreenContainer overlayOpacity={45}>
-        <MiniDepot onContinue={(text) => { setSuggestedExercise(matchDepotToExercise(text)); setScreen("choose"); }} />
+        <MiniDepot onContinue={(text) => {
+          const matched = matchDepotToExercise(text);
+          if (matched) {
+            void trackEvent(user?.id ?? null, "step_complete", {
+              step: "ressenti",
+              mode: "urgence",
+              value: matched,
+            });
+          }
+          setSuggestedExercise(matched);
+          setScreen("choose");
+        }} />
       </ScreenContainer>
     );
   }
@@ -192,7 +211,7 @@ function UrgenceInner() {
                   <p className="font-inter text-sm t-text-ghost text-center">
                     {BREATHING_PHASES[1]}
                   </p>
-                  <BreathingGuide onComplete={() => setScreen("done")} onCancel={backToChoose} />
+                  <BreathingGuide onComplete={completeExercise} onCancel={backToChoose} />
                 </>
               )}
 
@@ -216,8 +235,8 @@ function UrgenceInner() {
             </button>
 
             {exercise === "corps"
-              ? <GroundingGuide onComplete={() => setScreen("done")} onCancel={backToChoose} />
-              : <GazeGuide onComplete={() => setScreen("done")} onCancel={backToChoose} />
+              ? <GroundingGuide onComplete={completeExercise} onCancel={backToChoose} />
+              : <GazeGuide onComplete={completeExercise} onCancel={backToChoose} />
             }
 
           </div>
