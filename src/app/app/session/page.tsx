@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 import { useAuth } from "@/lib/auth-context";
 import {
   createSessionDb,
@@ -606,8 +607,8 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
               console.warn("[TRACEA summarize] error", res.status);
             }
           })
-          .catch(() => {
-            console.warn("[TRACEA summarize] error");
+          .catch((err) => {
+            Sentry.captureException(err, { tags: { feature: "summarize" } });
           });
       } else {
         console.log("[TRACEA summarize] skipped");
