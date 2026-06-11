@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import * as Sentry from "@sentry/nextjs";
 import {
   saveSessionSummary,
   updateMemoryProfile,
@@ -623,6 +624,10 @@ export async function POST(request: NextRequest) {
 
     if (!summaryData) {
       console.warn("[TRACEA SUMMARIZE] Failed to parse summary JSON, using defaults");
+      Sentry.captureException(
+        new Error("summarize: JSON illisible, résumé vide sauvegardé"),
+        { tags: { feature: "summarize_empty_json" } }
+      );
       summaryData = {
         dominant_emotions: [],
         trigger_context: "",
@@ -664,6 +669,8 @@ export async function POST(request: NextRequest) {
     const errStack = error instanceof Error ? error.stack : "";
     console.error("[TRACEA SUMMARIZE] Error:", errMsg);
     console.error("[TRACEA SUMMARIZE] Stack:", errStack);
+
+    Sentry.captureException(error, { tags: { feature: "summarize_error" } });
 
     // Retourner success: false au lieu d'un 500
     // pour que le client ne reste pas bloqué
