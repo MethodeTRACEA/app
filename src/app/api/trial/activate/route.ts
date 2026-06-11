@@ -35,7 +35,7 @@ function sanitizeSource(raw: unknown): TrialSource {
     : "unknown";
 }
 
-const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+const TRIAL_DURATION_MS = 14 * 24 * 60 * 60 * 1000;
 
 export async function POST(request: NextRequest) {
   try {
