@@ -4,6 +4,8 @@ _Document de suivi interne — ne pas confondre avec les pages légales publique
 
 _Dernière mise à jour : 2026-05-02_
 
+> **Note tarifaire (2026-06-12)** : les montants 9 €/mois et 78 €/an cités plus bas dans ce document sont **historiques**. Ils ont été remplacés le 2026-06-12 par le **prix de lancement : 5,99 €/mois et 49,99 €/an** (valable pour toute souscription jusqu'au 23 juillet 2026, maintenu tant que l'abonnement reste actif). L'historique du chantier n'est volontairement pas réécrit.
+
 ---
 
 ## 1. État actuel

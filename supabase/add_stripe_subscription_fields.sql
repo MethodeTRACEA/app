@@ -5,7 +5,7 @@
 --
 -- Objectif :
 --   Préparer en mode dormant les colonnes nécessaires à l'intégration
---   Stripe (abonnement Premium 9 €/mois et 78 €/an), sans exposer le
+--   Stripe (abonnement Premium 5,99 €/mois et 49,99 €/an (prix de lancement)), sans exposer le
 --   paiement aux testeurs et sans modifier le gating actuel
 --   (`hasPremiumAccess`, gate /app/session 5/5, etc.).
 --

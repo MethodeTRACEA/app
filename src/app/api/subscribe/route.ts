@@ -9,7 +9,7 @@ import { getClientIp } from "@/lib/rate-limit";
 // POST /api/subscribe
 //
 // Crée une Stripe Checkout Session pour souscrire à l'abonnement
-// Premium TRACÉA (mensuel 9 €/mois ou annuel 78 €/an).
+// Premium TRACÉA (mensuel 5,99 €/mois ou annuel 49,99 €/an (prix de lancement)).
 //
 // Mode dormant : tant que process.env.STRIPE_ENABLED !== "true",
 // la route renvoie 403 "Paiement non encore activé." sans initialiser
