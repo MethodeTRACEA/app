@@ -987,10 +987,10 @@ export default function PolitiqueConfidentialite() {
           <p className="mt-3">Les formules Premium proposées sont :</p>
           <ul className="list-disc list-inside mt-2 space-y-1">
             <li>
-              <strong>9 € par mois</strong> ;
+              <strong>5,99 € par mois</strong> ;
             </li>
             <li>
-              <strong>78 € par an</strong>.
+              <strong>49,99 € par an</strong>.
             </li>
           </ul>
           <p className="mt-3">
