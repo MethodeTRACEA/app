@@ -29,7 +29,7 @@ export default function MaintenancePage() {
     <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0f0f0f', color: '#fff', fontFamily: 'sans-serif', padding: '1.5rem', textAlign: 'center' }}>
       <p style={{ fontSize: '0.8rem', letterSpacing: '0.25em', textTransform: 'uppercase', opacity: 0.5, marginBottom: '1.25rem' }}>TRACÉA</p>
       <h1 style={{ fontSize: '1.9rem', fontWeight: 600, lineHeight: 1.25, margin: 0, maxWidth: '440px' }}>
-        Ouverture ce soir à 20 h.
+        Ouverture ce soir à 20&nbsp;h.
       </h1>
       <p style={{ opacity: 0.6, marginTop: '0.75rem', marginBottom: '2.5rem', fontSize: '1rem' }}>
         On t&apos;attend.
