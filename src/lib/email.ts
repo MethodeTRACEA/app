@@ -45,7 +45,7 @@ Tu as 14 jours et jusqu'à 5 traversées approfondies pour explorer TRACÉA quan
 
 Il se termine le ${formatted}.
 
-Si tu veux continuer après ça, un abonnement est disponible à 9 €/mois — sans engagement, résiliable à tout moment.
+Si tu veux continuer après ça, un abonnement est disponible à 5,99 €/mois — prix de lancement, sans engagement, résiliable à tout moment.
 
 À bientôt,
 Tracéa`;
@@ -63,7 +63,7 @@ export async function emailTrialExpiring(userEmail: string): Promise<void> {
 
 Ton essai gratuit se termine aujourd'hui.
 
-Si TRACÉA t'a été utile et que tu veux continuer, tu peux t'abonner depuis l'app — 9 €/mois, sans engagement.
+Si TRACÉA t'a été utile et que tu veux continuer, tu peux t'abonner depuis l'app — 5,99 €/mois, sans engagement.
 
 Sinon, tu gardes accès aux traversées courtes et à l'urgence, gratuitement.
 
