@@ -386,8 +386,8 @@ function SubscribePageInner() {
             <p className="font-inter text-[10px] t-text-ghost uppercase tracking-wider mb-1">
               Le plus doux dans le temps
             </p>
-            <p className="font-serif text-2xl text-t-beige">78€</p>
-            <p className="font-inter text-xs t-text-secondary mt-1">par an · soit 6,50€/mois</p>
+            <p className="font-serif text-2xl text-t-beige">49,99€</p>
+            <p className="font-inter text-xs t-text-secondary mt-1">par an · soit 4,17€/mois</p>
             {stripeUiEnabled && !isSubscribed && !isBetaTester && (
               <p className="font-inter text-xs t-text-secondary mt-2 underline underline-offset-2">
                 {checkoutStatus === "loading" && selectedPlan === "yearly"
@@ -422,7 +422,7 @@ function SubscribePageInner() {
             <p className="font-inter text-xs t-text-secondary uppercase tracking-wider mb-1">
               Mensuel
             </p>
-            <p className="font-serif text-2xl text-t-beige">9€</p>
+            <p className="font-serif text-2xl text-t-beige">5,99€</p>
             <p className="font-inter text-xs t-text-secondary mt-1">par mois</p>
             {stripeUiEnabled && !isSubscribed && !isBetaTester && (
               <p className="font-inter text-xs t-text-secondary mt-2 underline underline-offset-2">
@@ -433,6 +433,10 @@ function SubscribePageInner() {
             )}
           </button>
         </div>
+
+        <p className="font-inter text-xs t-text-secondary text-center mt-3">
+          Prix de lancement, garanti tant que ton abonnement reste actif, pour tout abonnement pris avant le 23 juillet 2026.
+        </p>
 
         {/* Bloc Trial */}
         {stripeUiEnabled && stripeSubscriptionStatus === "past_due" ? (
