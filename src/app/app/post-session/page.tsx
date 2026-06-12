@@ -122,15 +122,15 @@ export default function PostSessionPage() {
                 <p className="font-inter text-xs t-text-secondary uppercase tracking-wider">
                   Mensuel
                 </p>
-                <p className="font-serif text-2xl text-t-beige">9€</p>
+                <p className="font-serif text-2xl text-t-beige">5,99€</p>
                 <p className="font-inter text-xs t-text-secondary">par mois</p>
               </div>
               <div className="t-card p-5 text-center space-y-1 border-[rgba(232,216,199,0.30)]">
                 <p className="font-inter text-xs t-text-secondary uppercase tracking-wider">
                   Annuel
                 </p>
-                <p className="font-serif text-2xl text-t-beige">78€</p>
-                <p className="font-inter text-xs t-text-secondary">par an · soit 6,50€/mois</p>
+                <p className="font-serif text-2xl text-t-beige">49,99€</p>
+                <p className="font-inter text-xs t-text-secondary">par an · soit 4,17€/mois</p>
               </div>
             </div>
 
