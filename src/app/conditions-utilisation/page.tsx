@@ -421,12 +421,19 @@ export default function ConditionsUtilisation() {
           <p className="mt-3">Deux formules sont proposées :</p>
           <ul className="list-disc list-inside mt-2 space-y-1">
             <li>
-              <strong>abonnement mensuel : 9 € par mois</strong> ;
+              <strong>abonnement mensuel : 5,99 € par mois</strong> ;
             </li>
             <li>
-              <strong>abonnement annuel : 78 € par an</strong>.
+              <strong>abonnement annuel : 49,99 € par an</strong>.
             </li>
           </ul>
+          <p className="mt-3">
+            Ces tarifs constituent le tarif de lancement, applicable à tout
+            abonnement souscrit avant le 23 juillet 2026 et maintenu tant que
+            l&apos;abonnement reste actif, sans interruption. Toute souscription
+            postérieure à cette date, ou consécutive à une résiliation, se fait
+            au tarif en vigueur affiché dans l&apos;application.
+          </p>
           <p className="mt-3">
             Les prix sont indiqués en euros. La TVA est non applicable, art.
             293 B du Code général des impôts.
