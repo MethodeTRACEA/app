@@ -60,7 +60,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
     },
     {
       q: "Combien ça coûte ?",
-      a: "L'essai est gratuit pendant 14 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACÉA est à 9€/mois, sans engagement, résiliable à tout moment.",
+      a: "L'essai est gratuit pendant 14 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACÉA est à 5,99€/mois ou 49,99€/an — c'est le prix de lancement, garanti tant que ton abonnement reste actif, pour toute souscription avant le 23 juillet 2026. Sans engagement, résiliable à tout moment.",
     },
     {
       q: "Est-ce que ça marche quand je suis vraiment submergée ?",
@@ -243,7 +243,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
 
           {/* Micro-texte */}
           <p className="text-[13px] mt-5 md:mt-8 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            14 jours gratuits · puis 9€/mois · sans engagement
+            14 jours gratuits · puis 5,99€/mois · sans engagement
           </p>
         </div>
       </section>
@@ -548,7 +548,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
 
           <div className="flex flex-col gap-2 mb-8">
             <p style={{ color: "#F0E6D6", fontWeight: 500, fontSize: "1.05rem", lineHeight: 1.5, margin: 0 }}>
-              9€ / mois. Sans engagement.
+              5,99€ / mois. Sans engagement. Prix de lancement.
             </p>
             <p style={{ color: "rgba(240,230,214,0.55)", fontWeight: 300, fontSize: "0.92rem", lineHeight: 1.5, margin: 0 }}>
               R&eacute;siliable &agrave; tout moment.
