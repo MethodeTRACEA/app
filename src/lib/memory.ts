@@ -269,7 +269,7 @@ export async function updateMemoryProfile(userId: string): Promise<void> {
   });
   const recurringPatterns = Object.entries(themeCount)
     .filter(([, count]) => count >= 2)
-    .map(([theme, count]) => `${theme} (${count} sessions sur ${summaries.length})`)
+    .map(([theme]) => theme)
     .slice(0, 5);
 
   // 3. Agréger les déclencheurs fréquents
