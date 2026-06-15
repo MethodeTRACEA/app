@@ -432,7 +432,7 @@ export default function CeQuiChangePage() {
         )}
 
         {/* ── Cas 1 — une seule session ── */}
-        {n === 1 && !hasAnyContent && (
+        {n === 1 && !hasAnyContent && shortTraces.length === 0 && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Une première trace existe.
@@ -445,7 +445,7 @@ export default function CeQuiChangePage() {
         )}
 
         {/* ── Cas 2 — sessions présentes mais mémoire pas encore prête ── */}
-        {n >= 2 && !hasAnyContent && (
+        {n >= 2 && !hasAnyContent && shortTraces.length === 0 && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Tes traversées sont bien enregistrées.
