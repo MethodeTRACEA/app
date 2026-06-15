@@ -102,7 +102,7 @@ export default function ProfilPage() {
   const [exportError, setExportError] = useState<string | null>(null);
 
   // Mémoire TRACÉA — state remonté pour rendu dans l'accordéon
-  const [memoryProfile, setMemoryProfile] = useState<MemoryProfile | null>(null);
+  const [, setMemoryProfile] = useState<MemoryProfile | null>(null);
   const [memoryLoading, setMemoryLoading] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
@@ -150,8 +150,6 @@ export default function ProfilPage() {
       </div>
     );
   }
-
-  const hasMemory = memoryProfile && memoryProfile.total_sessions > 0;
 
   // ── Statut d'accès TRACÉA ──
   const formattedTrialEndDate = trialEndsAt
@@ -850,8 +848,9 @@ export default function ProfilPage() {
                 animation: "fadeUp 0.2s ease forwards",
               }}
             >
-              {/* Effacer mémoire TRACÉA — bouton + confirmation (gardés par hasMemory) */}
-              {!memoryLoading && hasMemory && !deleteSuccess && (
+              {/* Effacer mémoire TRACÉA — bouton + confirmation toujours visibles
+                  (plus de gate hasMemory → réutilisable après chaque effacement) */}
+              {!memoryLoading && !deleteSuccess && (
                 <div style={{ textAlign: "center", marginTop: 18, marginBottom: 22 }}>
                   {deleteConfirm ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
