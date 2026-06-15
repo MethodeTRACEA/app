@@ -480,14 +480,11 @@ export default function CeQuiChangePage() {
               </div>
             )}
 
-            {/* Bloc — Tu nommes souvent (émotion récurrente issue des résumés long flow) */}
+            {/* Bloc — émotion récurrente (issue des résumés long flow) */}
             {recurringEmotion && (
               <div style={blockStyle}>
-                <p className="font-sans" style={kickerStyle}>
-                  Tu nommes souvent
-                </p>
                 <p className="font-body" style={blockTextStyle}>
-                  {recurringEmotion.emotion}
+                  {recurringEmotion.emotion.charAt(0).toUpperCase() + recurringEmotion.emotion.slice(1)} revient dans plusieurs traversées.
                 </p>
               </div>
             )}
@@ -571,9 +568,7 @@ export default function CeQuiChangePage() {
               </p>
               {memTotal >= 2 ? (
                 <p className="font-body" style={blockTextStyle}>
-                  Tu as déjà {memTotal} traversées enregistrées.
-                  <br />
-                  Ce n&apos;est pas un score.
+                  Tu reviens ici depuis plusieurs traversées.
                   <br />
                   C&apos;est simplement ce que tu as posé ici.
                 </p>
