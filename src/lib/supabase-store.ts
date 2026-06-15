@@ -439,6 +439,78 @@ export async function getPremiumMemory(userId: string): Promise<PremiumMemory | 
   }
 }
 
+// ───────────────────────────────────────────────────────────────────
+// TRACES INDIVIDUELLES DE TRAVERSÉE COURTE (C1+)
+// Reconstruites depuis tracea_events, groupées par data.session_id.
+// Lecture client RLS-safe (même client + JWT que getPremiumMemory : la
+// RLS limite déjà aux lignes de l'utilisatrice connectée). L'UI viendra
+// dans un patch séparé.
+// ───────────────────────────────────────────────────────────────────
+
+export type ShortTrace = {
+  sessionId: string;
+  date: string;          // created_at ISO
+  ressenti: string | null;
+  corps: string | null;
+  ancrer: string | null;
+  geste: string | null;  // texte tel quel (summaryLabel), pas de table de libellés
+  partielle: boolean;    // art.9 refusé : ancrer présent, ressenti/corps/geste absents
+};
+
+export async function getShortTraces(): Promise<ShortTrace[]> {
+  try {
+    const { data, error } = await supabase
+      .from("tracea_events")
+      .select("event, data, created_at")
+      .eq("data->>mode", "court")
+      .not("data->>session_id", "is", null)
+      .order("created_at", { ascending: true });
+
+    if (error || !data) return [];
+
+    type Row = { event: string; data: Record<string, unknown> | null; created_at: string };
+
+    // Grouper par session_id (Record + Object.entries — sûr en target es5)
+    const groups: Record<string, Row[]> = {};
+    for (const row of data as Row[]) {
+      const sid = (row.data?.session_id as string | undefined) ?? null;
+      if (!sid) continue;
+      if (!groups[sid]) groups[sid] = [];
+      groups[sid].push(row);
+    }
+
+    const traces: ShortTrace[] = [];
+    for (const [sid, events] of Object.entries(groups)) {
+      // events triés croissant (order created_at asc) → events[0] = plus ancien
+      const start = events.find((e) => e.event === "session_start");
+      const date = start?.created_at ?? events[0].created_at;
+
+      const stepValue = (step: string): string | null => {
+        const e = events.find(
+          (ev) => ev.event === "step_complete" && ev.data?.step === step
+        );
+        const v = e?.data?.value;
+        return typeof v === "string" ? v : null;
+      };
+
+      const ressenti = stepValue("ressenti");
+      const corps = stepValue("corps");
+      const ancrer = stepValue("ancrer");
+      const geste = stepValue("emerger");
+      const partielle =
+        ressenti === null && corps === null && geste === null && ancrer !== null;
+
+      traces.push({ sessionId: sid, date, ressenti, corps, ancrer, geste, partielle });
+    }
+
+    // Plus récente d'abord, 10 max
+    traces.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+    return traces.slice(0, 10);
+  } catch {
+    return [];
+  }
+}
+
 // --- Tracking events ---
 
 // ── Token anti-bot ──────────────────────────────────────────────────
