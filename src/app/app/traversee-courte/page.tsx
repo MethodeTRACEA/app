@@ -804,12 +804,13 @@ function TraverseeCourteV2() {
               </p>
             </div>
             <div className="w-full space-y-3">
-              {gestes.map(({ id, label }) => (
+              {gestes.map(({ id, label, summaryLabel }) => (
                 <AutoChip
                   key={id}
                   label={label}
                   onClick={() => {
                     setSelectedNeed(id);
+                    trackEvent(user?.id ?? null, "step_complete", { step: "emerger", mode: "court", value: summaryLabel ?? label });
                     trackEvent(user?.id ?? null, "session_end", { mode: "court" });
                     // Incrémenter compteur sessions courtes gratuites
                     if (!user) {
