@@ -106,6 +106,7 @@ export default function ProfilPage() {
   const [memoryLoading, setMemoryLoading] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
   const [portalStatus, setPortalStatus] = useState<"idle" | "loading" | "error">("idle");
   const [deleteSubBlocked, setDeleteSubBlocked] = useState(false);
   const [deleteAccountStatus, setDeleteAccountStatus] = useState<"idle" | "loading" | "error">("idle");
@@ -343,14 +344,23 @@ export default function ProfilPage() {
   async function handleDeleteMemory() {
     if (!user) return;
     if (!deleteConfirm) {
+      setDeleteError(false);
       setDeleteConfirm(true);
       return;
     }
-    await deleteMemoryData(supabase, user.id);
-    setMemoryProfile(null);
     setDeleteConfirm(false);
-    setDeleteSuccess(true);
-    setTimeout(() => setDeleteSuccess(false), 4000);
+    try {
+      const res = await deleteMemoryData(supabase, user.id);
+      if (res.success) {
+        setMemoryProfile(null);
+        setDeleteError(false);
+        setDeleteSuccess(true);
+      } else {
+        setDeleteError(true);
+      }
+    } catch {
+      setDeleteError(true);
+    }
   }
 
   async function openBillingPortal() {
@@ -840,21 +850,13 @@ export default function ProfilPage() {
                 animation: "fadeUp 0.2s ease forwards",
               }}
             >
-              {/* Effacer mémoire TRACÉA */}
-              {!memoryLoading && hasMemory && (
+              {/* Effacer mémoire TRACÉA — bouton + confirmation (gardés par hasMemory) */}
+              {!memoryLoading && hasMemory && !deleteSuccess && (
                 <div style={{ textAlign: "center", marginTop: 18, marginBottom: 22 }}>
-                  {deleteSuccess ? (
-                    <p
-                      className="font-body"
-                      style={{ fontSize: "0.9rem", color: "#8A9E7A", fontStyle: "italic" }}
-                    >
-                      Ta m&eacute;moire TRAC&Eacute;A a &eacute;t&eacute; effac&eacute;e. Tes sessions restent dans ton historique.
-                    </p>
-                  ) : deleteConfirm ? (
+                  {deleteConfirm ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                       <p className="font-sans" style={{ fontSize: "0.9rem", color: "rgba(240,230,214,0.70)" }}>
-                        Es-tu s&ucirc;r(e)&nbsp;? Cette action supprime tout l&apos;historique de tes patterns.
-                        Tes sessions restent dans ton historique.
+                        Es-tu s&ucirc;r(e)&nbsp;? Cette action efface toutes tes travers&eacute;es et leur m&eacute;moire. C&apos;est d&eacute;finitif.
                       </p>
                       <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
                         <button
@@ -891,6 +893,28 @@ export default function ProfilPage() {
                       Effacer ma m&eacute;moire TRAC&Eacute;A
                     </button>
                   )}
+                </div>
+              )}
+
+              {/* Feedback persistant — hors du gate hasMemory pour rester visible */}
+              {deleteSuccess && (
+                <div style={{ textAlign: "center", marginTop: 18, marginBottom: 22 }}>
+                  <p
+                    className="font-body"
+                    style={{ fontSize: "0.9rem", color: "#8A9E7A", fontStyle: "italic" }}
+                  >
+                    Ta m&eacute;moire TRAC&Eacute;A a &eacute;t&eacute; effac&eacute;e.
+                  </p>
+                </div>
+              )}
+              {deleteError && (
+                <div style={{ textAlign: "center", marginTop: 18, marginBottom: 22 }}>
+                  <p
+                    className="font-body"
+                    style={{ fontSize: "0.9rem", color: "#C97B6A", fontStyle: "italic" }}
+                  >
+                    L&apos;effacement n&apos;a pas pu aboutir. Tu peux r&eacute;essayer.
+                  </p>
                 </div>
               )}
 

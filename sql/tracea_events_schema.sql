@@ -37,3 +37,12 @@ create policy "Users can read own tracea events"
   for select
   to authenticated
   using ((auth.uid())::text = user_id);
+
+-- Policy 3 — DELETE : une utilisatrice authentifiée peut supprimer ses
+-- propres lignes (utilisé par « Effacer ma mémoire TRACÉA »). Cast en text
+-- pour correspondre à la colonne user_id (text). Créée en base le 2026-06-12.
+create policy "Users can delete own tracea events"
+  on public.tracea_events
+  for delete
+  to authenticated
+  using ((auth.uid())::text = user_id);

@@ -620,16 +620,32 @@ export async function getSessionSummariesByIds(
 export async function deleteMemoryData(
   supabaseClient: any,
   userId: string
-): Promise<void> {
-  await supabaseClient
-    .from("session_summaries")
-    .delete()
-    .eq("user_id", userId);
+): Promise<{ success: boolean; error?: string }> {
+  // Ordre : résumés → profil mémoire → événements → sessions.
+  // Chaque erreur est capturée : au premier échec on s'arrête et on retourne
+  // un échec honnête (jamais de faux succès).
+  const tables = [
+    "session_summaries",
+    "user_memory_profile",
+    "tracea_events",
+    "sessions",
+  ];
 
-  await supabaseClient
-    .from("user_memory_profile")
-    .delete()
-    .eq("user_id", userId);
+  for (const table of tables) {
+    const { error } = await supabaseClient
+      .from(table)
+      .delete()
+      .eq("user_id", userId);
+    if (error) {
+      console.error(
+        `[TRACEA Memory] deleteMemoryData ${table} error:`,
+        error.message
+      );
+      return { success: false, error: `${table}: ${error.message}` };
+    }
+  }
+
+  return { success: true };
 }
 
 // ===================================================================
