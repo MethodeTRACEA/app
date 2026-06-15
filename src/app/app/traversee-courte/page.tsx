@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { trackEvent } from "@/lib/supabase-store";
@@ -232,6 +232,21 @@ function TraverseeCourteV2() {
 
   // ── State ──
   const [screen, setScreen] = useState<Screen>(skipEntree ? "ressenti" : "depot");
+  // Identifiant de la traversée courte en cours — regroupe ses events dans
+  // tracea_events de façon déterministe (régénéré à chaque session_start).
+  const sessionIdRef = useRef<string | null>(null);
+
+  // Émet un event de la courte avec un session_id GARANTI :
+  // - "session_start" force un nouvel id (= nouvelle traversée) ;
+  // - sinon génération lazy si absent (couvre le chemin skipEntree qui
+  //   démarre à "ressenti", sans session_start).
+  // Tous les events suivants de la même session partagent ce même id.
+  function trackShort(event: string, data: Record<string, unknown> = {}) {
+    if (event === "session_start" || !sessionIdRef.current) {
+      sessionIdRef.current = crypto.randomUUID();
+    }
+    trackEvent(user?.id ?? null, event, { ...data, session_id: sessionIdRef.current });
+  }
   const [transitionOpacity, setTransitionOpacity] = useState(0);
   const [exitOpacity, setExitOpacity] = useState(0);
   const [activationLevel, setActivationLevel] = useState<ActivationLevel | null>(null);
@@ -437,7 +452,7 @@ function TraverseeCourteV2() {
                   onClick={() => {
                     setActivationLevel(value);
                     setSelectedEntryMessage(ENTRY_MESSAGES[value]);
-                    trackEvent(user?.id ?? null, "session_start", {
+                    trackShort("session_start", {
                       mode: "court",
                       context: null,
                     });
@@ -475,7 +490,7 @@ function TraverseeCourteV2() {
                   label={FEELING_LABELS[f]}
                   onClick={() => {
                     setCurrentFeeling(f);
-                    trackEvent(user?.id ?? null, "step_complete", { step: "ressenti", mode: "court", value: f });
+                    trackShort("step_complete", { step: "ressenti", mode: "court", value: f });
                     setScreen("corps");
                   }}
                 />
@@ -484,7 +499,7 @@ function TraverseeCourteV2() {
                 label="je ne sais pas"
                 onClick={() => {
                   setCurrentFeeling("je-ne-sais-pas");
-                  trackEvent(user?.id ?? null, "step_complete", { step: "ressenti", mode: "court", value: "je-ne-sais-pas" });
+                  trackShort("step_complete", { step: "ressenti", mode: "court", value: "je-ne-sais-pas" });
                   setScreen("corps");
                 }}
               />
@@ -516,7 +531,7 @@ function TraverseeCourteV2() {
                   label={BODY_LABELS[z]}
                   onClick={() => {
                     setBodyZone(z);
-                    trackEvent(user?.id ?? null, "step_complete", { step: "corps", mode: "court", value: z });
+                    trackShort("step_complete", { step: "corps", mode: "court", value: z });
                     goToAncrer();
                   }}
                 />
@@ -525,7 +540,7 @@ function TraverseeCourteV2() {
                 label="autre / je ne sais pas"
                 onClick={() => {
                   setBodyZone("je-ne-sais-pas");
-                  trackEvent(user?.id ?? null, "step_complete", { step: "corps", mode: "court", value: "je-ne-sais-pas" });
+                  trackShort("step_complete", { step: "corps", mode: "court", value: "je-ne-sais-pas" });
                   goToAncrer();
                 }}
               />
@@ -561,7 +576,7 @@ function TraverseeCourteV2() {
                 onClick={() => {
                   setAnchorMethod(topMethod!);
                   setTriedMethods([topMethod!]);
-                  trackEvent(user?.id ?? null, "step_complete", { step: "ancrer", mode: "court", value: topMethod });
+                  trackShort("step_complete", { step: "ancrer", mode: "court", value: topMethod });
                   setScreen("exercice");
                 }}
                 className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-t-brume/30 text-t-beige border border-[rgba(232,216,199,0.45)] hover:bg-t-brume/55 hover:border-[rgba(232,216,199,0.70)] hover:text-white"
@@ -602,7 +617,7 @@ function TraverseeCourteV2() {
                   onClick={() => {
                     setAnchorMethod(m);
                     setTriedMethods((prev) => [...prev, m]);
-                    trackEvent(user?.id ?? null, "step_complete", { step: "ancrer", mode: "court", value: m });
+                    trackShort("step_complete", { step: "ancrer", mode: "court", value: m });
                     setScreen("exercice");
                   }}
                   className="w-full text-center rounded-full font-inter text-sm font-medium px-5 py-3 cursor-pointer transition-all duration-200 bg-t-brume/30 text-t-beige border border-[rgba(232,216,199,0.45)] hover:bg-t-brume/55 hover:border-[rgba(232,216,199,0.70)] hover:text-white"
@@ -650,7 +665,7 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setAnchorEffect(value);
-                    trackEvent(user?.id ?? null, "step_complete", {
+                    trackShort("step_complete", {
                       step: "feedback",
                       mode: "court",
                       value,
@@ -722,7 +737,7 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setAnchorEffect(value);
-                    trackEvent(user?.id ?? null, "step_complete", {
+                    trackShort("step_complete", {
                       step: "feedback_alt",
                       mode: "court",
                       value,
@@ -810,8 +825,8 @@ function TraverseeCourteV2() {
                   label={label}
                   onClick={() => {
                     setSelectedNeed(id);
-                    trackEvent(user?.id ?? null, "step_complete", { step: "emerger", mode: "court", value: summaryLabel ?? label });
-                    trackEvent(user?.id ?? null, "session_end", { mode: "court" });
+                    trackShort("step_complete", { step: "emerger", mode: "court", value: summaryLabel ?? label });
+                    trackShort("session_end", { mode: "court" });
                     // Incrémenter compteur sessions courtes gratuites
                     if (!user) {
                       const prev = parseInt(localStorage.getItem("tracea_free_short_sessions") ?? "0", 10);
