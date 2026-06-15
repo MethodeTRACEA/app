@@ -5,8 +5,11 @@ import { useAuth } from "@/lib/auth-context";
 import {
   getCompletedSessionsDb,
   getPremiumMemory,
+  getShortTraces,
   type PremiumMemory,
+  type ShortTrace,
 } from "@/lib/supabase-store";
+import { getTraceLabel } from "@/lib/trace-labels";
 import {
   getMemoryProfileClient,
   getRecurringEmotions,
@@ -120,6 +123,23 @@ function cleanAppuiActions(items: string[]): string[] {
 
 // ── Page ─────────────────────────────────────────────────────────
 
+// Format de date doux pour les traces individuelles (pas de date technique brute).
+function formatTraceDate(iso: string): string {
+  const d = new Date(iso);
+  const heure = `${d.getHours()}h${String(d.getMinutes()).padStart(2, "0")}`;
+  const now = new Date();
+  const sameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (sameDay(d, now)) return `Aujourd'hui · ${heure}`;
+  if (sameDay(d, yesterday)) return `Hier · ${heure}`;
+  const jour = d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+  return `${jour} · ${heure}`;
+}
+
 export default function CeQuiChangePage() {
   const { user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<SessionData[]>([]);
@@ -128,6 +148,7 @@ export default function CeQuiChangePage() {
   const [recurringEmotion, setRecurringEmotion] = useState<{ emotion: string; count: number } | null>(null);
   const [recurringNeed, setRecurringNeed] = useState<{ need: string; count: number } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [shortTraces, setShortTraces] = useState<ShortTrace[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -137,12 +158,14 @@ export default function CeQuiChangePage() {
       getPremiumMemory(user.id),
       getRecurringEmotions(supabase, user.id),
       getRecurringNeeds(supabase, user.id),
-    ]).then(([s, profile, pm, emo, need]) => {
+      getShortTraces(),
+    ]).then(([s, profile, pm, emo, need, traces]) => {
       setSessions(s);
       setMemoryProfile(profile);
       setPremiumMemory(pm);
       setRecurringEmotion(emo);
       setRecurringNeed(need);
+      setShortTraces(traces);
       setLoading(false);
     });
   }, [user]);
@@ -328,8 +351,79 @@ export default function CeQuiChangePage() {
           Ce qui se dépose, ce qui t&apos;aide, ce que tu poses ici.
         </p>
 
+        {/* ── Tes dernières traversées (traces individuelles de courte) ── */}
+        {shortTraces.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <p
+              className="font-body"
+              style={{
+                fontSize: "1rem",
+                fontWeight: 300,
+                color: "rgba(240,230,214,0.75)",
+                lineHeight: 1.5,
+              }}
+            >
+              Tes traversées, telles que tu les as posées.
+            </p>
+            {shortTraces.map((t) => {
+              const ressenti = getTraceLabel("ressenti", t.ressenti);
+              const corps = getTraceLabel("corps", t.corps);
+              const ancrage = getTraceLabel("ancrage", t.ancrer);
+              const lineStyle: React.CSSProperties = {
+                ...blockTextStyle,
+                fontSize: "1rem",
+                margin: 0,
+              };
+              return (
+                <div
+                  key={t.sessionId}
+                  style={
+                    t.partielle
+                      ? { ...blockStyle, border: "1px dashed rgba(240,230,214,0.20)" }
+                      : blockStyle
+                  }
+                >
+                  <p className="font-sans" style={kickerStyle}>
+                    {formatTraceDate(t.date)}
+                  </p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {ressenti && (
+                      <p className="font-body" style={lineStyle}>
+                        Ce qui était là : {ressenti}
+                      </p>
+                    )}
+                    {corps && (
+                      <p className="font-body" style={lineStyle}>
+                        Situé plutôt dans : {corps}
+                      </p>
+                    )}
+                    {ancrage && (
+                      <p className="font-body" style={lineStyle}>
+                        L&apos;appui que tu as choisi : {ancrage}
+                      </p>
+                    )}
+                    {t.geste && (
+                      <p className="font-body" style={lineStyle}>
+                        Le pas que tu t&apos;étais proposé : {t.geste}
+                      </p>
+                    )}
+                  </div>
+                  {t.partielle && (
+                    <p
+                      className="font-body"
+                      style={{ ...lineStyle, fontStyle: "italic", opacity: 0.6, marginTop: 8 }}
+                    >
+                      Une traversée que tu as gardée pour toi.
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* ── Cas 0 — aucune session ── */}
-        {n === 0 && !hasAnyContent && (
+        {n === 0 && !hasAnyContent && shortTraces.length === 0 && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Cet espace se remplira au fil de tes traversées.
