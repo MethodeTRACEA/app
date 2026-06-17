@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { trackEvent, getShortTraces } from "@/lib/supabase-store";
+import { trackEvent } from "@/lib/supabase-store";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
@@ -15,7 +15,6 @@ import { GroundingGuide } from "@/components/GroundingGuide";
 import { GazeGuide } from "@/components/GazeGuide";
 import { SafetyResources } from "@/components/SafetyResources";
 import { getTopAnchorMethod } from "@/lib/supabase-store";
-import { getTraceLabel } from "@/lib/trace-labels";
 
 const ENTRY_MESSAGES: Record<ActivationLevel, string> = {
   deborde: "Ok. On va ralentir ça ensemble.",
@@ -266,8 +265,6 @@ function TraverseeCourteV2() {
   const [altMethod, setAltMethod] = useState<AnchorMethod | null>(null);
   // Personalisation abonné — méthode dominante
   const [topMethod, setTopMethod] = useState<AnchorMethod | null>(null);
-  // KR-1 — souvenir de l'appui de la dernière traversée courte (lecture non bloquante)
-  const [lastAnchorLabel, setLastAnchorLabel] = useState<string | null>(null);
 
   // ── Charger méthode dominante pour abonnés ──
   useEffect(() => {
@@ -276,20 +273,6 @@ function TraverseeCourteV2() {
       if (m === "appuis" || m === "autour" || m === "souffle") setTopMethod(m);
     });
   }, [hasPremiumAccess, user?.id]);
-
-  // ── KR-1 : souvenir de l'appui de la dernière traversée courte ──
-  // Lecture NON bloquante : l'écran s'affiche immédiatement, la bande
-  // apparaît seulement si un appui lisible existe. Dégrade en silence
-  // (anonyme / sans historique / erreur → rien).
-  useEffect(() => {
-    if (!user) return;
-    getShortTraces()
-      .then((traces) => {
-        const label = getTraceLabel("ancrage", traces[0]?.ancrer ?? null);
-        if (label) setLastAnchorLabel(label);
-      })
-      .catch(() => {});
-  }, [user]);
 
   // ── Helper : aller à ancrer (ou suggestion si accès premium + méthode dominante) ──
   function goToAncrer() {
@@ -363,26 +346,12 @@ function TraverseeCourteV2() {
       // ════════════════════════════════════════════════════
       case "depot":
         return (
-          <>
-            {/* KR-1 — souvenir (bande discrète, non bloquante). Affichée
-                seulement si un appui lisible de la dernière courte existe. */}
-            {lastAnchorLabel && (
-              <div style={{ textAlign: "center", padding: "16px 20px 0" }}>
-                <p
-                  className="font-body"
-                  style={{ fontSize: "0.95rem", color: "rgba(240,230,214,0.62)", lineHeight: 1.5 }}
-                >
-                  La dernière fois, tu avais choisi de {lastAnchorLabel}.
-                </p>
-              </div>
-            )}
-            <MiniDepot
-              onContinue={(text) => {
-                setSuggestedEntry(matchDepotToEntry(text));
-                setScreen(onboardingSeen ? "entree" : "onboarding");
-              }}
-            />
-          </>
+          <MiniDepot
+            onContinue={(text) => {
+              setSuggestedEntry(matchDepotToEntry(text));
+              setScreen(onboardingSeen ? "entree" : "onboarding");
+            }}
+          />
         );
 
       // ONBOARDING — Écran d'accueil
