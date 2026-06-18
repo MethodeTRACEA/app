@@ -551,6 +551,7 @@ export async function POST(request: NextRequest) {
       context,
       hadDoNotStore,
       actionSource,
+      besoinSource,
     } = body;
 
     if (!sessionId) {
@@ -648,7 +649,11 @@ export async function POST(request: NextRequest) {
     // Sauvegarder dans session_summaries
     const excludedFromMemory = hadDoNotStore === true;
 
-    await saveSessionSummary(userId, sessionId, summaryData, excludedFromMemory);
+    // A-2-0a : capture de la source du besoin. Pour "libre", besoin_raw reste
+    // null (aucun texte libre brut persisté à ce stade — filtre en A-2-0b).
+    const besoinRaw = besoinSource === "chip" ? (steps.conscientiser || null) : null;
+
+    await saveSessionSummary(userId, sessionId, summaryData, excludedFromMemory, besoinRaw, besoinSource);
 
     console.log(
       "[TRACEA SUMMARIZE] Summary saved. excluded_from_memory:",

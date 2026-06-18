@@ -79,6 +79,8 @@ export interface SessionSummary {
   inner_truth: string;
   narrative_summary: string;
   excluded_from_memory: boolean;
+  besoin_raw?: string | null;
+  besoin_source?: "chip" | "libre" | null;
 }
 
 export interface MemoryProfile {
@@ -516,7 +518,9 @@ export async function saveSessionSummary(
   userId: string,
   sessionId: string,
   summary: Omit<SessionSummary, "id" | "user_id" | "session_id" | "created_at" | "excluded_from_memory">,
-  excludedFromMemory: boolean = false
+  excludedFromMemory: boolean = false,
+  besoinRaw: string | null = null,
+  besoinSource: string | null = null
 ): Promise<void> {
   const supabase = getSupabase();
 
@@ -534,6 +538,8 @@ export async function saveSessionSummary(
     inner_truth: summary.inner_truth,
     narrative_summary: summary.narrative_summary,
     excluded_from_memory: excludedFromMemory,
+    besoin_raw: besoinRaw,
+    besoin_source: besoinSource,
   });
 
   if (error) {

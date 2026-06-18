@@ -627,6 +627,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             context: "approfondi",
             hadDoNotStore: false,
             actionSource,
+            besoinSource: besoin ? (besoin === "autre" ? "libre" : "chip") : null,
           }),
         })
           .then((res) => {
