@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { MIRROR_SYSTEM_PROMPT } from "@/lib/ai/traceaMirrorPrompt";
 import { applyTraceaV3 } from "@/lib/ai/applyTraceaV3";
+import { getContinuityNote } from "@/lib/memory";
 
 // ===================================================================
 // API KEY & CLIENTS
@@ -405,6 +406,12 @@ Règle :
 - ne supprime pas la situation
 - ne transforme pas l'intention en action réalisée
 - 4 phrases maximum`;
+
+  // A-2-0a-ii : lecture + LOG SEUL de la note de continuité. Rien n'est injecté
+  // dans le userMessage, rien n'est montré, la réponse est inchangée.
+  // (Injection éventuelle dans le miroir = A-2-1.)
+  const note = await getContinuityNote(getSupabaseService(), userId);
+  console.log("[A-2-0a-ii] continuity:", JSON.stringify(note));
 
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-6",

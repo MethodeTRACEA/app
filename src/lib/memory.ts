@@ -748,7 +748,25 @@ export async function getRecurringNeeds(
 }
 
 // ===================================================================
-// Levier A — Note de continuité pour le miroir IA (calcul seul, A-1)
+// Normalisation canonique (accents CONSERVÉS).
+// trim + minuscules + espaces internes réduits à un + ponctuation
+// début/fin retirée. Resservira en A-2-0b et A-2-2.
+// ===================================================================
+export function normalize(s: string): string {
+  // Set de ponctuation explicite (pas de \p{}/flag u : cible es5). Accents
+  // NON inclus → conservés. \s inclus pour absorber espaces en bord de chaîne.
+  const EDGE = "\\s.,;:!?…«»\"'“”‘’()\\[\\]{}<>\\-–—_/\\\\|@#*+=~^`$%&";
+  const re = new RegExp("^[" + EDGE + "]+|[" + EDGE + "]+$", "g");
+  return s
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(re, "")
+    .trim();
+}
+
+// ===================================================================
+// Levier A — Note de continuité pour le miroir IA (A-2)
 // ===================================================================
 // Seuil strict : un élément doit revenir dans AU MOINS 3 traversées passées.
 const CONTINUITY_MIN_OCCURRENCES = 3;
@@ -757,28 +775,32 @@ const CONTINUITY_MIN_OCCURRENCES = 3;
  * Détermine s'il y a UNE récurrence fiable à signaler dans le miroir IA.
  *
  * Matière utilisée — UNE seule, sobre, sans verbatim ni chiffre :
- *   - besoins exprimés (session_summaries.expressed_needs).
- * (Les thèmes ont été retirés : inférence IA souvent vide/peu fiable depuis
- * le retrait du choix de thème. On ne repose que sur le besoin, choix net.)
+ *   - besoin brut choisi (session_summaries.besoin_raw, SCALAIRE par ligne).
+ * Depuis A-2-0a-ii on lit besoin_raw (libellé du chip), PAS expressed_needs
+ * (reformulation LLM, toujours produite et lue par getRecurringNeeds).
+ * Pour l'instant besoin_raw n'est rempli que pour les chips ; les besoins
+ * "libre" valent null (filtre §C/D/E en A-2-0b).
  * Ne lit JAMAIS : émotion, score, progression, total_sessions, inner_truth, themes.
  *
  * Règles :
- *   - seuil ≥ 3 occurrences (présence dans ≥ 3 traversées de la fenêtre récente)
- *   - renvoie le besoin le plus fréquent, ou null
+ *   - on ne compte que les lignes besoin_raw non nul
+ *   - seuil ≥ 3 occurrences (≥ 3 traversées de la fenêtre récente)
+ *   - renvoie le besoin le plus fréquent + sa source, ou null
  *   - try/catch → null (jamais d'exception)
  *
- * Ne branche rien dans le prompt (= patch A-2). N'utilise pas
- * getMemoryContext / formatMemoryContext (code mort banni : scores/progression).
+ * PAS d'exclusion de chip ici (« me sentir en sécurité ») : ça viendra en
+ * A-2-1, quand une note pourrait s'afficher. Ici rien n'est montré.
+ * N'utilise pas getMemoryContext / formatMemoryContext (code mort banni).
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getContinuityNote(
   supabaseClient: any,
   userId: string
-): Promise<{ type: "besoin"; valeur: string } | null> {
+): Promise<{ type: "besoin"; valeur: string; source: "chip" | "libre" } | null> {
   try {
     const { data, error } = await supabaseClient
       .from("session_summaries")
-      .select("expressed_needs")
+      .select("besoin_raw, besoin_source")
       .eq("user_id", userId)
       .eq("excluded_from_memory", false)
       .order("created_at", { ascending: false })
@@ -786,17 +808,24 @@ export async function getContinuityNote(
 
     if (error || !data) return null;
 
-    const rows = data as { expressed_needs: string[] | null }[];
+    const rows = data as { besoin_raw: string | null; besoin_source: string | null }[];
 
-    // Besoin le plus fréquent (≥ 3 traversées de la fenêtre récente)
-    const besoin = aggregateTopFromArrayField(
-      rows.map((r) => ({ values: r.expressed_needs }))
-    );
-    if (besoin && besoin.count >= CONTINUITY_MIN_OCCURRENCES) {
-      return { type: "besoin", valeur: besoin.value };
+    // besoin_raw est SCALAIRE (une valeur par ligne) → comptage direct, PAS
+    // aggregateTopFromArrayField (qui attend un tableau et itérerait les chars).
+    const counts: Record<string, { count: number; source: string | null }> = {};
+    for (const row of rows) {
+      if (!row.besoin_raw) continue; // libre = null jusqu'à A-2-0b
+      const key = normalize(row.besoin_raw);
+      if (!key) continue;
+      if (!counts[key]) counts[key] = { count: 0, source: row.besoin_source };
+      counts[key].count += 1;
     }
 
-    return null;
+    const top = Object.entries(counts).sort(([, a], [, b]) => b.count - a.count)[0];
+    if (!top || top[1].count < CONTINUITY_MIN_OCCURRENCES) return null;
+
+    const source = top[1].source === "libre" ? "libre" : "chip";
+    return { type: "besoin", valeur: top[0], source };
   } catch {
     return null;
   }
