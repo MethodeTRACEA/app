@@ -11,6 +11,7 @@ import {
   trackEvent,
   getApprofondiSessionEndCount,
 } from "@/lib/supabase-store";
+import { supabase } from "@/lib/supabase";
 import { Paywall } from "@/components/Paywall";
 import { ConsentGate } from "@/components/ConsentGate";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
@@ -25,7 +26,8 @@ import { StepIndicator } from "@/components/StepIndicator";
 // Route : /app/session
 // Distinct du flow court : comprendre + intégrer, pas réguler.
 // Phases : intro → situation → emotion → besoin →
-//          alignement → action → synthese → complete
+//          alignement → action → [aide_ecriture si action 'write'] →
+//          synthese → complete
 // ════════════════════════════════════════════════════════════
 
 type Phase =
@@ -36,6 +38,7 @@ type Phase =
   | "besoin"
   | "alignement"
   | "action"
+  | "aide_ecriture"
   | "synthese"
   | "complete";
 
@@ -510,8 +513,11 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   const [action, setAction] = useState("");
   const [actionSource, setActionSource] = useState<"suggestion" | "free_text" | null>(null);
   // Capturé au choix de l'action (étape 35-A.2) ; consommé par les écrans
-  // « aide à poser » à l'étape 3. Non lu pour l'instant.
+  // « aide à poser » (étape 3, branche 'write').
   const [actionKind, setActionKind] = useState<"write" | "world" | null>(null);
+  // Écran A (journal, branche 'write'). content jamais envoyé à summarize.
+  const [journalText, setJournalText] = useState("");
+  const [journalStatus, setJournalStatus] = useState<"kept" | "released" | null>(null);
 
   // IA
   const [analysis, setAnalysis] = useState("");
@@ -651,6 +657,44 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
 
   function generateFallbackAnalysis(): string {
     return "Tu as pris le temps de mettre des mots sur ce qui se passe.\nC'est déjà quelque chose.";
+  }
+
+  // ── Écran A (journal) — branche 'write' ──────────────────────
+  // « Garder » : une ligne dans action_traces (content = l'écrit, jamais
+  // envoyé à summarize). Insert fire-and-forget : un échec ne bloque PAS
+  // la suite (log Sentry), on continue vers synthese normalement.
+  function handleKeepJournal() {
+    try {
+      supabase
+        .from("action_traces")
+        .insert({
+          user_id: userId,
+          session_id: sessionId,
+          besoin: besoinLabel,
+          emotion: emotionLabel,
+          action,
+          action_source: actionSource,
+          kind: actionKind,
+          content: journalText,
+          plan_when: null,
+          kept: true,
+        })
+        .then(({ error }) => {
+          if (error) {
+            Sentry.captureException(new Error(error.message), {
+              tags: { feature: "action_traces_insert" },
+            });
+          }
+        });
+    } catch (err) {
+      Sentry.captureException(err, { tags: { feature: "action_traces_insert" } });
+    }
+    setJournalStatus("kept");
+  }
+
+  // « Laisser aller » : aucune insertion.
+  function handleReleaseJournal() {
+    setJournalStatus("released");
   }
 
   // ── Champ texte partagé ──────────────────────────────────────
@@ -1114,14 +1158,92 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
               disabled={!action.trim()}
               onClick={() => {
                 trackEvent(userId, "step_complete", { step: "action", mode: "approfondi", value: action });
-                setPhase("synthese");
-                generateAnalysis();
+                if (actionKind === "write") {
+                  setPhase("aide_ecriture");
+                } else {
+                  setPhase("synthese");
+                  generateAnalysis();
+                }
               }}
             >
               C&apos;est noté
             </PrimaryButton>
 
             <BackButton onClick={() => setPhase("besoin")} />
+
+          </div>
+        </div>
+      </ScreenContainer>
+    );
+  }
+
+  // ════════════════════════════════════════════════════════
+  // AIDE À POSER — Écran A : journal (branche 'write')
+  // Pas de StepIndicator ici : la méthode reste 6/6.
+  // ════════════════════════════════════════════════════════
+  if (phase === "aide_ecriture") {
+    return (
+      <ScreenContainer overlayOpacity={45}>
+        <div className="py-12">
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+
+            {journalStatus === null ? (
+              <>
+                <div className="text-center space-y-2">
+                  <p className="font-serif text-xl text-t-beige">
+                    {action}
+                  </p>
+                  <p className="font-body text-base t-text-secondary">
+                    C&apos;est ton espace. Ce que tu écris reste pour toi.
+                  </p>
+                </div>
+
+                <textarea
+                  value={journalText}
+                  onChange={(e) => setJournalText(e.target.value)}
+                  placeholder="Tu peux commencer ici, sans te relire."
+                  className={textareaClass}
+                  rows={8}
+                  autoFocus
+                />
+
+                <div className="w-full space-y-2.5">
+                  <PrimaryButton
+                    disabled={!journalText.trim()}
+                    onClick={handleKeepJournal}
+                  >
+                    Garder
+                  </PrimaryButton>
+                  <SecondaryButton onClick={handleReleaseJournal}>
+                    Laisser aller
+                  </SecondaryButton>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="font-serif text-xl text-t-beige text-center">
+                  {journalStatus === "kept"
+                    ? "C'est gardé, pour toi."
+                    : "C'est posé."}
+                </p>
+                <PrimaryButton
+                  onClick={() => {
+                    setPhase("synthese");
+                    generateAnalysis();
+                  }}
+                >
+                  Continuer
+                </PrimaryButton>
+              </>
+            )}
+
+            <button
+              type="button"
+              onClick={() => router.push("/app")}
+              className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
+            >
+              Quitter
+            </button>
 
           </div>
         </div>
