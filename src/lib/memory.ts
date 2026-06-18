@@ -621,13 +621,14 @@ export async function deleteMemoryData(
   supabaseClient: any,
   userId: string
 ): Promise<{ success: boolean; error?: string }> {
-  // Ordre : résumés → profil mémoire → événements → sessions.
+  // Ordre : résumés → profil mémoire → événements → traces d'action → sessions.
   // Chaque erreur est capturée : au premier échec on s'arrête et on retourne
   // un échec honnête (jamais de faux succès).
   const tables = [
     "session_summaries",
     "user_memory_profile",
     "tracea_events",
+    "action_traces",
     "sessions",
   ];
 

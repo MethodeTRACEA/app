@@ -8,7 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 //   - bloque la suppression si un abonnement Stripe actif ou à
 //     traiter est détecté (active, trialing, past_due, unpaid,
 //     incomplete) ou si is_subscribed est true ;
-//   - sinon supprime les 8 tables utilisateur via service role,
+//   - sinon supprime les 9 tables utilisateur via service role,
 //     puis l'enregistrement auth.users via auth.admin.deleteUser.
 //
 // Sécurité :
@@ -47,6 +47,7 @@ const CHILD_TABLES = [
   "session_summaries",
   "user_memory_profile",
   "tracea_events",
+  "action_traces",
   "ai_usage_logs",
   "rate_limit_logs",
   "sessions",
