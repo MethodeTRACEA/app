@@ -167,14 +167,14 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
   },
   "y voir plus clair": {
     default: [
+      "me demander ce que je dirais à un proche dans la même situation",
       "écrire les deux côtés de la situation",
-      "noter ce qui reste flou pour moi",
       "mettre au clair ce que je veux vraiment",
     ],
     "confusion": [
+      "me demander ce que je dirais à quelqu'un d'autre dans cette situation",
       "écrire les deux côtés de la situation",
       "noter ce qui est clair et ce qui ne l'est pas",
-      "nommer ce qui reste flou",
     ],
     "peur": [
       "noter ce que je sais et ce que j'ignore encore",
@@ -184,12 +184,12 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
   },
   "mettre des mots dessus": {
     default: [
-      "écrire ce que j'aurais voulu dire",
+      "trouver le mot le plus juste pour ce que je ressens",
       "écrire les premiers mots qui me viennent",
       "dire ce que j'ai gardé pour moi",
     ],
     "colère": [
-      "écrire ce que j'aurais voulu dire",
+      "mettre un mot juste sur ce que je ressens",
       "écrire ce qui m'a touché avant d'en parler",
       "poser les mots avant de parler",
     ],
@@ -208,7 +208,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
     "solitude": [
       "envoyer un message simple",
       "proposer un moment sans trop expliquer",
-      "dire que j'aimerais ne pas rester seul(e)",
+      "dire que j'aimerais ne pas être seul avec ça",
     ],
   },
   "juste poser ça": {
@@ -226,6 +226,40 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
       "laisser ça là un moment",
       "écrire juste ce qui est là",
       "y revenir une autre fois",
+    ],
+  },
+  "qu'on me soutienne": {
+    default: [
+      "demander une chose précise à une personne",
+      "dire de quel soutien j'ai besoin : qu'on m'écoute, qu'on m'aide, ou juste qu'on soit là",
+      "choisir une personne à qui je peux demander",
+    ],
+    "solitude": [
+      "envoyer un message à une personne de confiance",
+      "demander juste une présence",
+      "dire à quelqu'un que j'aurais besoin d'un coup de main",
+    ],
+    "épuisement": [
+      "demander de l'aide pour une seule chose, la plus lourde",
+      "accepter qu'on m'aide, même un peu",
+      "dire à quelqu'un ce qui pèse le plus",
+    ],
+    "tristesse": [
+      "demander une présence, sans avoir à expliquer",
+      "dire à quelqu'un que ça ne va pas",
+      "choisir une personne douce à qui parler",
+    ],
+  },
+  "me sentir en sécurité": {
+    default: [
+      "nommer 5 choses que je vois autour de moi",
+      "sentir mes pieds au sol, le contact du siège",
+      "poser une main sur quelque chose de stable",
+    ],
+    "peur": [
+      "nommer 3 choses que j'entends maintenant",
+      "sentir mes appuis : pieds, dos, mains",
+      "regarder un point fixe et le décrire",
     ],
   },
 };
