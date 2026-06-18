@@ -128,149 +128,150 @@ const BESOIN_CHIPS = [
 // Interdit : gestes du flow court (respirer, boire, pause, ancrer…)
 // Autorisé : clarification, communication, introspection, ajustement relationnel
 
-type ActionEntry = { default: string[]; [emotion: string]: string[] };
+type ActionItem = { text: string; kind: "write" | "world" };
+type ActionEntry = { default: ActionItem[]; [emotion: string]: ActionItem[] };
 
 const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
   "qu'on me comprenne": {
     default: [
-      "écrire la première phrase que je pourrais dire",
-      "écrire ce que j'aurais voulu dire",
-      "choisir à qui en parler",
+      { text: "écrire la première phrase que je pourrais dire", kind: "write" },
+      { text: "écrire ce que j'aurais voulu dire", kind: "write" },
+      { text: "choisir à qui en parler", kind: "world" },
     ],
     "solitude": [
-      "envoyer un message simple à quelqu'un",
-      "choisir une personne à qui parler",
-      "écrire ce que j'aurais besoin qu'on entende",
+      { text: "envoyer un message simple à quelqu'un", kind: "world" },
+      { text: "choisir une personne à qui parler", kind: "world" },
+      { text: "écrire ce que j'aurais besoin qu'on entende", kind: "write" },
     ],
     "tristesse": [
-      "choisir à qui en parler",
-      "écrire ce que j'aurais aimé entendre",
-      "demander une présence simple",
+      { text: "choisir à qui en parler", kind: "world" },
+      { text: "écrire ce que j'aurais aimé entendre", kind: "write" },
+      { text: "demander une présence simple", kind: "world" },
     ],
   },
   "poser une limite": {
     default: [
-      "dire ce que je n'accepte plus",
-      "écrire ma limite avant de la dire",
-      "décider ce que je vais dire et quand",
+      { text: "dire ce que je n'accepte plus", kind: "world" },
+      { text: "écrire ma limite avant de la dire", kind: "write" },
+      { text: "décider ce que je vais dire et quand", kind: "world" },
     ],
     "colère": [
-      "dire ce que je n'accepte plus",
-      "dire ce que je ne veux plus",
-      "écrire ma limite avant de la poser",
+      { text: "dire ce que je n'accepte plus", kind: "world" },
+      { text: "dire ce que je ne veux plus", kind: "world" },
+      { text: "écrire ma limite avant de la poser", kind: "write" },
     ],
     "peur": [
-      "choisir la limite la plus simple à poser",
-      "écrire ce que je peux dire sans me justifier",
-      "attendre un moment plus calme avant d'en parler",
+      { text: "choisir la limite la plus simple à poser", kind: "world" },
+      { text: "écrire ce que je peux dire sans me justifier", kind: "write" },
+      { text: "attendre un moment plus calme avant d'en parler", kind: "world" },
     ],
   },
   "y voir plus clair": {
     default: [
-      "me demander ce que je dirais à un proche dans la même situation",
-      "écrire les deux côtés de la situation",
-      "mettre au clair ce que je veux vraiment",
+      { text: "me demander ce que je dirais à un proche dans la même situation", kind: "world" },
+      { text: "écrire les deux côtés de la situation", kind: "write" },
+      { text: "mettre au clair ce que je veux vraiment", kind: "world" },
     ],
     "confusion": [
-      "me demander ce que je dirais à quelqu'un d'autre dans cette situation",
-      "écrire les deux côtés de la situation",
-      "noter ce qui est clair et ce qui ne l'est pas",
+      { text: "me demander ce que je dirais à quelqu'un d'autre dans cette situation", kind: "world" },
+      { text: "écrire les deux côtés de la situation", kind: "write" },
+      { text: "noter ce qui est clair et ce qui ne l'est pas", kind: "write" },
     ],
     "peur": [
-      "noter ce que je sais et ce que j'ignore encore",
-      "écrire ce qui dépend de moi",
-      "attendre avant de conclure",
+      { text: "noter ce que je sais et ce que j'ignore encore", kind: "write" },
+      { text: "écrire ce qui dépend de moi", kind: "write" },
+      { text: "attendre avant de conclure", kind: "world" },
     ],
   },
   "mettre des mots dessus": {
     default: [
-      "trouver le mot le plus juste pour ce que je ressens",
-      "écrire les premiers mots qui me viennent",
-      "dire ce que j'ai gardé pour moi",
+      { text: "trouver le mot le plus juste pour ce que je ressens", kind: "world" },
+      { text: "écrire les premiers mots qui me viennent", kind: "write" },
+      { text: "dire ce que j'ai gardé pour moi", kind: "world" },
     ],
     "colère": [
-      "mettre un mot juste sur ce que je ressens",
-      "écrire ce qui m'a touché avant d'en parler",
-      "poser les mots avant de parler",
+      { text: "mettre un mot juste sur ce que je ressens", kind: "world" },
+      { text: "écrire ce qui m'a touché avant d'en parler", kind: "write" },
+      { text: "poser les mots avant de parler", kind: "world" },
     ],
     "honte": [
-      "écrire ça juste pour moi",
-      "noter ce que je ressens, simplement",
-      "garder ça pour moi le temps d'y voir clair",
+      { text: "écrire ça juste pour moi", kind: "write" },
+      { text: "noter ce que je ressens, simplement", kind: "write" },
+      { text: "garder ça pour moi le temps d'y voir clair", kind: "world" },
     ],
   },
   "me rapprocher de quelqu'un": {
     default: [
-      "envoyer un message simple",
-      "choisir le bon moment pour en parler",
-      "écrire ce que j'ai envie de partager",
+      { text: "envoyer un message simple", kind: "world" },
+      { text: "choisir le bon moment pour en parler", kind: "world" },
+      { text: "écrire ce que j'ai envie de partager", kind: "write" },
     ],
     "solitude": [
-      "envoyer un message simple",
-      "proposer un moment sans trop expliquer",
-      "dire que j'aimerais ne pas être seul avec ça",
+      { text: "envoyer un message simple", kind: "world" },
+      { text: "proposer un moment sans trop expliquer", kind: "world" },
+      { text: "dire que j'aimerais ne pas être seul avec ça", kind: "world" },
     ],
   },
   "juste poser ça": {
     default: [
-      "laisser ça là pour aujourd'hui",
-      "ne rien faire de plus maintenant",
-      "y revenir plus tard si besoin",
+      { text: "laisser ça là pour aujourd'hui", kind: "world" },
+      { text: "ne rien faire de plus maintenant", kind: "world" },
+      { text: "y revenir plus tard si besoin", kind: "world" },
     ],
     "épuisement": [
-      "laisser ça là pour aujourd'hui",
-      "me reposer un moment",
-      "y revenir quand j'aurai un peu d'énergie",
+      { text: "laisser ça là pour aujourd'hui", kind: "world" },
+      { text: "me reposer un moment", kind: "world" },
+      { text: "y revenir quand j'aurai un peu d'énergie", kind: "world" },
     ],
     "tristesse": [
-      "laisser ça là un moment",
-      "écrire juste ce qui est là",
-      "y revenir une autre fois",
+      { text: "laisser ça là un moment", kind: "world" },
+      { text: "écrire juste ce qui est là", kind: "write" },
+      { text: "y revenir une autre fois", kind: "world" },
     ],
   },
   "qu'on me soutienne": {
     default: [
-      "demander une chose précise à une personne",
-      "dire de quel soutien j'ai besoin : qu'on m'écoute, qu'on m'aide, ou juste qu'on soit là",
-      "choisir une personne à qui je peux demander",
+      { text: "demander une chose précise à une personne", kind: "world" },
+      { text: "dire de quel soutien j'ai besoin : qu'on m'écoute, qu'on m'aide, ou juste qu'on soit là", kind: "world" },
+      { text: "choisir une personne à qui je peux demander", kind: "world" },
     ],
     "solitude": [
-      "envoyer un message à une personne de confiance",
-      "demander juste une présence",
-      "dire à quelqu'un que j'aurais besoin d'un coup de main",
+      { text: "envoyer un message à une personne de confiance", kind: "world" },
+      { text: "demander juste une présence", kind: "world" },
+      { text: "dire à quelqu'un que j'aurais besoin d'un coup de main", kind: "world" },
     ],
     "épuisement": [
-      "demander de l'aide pour une seule chose, la plus lourde",
-      "accepter qu'on m'aide, même un peu",
-      "dire à quelqu'un ce qui pèse le plus",
+      { text: "demander de l'aide pour une seule chose, la plus lourde", kind: "world" },
+      { text: "accepter qu'on m'aide, même un peu", kind: "world" },
+      { text: "dire à quelqu'un ce qui pèse le plus", kind: "world" },
     ],
     "tristesse": [
-      "demander une présence, sans avoir à expliquer",
-      "dire à quelqu'un que ça ne va pas",
-      "choisir une personne douce à qui parler",
+      { text: "demander une présence, sans avoir à expliquer", kind: "world" },
+      { text: "dire à quelqu'un que ça ne va pas", kind: "world" },
+      { text: "choisir une personne douce à qui parler", kind: "world" },
     ],
   },
   "me sentir en sécurité": {
     default: [
-      "nommer 5 choses que je vois autour de moi",
-      "sentir mes pieds au sol, le contact du siège",
-      "poser une main sur quelque chose de stable",
+      { text: "nommer 5 choses que je vois autour de moi", kind: "world" },
+      { text: "sentir mes pieds au sol, le contact du siège", kind: "world" },
+      { text: "poser une main sur quelque chose de stable", kind: "world" },
     ],
     "peur": [
-      "nommer 3 choses que j'entends maintenant",
-      "sentir mes appuis : pieds, dos, mains",
-      "regarder un point fixe et le décrire",
+      { text: "nommer 3 choses que j'entends maintenant", kind: "world" },
+      { text: "sentir mes appuis : pieds, dos, mains", kind: "world" },
+      { text: "regarder un point fixe et le décrire", kind: "world" },
     ],
   },
 };
 
-const ACTION_FALLBACK = [
-  "écrire ce qui compte pour moi",
-  "laisser passer avant de répondre",
-  "écrire ce que je veux garder en tête",
+const ACTION_FALLBACK: ActionItem[] = [
+  { text: "écrire ce qui compte pour moi", kind: "write" },
+  { text: "laisser passer avant de répondre", kind: "world" },
+  { text: "écrire ce que je veux garder en tête", kind: "write" },
 ];
 
-function getActionSuggestions(besoin: string, emotion?: string): string[] {
+function getActionSuggestions(besoin: string, emotion?: string): ActionItem[] {
   const entry = ACTION_SUGGESTIONS[besoin];
   if (!entry) return ACTION_FALLBACK;
   if (emotion && entry[emotion]) return entry[emotion];
@@ -508,6 +509,9 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   const [besoinOther, setBesoinOther] = useState("");
   const [action, setAction] = useState("");
   const [actionSource, setActionSource] = useState<"suggestion" | "free_text" | null>(null);
+  // Capturé au choix de l'action (étape 35-A.2) ; consommé par les écrans
+  // « aide à poser » à l'étape 3. Non lu pour l'instant.
+  const [actionKind, setActionKind] = useState<"write" | "world" | null>(null);
 
   // IA
   const [analysis, setAnalysis] = useState("");
@@ -1066,16 +1070,16 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             <div className="w-full space-y-2.5">
               {suggestions.map((s) => (
                 <button
-                  key={s}
+                  key={s.text}
                   type="button"
-                  onClick={() => { setAction(s); setActionSource("suggestion"); }}
+                  onClick={() => { setAction(s.text); setActionSource("suggestion"); setActionKind(s.kind); }}
                   className={`w-full text-left rounded-[18px] px-5 py-3 font-inter text-sm transition-all duration-200 border ${
-                    action === s
+                    action === s.text
                       ? "bg-t-brume/35 border-[rgba(232,216,199,0.40)] t-text-secondary"
                       : "bg-transparent border-[rgba(232,216,199,0.15)] t-text-ghost hover:border-[rgba(232,216,199,0.28)] hover:t-text-secondary"
                   }`}
                 >
-                  {s}
+                  {s.text}
                 </button>
               ))}
             </div>
@@ -1093,11 +1097,12 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                   const trimmedValue = value.trim();
                   if (!trimmedValue) {
                     setActionSource(null);
+                    setActionKind(null);
                     return;
                   }
-                  setActionSource(
-                    suggestions.includes(trimmedValue) ? "suggestion" : "free_text"
-                  );
+                  const matched = suggestions.find((x) => x.text === trimmedValue);
+                  setActionSource(matched ? "suggestion" : "free_text");
+                  setActionKind(matched ? matched.kind : "world");
                 }}
                 placeholder="ex : ce qui me semble faisable maintenant…"
                 className={textareaClass}
