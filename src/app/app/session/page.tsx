@@ -114,13 +114,14 @@ const EMOTION_CHIPS = [
 ];
 
 const BESOIN_CHIPS = [
-  "être compris(e)",
-  "poser une limite",
-  "clarifier quelque chose",
-  "exprimer ce que j'ai ressenti",
-  "prendre du recul",
+  "qu'on me comprenne",
   "me rapprocher de quelqu'un",
+  "qu'on me soutienne",
+  "poser une limite",
+  "y voir plus clair",
+  "mettre des mots dessus",
   "juste poser ça",
+  "me sentir en sécurité",
 ];
 
 // ── Suggestions d'action par besoin (flow long uniquement) ─────
@@ -130,7 +131,7 @@ const BESOIN_CHIPS = [
 type ActionEntry = { default: string[]; [emotion: string]: string[] };
 
 const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
-  "être compris(e)": {
+  "qu'on me comprenne": {
     default: [
       "écrire la première phrase que je pourrais dire",
       "écrire ce que j'aurais voulu dire",
@@ -164,7 +165,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
       "attendre un moment plus calme avant d'en parler",
     ],
   },
-  "clarifier quelque chose": {
+  "y voir plus clair": {
     default: [
       "écrire les deux côtés de la situation",
       "noter ce qui reste flou pour moi",
@@ -181,7 +182,7 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
       "attendre avant de conclure",
     ],
   },
-  "exprimer ce que j'ai ressenti": {
+  "mettre des mots dessus": {
     default: [
       "écrire ce que j'aurais voulu dire",
       "écrire les premiers mots qui me viennent",
@@ -196,28 +197,6 @@ const ACTION_SUGGESTIONS: Record<string, ActionEntry> = {
       "écrire ça juste pour moi",
       "noter ce que je ressens, simplement",
       "garder ça pour moi le temps d'y voir clair",
-    ],
-  },
-  "prendre du recul": {
-    default: [
-      "laisser passer avant de répondre",
-      "écrire la situation avec un regard extérieur",
-      "noter ce que je ferais autrement",
-    ],
-    "colère": [
-      "laisser passer avant de répondre",
-      "écrire ce qui m'a touché avant d'agir",
-      "choisir de ne pas répondre tout de suite",
-    ],
-    "peur": [
-      "noter ce qui me fait peur là-dedans",
-      "écrire ce qui est sûr, puis ce que je suppose",
-      "attendre avant de décider",
-    ],
-    "tristesse": [
-      "noter ce que j'aurais besoin d'entendre",
-      "me laisser un moment avant de répondre",
-      "écrire ce que je ressens maintenant",
     ],
   },
   "me rapprocher de quelqu'un": {
