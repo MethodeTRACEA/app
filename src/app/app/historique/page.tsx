@@ -199,6 +199,22 @@ export default function HistoriquePage() {
         {/* Reflet compact — n'affiche rien tant qu'il n'y a pas assez de données */}
         <RefletCompact />
 
+        {/* Accès « Tes écrits » — même modèle que le lien reflet */}
+        <Link
+          href="/app/ecrits"
+          className="font-sans"
+          style={{
+            display: "inline-block",
+            marginTop: 16,
+            fontSize: 13,
+            color: "rgba(240,230,214,0.60)",
+            letterSpacing: "0.04em",
+            textDecoration: "none",
+          }}
+        >
+          Voir tes écrits ›
+        </Link>
+
         {/* ── État vide ── */}
         {sessions.length === 0 && (
           <div
