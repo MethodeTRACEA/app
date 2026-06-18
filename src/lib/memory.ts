@@ -739,3 +739,58 @@ export async function getRecurringNeeds(
     return null;
   }
 }
+
+// ===================================================================
+// Levier A — Note de continuité pour le miroir IA (calcul seul, A-1)
+// ===================================================================
+// Seuil strict : un élément doit revenir dans AU MOINS 3 traversées passées.
+const CONTINUITY_MIN_OCCURRENCES = 3;
+
+/**
+ * Détermine s'il y a UNE récurrence fiable à signaler dans le miroir IA.
+ *
+ * Matière utilisée — UNE seule, sobre, sans verbatim ni chiffre :
+ *   - besoins exprimés (session_summaries.expressed_needs).
+ * (Les thèmes ont été retirés : inférence IA souvent vide/peu fiable depuis
+ * le retrait du choix de thème. On ne repose que sur le besoin, choix net.)
+ * Ne lit JAMAIS : émotion, score, progression, total_sessions, inner_truth, themes.
+ *
+ * Règles :
+ *   - seuil ≥ 3 occurrences (présence dans ≥ 3 traversées de la fenêtre récente)
+ *   - renvoie le besoin le plus fréquent, ou null
+ *   - try/catch → null (jamais d'exception)
+ *
+ * Ne branche rien dans le prompt (= patch A-2). N'utilise pas
+ * getMemoryContext / formatMemoryContext (code mort banni : scores/progression).
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getContinuityNote(
+  supabaseClient: any,
+  userId: string
+): Promise<{ type: "besoin"; valeur: string } | null> {
+  try {
+    const { data, error } = await supabaseClient
+      .from("session_summaries")
+      .select("expressed_needs")
+      .eq("user_id", userId)
+      .eq("excluded_from_memory", false)
+      .order("created_at", { ascending: false })
+      .limit(RECURRING_WINDOW);
+
+    if (error || !data) return null;
+
+    const rows = data as { expressed_needs: string[] | null }[];
+
+    // Besoin le plus fréquent (≥ 3 traversées de la fenêtre récente)
+    const besoin = aggregateTopFromArrayField(
+      rows.map((r) => ({ values: r.expressed_needs }))
+    );
+    if (besoin && besoin.count >= CONTINUITY_MIN_OCCURRENCES) {
+      return { type: "besoin", valeur: besoin.value };
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
