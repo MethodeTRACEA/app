@@ -26,7 +26,8 @@ import { StepIndicator } from "@/components/StepIndicator";
 // Route : /app/session
 // Distinct du flow court : comprendre + intégrer, pas réguler.
 // Phases : intro → situation → emotion → besoin →
-//          alignement → action → [aide_ecriture si action 'write'] →
+//          alignement → action →
+//          [aide_ecriture si 'write' | aide_plan si 'world'] →
 //          synthese → complete
 // ════════════════════════════════════════════════════════════
 
@@ -39,6 +40,7 @@ type Phase =
   | "alignement"
   | "action"
   | "aide_ecriture"
+  | "aide_plan"
   | "synthese"
   | "complete";
 
@@ -518,6 +520,10 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   // Écran A (journal, branche 'write'). content jamais envoyé à summarize.
   const [journalText, setJournalText] = useState("");
   const [journalStatus, setJournalStatus] = useState<"kept" | "released" | null>(null);
+  // Écran B (cadrage si-alors, branche 'world'). planWhen → action_traces ;
+  // planObstacle = appui de réflexion, JAMAIS stocké (pas de colonne).
+  const [planWhen, setPlanWhen] = useState("");
+  const [planObstacle, setPlanObstacle] = useState("");
 
   // IA
   const [analysis, setAnalysis] = useState("");
@@ -695,6 +701,40 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   // « Laisser aller » : aucune insertion.
   function handleReleaseJournal() {
     setJournalStatus("released");
+  }
+
+  // ── Écran B (cadrage si-alors) — branche 'world' ─────────────
+  // « C'est posé » : une ligne dans action_traces (plan_when = le "quand",
+  // content = null). L'obstacle (planObstacle) n'est PAS stocké. Même insert
+  // fire-and-forget non bloquant qu'à l'écran A, puis → synthese.
+  function handlePlanPosed() {
+    try {
+      supabase
+        .from("action_traces")
+        .insert({
+          user_id: userId,
+          session_id: sessionId,
+          besoin: besoinLabel,
+          emotion: emotionLabel,
+          action,
+          action_source: actionSource,
+          kind: actionKind ?? "world",
+          plan_when: planWhen.trim() || null,
+          content: null,
+          kept: true,
+        })
+        .then(({ error }) => {
+          if (error) {
+            Sentry.captureException(new Error(error.message), {
+              tags: { feature: "action_traces_insert" },
+            });
+          }
+        });
+    } catch (err) {
+      Sentry.captureException(err, { tags: { feature: "action_traces_insert" } });
+    }
+    setPhase("synthese");
+    generateAnalysis();
   }
 
   // ── Champ texte partagé ──────────────────────────────────────
@@ -1161,8 +1201,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 if (actionKind === "write") {
                   setPhase("aide_ecriture");
                 } else {
-                  setPhase("synthese");
-                  generateAnalysis();
+                  setPhase("aide_plan");
                 }
               }}
             >
@@ -1236,6 +1275,74 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 </PrimaryButton>
               </>
             )}
+
+            <button
+              type="button"
+              onClick={() => router.push("/app")}
+              className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
+            >
+              Quitter
+            </button>
+
+          </div>
+        </div>
+      </ScreenContainer>
+    );
+  }
+
+  // ════════════════════════════════════════════════════════
+  // AIDE À POSER — Écran B : cadrage « si… alors… » (branche 'world')
+  // Pas de StepIndicator ici : la méthode reste 6/6.
+  // ════════════════════════════════════════════════════════
+  if (phase === "aide_plan") {
+    return (
+      <ScreenContainer overlayOpacity={45}>
+        <div className="py-12">
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+
+            <div className="text-center space-y-2">
+              <p className="font-body text-base t-text-secondary">
+                Tu as choisi : <span className="text-t-beige">{action}</span>.
+              </p>
+            </div>
+
+            <div className="w-full space-y-2">
+              <p className="font-inter text-sm t-text-secondary">
+                Si tu le fais, quand est-ce que ce serait ?
+              </p>
+              <textarea
+                value={planWhen}
+                onChange={(e) => setPlanWhen(e.target.value)}
+                className={textareaClass}
+                rows={2}
+              />
+            </div>
+
+            <div className="w-full space-y-2">
+              <p className="font-inter text-sm t-text-secondary">
+                Et si quelque chose pouvait t&apos;en empêcher, qu&apos;est-ce que ce serait ?
+              </p>
+              <textarea
+                value={planObstacle}
+                onChange={(e) => setPlanObstacle(e.target.value)}
+                className={textareaClass}
+                rows={2}
+              />
+            </div>
+
+            <div className="w-full space-y-2.5">
+              <PrimaryButton onClick={handlePlanPosed}>
+                C&apos;est posé
+              </PrimaryButton>
+              <SecondaryButton
+                onClick={() => {
+                  setPhase("synthese");
+                  generateAnalysis();
+                }}
+              >
+                Tu peux passer
+              </SecondaryButton>
+            </div>
 
             <button
               type="button"
