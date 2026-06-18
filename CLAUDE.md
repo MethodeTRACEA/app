@@ -115,7 +115,7 @@ If a patch removes or hides it, FLAG it as a P0 risk in the change report.
 
 Before introducing or modifying any user-facing string, verify against:
 - No effect promises ("calme ton système nerveux", "tu vas te sentir mieux", etc.)
-- No imperatives without choice grammar ("respire", "détends-toi" → use "tu peux ralentir")
+- No imperatives without choice grammar in user-facing in-app strings ("respire", "détends-toi" → "tu peux ralentir"). This rule applies to the app experience only. Marketing and acquisition CTAs (social posts, videos, captions: "enregistre", "clique sur le lien en bio", "abonne-toi", "partage") are EXEMPT. Health-effect promises remain forbidden everywhere, in-app and marketing alike, for DGCCRF/ARS legal reasons.
 - No injunctions to feel ("sens ton corps se détendre" → "vois si tu peux sentir, même peu c'est ok")
 - No therapeutic / coaching / mystical vocabulary
 - No buttons that mislead about what they do
