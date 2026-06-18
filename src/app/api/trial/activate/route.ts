@@ -5,7 +5,7 @@ import { emailTrialStarted } from "@/lib/email";
 // ===================================================================
 // POST /api/trial/activate
 //
-// Active l'essai Premium 7 jours pour l'utilisateur authentifié.
+// Active l'essai Premium 14 jours pour l'utilisateur authentifié.
 // - 1 seul essai par compte (trial_used permanent).
 // - Sans carte bancaire.
 // - Idempotent : un user déjà premium ou déjà en trial actif

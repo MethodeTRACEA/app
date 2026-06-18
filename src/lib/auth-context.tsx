@@ -20,7 +20,7 @@ interface AuthState {
   isSubscribed: boolean;
   /** Bêta testeur activé via mot de passe */
   isBetaTester: boolean;
-  /** Essai Premium 7 jours actif (basé sur trial_ends_at, pas sur le plafond) */
+  /** Essai Premium 14 jours actif (basé sur trial_ends_at, pas sur le plafond) */
   isTrialActive: boolean;
   /** Drapeau brut profiles.trial_used — sert à l'UX (ex. masquer le CTA d'activation) */
   trialUsed: boolean;
@@ -131,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUnsubscribedAt(data?.unsubscribed_at ?? null);
   }, []);
 
-  // Essai Premium 7 jours actif — basé uniquement sur la date.
+  // Essai Premium 14 jours actif — basé uniquement sur la date.
   // Le plafond `trial_deep_sessions_used` est volontairement exclu :
   // il reste enforce côté serveur (`checkAiLimit`), pas ici.
   const isTrialActive =

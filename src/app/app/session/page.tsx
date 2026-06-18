@@ -411,7 +411,7 @@ function SessionPageInner() {
     );
   }
 
-  // Trial Premium 7 jours actif mais cap 5/5 atteint :
+  // Trial Premium 14 jours actif mais cap 5/5 atteint :
   // bloquer en amont pour éviter d'investir 5-8 min puis tomber sur ai_limited
   // côté serveur. Gate local — n'inclut volontairement pas le cap dans
   // hasPremiumAccess global pour ne pas casser les autres pages premium.

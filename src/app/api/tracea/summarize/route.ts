@@ -471,7 +471,7 @@ async function logAiUsage(params: {
 
 // ===================================================================
 // AI LIMIT — mirrors the check in /api/tracea/route.ts
-// Trial Premium 7 jours : autorise jusqu'à CAP_TRIAL_DEEP_SESSIONS traversées approfondies
+// Trial Premium 14 jours : autorise jusqu'à CAP_TRIAL_DEEP_SESSIONS traversées approfondies
 // (cette route N'INCRÉMENTE PAS le compteur — incrément uniquement dans final-analysis)
 // ===================================================================
 
@@ -495,7 +495,7 @@ async function checkAiLimit(userId: string): Promise<boolean> {
       .single();
     if (profile?.is_subscribed === true || profile?.is_beta_tester === true) return false; // subscribed or beta → unlimited
 
-    // Trial Premium 7 jours
+    // Trial Premium 14 jours
     if (profile?.trial_used === true) {
       const endsAt = profile.trial_ends_at
         ? new Date(profile.trial_ends_at as string).getTime()
