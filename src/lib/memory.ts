@@ -765,6 +765,7 @@ export function normalize(s: string): string {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
+    .replace(/[‘’ʼ]/g, "'")
     .replace(/\s+/g, " ")
     .replace(re, "")
     .trim();
