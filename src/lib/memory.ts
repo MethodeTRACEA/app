@@ -777,6 +777,10 @@ export function normalize(s: string): string {
 // Seuil strict : un élément doit revenir dans AU MOINS 3 traversées passées.
 const CONTINUITY_MIN_OCCURRENCES = 3;
 
+// Chips exclus de la note de continuité (déjà accompagnés ailleurs — ex.
+// clôture de sécurité déterministe du chantier 36). Comparaison normalisée.
+const EXCLUDED_CONTINUITY_CHIPS = ["me sentir en sécurité"];
+
 /**
  * Détermine s'il y a UNE récurrence fiable à signaler dans le miroir IA.
  *
@@ -818,20 +822,29 @@ export async function getContinuityNote(
 
     // besoin_raw est SCALAIRE (une valeur par ligne) → comptage direct, PAS
     // aggregateTopFromArrayField (qui attend un tableau et itérerait les chars).
-    const counts: Record<string, { count: number; source: string | null }> = {};
+    // Rows triées created_at desc → la 1re occurrence vue pour une clé est la
+    // plus récente : on garde son besoin_raw VERBATIM (et sa source) comme
+    // représentant du groupe, pour afficher les mots exacts (cédilles, accents).
+    const counts: Record<string, { count: number; source: string | null; verbatim: string }> = {};
     for (const row of rows) {
       if (!row.besoin_raw) continue; // libre = null jusqu'à A-2-0b
       const key = normalize(row.besoin_raw);
       if (!key) continue;
-      if (!counts[key]) counts[key] = { count: 0, source: row.besoin_source };
+      if (!counts[key]) {
+        counts[key] = { count: 0, source: row.besoin_source, verbatim: row.besoin_raw };
+      }
       counts[key].count += 1;
     }
 
     const top = Object.entries(counts).sort(([, a], [, b]) => b.count - a.count)[0];
     if (!top || top[1].count < CONTINUITY_MIN_OCCURRENCES) return null;
 
+    // Exclusion (comparaison normalisée des deux côtés).
+    const excluded = EXCLUDED_CONTINUITY_CHIPS.map((c) => normalize(c));
+    if (excluded.includes(top[0])) return null;
+
     const source = top[1].source === "libre" ? "libre" : "chip";
-    return { type: "besoin", valeur: top[0], source };
+    return { type: "besoin", valeur: top[1].verbatim, source };
   } catch {
     return null;
   }
