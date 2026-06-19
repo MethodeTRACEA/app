@@ -754,12 +754,17 @@ export async function getRecurringNeeds(
 // ===================================================================
 export function normalize(s: string): string {
   // Set de ponctuation explicite (pas de \p{}/flag u : cible es5). Accents
-  // NON inclus → conservés. \s inclus pour absorber espaces en bord de chaîne.
+  // REPLIÉS (NFD + retrait des marques combinantes, même technique que
+  // normalizeAppui). \s inclus pour absorber espaces en bord de chaîne.
+  // Ordre : trim → minuscules → repli accents → compression espaces →
+  // retrait ponctuation de bord → trim.
   const EDGE = "\\s.,;:!?…«»\"'“”‘’()\\[\\]{}<>\\-–—_/\\\\|@#*+=~^`$%&";
   const re = new RegExp("^[" + EDGE + "]+|[" + EDGE + "]+$", "g");
   return s
     .trim()
     .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/\s+/g, " ")
     .replace(re, "")
     .trim();
