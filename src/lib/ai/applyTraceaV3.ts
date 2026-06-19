@@ -181,9 +181,14 @@ function parseIaOutput(text: string): IaParts {
 // ── Sélection de variante ────────────────────────────────────────
 
 const VARIANT_TABLE: Variant[] = ["A", "B", "C", "D", "E"];
+// Sous-ensemble qui CONSERVE le paragraphe d'émotion (A, B, C). Utilisé quand
+// un besoin est tissé dans l'émotion (chantier 38) : D (micro remplace
+// l'émotion) et E (émotion supprimée) feraient disparaître le besoin avec.
+const VARIANT_TABLE_KEEP_EMOTION: Variant[] = ["A", "B", "C"];
 
-function selectVariant(seed: string): Variant {
-  return pickFrom(VARIANT_TABLE, seed + "v3variant");
+function selectVariant(seed: string, keepEmotion = false): Variant {
+  const table = keepEmotion ? VARIANT_TABLE_KEEP_EMOTION : VARIANT_TABLE;
+  return pickFrom(table, seed + "v3variant");
 }
 
 // ── Construction par variante ────────────────────────────────────
@@ -296,7 +301,7 @@ function trimByPriority(
 // FONCTION PRINCIPALE
 // ===================================================================
 
-export function applyTraceaV3(text: string, emotion: string): string {
+export function applyTraceaV3(text: string, emotion: string, keepEmotion: boolean = false): string {
   const e = emotion.toLowerCase().trim() as EmotionKey;
 
   // ── Parse le texte IA ─────────────────────────────────────────
@@ -310,7 +315,7 @@ export function applyTraceaV3(text: string, emotion: string): string {
   const finalValidation = pickFrom(validationOptions, text);
 
   // ── Variante structurelle ─────────────────────────────────────
-  const variant = selectVariant(text + e);
+  const variant = selectVariant(text + e, keepEmotion);
 
   // ── Micro-phrase (variante D uniquement) ──────────────────────
   const microOptions = MICRO_PHRASES[e] ?? null;

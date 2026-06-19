@@ -431,7 +431,14 @@ Règle :
     message.content[0].type === "text" ? message.content[0].text.trim() : "";
 
   // ── Post-traitement V3 ─────────────────────────────────────────
-  const text = applyTraceaV3(rawText, steps.reconnaitre || "");
+  // Besoin tissé dans l'émotion (chantier 38) → restreindre la sélection de
+  // variante à celles qui conservent l'émotion (A/B/C) : sinon D/E feraient
+  // sauter le besoin avec le paragraphe d'émotion (hash-dépendant).
+  const besoinTisse =
+    Boolean(input.emotion?.trim()) &&
+    Boolean(input.besoin?.trim()) &&
+    input.besoin.trim() !== "non précisé";
+  const text = applyTraceaV3(rawText, steps.reconnaitre || "", besoinTisse);
 
   // Chantier 36 : clôture de sécurité déterministe, ajoutée APRÈS applyTraceaV3
   // (jamais dans le prompt). No-op si besoin ≠ « me sentir en sécurité ».
