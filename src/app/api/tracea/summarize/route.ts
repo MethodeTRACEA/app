@@ -7,6 +7,7 @@ import {
   updateMemoryProfile,
   type SessionSummary,
 } from "@/lib/memory";
+import { filterBesoinLibre } from "@/lib/ai/besoinLibreFilter";
 
 // ===================================================================
 // API KEY
@@ -649,9 +650,12 @@ export async function POST(request: NextRequest) {
     // Sauvegarder dans session_summaries
     const excludedFromMemory = hadDoNotStore === true;
 
-    // A-2-0a : capture de la source du besoin. Pour "libre", besoin_raw reste
-    // null (aucun texte libre brut persisté à ce stade — filtre en A-2-0b).
-    const besoinRaw = besoinSource === "chip" ? (steps.conscientiser || null) : null;
+    // A-2-0a/0b : capture de la source du besoin. "chip" → libellé brut.
+    // "libre" → texte filtré (§E/§D/§C) ou null si rejeté. Le texte continue
+    // d'aller à l'IA par ailleurs ; ce filtre ne concerne que la persistance.
+    let besoinRaw: string | null = null;
+    if (besoinSource === "chip") besoinRaw = steps.conscientiser || null;
+    else if (besoinSource === "libre") besoinRaw = filterBesoinLibre(steps.conscientiser || "");
 
     await saveSessionSummary(userId, sessionId, summaryData, excludedFromMemory, besoinRaw, besoinSource);
 
