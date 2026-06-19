@@ -5,6 +5,7 @@ import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { MIRROR_SYSTEM_PROMPT } from "@/lib/ai/traceaMirrorPrompt";
 import { applyTraceaV3 } from "@/lib/ai/applyTraceaV3";
 import { getContinuityNote } from "@/lib/memory";
+import { appendSecurityClosing } from "@/lib/ai/securityClosing";
 
 // ===================================================================
 // API KEY & CLIENTS
@@ -355,7 +356,10 @@ async function handleFinalAnalysis(body: {
   if (aiLimited) {
     console.log("[TRACEA API] final-analysis: AI limited for user:", userId?.slice(0, 8));
     return NextResponse.json({
-      text: "Tu as pris le temps de mettre des mots sur ce qui se passe.\nC'est déjà quelque chose.",
+      text: appendSecurityClosing(
+        "Tu as pris le temps de mettre des mots sur ce qui se passe.\nC'est déjà quelque chose.",
+        steps?.conscientiser
+      ),
       ai_limited: true,
     });
   }
@@ -373,7 +377,7 @@ async function handleFinalAnalysis(body: {
       .join("\n\n");
     const text = applyTraceaV3(rawText, steps.reconnaitre || "");
     console.log("[TRACEA API] TEST_LOCAL — simulation active, aucun appel Anthropic");
-    return NextResponse.json({ text });
+    return NextResponse.json({ text: appendSecurityClosing(text, input.besoin) });
   }
 
   const toneDirective = getToneDirective(steps.reconnaitre || "");
@@ -429,6 +433,10 @@ Règle :
   // ── Post-traitement V3 ─────────────────────────────────────────
   const text = applyTraceaV3(rawText, steps.reconnaitre || "");
 
+  // Chantier 36 : clôture de sécurité déterministe, ajoutée APRÈS applyTraceaV3
+  // (jamais dans le prompt). No-op si besoin ≠ « me sentir en sécurité ».
+  const finalText = appendSecurityClosing(text, input.besoin);
+
   // Logger l'usage (fire-and-forget)
   const analysisUsage = message.usage as unknown as Record<string, number>;
   logAiUsage({
@@ -445,5 +453,5 @@ Règle :
   // que le trial est actif et non plafonné, no-op sinon)
   incrementTrialDeepSessionsUsed(userId).catch(() => {});
 
-  return NextResponse.json({ text });
+  return NextResponse.json({ text: finalText });
 }
