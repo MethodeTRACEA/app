@@ -13,7 +13,7 @@ const SECURITY_NEED = "me sentir en sécurité";
 // VERBATIM — ne pas reformuler.
 const SECURITY_CLOSINGS = [
   "Tu peux poser un appui ici, simplement. Et tu pourras y revenir quand tu veux.",
-  "Tu n'as rien à réussir ici. Tu peux poser un appui — le sol sous tes pieds — et revenir quand tu veux.",
+  "Tu n'as rien à réussir ici. Tu peux poser un appui simple, comme le sol sous tes pieds, et revenir quand tu veux.",
 ];
 
 export function appendSecurityClosing(text: string, besoin: string | undefined): string {
