@@ -430,6 +430,14 @@ Règle :
   const rawText =
     message.content[0].type === "text" ? message.content[0].text.trim() : "";
 
+  // A-2-1-3 : filet de sécurité ⟦CONT⟧. Tout ce qui suit le marqueur est retiré
+  // AVANT applyTraceaV3, pour qu'une note de continuité (activée ultérieurement)
+  // ne puisse jamais atteindre l'écran sans validation. Aujourd'hui aucun bloc
+  // n'insère le marqueur → markerIdx === -1 → no-op (miroir inchangé).
+  const MARKER = "⟦CONT⟧";
+  const markerIdx = rawText.indexOf(MARKER);
+  const mirrorPart = markerIdx === -1 ? rawText : rawText.slice(0, markerIdx).trim();
+
   // ── Post-traitement V3 ─────────────────────────────────────────
   // Besoin tissé dans l'émotion (chantier 38) → restreindre la sélection de
   // variante à celles qui conservent l'émotion (A/B/C) : sinon D/E feraient
@@ -438,7 +446,7 @@ Règle :
     Boolean(input.emotion?.trim()) &&
     Boolean(input.besoin?.trim()) &&
     input.besoin.trim() !== "non précisé";
-  const text = applyTraceaV3(rawText, steps.reconnaitre || "", besoinTisse);
+  const text = applyTraceaV3(mirrorPart, steps.reconnaitre || "", besoinTisse);
 
   // Chantier 36 : clôture de sécurité déterministe, ajoutée APRÈS applyTraceaV3
   // (jamais dans le prompt). No-op si besoin ≠ « me sentir en sécurité ».
