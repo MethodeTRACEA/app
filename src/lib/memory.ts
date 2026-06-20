@@ -805,7 +805,8 @@ const EXCLUDED_CONTINUITY_CHIPS = ["me sentir en sécurité"];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getContinuityNote(
   supabaseClient: any,
-  userId: string
+  userId: string,
+  besoinDuJour: string | undefined
 ): Promise<{ type: "besoin"; valeur: string; source: "chip" | "libre" } | null> {
   try {
     const { data, error } = await supabaseClient
@@ -836,15 +837,20 @@ export async function getContinuityNote(
       counts[key].count += 1;
     }
 
-    const top = Object.entries(counts).sort(([, a], [, b]) => b.count - a.count)[0];
-    if (!top || top[1].count < CONTINUITY_MIN_OCCURRENCES) return null;
-
-    // Exclusion (comparaison normalisée des deux côtés).
+    // (B) La continuité ne se déclenche QUE si le besoin DU JOUR est lui-même
+    // récurrent (≥3 dans la fenêtre). On ne renvoie jamais un autre besoin
+    // récurrent que celui choisi aujourd'hui : la note reste toujours sur le
+    // sujet de la traversée du jour. Conséquence voulue : « me sentir en
+    // sécurité » (exclu, §H) ne peut jamais produire de note, même si un autre
+    // besoin récurre — plus de collision avec la clôture de sécurité.
+    const dayKey = normalize(besoinDuJour || "");
+    if (!dayKey) return null;
     const excluded = EXCLUDED_CONTINUITY_CHIPS.map((c) => normalize(c));
-    if (excluded.includes(top[0])) return null;
-
-    const source = top[1].source === "libre" ? "libre" : "chip";
-    return { type: "besoin", valeur: top[1].verbatim, source };
+    if (excluded.includes(dayKey)) return null;
+    const entry = counts[dayKey];
+    if (!entry || entry.count < CONTINUITY_MIN_OCCURRENCES) return null;
+    const source = entry.source === "libre" ? "libre" : "chip";
+    return { type: "besoin", valeur: entry.verbatim, source };
   } catch {
     return null;
   }

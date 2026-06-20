@@ -388,7 +388,7 @@ async function handleFinalAnalysis(body: {
   // A-2-1 : note de continuité (besoin récurrent). Lue AVANT le userMessage pour
   // pouvoir y insérer le bloc d'instruction. Premium-gatée de fait (cette branche
   // n'est atteinte qu'après checkAiLimit). JAMAIS concaténée à finalText.
-  const note = await getContinuityNote(getSupabaseService(), userId);
+  const note = await getContinuityNote(getSupabaseService(), userId, input.besoin);
   console.log("[A-2-0a-ii] continuity:", JSON.stringify(note));
 
   let continuityBlock = "";
