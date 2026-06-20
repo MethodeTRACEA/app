@@ -54,6 +54,14 @@ export function gateContinuity(
   ) {
     return { pass: false, reason: "progression/fréquence" };
   }
+  // Référence explicite au registre / décompte des sessions de l'app
+  // (« tes traversées passées », « tes sessions », « séances précédentes »…).
+  // La continuité se dit par la constance, pas par le décompte des sessions
+  // (esprit §H). Le juge l'attrapait déjà sémantiquement ; on le verrouille
+  // en déterministe pour ne pas dépendre que de lui.
+  if (/\btraversee/.test(n) || /\bsession/.test(n) || /\bseance/.test(n)) {
+    return { pass: false, reason: "reference au registre des sessions" };
+  }
 
   // c. ANCRAGE (matchForm des deux côtés)
   const mu = matchForm(unit);
