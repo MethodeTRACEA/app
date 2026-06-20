@@ -383,6 +383,41 @@ async function handleFinalAnalysis(body: {
   const toneDirective = getToneDirective(steps.reconnaitre || "");
   const input = buildCleanInput(steps);
 
+  // A-2-1 : note de continuité (besoin récurrent). Lue AVANT le userMessage pour
+  // pouvoir y insérer le bloc d'instruction. Premium-gatée de fait (cette branche
+  // n'est atteinte qu'après checkAiLimit). JAMAIS concaténée à finalText.
+  const note = await getContinuityNote(getSupabaseService(), userId);
+  console.log("[A-2-0a-ii] continuity:", JSON.stringify(note));
+
+  let continuityBlock = "";
+  if (note) {
+    const besoin = note.valeur;
+    const ligneLibre =
+      note.source === "libre"
+        ? `\n« ${besoin} » est formulé avec ses propres mots : reprends-les au plus près, en te contentant de les adresser à la 2e personne, sans les reformuler ni les commenter.`
+        : "";
+    continuityBlock = `Élément de continuité (facultatif).
+
+Un même besoin est revenu dans plusieurs de ses traversées précédentes : « ${besoin} ». C'est un fait déjà établi en amont — tu n'as pas à juger s'il est « assez net », ni à le compter.${ligneLibre}
+
+En plus de ton reflet de la traversée d'aujourd'hui (qui reste inchangé), tu PEUX, si et seulement si cela s'intègre naturellement, reconnaître ce besoin en une seule phrase douce, tout à la fin. Sinon, n'ajoute rien : mieux vaut pas de phrase qu'une phrase forcée.
+
+Si tu l'écris :
+- une seule phrase, une seule récurrence, tout à la fin — jamais en ouverture, toujours après le reflet du jour ;
+- tu t'adresses à elle (« tu ») ; reprends le besoin naturellement à la 2e personne ;
+- un simple constat que ce besoin était déjà présent avant aujourd'hui. Ton à viser (ne pas recopier) : « Ce besoin de poser une limite, il était déjà là avant aujourd'hui. » / « Ce besoin d'y voir plus clair, c'était déjà présent dans tes traversées passées. »
+
+Interdits stricts :
+- aucune interprétation ni explication d'elle : pas de « tu fais toujours », « parce que tu », « ça montre que tu », « tu as tendance à », « tu cherches à ». Un constat de récurrence, rien de plus.
+- aucun chiffre, aucune fréquence (« X fois »), aucune idée de progression (« de mieux en mieux », « de plus en plus », « tu progresses »).
+- aucune promesse d'effet (« ça va t'aider », « ça te fera du bien »).
+- aucun ton lassé ni appuyé (« encore une fois ») : neutre et doux.
+- si le besoin touche à la sécurité ou à quelque chose de lourd : reste strictement factuel, sans aucune hypothèse sur ce qu'elle vit.
+
+Placement : place cette phrase, et elle seule, sur la toute dernière ligne, précédée exactement du marqueur ⟦CONT⟧. N'emploie ce marqueur nulle part ailleurs, et ne mentionne la récurrence nulle part ailleurs dans ta réponse. Si tu choisis de ne rien ajouter, n'écris ni marqueur ni phrase.`;
+  }
+  const continuitySection = continuityBlock ? `\n\n${continuityBlock}` : "";
+
   const userMessage = `Situation :
 ${input.situation}
 
@@ -393,7 +428,7 @@ Besoin :
 ${input.besoin || "non précisé"}
 
 Direction envisagée :
-${input.action}
+${input.action}${continuitySection}
 
 ---
 
@@ -410,12 +445,6 @@ Règle :
 - ne supprime pas la situation
 - ne transforme pas l'intention en action réalisée
 - 4 phrases maximum`;
-
-  // A-2-0a-ii : lecture + LOG SEUL de la note de continuité. Rien n'est injecté
-  // dans le userMessage, rien n'est montré, la réponse est inchangée.
-  // (Injection éventuelle dans le miroir = A-2-1.)
-  const note = await getContinuityNote(getSupabaseService(), userId);
-  console.log("[A-2-0a-ii] continuity:", JSON.stringify(note));
 
   const message = await getAnthropicClient().messages.create({
     model: "claude-sonnet-4-6",
@@ -437,6 +466,10 @@ Règle :
   const MARKER = "⟦CONT⟧";
   const markerIdx = rawText.indexOf(MARKER);
   const mirrorPart = markerIdx === -1 ? rawText : rawText.slice(0, markerIdx).trim();
+  // Unité de continuité parsée (ce qui suit le marqueur) — UNIQUEMENT pour le
+  // log de debug, JAMAIS concaténée à finalText.
+  const continuityUnit =
+    markerIdx === -1 ? null : rawText.slice(markerIdx + MARKER.length).trim() || null;
 
   // ── Post-traitement V3 ─────────────────────────────────────────
   // Besoin tissé dans l'émotion (chantier 38) → restreindre la sélection de
@@ -463,6 +496,25 @@ Règle :
     cacheCreationTokens: analysisUsage.cache_creation_input_tokens || 0,
     cacheReadTokens: analysisUsage.cache_read_input_tokens || 0,
   }).catch(() => {});
+
+  // A-2-1 : debug fire-and-forget (table temporaire continuity_debug). Non
+  // bloquant, erreurs silencieuses. La note n'est JAMAIS ajoutée à finalText.
+  (async () => {
+    try {
+      await getSupabaseService().from("continuity_debug").insert({
+        user_id: userId,
+        note_json: JSON.stringify({
+          besoin: note?.valeur ?? null,
+          source: note?.source ?? null,
+          blocInsere: continuityBlock !== "",
+          marqueurPresent: markerIdx !== -1,
+          uniteParsee: continuityUnit,
+        }),
+      });
+    } catch {
+      // debug-only : on n'altère jamais le flux miroir
+    }
+  })();
 
   // Incrémenter le compteur trial (fire-and-forget — la RPC vérifie elle-même
   // que le trial est actif et non plafonné, no-op sinon)
