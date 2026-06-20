@@ -748,9 +748,10 @@ export async function getRecurringNeeds(
 }
 
 // ===================================================================
-// Normalisation canonique (accents CONSERVÉS).
-// trim + minuscules + espaces internes réduits à un + ponctuation
-// début/fin retirée. Resservira en A-2-0b et A-2-2.
+// Normalisation canonique (accents REPLIÉS).
+// trim + minuscules + repli des accents (NFD) + apostrophes courbes → droites
+// + espaces internes réduits à un + ponctuation début/fin retirée.
+// Sert au comptage de récurrence, aux lexiques et à l'ancrage du gate.
 // ===================================================================
 export function normalize(s: string): string {
   // Set de ponctuation explicite (pas de \p{}/flag u : cible es5). Accents

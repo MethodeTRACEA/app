@@ -389,7 +389,6 @@ async function handleFinalAnalysis(body: {
   // pouvoir y insérer le bloc d'instruction. Premium-gatée de fait (cette branche
   // n'est atteinte qu'après checkAiLimit). JAMAIS concaténée à finalText.
   const note = await getContinuityNote(getSupabaseService(), userId, input.besoin);
-  console.log("[A-2-0a-ii] continuity:", JSON.stringify(note));
 
   let continuityBlock = "";
   if (note) {
@@ -532,29 +531,6 @@ Règle :
     cacheCreationTokens: analysisUsage.cache_creation_input_tokens || 0,
     cacheReadTokens: analysisUsage.cache_read_input_tokens || 0,
   }).catch(() => {});
-
-  // A-2-1 : debug fire-and-forget (table temporaire continuity_debug). Non
-  // bloquant, erreurs silencieuses. La note n'est JAMAIS ajoutée à finalText.
-  (async () => {
-    try {
-      await getSupabaseService().from("continuity_debug").insert({
-        user_id: userId,
-        note_json: JSON.stringify({
-          besoin: note?.valeur ?? null,
-          source: note?.source ?? null,
-          blocInsere: continuityBlock !== "",
-          marqueurPresent: markerIdx !== -1,
-          uniteParsee: continuityUnit,
-          gatePass: gateVerdict?.pass ?? null,
-          gateReason: gateVerdict?.reason ?? null,
-          judgePass: judgeVerdict?.pass ?? null,
-          judgeReason: judgeVerdict?.reason ?? null,
-        }),
-      });
-    } catch {
-      // debug-only : on n'altère jamais le flux miroir
-    }
-  })();
 
   // Incrémenter le compteur trial (fire-and-forget — la RPC vérifie elle-même
   // que le trial est actif et non plafonné, no-op sinon)
