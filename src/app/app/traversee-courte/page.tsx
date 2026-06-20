@@ -283,6 +283,33 @@ function TraverseeCourteV2() {
     }
   }
 
+  // ── Soft-limit : offre de compte gratuit en sortie de courte ──
+  // Geste doux, jamais bloquant. Une seule fois par appareil, et JAMAIS pour
+  // une utilisatrice déjà connectée. La courte n'est JAMAIS persistée (ni
+  // localStorage ni serveur, cf. investigation) : la copie ne promet donc
+  // aucune sauvegarde de traversée, juste un espace perso optionnel.
+  function markSoftLimitSeen() {
+    try {
+      localStorage.setItem("tracea_soft_limit_seen", "true");
+    } catch {}
+  }
+
+  // Sortie de fin de courte : intercale l'offre de compte (soft-limit) une
+  // seule fois pour une visiteuse non connectée ; sinon sortie habituelle.
+  function exitShortFlow() {
+    if (!user) {
+      let seen = false;
+      try {
+        seen = localStorage.getItem("tracea_soft_limit_seen") === "true";
+      } catch {}
+      if (!seen) {
+        setScreen("soft-limit");
+        return;
+      }
+    }
+    setScreen("exit-transition");
+  }
+
   // ── Helpers ──
   // ── Transition animation (onboarding → entree) ──
   useEffect(() => {
@@ -916,7 +943,7 @@ function TraverseeCourteV2() {
               Tu peux revenir ici à chaque fois.
             </p>
             <InstallPrompt />
-            <PrimaryButton onClick={() => setScreen("exit-transition")}>
+            <PrimaryButton onClick={exitShortFlow}>
               Retour à l&apos;accueil
             </PrimaryButton>
             <div className="text-center space-y-1.5">
@@ -942,13 +969,13 @@ function TraverseeCourteV2() {
               Tu peux créer un compte gratuit
             </p>
             <p className="font-sans text-sm" style={{ color: "rgba(240,230,214,0.55)", lineHeight: 1.6 }}>
-              Tu pourras retrouver tes traversées plus facilement.
+              Si tu veux, tu peux garder un espace à toi, pour revenir quand tu en as besoin.
             </p>
             <div className="flex flex-col gap-3 w-full max-w-xs">
-              <PrimaryButton onClick={() => router.push("/app/connexion")}>
+              <PrimaryButton onClick={() => { markSoftLimitSeen(); router.push("/app/connexion"); }}>
                 Créer un compte gratuit
               </PrimaryButton>
-              <SecondaryButton onClick={() => setScreen("exit-transition")}>
+              <SecondaryButton onClick={() => { markSoftLimitSeen(); setScreen("exit-transition"); }}>
                 Continuer librement
               </SecondaryButton>
             </div>
