@@ -114,22 +114,6 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
             />
           </div>
 
-          {/* Badge */}
-          <div
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-5 md:mb-12"
-            style={{
-              background: "rgba(111,106,100,0.16)",
-              border: "1px solid rgba(240,230,214,0.12)",
-            }}
-          >
-            <span
-              className="text-[13px] tracking-wide"
-              style={{ color: "rgba(240,230,214,0.62)" }}
-            >
-              Essai gratuit 14 jours · sans carte bancaire
-            </span>
-          </div>
-
           {/* Titre */}
           <h1 className="text-[30px] md:text-[40px] leading-[1.25] tracking-tight mb-4 md:mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Quand ça te submerge,
@@ -166,7 +150,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
               Pens&eacute;es en boucle.
             </p>
 
-            {/* Phrase centrale */}
+            {/* Promesse */}
             <p
               style={{
                 fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
@@ -178,10 +162,10 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
                 margin: 0,
               }}
             >
-              TRAC&Eacute;A te donne un point d&apos;appui.
+              TRACÉA te donne quelque chose à faire avec ton corps — tout de suite, sans avoir à comprendre pourquoi.
             </p>
 
-            {/* Promesse */}
+            {/* Sous-ligne promesse */}
             <p
               style={{
                 fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
@@ -192,22 +176,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
                 margin: 0,
               }}
             >
-              En quelques minutes.
-            </p>
-
-            {/* Différenciateur */}
-            <p
-              style={{
-                fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
-                fontSize: "clamp(0.98rem, 3.8vw, 1.08rem)",
-                lineHeight: 1.55,
-                fontWeight: 300,
-                color: "rgba(240,230,214,0.46)",
-                margin: 0,
-              }}
-            >
-              Sans r&eacute;fl&eacute;chir &agrave; l&apos;infini.<br />
-              Sans tourner en boucle.
+              Et sans te dire que tu es le problème.
             </p>
           </div>
 
@@ -243,7 +212,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
 
           {/* Micro-texte */}
           <p className="text-[13px] mt-5 md:mt-8 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            14 jours gratuits · puis 5,99€/mois · sans engagement
+            Gratuit. Sans compte pour commencer.
           </p>
         </div>
       </section>
@@ -317,7 +286,101 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          FONCTIONNEMENT — 6 étapes T·R·A·C·E·A
+          CONCRÈTEMENT (ex-Impact)
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 pt-14 pb-6 md:pt-18 md:pb-6" style={{ zIndex: 1 }}>
+        <div
+          style={{
+            maxWidth: 640,
+            margin: "0 auto",
+            background: "rgba(111,106,100,0.18)",
+            border: "1px solid rgba(240,230,214,0.10)",
+            borderRadius: 24,
+            padding: "32px 28px",
+            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
+        >
+          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-6 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+            Concrètement, dans le moment
+          </h2>
+
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            {[
+              "Tu pars du corps, pas de la tête.",
+              "Tu as un geste concret à faire, là, maintenant.",
+              "Utilisable même quand tu n'arrives plus à réfléchir.",
+              "En deux minutes, sans rien installer.",
+            ].map((text, i) => (
+              <div
+                key={i}
+                style={{
+                  minHeight: 72,
+                  padding: "14px 12px",
+                  borderRadius: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "rgba(26,18,13,0.35)",
+                  border: "1px solid rgba(240,230,214,0.07)",
+                }}
+              >
+                <p style={{ fontSize: 14, color: "rgba(240,230,214,0.72)", lineHeight: 1.35, textAlign: "center", margin: 0 }}>{text}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-sm font-medium" style={{ color: "#D99A84", fontStyle: "italic" }}>
+            C&apos;est d&eacute;j&agrave; suffisant.
+          </p>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          CAS D'USAGE
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+          <div
+            style={{
+              background: "rgba(111,106,100,0.18)",
+              border: "1px solid rgba(240,230,214,0.10)",
+              borderRadius: 24,
+              padding: "32px 28px",
+              boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+            }}
+          >
+            <h2 className="text-[22px] md:text-[28px] tracking-tight mb-8 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+              Utilise TRAC&Eacute;A quand &ccedil;a monte
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                "après un message qui te déclenche",
+                "quand ton corps est trop tendu",
+                "quand ça tourne sans arrêt",
+                "quand tu sens que tu vas exploser",
+                "quand tu es saturée",
+                "avant une discussion difficile",
+              ].map((text, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "14px 18px",
+                    borderRadius: 16,
+                    background: "rgba(26,18,13,0.35)",
+                    border: "1px solid rgba(240,230,214,0.07)",
+                  }}
+                >
+                  <p style={{ fontSize: 14, color: "rgba(240,230,214,0.65)", lineHeight: 1.55 }}>{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          MÉTHODE — 6 étapes T·R·A·C·E·A (descendue après Cas d'usage)
       ════════════════════════════════════════════════════════════ */}
       <section id="fonctionnement" className="relative px-6 py-14 md:py-18 scroll-mt-8" style={{ zIndex: 1 }}>
         <div
@@ -332,11 +395,11 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
           }}
         >
           <h2 className="text-[24px] md:text-[30px] tracking-tight mb-6 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
-            La m&eacute;thode T&middot;R&middot;A&middot;C&middot;E&middot;A en 2 minutes
+            Sous l&apos;appui, une vraie structure.
           </h2>
 
           <p className="text-base text-center mb-8" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
-            6 &eacute;tapes. Dans l&apos;ordre. Pour ne pas &ecirc;tre emport&eacute;e.
+            Ce n&apos;est pas au hasard : 6 étapes, dans l&apos;ordre, pour ne pas être emportée.
           </p>
 
           <div className="flex flex-col gap-5 mb-8">
@@ -407,104 +470,6 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          CAS D'USAGE
-      ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
-        <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          <div
-            style={{
-              background: "rgba(111,106,100,0.18)",
-              border: "1px solid rgba(240,230,214,0.10)",
-              borderRadius: 24,
-              padding: "32px 28px",
-              boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
-            }}
-          >
-            <h2 className="text-[22px] md:text-[28px] tracking-tight mb-8 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
-              Utilise TRAC&Eacute;A quand &ccedil;a monte
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[
-                "après un message qui te déclenche",
-                "quand ton corps est trop tendu",
-                "quand ça tourne sans arrêt",
-                "quand tu sens que tu vas exploser",
-                "quand tu es saturée",
-                "avant une discussion difficile",
-              ].map((text, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: "14px 18px",
-                    borderRadius: 16,
-                    background: "rgba(26,18,13,0.35)",
-                    border: "1px solid rgba(240,230,214,0.07)",
-                  }}
-                >
-                  <p style={{ fontSize: 14, color: "rgba(240,230,214,0.65)", lineHeight: 1.55 }}>{text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════
-          IMPACT
-      ════════════════════════════════════════════════════════════ */}
-      <section className="relative px-6 pt-14 pb-6 md:pt-18 md:pb-6" style={{ zIndex: 1 }}>
-        <div
-          style={{
-            maxWidth: 640,
-            margin: "0 auto",
-            background: "rgba(111,106,100,0.18)",
-            border: "1px solid rgba(240,230,214,0.10)",
-            borderRadius: 24,
-            padding: "32px 28px",
-            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
-          }}
-        >
-          <h2 className="text-[24px] md:text-[30px] tracking-tight mb-6 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
-            En quelques minutes
-          </h2>
-
-          <p className="text-base text-center mb-6" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
-            Ce que certains remarquent&nbsp;:
-          </p>
-
-          <div className="grid grid-cols-2 gap-3 mb-8">
-            {[
-              "Quelque chose relâche, parfois.",
-              "La respiration change un peu.",
-              "Un peu de clarté, peut-être.",
-              "Un geste devient possible.",
-            ].map((text, i) => (
-              <div
-                key={i}
-                style={{
-                  minHeight: 72,
-                  padding: "14px 12px",
-                  borderRadius: 16,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "rgba(26,18,13,0.35)",
-                  border: "1px solid rgba(240,230,214,0.07)",
-                }}
-              >
-                <p style={{ fontSize: 14, color: "rgba(240,230,214,0.72)", lineHeight: 1.35, textAlign: "center", margin: 0 }}>{text}</p>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-sm font-medium" style={{ color: "#D99A84", fontStyle: "italic" }}>
-            C&apos;est d&eacute;j&agrave; suffisant.
-          </p>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════
           PRICING
       ════════════════════════════════════════════════════════════ */}
       <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
@@ -524,34 +489,12 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
             Pour commencer
           </h2>
 
-          <div className="flex flex-col gap-3 mb-8">
-            <p style={{ color: "#F0E6D6", fontWeight: 500, fontSize: "1.05rem", lineHeight: 1.5, margin: 0 }}>
-              Essai gratuit 14 jours
+          <div className="flex flex-col gap-4 mb-8">
+            <p style={{ color: "#F0E6D6", fontWeight: 500, fontSize: "1.02rem", lineHeight: 1.55, margin: 0 }}>
+              Le cœur de TRACÉA est gratuit : l&apos;urgence et la traversée courte, sans compte, autant de fois que tu veux.
             </p>
-            <p style={{ color: "rgba(240,230,214,0.66)", fontWeight: 300, fontSize: "0.98rem", lineHeight: 1.5, margin: 0 }}>
-              5 travers&eacute;es approfondies incluses
-            </p>
-            <p style={{ color: "rgba(240,230,214,0.66)", fontWeight: 300, fontSize: "0.98rem", lineHeight: 1.5, margin: 0 }}>
-              Sans carte bancaire
-            </p>
-          </div>
-
-          <div
-            aria-hidden="true"
-            style={{
-              height: 1,
-              background: "rgba(240,230,214,0.10)",
-              margin: "0 auto 24px",
-              maxWidth: 200,
-            }}
-          />
-
-          <div className="flex flex-col gap-2 mb-8">
-            <p style={{ color: "#F0E6D6", fontWeight: 500, fontSize: "1.05rem", lineHeight: 1.5, margin: 0 }}>
-              5,99€ / mois. Sans engagement. Prix de lancement.
-            </p>
-            <p style={{ color: "rgba(240,230,214,0.55)", fontWeight: 300, fontSize: "0.92rem", lineHeight: 1.5, margin: 0 }}>
-              R&eacute;siliable &agrave; tout moment.
+            <p style={{ color: "rgba(240,230,214,0.62)", fontWeight: 300, fontSize: "0.95rem", lineHeight: 1.6, margin: 0 }}>
+              Pour aller plus loin (la traversée approfondie, et de quoi t&apos;y retrouver dans le temps) : essai gratuit 14 jours (5 traversées approfondies incluses), sans carte bancaire, puis 5,99€/mois — prix de lancement, sans engagement.
             </p>
           </div>
 
@@ -674,7 +617,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
           </Link>
 
           <p className="text-[13px] tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            14 jours gratuits · sans carte bancaire
+            Gratuit. Sans compte.
           </p>
         </div>
       </section>
