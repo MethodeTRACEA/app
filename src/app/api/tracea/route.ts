@@ -6,6 +6,7 @@ import { MIRROR_SYSTEM_PROMPT } from "@/lib/ai/traceaMirrorPrompt";
 import { applyTraceaV3 } from "@/lib/ai/applyTraceaV3";
 import { getContinuityNote } from "@/lib/memory";
 import { appendSecurityClosing } from "@/lib/ai/securityClosing";
+import { gateContinuity } from "@/lib/ai/continuityGate";
 
 // ===================================================================
 // API KEY & CLIENTS
@@ -470,6 +471,10 @@ Règle :
   // log de debug, JAMAIS concaténée à finalText.
   const continuityUnit =
     markerIdx === -1 ? null : rawText.slice(markerIdx + MARKER.length).trim() || null;
+  // A-2-2 : verdict du gate sur la phrase produite par l'IA. LOG SEUL pour
+  // l'instant — la note reste OFF (gater l'affichage = A-2-4).
+  const gateVerdict =
+    continuityUnit && note ? gateContinuity(continuityUnit, note.valeur, note.source) : null;
 
   // ── Post-traitement V3 ─────────────────────────────────────────
   // Besoin tissé dans l'émotion (chantier 38) → restreindre la sélection de
@@ -509,6 +514,8 @@ Règle :
           blocInsere: continuityBlock !== "",
           marqueurPresent: markerIdx !== -1,
           uniteParsee: continuityUnit,
+          gatePass: gateVerdict?.pass ?? null,
+          gateReason: gateVerdict?.reason ?? null,
         }),
       });
     } catch {
