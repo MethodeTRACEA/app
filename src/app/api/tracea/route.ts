@@ -534,6 +534,7 @@ Règle :
           blocInsere: continuityBlock !== "",
           marqueurPresent: markerIdx !== -1,
           uniteParsee: continuityUnit,
+          corps: mirrorPart,
           gatePass: gateVerdict?.pass ?? null,
           gateReason: gateVerdict?.reason ?? null,
           judgePass: judgeVerdict?.pass ?? null,
