@@ -495,9 +495,20 @@ Règle :
     input.besoin.trim() !== "non précisé";
   const text = applyTraceaV3(mirrorPart, steps.reconnaitre || "", besoinTisse);
 
+  // A-2-4 : réinjection de la note de continuité VALIDÉE (gate + juge PASS).
+  // Verbatim, jamais repassée dans applyTraceaV3 (format validé non muté),
+  // en dernier paragraphe = après le reflet du jour. Fail-closed : tout
+  // verdict KO / note null → pas de réinjection = miroir du jour seul.
+  // Depuis le fix (B), une note non-nulle est toujours alignée sur le besoin
+  // du jour, et « me sentir en sécurité » n'en produit jamais.
+  const continuityValidated =
+    gateVerdict?.pass === true && judgeVerdict?.pass === true;
+  const textWithContinuity =
+    continuityValidated && continuityUnit ? `${text}\n\n${continuityUnit}` : text;
+
   // Chantier 36 : clôture de sécurité déterministe, ajoutée APRÈS applyTraceaV3
   // (jamais dans le prompt). No-op si besoin ≠ « me sentir en sécurité ».
-  const finalText = appendSecurityClosing(text, input.besoin);
+  const finalText = appendSecurityClosing(textWithContinuity, input.besoin);
 
   // Logger l'usage (fire-and-forget)
   const analysisUsage = message.usage as unknown as Record<string, number>;
