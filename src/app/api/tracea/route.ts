@@ -7,6 +7,7 @@ import { applyTraceaV3 } from "@/lib/ai/applyTraceaV3";
 import { getContinuityNote } from "@/lib/memory";
 import { appendSecurityClosing } from "@/lib/ai/securityClosing";
 import { gateContinuity } from "@/lib/ai/continuityGate";
+import { judgeContinuity } from "@/lib/ai/continuityJudge";
 
 // ===================================================================
 // API KEY & CLIENTS
@@ -475,6 +476,14 @@ Règle :
   // l'instant — la note reste OFF (gater l'affichage = A-2-4).
   const gateVerdict =
     continuityUnit && note ? gateContinuity(continuityUnit, note.valeur, note.source) : null;
+  // A-2-3 : juge LLM en CASCADE — ne tourne que si le gate déterministe a laissé
+  // passer (contrôle du coût). judgeContinuity est fail-closed en interne
+  // (try/catch → {pass:false}) : aucun throw n'en sort, le miroir n'est jamais
+  // mis en danger. LOG SEUL — l'affichage reste OFF (= A-2-4).
+  let judgeVerdict: { pass: boolean; reason: string } | null = null;
+  if (gateVerdict?.pass === true && continuityUnit && note) {
+    judgeVerdict = await judgeContinuity(getAnthropicClient(), continuityUnit, note.valeur, note.source);
+  }
 
   // ── Post-traitement V3 ─────────────────────────────────────────
   // Besoin tissé dans l'émotion (chantier 38) → restreindre la sélection de
@@ -516,6 +525,8 @@ Règle :
           uniteParsee: continuityUnit,
           gatePass: gateVerdict?.pass ?? null,
           gateReason: gateVerdict?.reason ?? null,
+          judgePass: judgeVerdict?.pass ?? null,
+          judgeReason: judgeVerdict?.reason ?? null,
         }),
       });
     } catch {
