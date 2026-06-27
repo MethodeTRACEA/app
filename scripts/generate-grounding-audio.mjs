@@ -1,7 +1,7 @@
 /**
  * generate-grounding-audio.mjs
  *
- * Même architecture que generate-gaze-segments.mjs :
+ * Architecture : une génération vocale unique, puis découpage local en segments :
  * 1. UNE seule génération ElevenLabs via /with-timestamps
  * 2. Détection des fins de phrases dans l'alignement
  * 3. Parseur MP3 pur Node — découpe aux frontières de frames

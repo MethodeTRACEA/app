@@ -19,17 +19,15 @@ const PHASE_SEQUENCE: Phase[] = ["pre", "scan", "stable", "rest", "notice", "clo
 
 const SEGMENTS: Record<Phase, {
   text: { main: string[]; sub?: string[] };
-  src: string;
-  pauseMs: number;
   fallbackMs: number;
 }> = {
   pre: {
     text: { main: ["Tu peux lever les yeux de l'écran."] },
-    src: "/audio/gaze/gaze_1.mp3", pauseMs: 2500, fallbackMs: 5000,
+    fallbackMs: 5000,
   },
   scan: {
     text: { main: ["Laisse ton regard se déplacer lentement dans la pièce."], sub: ["Sans chercher quelque chose de précis."] },
-    src: "/audio/gaze/gaze_2.mp3", pauseMs: 4000, fallbackMs: 8000,
+    fallbackMs: 8000,
   },
   stable: {
     text: {
@@ -39,21 +37,46 @@ const SEGMENTS: Record<Phase, {
       ],
       sub: ["Un meuble. Une surface. Un coin de mur."],
     },
-    src: "/audio/gaze/gaze_3.mp3", pauseMs: 5000, fallbackMs: 10000,
+    fallbackMs: 10000,
   },
   rest: {
     text: { main: ["Tu peux rester là, avec ce point fixe."], sub: ["Juste voir, sans analyser."] },
-    src: "/audio/gaze/gaze_4.mp3", pauseMs: 5000, fallbackMs: 10000,
+    fallbackMs: 10000,
   },
   notice: {
     text: { main: ["Vois si tu remarques une couleur ou une forme simple."], sub: ["Tu n'as rien à faire de plus que ça."] },
-    src: "/audio/gaze/gaze_5.mp3", pauseMs: 4000, fallbackMs: 8000,
+    fallbackMs: 8000,
   },
   close: {
     text: { main: ["C'est suffisant pour maintenant."] },
-    src: "/audio/gaze/gaze_6.mp3", pauseMs: 0, fallbackMs: 0,
+    fallbackMs: 0,
   },
 };
+
+// ── Audio continu ──────────────────────────────────────────
+// Un seul enregistrement (gaze_voice.mp3, ~39,1 s) lit les 6 phases
+// verbatim. Le texte affiché change aux timecodes de la voix, pilotés
+// par l'événement 'timeupdate' (aucun setTimeout en mode voix).
+const GAZE_VOICE_SRC = "/audio/gaze/gaze_voice.mp3";
+
+// Timecodes de DÉBUT de voix par phase, mesurés sur gaze_voice.mp3 via
+// ffmpeg silencedetect=noise=-33dB:d=0.5 (durée totale 39,13 s).
+const PHASE_VOICE_START: Record<Phase, number> = {
+  pre:    0,
+  scan:   2.95,
+  stable: 10.29,
+  rest:   19.90,
+  notice: 27.75,
+  close:  37.27,
+};
+
+// Le texte d'une phase apparaît ~0,3 s avant le début de sa voix,
+// sans jamais revenir en arrière. (PHASE_SEQUENCE est déclaré plus haut.)
+const VOICE_LEAD = 0.3;
+const PHASE_DISPLAY_AT = PHASE_SEQUENCE.reduce((acc, p) => {
+  acc[p] = Math.max(0, PHASE_VOICE_START[p] - VOICE_LEAD);
+  return acc;
+}, {} as Record<Phase, number>);
 
 // Halo lumineux horizontal — s'élargit puis se dissipe au fil des phases.
 // Soutient le script sans devenir hypnotique.
@@ -90,17 +113,25 @@ function usePrefersReducedMotion(): boolean {
 export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
   const [phase, setPhase] = useState<Phase>("pre");
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(initVoice);
+  const [voiceUnavailable, setVoiceUnavailable] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
 
   const audioRef   = useRef<HTMLAudioElement | null>(null);
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
+  // Phase courante lisible dans l'effet voix sans le remettre en dépendance
+  // (évite de relancer l'audio à chaque changement de phase).
+  const phaseRef   = useRef<Phase>(phase);
+  phaseRef.current = phase;
 
   function handleVoiceToggle() {
     setVoiceEnabled((v) => {
       const next = !v;
       try { localStorage.setItem("tracea_gaze_voice", next ? "on" : "off"); } catch {}
-      if (!next && audioRef.current) {
+      if (next) {
+        // Geste utilisateur : l'autoplay est débloqué, on retente la voix.
+        setVoiceUnavailable(false);
+      } else if (audioRef.current) {
         audioRef.current.pause();
       }
       return next;
@@ -111,7 +142,13 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
   function handleSkip() {
     const idx = PHASE_SEQUENCE.indexOf(phase);
     const next = PHASE_SEQUENCE[idx + 1];
-    if (next) setPhase(next);
+    if (!next) return;
+    setPhase(next);
+    // En mode voix, on cale la lecture sur le début de la phase visée
+    // pour que la voix reste synchrone.
+    if (voiceEnabled && !voiceUnavailable && audioRef.current) {
+      try { audioRef.current.currentTime = PHASE_VOICE_START[next]; } catch {}
+    }
   }
 
   // ── Nettoyage au démontage ──────────────────────────────
@@ -122,90 +159,97 @@ export function GazeGuide({ onComplete, onCancel }: GazeGuideProps) {
       if (timerRef.current) clearTimeout(timerRef.current);
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.onended = null;
-        audioRef.current.onerror = null;
-        audioRef.current.src    = "";
+        audioRef.current.ontimeupdate     = null;
+        audioRef.current.onended          = null;
+        audioRef.current.onerror          = null;
+        audioRef.current.onloadedmetadata = null;
+        audioRef.current.src              = "";
       }
     };
   }, []);
 
-  // ── Lecture séquentielle ────────────────────────────────
+  // ── Mode voix : un seul fichier continu, phases pilotées par le temps ──
   useEffect(() => {
-    const seg = SEGMENTS[phase];
-    const idx = PHASE_SEQUENCE.indexOf(phase);
-    const nextPhase = PHASE_SEQUENCE[idx + 1] ?? null;
+    if (!voiceEnabled || voiceUnavailable) return;
 
-    function advance() {
-      if (!mountedRef.current || !nextPhase) return;
-      setPhase(nextPhase);
-    }
-
-    function scheduleAdvance(delay: number) {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(advance, delay);
-    }
-
-    // Phase close : on joue éventuellement l'audio mais on n'avance pas.
-    // L'utilisateur sort en cliquant « C'est noté ».
-    if (phase === "close") {
-      if (voiceEnabled) {
-        if (!audioRef.current) audioRef.current = new Audio();
-        const audio = audioRef.current;
-        audio.pause();
-        audio.onended = null;
-        audio.onerror = null;
-        audio.src    = seg.src;
-        audio.volume = 1.0;
-        audio.play().catch(() => {});
-      }
-      return () => {
-        if (audioRef.current) {
-          audioRef.current.onended = null;
-          audioRef.current.onerror = null;
-        }
-      };
-    }
-
-    // Mode "Sans voix" — la consigne reste affichée, avancement par timer
-    if (!voiceEnabled) {
-      scheduleAdvance(seg.fallbackMs);
-      return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-    }
-
-    // Mode "Avec voix"
     if (!audioRef.current) audioRef.current = new Audio();
     const audio = audioRef.current;
 
     audio.pause();
-    audio.onended = null;
-    audio.onerror = null;
-    audio.src    = seg.src;
+    audio.ontimeupdate     = null;
+    audio.onended          = null;
+    audio.onerror          = null;
+    audio.onloadedmetadata = null;
+    audio.src    = GAZE_VOICE_SRC;
     audio.volume = 1.0;
 
-    audio.onended = () => {
-      // À la fin de l'audio, courte pause puis avance.
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(advance, seg.pauseMs);
+    // Reprise éventuelle en cours d'exercice (toggle voix rallumé) :
+    // on cale la lecture sur le début de la phase courante.
+    const startAt = PHASE_VOICE_START[phaseRef.current];
+    if (startAt > 0) {
+      if (audio.readyState >= 1) {
+        try { audio.currentTime = startAt; } catch {}
+      } else {
+        audio.onloadedmetadata = () => { try { audio.currentTime = startAt; } catch {} };
+      }
+    }
+
+    // Avance forward-only : on affiche la dernière phase dont le seuil
+    // d'affichage est atteint, jamais une phase antérieure.
+    audio.ontimeupdate = () => {
+      const t = audio.currentTime;
+      let target: Phase = PHASE_SEQUENCE[0];
+      for (const p of PHASE_SEQUENCE) {
+        if (t >= PHASE_DISPLAY_AT[p]) target = p;
+        else break;
+      }
+      setPhase((cur) =>
+        PHASE_SEQUENCE.indexOf(target) > PHASE_SEQUENCE.indexOf(cur) ? target : cur
+      );
     };
+
+    // Fin de l'audio : on reste sur 'close' (bouton de sortie déjà affiché).
+    audio.onended = () => {
+      if (mountedRef.current) setPhase("close");
+    };
+
+    // Erreur de chargement : bascule sur le mode sans voix (timer fallback).
     audio.onerror = () => {
-      // Échec de chargement audio — on laisse le texte et on avance via timer.
-      scheduleAdvance(seg.fallbackMs);
+      if (mountedRef.current) setVoiceUnavailable(true);
     };
 
     audio.play().catch(() => {
-      // Autoplay bloqué ou erreur de lecture : la consigne reste lisible,
-      // on avance proprement via timer (durée fallback du segment).
-      scheduleAdvance(seg.fallbackMs);
+      // Autoplay bloqué : le texte reste lisible, on retombe sur le timer.
+      if (mountedRef.current) setVoiceUnavailable(true);
     });
 
     return () => {
       if (audioRef.current) {
-        audioRef.current.onended = null;
-        audioRef.current.onerror = null;
+        audioRef.current.ontimeupdate     = null;
+        audioRef.current.onended          = null;
+        audioRef.current.onerror          = null;
+        audioRef.current.onloadedmetadata = null;
       }
-      if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [phase, voiceEnabled]);
+  }, [voiceEnabled, voiceUnavailable]);
+
+  // ── Mode sans voix (ou voix indisponible) : avancement par timer ──
+  useEffect(() => {
+    if (voiceEnabled && !voiceUnavailable) return;   // le mode voix se gère seul
+    if (phase === "close") return;                   // dernière phase : sortie manuelle
+
+    const seg = SEGMENTS[phase];
+    const idx = PHASE_SEQUENCE.indexOf(phase);
+    const nextPhase = PHASE_SEQUENCE[idx + 1] ?? null;
+    if (!nextPhase) return;
+
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      if (mountedRef.current) setPhase(nextPhase);
+    }, seg.fallbackMs);
+
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [phase, voiceEnabled, voiceUnavailable]);
 
   // Empêcher la mise en veille de l'écran pendant l'exercice.
   // Le wake lock est libéré au démontage et réacquis si la page redevient
