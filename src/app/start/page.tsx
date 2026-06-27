@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Commencer | TRACÉA",
+  title: "Commencer avec TRACÉA, gratuit en 2 minutes",
   description:
-    "Commence ta traversee emotionnelle guidee. 2 a 10 minutes, gratuit, sans engagement.",
+    "Pas besoin de compte pour commencer. En 2 minutes, TRACÉA te donne un appui concret quand ça monte. Gratuit, autant de fois que tu veux.",
 };
 
 // Shell fond identique à src/app/page.tsx — inchangé.

@@ -7,7 +7,14 @@
 // Bascule le 12 juin :
 //   Vercel → Settings → Environment Variables → LAUNCH_MODE
 //   prelaunch → live  (aucun autre changement requis)
+import type { Metadata } from "next";
 import LandingPage from "@/components/LandingPage";
+
+export const metadata: Metadata = {
+  title: "TRACÉA : Gérer ses émotions quand ça déborde",
+  description:
+    "Poitrine serrée, pensées en boucle ? TRACÉA te donne un geste concret à faire avec ton corps, là, maintenant. Gratuit, en 2 min. Pas une thérapie.",
+};
 
 export const dynamic = "force-dynamic";
 
