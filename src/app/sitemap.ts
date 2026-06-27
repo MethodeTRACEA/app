@@ -16,6 +16,9 @@ const PUBLIC_ROUTES = [
   "/mentions-legales",
   "/politique-confidentialite",
   "/conditions-utilisation",
+  // Articles SEO
+  "/articles/submerge-par-ses-emotions-que-faire",
+  "/articles/etre-a-fleur-de-peau-hypersensibilite",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
