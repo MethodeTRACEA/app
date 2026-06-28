@@ -36,6 +36,18 @@ const articles = [
     description:
       "Il est tard, tout dort, et ton cerveau repasse tout en boucle ? Pourquoi le mental s'emballe la nuit, et des appuis quand il ne lâche pas.",
   },
+  {
+    href: "/articles/ne-pas-repondre-a-chaud",
+    title: "Ne pas répondre à chaud : avant d'envoyer ce message",
+    description:
+      "Le pouce au-dessus du bouton envoyer, l'envie de répondre cash ? Pourquoi on réagit si vite, et un appui avant d'envoyer ce qu'on regrettera.",
+  },
+  {
+    href: "/articles/colere-qui-monte-que-faire",
+    title: "La colère qui monte d'un coup : que faire dans l'instant",
+    description:
+      "La chaleur qui monte, la mâchoire serrée, l'envie de tout envoyer balader ? Pourquoi la colère n'est pas ton ennemie, et un appui quand elle déborde.",
+  },
 ];
 
 // ── Habillage visuel : univers sombre chaleureux (réf. page Ressources / articles) ──

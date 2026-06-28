@@ -22,6 +22,8 @@ const PUBLIC_ROUTES = [
   "/articles/etre-a-fleur-de-peau-hypersensibilite",
   "/articles/charge-mentale-plus-aucune-marge",
   "/articles/ruminer-la-nuit-mental-en-boucle",
+  "/articles/ne-pas-repondre-a-chaud",
+  "/articles/colere-qui-monte-que-faire",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
