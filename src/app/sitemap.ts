@@ -20,6 +20,8 @@ const PUBLIC_ROUTES = [
   "/articles",
   "/articles/submerge-par-ses-emotions-que-faire",
   "/articles/etre-a-fleur-de-peau-hypersensibilite",
+  "/articles/charge-mentale-plus-aucune-marge",
+  "/articles/ruminer-la-nuit-mental-en-boucle",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

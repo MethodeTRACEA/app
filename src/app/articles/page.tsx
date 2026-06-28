@@ -24,6 +24,18 @@ const articles = [
     description:
       "Tu ressens tout plus fort, le moindre imprévu te fait déborder ? Ce que c'est vraiment, et des appuis pour les moments où ça monte.",
   },
+  {
+    href: "/articles/charge-mentale-plus-aucune-marge",
+    title: "Charge mentale : quand il n'y a plus aucune marge",
+    description:
+      "Tu penses à tout, tout le temps, et il ne te reste plus aucune marge ? Ce que c'est vraiment, et des appuis pour les moments où ça déborde.",
+  },
+  {
+    href: "/articles/ruminer-la-nuit-mental-en-boucle",
+    title: "Ruminer la nuit : quand le mental ne s'arrête pas",
+    description:
+      "Il est tard, tout dort, et ton cerveau repasse tout en boucle ? Pourquoi le mental s'emballe la nuit, et des appuis quand il ne lâche pas.",
+  },
 ];
 
 // ── Habillage visuel : univers sombre chaleureux (réf. page Ressources / articles) ──
