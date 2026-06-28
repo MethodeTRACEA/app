@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { SafetyResources } from "@/components/SafetyResources";
 import { JsonLd } from "@/components/JsonLd";
@@ -94,6 +95,9 @@ const btnSecondary: CSSProperties = {
 export default function ArticleSubmergeParSesEmotions() {
   const slug = "submerge-par-ses-emotions-que-faire";
   const headline = "Quand une émotion te submerge : que faire dans le moment";
+  const image = "article-submerge.jpg";
+  const imageAlt =
+    "Silhouette d'une personne de dos devant une fenêtre pluvieuse, dans des tons chauds sombres";
   return (
     <div style={pageStyle}>
       <JsonLd
@@ -101,12 +105,28 @@ export default function ArticleSubmergeParSesEmotions() {
           slug,
           headline,
           description: metadata.description as string,
+          image,
         })}
       />
       <JsonLd data={articleBreadcrumbJsonLd({ slug, title: headline })} />
       <div style={haloStyle} aria-hidden="true" />
 
       <article style={containerStyle}>
+        <Image
+          src={`/images/${image}`}
+          alt={imageAlt}
+          width={1730}
+          height={909}
+          sizes="(max-width: 720px) 100vw, 680px"
+          priority
+          style={{
+            width: "100%",
+            height: "auto",
+            borderRadius: 20,
+            display: "block",
+            marginBottom: 28,
+          }}
+        />
         <h1 className="font-serif" style={h1Style}>
           Quand une émotion te submerge : que faire dans le moment
         </h1>

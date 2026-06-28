@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { SafetyResources } from "@/components/SafetyResources";
 import { JsonLd } from "@/components/JsonLd";
@@ -100,6 +101,9 @@ const btnSecondary: CSSProperties = {
 export default function ArticleRuminerLaNuit() {
   const slug = "ruminer-la-nuit-mental-en-boucle";
   const headline = "Ruminer la nuit : quand le mental ne s'arrête pas";
+  const image = "article-ruminer-nuit.jpg";
+  const imageAlt =
+    "Personne assise au bord d'un lit la nuit face à la fenêtre, réveil affichant 3 h 07";
   return (
     <div style={pageStyle}>
       <JsonLd
@@ -107,12 +111,28 @@ export default function ArticleRuminerLaNuit() {
           slug,
           headline,
           description: metadata.description as string,
+          image,
         })}
       />
       <JsonLd data={articleBreadcrumbJsonLd({ slug, title: headline })} />
       <div style={haloStyle} aria-hidden="true" />
 
       <article style={containerStyle}>
+        <Image
+          src={`/images/${image}`}
+          alt={imageAlt}
+          width={1730}
+          height={909}
+          sizes="(max-width: 720px) 100vw, 680px"
+          priority
+          style={{
+            width: "100%",
+            height: "auto",
+            borderRadius: 20,
+            display: "block",
+            marginBottom: 28,
+          }}
+        />
         <h1 className="font-serif" style={h1Style}>
           Ruminer la nuit : quand le mental ne s&apos;arrête pas
         </h1>

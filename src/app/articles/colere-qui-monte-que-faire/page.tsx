@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { SafetyResources } from "@/components/SafetyResources";
 import { JsonLd } from "@/components/JsonLd";
@@ -100,6 +101,8 @@ const btnSecondary: CSSProperties = {
 export default function ArticleColereQuiMonte() {
   const slug = "colere-qui-monte-que-faire";
   const headline = "La colère qui monte d'un coup : que faire dans l'instant";
+  const image = "article-colere.jpg";
+  const imageAlt = "Texture de braise dans des tons chauds";
   return (
     <div style={pageStyle}>
       <JsonLd
@@ -107,12 +110,28 @@ export default function ArticleColereQuiMonte() {
           slug,
           headline,
           description: metadata.description as string,
+          image,
         })}
       />
       <JsonLd data={articleBreadcrumbJsonLd({ slug, title: headline })} />
       <div style={haloStyle} aria-hidden="true" />
 
       <article style={containerStyle}>
+        <Image
+          src={`/images/${image}`}
+          alt={imageAlt}
+          width={1730}
+          height={909}
+          sizes="(max-width: 720px) 100vw, 680px"
+          priority
+          style={{
+            width: "100%",
+            height: "auto",
+            borderRadius: 20,
+            display: "block",
+            marginBottom: 28,
+          }}
+        />
         <h1 className="font-serif" style={h1Style}>
           La colère qui monte d&apos;un coup : que faire dans l&apos;instant
         </h1>

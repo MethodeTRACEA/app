@@ -31,6 +31,8 @@ export function articleJsonLd(params: {
   slug: string;
   headline: string;
   description: string;
+  // Nom de fichier de l'image de couverture, dans /public/images.
+  image: string;
 }) {
   const url = `${SITE_URL}/articles/${params.slug}`;
   return {
@@ -38,6 +40,7 @@ export function articleJsonLd(params: {
     "@type": "Article",
     headline: params.headline,
     description: params.description,
+    image: `${SITE_URL}/images/${params.image}`,
     inLanguage: "fr-FR",
     datePublished: DATE_PUBLISHED,
     dateModified: DATE_MODIFIED,

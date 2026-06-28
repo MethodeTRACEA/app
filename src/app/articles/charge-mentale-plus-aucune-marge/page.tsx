@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { SafetyResources } from "@/components/SafetyResources";
 import { JsonLd } from "@/components/JsonLd";
@@ -100,6 +101,9 @@ const btnSecondary: CSSProperties = {
 export default function ArticleChargeMentale() {
   const slug = "charge-mentale-plus-aucune-marge";
   const headline = "Charge mentale : quand il n'y a plus aucune marge";
+  const image = "article-charge-mentale.jpg";
+  const imageAlt =
+    "Table de fin de repas avec tasse et papiers, dans une lumière chaude tamisée";
   return (
     <div style={pageStyle}>
       <JsonLd
@@ -107,12 +111,28 @@ export default function ArticleChargeMentale() {
           slug,
           headline,
           description: metadata.description as string,
+          image,
         })}
       />
       <JsonLd data={articleBreadcrumbJsonLd({ slug, title: headline })} />
       <div style={haloStyle} aria-hidden="true" />
 
       <article style={containerStyle}>
+        <Image
+          src={`/images/${image}`}
+          alt={imageAlt}
+          width={1730}
+          height={909}
+          sizes="(max-width: 720px) 100vw, 680px"
+          priority
+          style={{
+            width: "100%",
+            height: "auto",
+            borderRadius: 20,
+            display: "block",
+            marginBottom: 28,
+          }}
+        />
         <h1 className="font-serif" style={h1Style}>
           Charge mentale : quand il n&apos;y a plus aucune marge
         </h1>
