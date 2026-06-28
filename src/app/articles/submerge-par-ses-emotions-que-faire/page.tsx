@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { SafetyResources } from "@/components/SafetyResources";
+import { JsonLd } from "@/components/JsonLd";
+import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 
 // Page serveur : porte la metadata SEO de l'article.
 // Contenu repris au mot près du fichier source
@@ -90,8 +92,18 @@ const btnSecondary: CSSProperties = {
 };
 
 export default function ArticleSubmergeParSesEmotions() {
+  const slug = "submerge-par-ses-emotions-que-faire";
+  const headline = "Quand une émotion te submerge : que faire dans le moment";
   return (
     <div style={pageStyle}>
+      <JsonLd
+        data={articleJsonLd({
+          slug,
+          headline,
+          description: metadata.description as string,
+        })}
+      />
+      <JsonLd data={articleBreadcrumbJsonLd({ slug, title: headline })} />
       <div style={haloStyle} aria-hidden="true" />
 
       <article style={containerStyle}>

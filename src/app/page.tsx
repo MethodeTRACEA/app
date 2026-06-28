@@ -9,6 +9,8 @@
 //   prelaunch → live  (aucun autre changement requis)
 import type { Metadata } from "next";
 import LandingPage from "@/components/LandingPage";
+import { JsonLd } from "@/components/JsonLd";
+import { organizationJsonLd, webSiteJsonLd } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "TRACÉA : Gérer ses émotions quand ça déborde",
@@ -20,5 +22,11 @@ export const dynamic = "force-dynamic";
 
 export default function Home() {
   const isPrelaunch = process.env.LAUNCH_MODE === "prelaunch";
-  return <LandingPage isPrelaunch={isPrelaunch} />;
+  return (
+    <>
+      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={webSiteJsonLd()} />
+      <LandingPage isPrelaunch={isPrelaunch} />
+    </>
+  );
 }

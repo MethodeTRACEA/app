@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { SafetyResources } from "@/components/SafetyResources";
+import { JsonLd } from "@/components/JsonLd";
+import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 
 // Page serveur : porte la metadata SEO de l'article.
 // Contenu repris au mot près du fichier source
@@ -96,8 +98,18 @@ const btnSecondary: CSSProperties = {
 };
 
 export default function ArticleColereQuiMonte() {
+  const slug = "colere-qui-monte-que-faire";
+  const headline = "La colère qui monte d'un coup : que faire dans l'instant";
   return (
     <div style={pageStyle}>
+      <JsonLd
+        data={articleJsonLd({
+          slug,
+          headline,
+          description: metadata.description as string,
+        })}
+      />
+      <JsonLd data={articleBreadcrumbJsonLd({ slug, title: headline })} />
       <div style={haloStyle} aria-hidden="true" />
 
       <article style={containerStyle}>
