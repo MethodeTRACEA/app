@@ -163,7 +163,7 @@ export default function ArticleNePasRepondreAChaud() {
             </h2>
             <p style={pBody}>{`Quelques appuis, à essayer sans rien forcer.`}</p>
             <p style={pBody}>{`D'abord, n'envoie pas tout de suite. C'est tout. Repose le téléphone, même deux minutes. Tu pourras toujours répondre après, mais tu ne pourras jamais reprendre un message parti.`}</p>
-            <p style={pBody}>{`Pendant ces deux minutes, reviens à ton corps. Sens tes pieds sur le sol, desserre les épaules, laisse ton souffle ralentir un peu. Le temps que le pic redescende, juste assez pour que ce soit toi qui décides, et plus l'émotion seule.`}</p>
+            <p style={pBody}>{`Pendant ces deux minutes, reviens à ton corps. Sens tes pieds sur le sol, desserre les épaules, laisse ton souffle ralentir un peu. Le temps que le pic retombe, juste assez pour que ce soit toi qui décides, et plus l'émotion seule.`}</p>
             <p style={pBody}>{`Si tu as besoin de vider ce que tu as sur le cœur, écris-le, mais pas dans la conversation. Tape-le dans tes notes, ou sur un papier. Tu déposes tout, sans envoyer, sans dégât.`}</p>
             <p style={pBody}>{`Et tu peux nommer ce qui se passe. « Là, je suis blessée. » « Là, je suis en colère. » Le dire remet un peu de distance entre l'émotion et le message.`}</p>
             <p style={pBody}>{`Sois honnête avec toi : ça ne t'empêche pas de ressentir ce que tu ressens, et ce n'est pas le but. Mais ça te laisse le temps de choisir ta réponse, au lieu de la subir.`}</p>

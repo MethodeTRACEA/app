@@ -143,7 +143,7 @@ export default function ArticleColereQuiMonte() {
               Pourquoi se raisonner ne suffit pas
             </h2>
             <p style={pBody}>{`Quand la colère monte, ton système nerveux passe en alerte, et c'est la partie rapide et instinctive du cerveau qui prend les commandes. Se dire « calme-toi » glisse, parce qu'à ce moment précis, la tête n'est plus vraiment joignable.`}</p>
-            <p style={pBody}>{`C'est pour ça qu'on change de porte d'entrée. Pas le mental. Le corps. C'est par lui qu'on peut faire un peu redescendre l'intensité, quand les mots n'y arrivent plus.`}</p>
+            <p style={pBody}>{`C'est pour ça qu'on change de porte d'entrée. Pas le mental. Le corps. C'est souvent par lui que l'intensité peut retomber un peu, quand les mots n'y arrivent plus.`}</p>
           </section>
 
           <section
@@ -154,7 +154,7 @@ export default function ArticleColereQuiMonte() {
             </h2>
             <p style={pBody}>{`Quelques appuis, à essayer sans rien forcer.`}</p>
             <p style={pBody}>{`Si tu peux, marque une pause physique. Sortir de la pièce, t'éloigner de la situation quelques instants, mettre un peu d'espace entre toi et ce qui t'a allumée. Ce n'est pas fuir, c'est te donner une chance de ne pas exploser.`}</p>
-            <p style={pBody}>{`Reviens à ton corps. Sens tes pieds sur le sol, desserre la mâchoire, ouvre les poings, laisse ton souffle ralentir. Le corps redescend un peu, et l'intensité avec lui.`}</p>
+            <p style={pBody}>{`Reviens à ton corps. Sens tes pieds sur le sol, desserre la mâchoire, ouvre les poings, laisse ton souffle ralentir. Le corps se relâche un peu, et l'intensité avec lui.`}</p>
             <p style={pBody}>
               {`Surtout, n'agis pas sur le pic. Ne réponds pas, n'envoie pas, ne tranche pas dans la seconde. C'est souvent là qu'on dérape, comme `}
               <Link href="/articles/ne-pas-repondre-a-chaud" style={linkInline}>
