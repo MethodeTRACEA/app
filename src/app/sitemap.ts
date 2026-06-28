@@ -17,6 +17,7 @@ const PUBLIC_ROUTES = [
   "/politique-confidentialite",
   "/conditions-utilisation",
   // Articles SEO
+  "/articles",
   "/articles/submerge-par-ses-emotions-que-faire",
   "/articles/etre-a-fleur-de-peau-hypersensibilite",
 ];
