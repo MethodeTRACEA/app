@@ -77,6 +77,10 @@ export function organizationJsonLd() {
     url: SITE_URL,
     logo: ORGANIZATION.logo,
     description: SITE_DESCRIPTION,
+    sameAs: [
+      "https://www.instagram.com/methodetracea/",
+      "https://www.tiktok.com/@methodetracea",
+    ],
   };
 }
 
