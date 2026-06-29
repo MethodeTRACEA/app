@@ -969,7 +969,7 @@ function TraverseeCourteV2() {
               Tu peux créer un compte gratuit
             </p>
             <p className="font-sans text-sm" style={{ color: "rgba(240,230,214,0.55)", lineHeight: 1.6 }}>
-              Si tu veux, tu peux garder un espace à toi, pour revenir quand tu en as besoin.
+              Si tu veux, tu peux te créer un espace à toi. Ce que tu y fais ensuite, tu peux le retrouver.
             </p>
             <div className="flex flex-col gap-3 w-full max-w-xs">
               <PrimaryButton onClick={() => { markSoftLimitSeen(); router.push("/app/connexion"); }}>
