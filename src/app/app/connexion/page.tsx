@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -76,7 +76,7 @@ export default function ConnexionPage() {
 }
 
 function ConnexionInner() {
-  const { user, signInWithPassword, signUp, signInWithMagicLink, resetPassword } = useAuth();
+  const { user, signInWithPassword, signUp, signInWithMagicLink, signInWithGoogle, resetPassword } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -95,12 +95,37 @@ function ConnexionInner() {
   const [showResetForm, setShowResetForm] = useState(false);
   const [showMagicLink, setShowMagicLink] = useState(false);
 
+  // Retour OAuth Google : Supabase renvoie une éventuelle erreur dans l'URL
+  // (query ou hash). Collision d'identités → message clair (jamais de doublon
+  // silencieux). L'URL est nettoyée pour ne pas re-déclencher au refresh.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const h = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const desc =
+      q.get("error_description") || h.get("error_description") || q.get("error") || h.get("error");
+    if (!desc) return;
+    const d = desc.toLowerCase();
+    if (d.includes("already") || d.includes("exist") || d.includes("identity") || d.includes("registered")) {
+      setError("Cette adresse a déjà un compte. Connecte-toi avec la méthode utilisée la première fois.");
+    } else {
+      setError("La connexion a échoué. Tu peux réessayer.");
+    }
+    window.history.replaceState({}, "", "/app/connexion");
+  }, []);
+
   if (user) {
     router.push("/app");
     return null;
   }
 
   // ── Handlers ──
+
+  async function handleGoogle() {
+    setError(null);
+    const { error: err } = await signInWithGoogle();
+    // Erreur immédiate (rare : provider désactivé) ; sinon la redirection a lieu.
+    if (err) setError(err);
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -255,6 +280,44 @@ function ConnexionInner() {
       <AuthHeader />
 
       <Card>
+        {/* Continuer avec Google — chemin principal, au-dessus des onglets email */}
+        <button
+          type="button"
+          onClick={handleGoogle}
+          className="font-sans"
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            padding: "12px 0",
+            borderRadius: 12,
+            border: "1px solid rgba(0,0,0,0.08)",
+            background: "#FFFFFF",
+            color: "#1F1F1F",
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: "pointer",
+            marginBottom: 18,
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.28-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+          </svg>
+          Continuer avec Google
+        </button>
+
+        {/* Séparateur */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+          <div style={{ flex: 1, height: 1, background: "rgba(240,230,214,0.12)" }} />
+          <span className="font-sans" style={{ fontSize: 12, color: DS.texteMuted }}>ou</span>
+          <div style={{ flex: 1, height: 1, background: "rgba(240,230,214,0.12)" }} />
+        </div>
+
         {/* Onglets */}
         <div style={{ display: "flex", borderRadius: 12, background: DS.fondSecondaire, padding: 4, marginBottom: 24 }}>
           <button

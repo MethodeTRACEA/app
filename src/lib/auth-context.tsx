@@ -49,6 +49,7 @@ interface AuthState {
   signInWithMagicLink: (email: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation: boolean }>;
   signInWithPassword: (email: string, password: string) => Promise<{ error: string | null }>;
+  signInWithGoogle: () => Promise<{ error: string | null }>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
   updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -78,6 +79,7 @@ const AuthContext = createContext<AuthState>({
   signInWithMagicLink: async () => ({ error: null }),
   signUp: async () => ({ error: null, needsConfirmation: false }),
   signInWithPassword: async () => ({ error: null }),
+  signInWithGoogle: async () => ({ error: null }),
   resetPassword: async () => ({ error: null }),
   updatePassword: async () => ({ error: null }),
   signOut: async () => {},
@@ -224,6 +226,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null };
   }
 
+  // ── Connexion / inscription via Google (OAuth) ──
+  // Redirige vers /app/connexion : au retour, en cas de succès la session est
+  // détectée et l'utilisatrice est renvoyée vers /app (voir la garde `if (user)`
+  // de la page) ; en cas d'erreur (ex. collision d'identités), le message est
+  // affiché sur la page connexion. Scopes Google : email + profil uniquement
+  // (configurés côté Google Cloud / Supabase, rien de sensible).
+  async function signInWithGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/app/connexion`,
+      },
+    });
+    return { error: error?.message ?? null };
+  }
+
   // ── Réinitialisation du mot de passe ──
   async function resetPassword(email: string) {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -290,6 +308,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signInWithMagicLink,
         signUp,
         signInWithPassword,
+        signInWithGoogle,
         resetPassword,
         updatePassword,
         signOut,
