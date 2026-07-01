@@ -413,7 +413,7 @@ function SessionPageInner() {
             </p>
 
             <div className="w-full flex flex-col items-center gap-2">
-              <PrimaryButton onClick={() => router.push("/app/connexion")}>
+              <PrimaryButton onClick={() => router.push("/app/connexion?mode=inscription")}>
                 Créer un compte gratuit
               </PrimaryButton>
               <p
@@ -1516,7 +1516,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
               <p className="font-body text-base t-text-secondary leading-relaxed">
                 Si tu veux garder cette traversée et retrouver ce qui revient au fil du temps, tu peux créer un compte.
               </p>
-              <PrimaryButton onClick={() => router.push("/app/connexion")}>
+              <PrimaryButton onClick={() => router.push("/app/connexion?mode=inscription")}>
                 Créer un compte gratuit
               </PrimaryButton>
               <p className="font-inter text-[11px] t-text-ghost">

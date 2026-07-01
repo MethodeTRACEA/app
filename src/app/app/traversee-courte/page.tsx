@@ -972,7 +972,7 @@ function TraverseeCourteV2() {
               Si tu veux, tu peux te créer un espace à toi. Ce que tu y fais ensuite, tu peux le retrouver.
             </p>
             <div className="flex flex-col gap-3 w-full max-w-xs">
-              <PrimaryButton onClick={() => { markSoftLimitSeen(); router.push("/app/connexion"); }}>
+              <PrimaryButton onClick={() => { markSoftLimitSeen(); router.push("/app/connexion?mode=inscription"); }}>
                 Créer un compte gratuit
               </PrimaryButton>
               <SecondaryButton onClick={() => { markSoftLimitSeen(); setScreen("exit-transition"); }}>

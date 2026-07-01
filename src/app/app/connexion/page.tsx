@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 type AuthTab = "login" | "signup";
@@ -68,10 +68,23 @@ const linkBtn: React.CSSProperties = {
 };
 
 export default function ConnexionPage() {
+  return (
+    <Suspense fallback={null}>
+      <ConnexionInner />
+    </Suspense>
+  );
+}
+
+function ConnexionInner() {
   const { user, signInWithPassword, signUp, signInWithMagicLink, resetPassword } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [tab, setTab] = useState<AuthTab>("login");
+  // CTA « Créer un compte » → /app/connexion?mode=inscription ouvre l'onglet
+  // Inscription. Défaut inchangé (login).
+  const [tab, setTab] = useState<AuthTab>(
+    searchParams.get("mode") === "inscription" ? "signup" : "login"
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
