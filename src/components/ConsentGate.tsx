@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { hasValidConsent, saveConsent, revokeConsent } from "@/lib/consent";
+import { useRouter } from "next/navigation";
+import { hasValidConsent, saveConsent, revokeConsent, hasAnonConsent, saveAnonConsent } from "@/lib/consent";
 import { useAuth } from "@/lib/auth-context";
+import { SafetyResources } from "@/components/SafetyResources";
 import {
   getCurrentRgpdWordings,
   RGPD_WORDING_CURRENT_VERSION,
@@ -12,13 +14,22 @@ import {
 interface ConsentGateProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
+  // Option C — parcours anonyme : variante allégée (1 case, traitement
+  // éphémère art. 9, sans stockage). Le gate connecté reste inchangé.
+  isAnonymous?: boolean;
 }
 
-export function ConsentGate({ children, fallback }: ConsentGateProps) {
+export function ConsentGate({ children, fallback, isAnonymous }: ConsentGateProps) {
   const [consented, setConsented] = useState<boolean | null>(null);
   const { session } = useAuth();
 
   useEffect(() => {
+    // Anonyme (Option C) : gate sur le marqueur dédié, jamais de DB.
+    if (isAnonymous) {
+      setConsented(hasAnonConsent());
+      return;
+    }
+
     // 1. Lecture instantanée du cache localStorage
     const cachedValid = hasValidConsent();
     if (cachedValid) {
@@ -52,10 +63,15 @@ export function ConsentGate({ children, fallback }: ConsentGateProps) {
         }
       })
       .catch(() => setConsented(false));
-  }, [session?.access_token]);
+  }, [session?.access_token, isAnonymous]);
 
   if (consented === null) return null; // Loading
   if (consented) return <>{children}</>;
+
+  // Anonyme : formulaire allégé (1 case, éphémère, sans stockage).
+  if (isAnonymous) {
+    return <AnonConsentForm onConsent={() => setConsented(true)} />;
+  }
 
   if (fallback) return <>{fallback}</>;
 
@@ -88,6 +104,104 @@ async function syncFromDb(token: string) {
   } catch {
     // silencieux : le cache reste valable
   }
+}
+
+// ── Formulaire de consentement ANONYME (Option C) ──────────────────
+// 1 seule case : traitement éphémère des données sensibles (art. 9) pour
+// générer le reflet, SANS stockage. Mémorisé en localStorage uniquement.
+function AnonConsentForm({ onConsent }: { onConsent: () => void }) {
+  const router = useRouter();
+  const [checked, setChecked] = useState(false);
+
+  function handleSubmit() {
+    if (!checked) return;
+    saveAnonConsent({
+      sensitiveEphemeral: true,
+      date: new Date().toISOString(),
+      version: RGPD_WORDING_CURRENT_VERSION,
+    });
+    onConsent();
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <p className="section-label">Consentement</p>
+      <h1 className="section-title">Avant de commencer</h1>
+      <p className="text-warm-gray mb-6 leading-relaxed">
+        Pour te proposer une traversée, TRACÉA a besoin de traiter ce que tu
+        écris (tes émotions, tes ressentis). Ce sont des données sensibles,
+        alors on te demande ton accord.
+      </p>
+
+      <div className="safety-card mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-terra flex-shrink-0" />
+          <span className="font-medium text-sm text-terra-dark font-sans">
+            Sans compte, rien n&apos;est conservé
+          </span>
+        </div>
+        <p className="font-body text-sm text-espresso leading-relaxed">
+          Ce que tu écris sert seulement à te proposer ton reflet, le temps de
+          ta traversée, puis n&apos;est pas enregistré. Si tu veux garder tes
+          traversées, tu pourras créer un compte à la fin.
+        </p>
+      </div>
+
+      <div className="card-base mb-6">
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={(e) => setChecked(e.target.checked)}
+            className="mt-1 w-4 h-4 rounded border-beige-dark text-terra focus:ring-terra accent-terra"
+          />
+          <span className="text-sm text-espresso">
+            J&apos;accepte que mes données émotionnelles soient traitées
+            uniquement pour générer mon reflet, le temps de ma traversée, sans
+            être conservées.
+          </span>
+        </label>
+      </div>
+
+      <div className="card-base mb-6">
+        <p className="text-xs text-warm-gray leading-relaxed">
+          Pour plus d&apos;informations :{" "}
+          <Link
+            href="/politique-confidentialite"
+            className="text-terra hover:text-terra-dark underline"
+          >
+            Politique de confidentialité
+          </Link>{" "}
+          ·{" "}
+          <Link
+            href="/conditions-utilisation"
+            className="text-terra hover:text-terra-dark underline"
+          >
+            CGU
+          </Link>
+        </p>
+      </div>
+
+      <button
+        onClick={handleSubmit}
+        disabled={!checked}
+        className="btn-primary w-full text-center disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        Commencer ma traversée
+      </button>
+
+      <button
+        onClick={() => router.push("/app")}
+        className="w-full text-center mt-4 text-sm text-warm-gray hover:text-terra-dark transition-colors"
+      >
+        Revenir à l&apos;accueil
+      </button>
+
+      <div className="mt-8">
+        <SafetyResources />
+      </div>
+    </div>
+  );
 }
 
 function ConsentForm({

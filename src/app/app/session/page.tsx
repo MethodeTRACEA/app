@@ -447,10 +447,10 @@ function SessionPageInner() {
       );
     }
 
-    // 1re traversée approfondie SANS compte : consentement RGPD (art. 9,
-    // localStorage seul) puis flow éphémère — rien n'est persisté.
+    // 1re traversée approfondie SANS compte : consentement RGPD anonyme
+    // (art. 9, 1 case, éphémère, localStorage seul) puis flow éphémère.
     return (
-      <ConsentGate>
+      <ConsentGate isAnonymous>
         <SessionContent userId={null} isFirstSession={false} />
       </ConsentGate>
     );

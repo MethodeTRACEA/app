@@ -1,5 +1,9 @@
 const CONSENT_KEY = "tracea_consent";
 const COOKIE_CONSENT_KEY = "tracea_cookie_consent";
+// Option C — consentement anonyme (parcours sans compte). DISTINCT du
+// consentement 3-cases connecté : ne porte QUE sur le traitement éphémère des
+// données sensibles (art. 9) pour générer le reflet, sans aucun stockage.
+const ANON_CONSENT_KEY = "tracea_anon_consent";
 
 export interface ConsentData {
   dataProcessing: boolean;
@@ -57,4 +61,29 @@ export function saveCookieConsent(consent: CookieConsent): void {
 
 export function hasCookieConsent(): boolean {
   return getCookieConsent() !== null;
+}
+
+// ── Consentement anonyme (Option C) ────────────────────────────────
+// Marqueur local dédié : honnête (n'affirme aucun stockage), et laisse la
+// logique connectée (saveConsent/hasValidConsent) totalement inchangée.
+export interface AnonConsentData {
+  sensitiveEphemeral: boolean;
+  date: string;
+  version: string;
+}
+
+export function saveAnonConsent(consent: AnonConsentData): void {
+  try { localStorage.setItem(ANON_CONSENT_KEY, JSON.stringify(consent)); } catch {}
+}
+
+export function hasAnonConsent(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = localStorage.getItem(ANON_CONSENT_KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw) as Partial<AnonConsentData>;
+    return parsed.sensitiveEphemeral === true;
+  } catch {
+    return false;
+  }
 }
