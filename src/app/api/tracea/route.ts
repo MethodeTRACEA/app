@@ -283,31 +283,36 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
-    // --- Authentification : vérifier le token JWT ---
+    // --- Authentification : token OPTIONNEL ---
+    // Option C : la 1re traversée approfondie se joue sans compte. Une requête
+    // SANS token est traitée en mode ANONYME ÉPHÉMÈRE (userId = null) : le miroir
+    // est généré, mais rien n'est persisté, pas de note de continuité, pas de log
+    // d'usage, pas de compteur. Un token PRÉSENT mais invalide reste un 401
+    // (pas de dégradation silencieuse d'une session connectée).
     const token = request.headers.get("authorization")?.replace("Bearer ", "") ?? null;
-    if (!token) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    let userId: string | null = null;
+    if (token) {
+      const { data: { user: authUser }, error: authError } = await getSupabase().auth.getUser(token);
+      if (authError || !authUser) {
+        return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+      }
+      userId = authUser.id;
     }
-    const { data: { user: authUser }, error: authError } = await getSupabase().auth.getUser(token);
-    if (authError || !authUser) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
-    const userId = authUser.id;
 
     const body = await request.json();
     const { type } = body;
 
-    console.log("[TRACEA API] Request type:", type, "| stepId:", body.stepId || "n/a");
+    console.log("[TRACEA API] Request type:", type, "| stepId:", body.stepId || "n/a", "| anon:", userId === null);
 
     // --- Rate Limiting : vérifier AVANT tout appel IA ---
+    // Anonyme : filet par IP (le middleware edge limite déjà /api/tracea par IP).
     const clientIp = getClientIp(request.headers);
-    const rateLimitResult = await checkRateLimit({
-      userId,
-      ip: clientIp,
-    });
+    const rateLimitResult = await checkRateLimit(
+      userId ? { userId, ip: clientIp } : { ip: clientIp }
+    );
 
     if (!rateLimitResult.allowed) {
-      console.warn(`[TRACEA API] Rate limited: ${rateLimitResult.reason} | user: ${body.userId || "anon"} | ip: ${clientIp || "unknown"}`);
+      console.warn(`[TRACEA API] Rate limited: ${rateLimitResult.reason} | user: ${userId?.slice(0, 8) ?? "anon"} | ip: ${clientIp || "unknown"}`);
       return NextResponse.json(
         { error: rateLimitResult.message },
         { status: 429 }
@@ -350,11 +355,13 @@ async function handleFinalAnalysis(body: {
   steps: Record<string, string>;
   context: string;
   userId?: string; // ignoré — userId vient du token vérifié
-}, userId: string) {
+}, userId: string | null) {
   const { steps } = body;
 
-  // Check AI limit before any Claude call
-  const aiLimited = await checkAiLimit(userId);
+  // Check AI limit before any Claude call.
+  // Anonyme (userId null) : pas de compteur serveur — sa limite produit est le
+  // marqueur localStorage côté client (1 découverte par appareil).
+  const aiLimited = userId ? await checkAiLimit(userId) : false;
   if (aiLimited) {
     console.log("[TRACEA API] final-analysis: AI limited for user:", userId?.slice(0, 8));
     return NextResponse.json({
@@ -388,7 +395,10 @@ async function handleFinalAnalysis(body: {
   // A-2-1 : note de continuité (besoin récurrent). Lue AVANT le userMessage pour
   // pouvoir y insérer le bloc d'instruction. Premium-gatée de fait (cette branche
   // n'est atteinte qu'après checkAiLimit). JAMAIS concaténée à finalText.
-  const note = await getContinuityNote(getSupabaseService(), userId, input.besoin);
+  // Anonyme : pas de mémoire → pas de note de continuité.
+  const note = userId
+    ? await getContinuityNote(getSupabaseService(), userId, input.besoin)
+    : null;
 
   let continuityBlock = "";
   if (note) {
@@ -520,21 +530,24 @@ Règle :
   // (jamais dans le prompt). No-op si besoin ≠ « me sentir en sécurité ».
   const finalText = appendSecurityClosing(textWithContinuity, input.besoin);
 
-  // Logger l'usage (fire-and-forget)
-  const analysisUsage = message.usage as unknown as Record<string, number>;
-  logAiUsage({
-    userId,
-    callType: "final-analysis",
-    model: "claude-sonnet-4-6",
-    inputTokens: analysisUsage.input_tokens,
-    outputTokens: analysisUsage.output_tokens,
-    cacheCreationTokens: analysisUsage.cache_creation_input_tokens || 0,
-    cacheReadTokens: analysisUsage.cache_read_input_tokens || 0,
-  }).catch(() => {});
+  // Logger l'usage (fire-and-forget). Anonyme : pas de log
+  // (ai_usage_logs.user_id est NOT NULL — et aucun contenu ne doit être tracé).
+  if (userId) {
+    const analysisUsage = message.usage as unknown as Record<string, number>;
+    logAiUsage({
+      userId,
+      callType: "final-analysis",
+      model: "claude-sonnet-4-6",
+      inputTokens: analysisUsage.input_tokens,
+      outputTokens: analysisUsage.output_tokens,
+      cacheCreationTokens: analysisUsage.cache_creation_input_tokens || 0,
+      cacheReadTokens: analysisUsage.cache_read_input_tokens || 0,
+    }).catch(() => {});
 
-  // Incrémenter le compteur trial (fire-and-forget — la RPC vérifie elle-même
-  // que le trial est actif et non plafonné, no-op sinon)
-  incrementTrialDeepSessionsUsed(userId).catch(() => {});
+    // Incrémenter le compteur trial (fire-and-forget — la RPC vérifie elle-même
+    // que le trial est actif et non plafonné, no-op sinon)
+    incrementTrialDeepSessionsUsed(userId).catch(() => {});
+  }
 
   return NextResponse.json({ text: finalText });
 }

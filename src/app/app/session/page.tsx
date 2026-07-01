@@ -346,11 +346,23 @@ function SessionPageInner() {
     trialDeepSessionsUsed,
   } = useAuth();
   const [sessionCount, setSessionCount] = useState<number | null>(null);
+  // Option C — anonyme : a-t-il déjà consommé sa 1re approfondie (marqueur par
+  // appareil, posé à la complétion) ? null = lecture localStorage en cours.
+  const [anonDone, setAnonDone] = useState<boolean | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     if (!user) return;
     getApprofondiSessionEndCount(user.id).then(setSessionCount);
+  }, [user]);
+
+  useEffect(() => {
+    if (user) return;
+    try {
+      setAnonDone(localStorage.getItem("tracea_anon_deep_completed") === "true");
+    } catch {
+      setAnonDone(false);
+    }
   }, [user]);
 
   if (loading) {
@@ -364,50 +376,83 @@ function SessionPageInner() {
   }
 
   if (!user) {
-    return (
-      <div
-        className="flex flex-col items-center justify-center px-5"
-        style={{ minHeight: "80vh", background: "#1A120D" }}
-      >
-        <div className="w-full max-w-md flex flex-col items-center text-center gap-6 py-12">
-          <h2
-            className="font-light text-[28px] leading-[34px] tracking-[-0.01em]"
-            style={{
-              fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
-              color: "#F0E6D6",
-            }}
-          >
-            Crée un compte pour continuer.
-          </h2>
-
-          <p
-            className="font-sans text-[14px] leading-[20px]"
-            style={{ color: "rgba(240,230,214,0.62)" }}
-          >
-            Crée un compte pour retrouver tes traversées.
-          </p>
-
-          <div className="w-full flex flex-col items-center gap-2">
-            <PrimaryButton onClick={() => router.push("/app/connexion")}>
-              Créer un compte gratuit
-            </PrimaryButton>
-            <p
-              className="font-sans text-[12px]"
-              style={{ color: "rgba(240,230,214,0.50)" }}
-            >
-              Gratuit. Sans engagement.
-            </p>
+    // Attente de la lecture localStorage (évite tout mismatch d'hydratation).
+    if (anonDone === null) {
+      return (
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="font-serif text-2xl text-terra animate-pulse-gentle">
+            Chargement...
           </div>
-
-          <Link
-            href="/app/traversee-courte"
-            className="font-sans text-[13px] underline underline-offset-[3px] transition-colors"
-            style={{ color: "rgba(240,230,214,0.50)" }}
-          >
-            Faire une traversée courte sans compte
-          </Link>
         </div>
-      </div>
+      );
+    }
+
+    // 2e traversée approfondie sans compte → proposer le compte / l'essai.
+    if (anonDone) {
+      return (
+        <div
+          className="flex flex-col items-center justify-center px-5"
+          style={{ minHeight: "80vh", background: "#1A120D" }}
+        >
+          <div className="w-full max-w-md flex flex-col items-center text-center gap-6 py-12">
+            <h2
+              className="font-light text-[28px] leading-[34px] tracking-[-0.01em]"
+              style={{
+                fontFamily: "'Cormorant Garamond', 'EB Garamond', serif",
+                color: "#F0E6D6",
+              }}
+            >
+              Tu as déjà fait une traversée approfondie.
+            </h2>
+
+            <p
+              className="font-sans text-[14px] leading-[20px]"
+              style={{ color: "rgba(240,230,214,0.62)" }}
+            >
+              Pour continuer à aller plus loin et retrouver tes traversées, tu peux créer un compte.
+            </p>
+
+            <div className="w-full flex flex-col items-center gap-2">
+              <PrimaryButton onClick={() => router.push("/app/connexion")}>
+                Créer un compte gratuit
+              </PrimaryButton>
+              <p
+                className="font-sans text-[12px]"
+                style={{ color: "rgba(240,230,214,0.50)" }}
+              >
+                Essai 14 jours, sans carte bancaire.
+              </p>
+            </div>
+
+            <div className="flex flex-col items-center gap-3">
+              <Link
+                href="/app/traversee-courte"
+                className="font-sans text-[13px] underline underline-offset-[3px] transition-colors"
+                style={{ color: "rgba(240,230,214,0.50)" }}
+              >
+                Faire une traversée courte
+              </Link>
+              <Link
+                href="/app"
+                className="font-sans text-[13px] underline underline-offset-[3px] transition-colors"
+                style={{ color: "rgba(240,230,214,0.50)" }}
+              >
+                Revenir à l&apos;accueil
+              </Link>
+            </div>
+
+            <SafetyResources />
+          </div>
+        </div>
+      );
+    }
+
+    // 1re traversée approfondie SANS compte : consentement RGPD (art. 9,
+    // localStorage seul) puis flow éphémère — rien n'est persisté.
+    return (
+      <ConsentGate>
+        <SessionContent userId={null} isFirstSession={false} />
+      </ConsentGate>
     );
   }
 
@@ -488,10 +533,13 @@ function SessionPageInner() {
 const ALLOWED_SESSION_ORIGINS = ["start", "urgence", "traversee_courte", "entrainement"] as const;
 type SessionOrigin = (typeof ALLOWED_SESSION_ORIGINS)[number] | "direct";
 
-function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSession: boolean }) {
+function SessionContent({ userId, isFirstSession }: { userId: string | null; isFirstSession: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { session: authSession, hasPremiumAccess } = useAuth();
+
+  // Option C — mode anonyme éphémère : aucune persistance, aucun contenu tracé.
+  const isAnon = userId === null;
 
   const fromParam = searchParams.get("from");
   const sessionFrom: SessionOrigin =
@@ -563,10 +611,15 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
 
   // ── Démarrer session en DB ───────────────────────────────────
   async function startSession() {
-    const s = await createSessionDb(userId, null, "autre");
-    if (s) {
-      setSessionId(s.id);
-      trackEvent(userId, "session_start", { mode: "approfondi", from: sessionFrom });
+    if (userId) {
+      const s = await createSessionDb(userId, null, "autre");
+      if (s) {
+        setSessionId(s.id);
+        trackEvent(userId, "session_start", { mode: "approfondi", from: sessionFrom });
+      }
+    } else {
+      // Anonyme : aucune ligne `sessions` créée. Event générique sans contenu.
+      trackEvent(null, "approfondie_started", {});
     }
     setPhase("situation");
   }
@@ -658,7 +711,16 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
       });
     }
 
-    trackEvent(userId, "session_end", { mode: "approfondi" });
+    if (userId) {
+      trackEvent(userId, "session_end", { mode: "approfondi" });
+    } else {
+      // Anonyme : event générique sans contenu + pose du marqueur de découverte
+      // (1 approfondie par appareil). C'est CE marqueur qui gate la 2e.
+      trackEvent(null, "approfondie_completed", {});
+      try {
+        localStorage.setItem("tracea_anon_deep_completed", "true");
+      } catch {}
+    }
     setPhase("complete");
   }
 
@@ -671,6 +733,11 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   // envoyé à summarize). Insert fire-and-forget : un échec ne bloque PAS
   // la suite (log Sentry), on continue vers synthese normalement.
   function handleKeepJournal() {
+    // Anonyme : rien n'est persisté (le bouton « Garder » est d'ailleurs masqué).
+    if (!userId) {
+      setJournalStatus("kept");
+      return;
+    }
     try {
       supabase
         .from("action_traces")
@@ -709,6 +776,12 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
   // content = null). L'obstacle (planObstacle) n'est PAS stocké. Même insert
   // fire-and-forget non bloquant qu'à l'écran A, puis → synthese.
   function handlePlanPosed() {
+    // Anonyme : aucune persistance (pas de userId). On avance simplement.
+    if (!userId) {
+      setPhase("synthese");
+      generateAnalysis();
+      return;
+    }
     try {
       supabase
         .from("action_traces")
@@ -855,7 +928,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             <PrimaryButton
               disabled={!situation || (situation === "autre" && !situationOther.trim())}
               onClick={() => {
-                trackEvent(userId, "step_complete", { step: "situation", mode: "approfondi", value: situationLabel });
+                if (userId) trackEvent(userId, "step_complete", { step: "situation", mode: "approfondi", value: situationLabel });
                 setPhase("emotion");
               }}
             >
@@ -920,7 +993,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             <PrimaryButton
               disabled={!emotion || (emotion === "autre" && !emotionOther.trim())}
               onClick={() => {
-                trackEvent(userId, "step_complete", { step: "emotion", mode: "approfondi", value: emotionLabel });
+                if (userId) trackEvent(userId, "step_complete", { step: "emotion", mode: "approfondi", value: emotionLabel });
                 setPhase("ancrage");
               }}
             >
@@ -1043,7 +1116,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             <PrimaryButton
               disabled={!besoin || (besoin === "autre" && !besoinOther.trim())}
               onClick={() => {
-                trackEvent(userId, "step_complete", { step: "besoin", mode: "approfondi", value: besoinLabel });
+                if (userId) trackEvent(userId, "step_complete", { step: "besoin", mode: "approfondi", value: besoinLabel });
                 setPhase("alignement");
               }}
             >
@@ -1198,7 +1271,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             <PrimaryButton
               disabled={!action.trim()}
               onClick={() => {
-                trackEvent(userId, "step_complete", { step: "action", mode: "approfondi", value: action });
+                if (userId) trackEvent(userId, "step_complete", { step: "action", mode: "approfondi", value: action });
                 if (actionKind === "write") {
                   setPhase("aide_ecriture");
                 } else {
@@ -1248,12 +1321,16 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
                 />
 
                 <div className="w-full space-y-2.5">
-                  <PrimaryButton
-                    disabled={!journalText.trim()}
-                    onClick={handleKeepJournal}
-                  >
-                    Garder
-                  </PrimaryButton>
+                  {/* « Garder » persiste dans action_traces → masqué en anonyme
+                      (la sauvegarde passe par la création de compte). */}
+                  {!isAnon && (
+                    <PrimaryButton
+                      disabled={!journalText.trim()}
+                      onClick={handleKeepJournal}
+                    >
+                      Garder
+                    </PrimaryButton>
+                  )}
                   <SecondaryButton onClick={handleReleaseJournal}>
                     Laisser aller
                   </SecondaryButton>
@@ -1421,9 +1498,12 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             </div>
           </div>
 
-          <p className="font-body text-sm t-text-secondary text-center">
-            Cette traversée est gardée dans tes traces.
-          </p>
+          {/* Anonyme : rien n'est persisté → ne pas prétendre l'inverse. */}
+          {!isAnon && (
+            <p className="font-body text-sm t-text-secondary text-center">
+              Cette traversée est gardée dans tes traces.
+            </p>
+          )}
 
           <InstallPrompt />
 
@@ -1431,17 +1511,36 @@ function SessionContent({ userId, isFirstSession }: { userId: string; isFirstSes
             <PaywallSection onDismiss={() => setPaywallDismissed(true)} />
           )}
 
-          <PrimaryButton onClick={() => router.push("/app")}>
-            Terminer
-          </PrimaryButton>
+          {isAnon ? (
+            <div className="w-full flex flex-col items-center gap-4 text-center">
+              <p className="font-body text-base t-text-secondary leading-relaxed">
+                Si tu veux garder cette traversée et retrouver ce qui revient au fil du temps, tu peux créer un compte.
+              </p>
+              <PrimaryButton onClick={() => router.push("/app/connexion")}>
+                Créer un compte gratuit
+              </PrimaryButton>
+              <p className="font-inter text-[11px] t-text-ghost">
+                Gratuit, sans engagement.
+              </p>
+              <SecondaryButton onClick={() => router.push("/app")}>
+                Revenir à l&apos;accueil
+              </SecondaryButton>
+            </div>
+          ) : (
+            <>
+              <PrimaryButton onClick={() => router.push("/app")}>
+                Terminer
+              </PrimaryButton>
 
-          <button
-            type="button"
-            onClick={() => router.push("/app/historique")}
-            className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors"
-          >
-            Voir mes traces →
-          </button>
+              <button
+                type="button"
+                onClick={() => router.push("/app/historique")}
+                className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors"
+              >
+                Voir mes traces →
+              </button>
+            </>
+          )}
 
           <SafetyResources />
 
