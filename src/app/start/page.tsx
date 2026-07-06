@@ -31,6 +31,7 @@ const options: Option[] = [
     title: "Retrouver un appui vite",
     desc: "Quand c'est trop intense. Directement par le corps.",
     tag: "2 min",
+    badge: "Gratuit, sans compte",
     labelColor: "#C97B6A",
     cardBorder: "rgba(255,255,255,0.08)",
     cardBg: "rgba(255,255,255,0.06)",
@@ -43,6 +44,7 @@ const options: Option[] = [
     desc: "Pour déposer, revenir au corps, puis choisir un geste simple.",
     tag: "5 min",
     recommended: true,
+    badge: "Gratuit, sans compte",
     labelColor: "#C97B6A",
     cardBorder: "rgba(240,230,214,0.32)",
     cardBg: "rgba(111,106,100,0.28)",
@@ -54,7 +56,7 @@ const options: Option[] = [
     desc: "Une traversée complète pour mettre des mots et garder une trace.",
     tag: "5 à 8 min",
     badge: "Sans compte pour la première",
-    badgeNote: "Inclus dans ton essai gratuit 14 jours",
+    badgeNote: "Essai 14 jours",
     labelColor: "#C97B6A",
     cardBorder: "rgba(212,169,106,0.35)",
     cardBg: "rgba(255,255,255,0.06)",
@@ -219,6 +221,14 @@ export default function StartPage() {
             </Link>
           ))}
         </div>
+
+        {/* MENTION GRATUIT / ABONNEMENT */}
+        <p
+          className="font-sans text-[11px] text-center leading-[16px] px-2"
+          style={{ color: "rgba(240,230,214,0.42)" }}
+        >
+          L&apos;urgence et la traversée courte sont gratuites, sans compte, autant de fois que tu veux. La traversée approfondie fait partie de l&apos;abonnement : la première se fait sans compte, et l&apos;essai gratuit de 14 jours en inclut 5.
+        </p>
 
         {/* FOOTER MICROTEXTE + RETOUR */}
         <div className="flex flex-col items-center gap-3">

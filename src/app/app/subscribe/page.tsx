@@ -276,6 +276,9 @@ function SubscribePageInner() {
             <p className="font-body text-base t-text-secondary">Vois ce qui revient.</p>
             <p className="font-body text-base t-text-secondary">Observe ce qui change.</p>
           </div>
+          <p className="font-body text-sm t-text-secondary pt-2" style={{ opacity: 0.65 }}>
+            L&apos;urgence et la traversée courte restent gratuites, avec ou sans abonnement.
+          </p>
         </div>
 
         {/* Bandeaux retours Stripe Checkout — uniquement si UI Stripe activée */}
