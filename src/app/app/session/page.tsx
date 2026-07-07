@@ -550,8 +550,6 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
 
   const [phase, setPhase] = useState<Phase>("intro");
   const [paywallDismissed, setPaywallDismissed] = useState(false);
-  const [ancrageUnlocked, setAncrageUnlocked] = useState(false);
-  const [ancrageProgress, setAncrageProgress] = useState(false);
   const [ancrageExercice, setAncrageExercice] = useState(false);
 
   // Données collectées
@@ -593,23 +591,6 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   const besoinLabel = besoin === "autre" && besoinOther.trim()
     ? besoinOther.trim() : besoin;
   const suggestions = getActionSuggestions(besoinLabel, emotionLabel);
-
-  // ── Déverrouillage 8 s sur la phase Ancrer ───────────────────
-  useEffect(() => {
-    if (phase !== "ancrage") {
-      setAncrageUnlocked(false);
-      setAncrageProgress(false);
-      return;
-    }
-    setAncrageUnlocked(false);
-    setAncrageProgress(false);
-    const raf = requestAnimationFrame(() => setAncrageProgress(true));
-    const timer = setTimeout(() => setAncrageUnlocked(true), 8000);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(timer);
-    };
-  }, [phase]);
 
   // ── Démarrer session en DB ───────────────────────────────────
   async function startSession() {
@@ -1044,21 +1025,6 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
               </p>
             </div>
 
-            <div
-              className="w-40 h-px bg-t-creme/15 overflow-hidden"
-              aria-hidden="true"
-            >
-              <div
-                className="h-full bg-t-dore/50 ease-linear"
-                style={{
-                  width: ancrageProgress ? "100%" : "0%",
-                  transitionProperty: "width",
-                  transitionDuration: "8000ms",
-                  transitionTimingFunction: "linear",
-                }}
-              />
-            </div>
-
             <PrimaryButton
               onClick={() => setAncrageExercice(true)}
             >
@@ -1066,7 +1032,6 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
             </PrimaryButton>
 
             <SecondaryButton
-              disabled={!ancrageUnlocked}
               onClick={() => setPhase("besoin")}
             >
               Continuer
