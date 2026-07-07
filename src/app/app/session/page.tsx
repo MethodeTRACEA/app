@@ -1518,29 +1518,44 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   // ════════════════════════════════════════════════════════
   if (restingScreen) {
     return (
-      <ScreenContainer overlayOpacity={45}>
-        <div className="py-12">
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+      <div className="fixed inset-0 z-[60] flex flex-col">
+        {/* Couche 1 — photo plein écran */}
+        <img
+          src="/images/trace-clear.webp"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
 
-            <TraceCrest seed={traceSeed} />
+        {/* Couche 2 — le chemin, en overlay lumineux par-dessus la photo */}
+        <TraceCrest seed={traceSeed} />
 
-            <p className="font-inter text-xs t-text-ghost text-center">
-              Le tracé de cette traversée.
-            </p>
+        {/* Couche 3 — scrim bas pour la lisibilité (légende, sortie, SafetyResources) */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-2/5"
+          style={{ background: "linear-gradient(to bottom, rgba(35,25,22,0), rgba(35,25,22,0.94))" }}
+          aria-hidden="true"
+        />
 
-            <button
-              type="button"
-              onClick={() => setRestingScreen(false)}
-              className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors"
-            >
-              C&apos;est bon pour moi.
-            </button>
+        {/* Couche 4 — contenu */}
+        <div className="relative z-10 flex-1 flex flex-col justify-end items-center gap-5 px-6 pb-10">
 
-            <SafetyResources />
+          <p className="font-inter text-xs text-t-beige/80 text-center">
+            Le tracé de cette traversée.
+          </p>
 
-          </div>
+          <button
+            type="button"
+            onClick={() => setRestingScreen(false)}
+            className="font-inter text-sm text-t-beige/90 hover:text-t-beige transition-colors"
+          >
+            C&apos;est bon pour moi.
+          </button>
+
+          <SafetyResources />
+
         </div>
-      </ScreenContainer>
+      </div>
     );
   }
 
