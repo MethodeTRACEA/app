@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import * as Sentry from "@sentry/nextjs";
@@ -21,6 +21,7 @@ import { InstallPrompt } from "@/components/InstallPrompt";
 import { SafetyResources } from "@/components/SafetyResources";
 import { StepIndicator } from "@/components/StepIndicator";
 import { GroundingGuide } from "@/components/GroundingGuide";
+import { TraceCrest } from "@/components/TraceCrest";
 
 // ════════════════════════════════════════════════════════════
 // TRACÉA — Traversée approfondie V2
@@ -551,6 +552,8 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   const [phase, setPhase] = useState<Phase>("intro");
   const [paywallDismissed, setPaywallDismissed] = useState(false);
   const [ancrageExercice, setAncrageExercice] = useState(false);
+  const [restingScreen, setRestingScreen] = useState(false);
+  const completeEnteredAtRef = useRef<number | null>(null);
 
   // Données collectées
   const [situation, setSituation] = useState("");
@@ -593,6 +596,17 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   const besoinLabel = besoin === "autre" && besoinOther.trim()
     ? besoinOther.trim() : besoin;
   const suggestions = getActionSuggestions(besoinLabel, emotionLabel);
+
+  // ── Horodatage stable à l'entrée de "complete" (seed du tracé) ──
+  useEffect(() => {
+    if (phase === "complete" && completeEnteredAtRef.current === null) {
+      completeEnteredAtRef.current = Date.now();
+    }
+  }, [phase]);
+
+  const traceSeed = isAnon
+    ? `${situationLabel}|${emotionLabel}|${besoinLabel}|${action}|${completeEnteredAtRef.current ?? 0}`
+    : `${sessionId}|${emotionLabel.slice(0, 100)}|${besoinLabel.slice(0, 200)}|${action.slice(0, 200)}`;
 
   // ── Démarrer session en DB ───────────────────────────────────
   async function startSession() {
@@ -1502,6 +1516,34 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   // ════════════════════════════════════════════════════════
   // COMPLETE — Synthèse finale
   // ════════════════════════════════════════════════════════
+  if (restingScreen) {
+    return (
+      <ScreenContainer overlayOpacity={45}>
+        <div className="py-12">
+          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+
+            <TraceCrest seed={traceSeed} />
+
+            <p className="font-inter text-xs t-text-ghost text-center">
+              Le tracé de cette traversée.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setRestingScreen(false)}
+              className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors"
+            >
+              C&apos;est bon pour moi.
+            </button>
+
+            <SafetyResources />
+
+          </div>
+        </div>
+      </ScreenContainer>
+    );
+  }
+
   return (
     <ScreenContainer overlayOpacity={45}>
       <div className="py-12">
@@ -1547,6 +1589,14 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
               Cette traversée est gardée dans tes traces.
             </p>
           )}
+
+          <button
+            type="button"
+            onClick={() => setRestingScreen(true)}
+            className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors"
+          >
+            Rester avec ça un instant
+          </button>
 
           <InstallPrompt />
 
