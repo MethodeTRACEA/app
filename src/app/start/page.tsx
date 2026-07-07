@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SafetyResources } from "@/components/SafetyResources";
 
 export const metadata: Metadata = {
   title: "Commencer avec TRACÉA, gratuit en 2 minutes",
@@ -221,6 +222,9 @@ export default function StartPage() {
             </Link>
           ))}
         </div>
+
+        {/* Bloc sécurité (composant unifié) */}
+        <SafetyResources />
 
         {/* MENTION GRATUIT / ABONNEMENT */}
         <p

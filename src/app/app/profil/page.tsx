@@ -750,7 +750,7 @@ export default function ProfilPage() {
           <p className="font-sans" style={kickerStyle}>Mon espace</p>
           <p className="font-body" style={{ ...blockTextStyle, textAlign: "center", whiteSpace: "pre-line" }}>
             {stats.total >= 3
-              ? "Tu es déjà revenu ici plusieurs fois.\n\nEt quelque chose en toi commence à bouger."
+              ? "Tu es déjà revenu·e ici plusieurs fois.\n\nC'est ce que tu poses ici, à ton rythme."
               : "Ton espace TRACÉA se construit au fil de tes traversées."}
           </p>
         </div>

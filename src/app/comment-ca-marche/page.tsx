@@ -133,12 +133,12 @@ export default function CommentCaMarchePage() {
     {
       letter: "C",
       name: "Comprendre",
-      text: "Tu vois un peu mieux ce qui se passe.\nPas une analyse.\nJuste un peu de clarté sur ce qui a déclenché ça.",
+      text: "Tu vois ce qui aiderait, là.\nPas une analyse.\nJuste ce dont tu aurais besoin, dans ce moment.",
     },
     {
       letter: "E",
       name: "Émerger",
-      text: "Tu identifies ce dont tu as besoin dans ce moment.\nQuelque chose de concret, pas une solution complète.",
+      text: "Tu laisses une direction apparaître.\nQuelque chose de concret, pas une solution complète.",
     },
     {
       letter: "A",

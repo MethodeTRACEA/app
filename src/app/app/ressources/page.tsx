@@ -61,7 +61,7 @@ const steps: StepResource[] = [
       "• le système sympathique : activation, stress, survie",
       "• le système parasympathique : repos, récupération, sécurité",
       "Quand une émotion intense surgit, le sympathique prend le dessus.",
-      "Respirer lentement, et surtout expirer plus longtemps, aide à réactiver le parasympathique.",
+      "Respirer lentement, et surtout expirer plus longtemps, aide le corps à retrouver un appui.",
       "C'est ce qui permet au corps de retrouver un appui.",
     ],
   },
@@ -405,7 +405,7 @@ export default function RessourcesPage() {
                           Tu peux lui donner un appui.
                         </p>
                         <p className="font-sans leading-relaxed" style={pNormal}>
-                          Respire lentement. Expire plus longtemps que tu n&apos;inspires. C&apos;est comme &ccedil;a que ton syst&egrave;me nerveux retrouve un signal de s&eacute;curit&eacute;.
+                          Tu peux ralentir un peu, sans forcer. Si c&apos;est possible, laisse l&apos;expire durer un peu plus longtemps que l&apos;inspire. Chez beaucoup de gens, &ccedil;a aide le corps &agrave; retrouver un appui.
                         </p>
                         <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
                           Expirer plus longtemps active un signal de s&eacute;curit&eacute; dans ton corps.
@@ -435,11 +435,7 @@ export default function RessourcesPage() {
                           Un besoin non respect&eacute;, non entendu ou menac&eacute;.
                         </p>
                         <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
-                          Nos sch&eacute;mas &eacute;motionnels se forment t&ocirc;t, souvent dans l&apos;enfance.
-                          <br /><br />
-                          Ils se r&eacute;p&egrave;tent parce qu&apos;ils ont &eacute;t&eacute; utiles &mdash; des strat&eacute;gies de survie devenues des r&eacute;flexes.
-                          <br /><br />
-                          Les voir clairement, sans les juger, c&apos;est d&eacute;j&agrave; commencer &agrave; s&apos;en lib&eacute;rer.
+                          Souvent, derri&egrave;re une r&eacute;action, il y a un besoin. Un besoin non respect&eacute;, non entendu, ou menac&eacute;. Le voir clairement, sans le juger, c&apos;est d&eacute;j&agrave; autre chose.
                         </p>
                       </div>
 

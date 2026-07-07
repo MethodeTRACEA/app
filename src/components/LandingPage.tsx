@@ -44,8 +44,8 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
     { letter: "T", name: "Traverser",   text: "Tu restes là, sans fuir." },
     { letter: "R", name: "Reconnaître", text: "Tu nommes ce que tu ressens." },
     { letter: "A", name: "Ancrer",      text: "Tu reviens au corps." },
-    { letter: "C", name: "Comprendre",  text: "Tu vois un peu mieux ce qui se passe." },
-    { letter: "E", name: "Émerger",     text: "Tu identifies ce dont tu as besoin." },
+    { letter: "C", name: "Comprendre",  text: "Tu vois ce qui aiderait, là." },
+    { letter: "E", name: "Émerger",     text: "Tu laisses une direction apparaître." },
     { letter: "A", name: "Aligner",     text: "Tu choisis un geste simple." },
   ];
 
