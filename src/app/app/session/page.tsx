@@ -1605,6 +1605,10 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
             </p>
           )}
 
+          {/* HOTFIX PROD : porte vers l'écran de repos masquée, rendu pas encore
+              validé (attente version finale vidéo). L'écran (RestingScreen,
+              restingScreen state) reste en place, juste inaccessible tant que
+              ce bloc est commenté.
           <button
             type="button"
             onClick={() => setRestingScreen(true)}
@@ -1612,6 +1616,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
           >
             Rester avec ça un instant
           </button>
+          */}
 
           <InstallPrompt />
 
