@@ -558,6 +558,8 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   const [situationComplement, setSituationComplement] = useState("");
   const [emotion, setEmotion] = useState("");
   const [emotionOther, setEmotionOther] = useState("");
+  const [emotionSecondeCouche, setEmotionSecondeCouche] = useState(false);
+  const [emotion2, setEmotion2] = useState("");
   const [besoin, setBesoin] = useState("");
   const [besoinOther, setBesoinOther] = useState("");
   const [action, setAction] = useState("");
@@ -928,6 +930,66 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   // ÉMOTION — 2 / 6 (R - Reconnaître)
   // ════════════════════════════════════════════════════════
   if (phase === "emotion") {
+    if (emotionSecondeCouche) {
+      return (
+        <ScreenContainer overlayOpacity={45}>
+          <div className="py-12">
+            <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
+
+              <StepIndicator currentStep={1} completedSteps={[0]} />
+
+              <div className="text-center space-y-2">
+                <p className="font-inter text-[10px] t-text-ghost uppercase tracking-widest">
+                  2 / 6
+                </p>
+                <p className="font-body text-lg t-text-secondary">
+                  Et en dessous, peut-être ?
+                </p>
+                <p className="font-inter text-xs t-text-ghost">
+                  Parfois une autre émotion se cache sous la première. Parfois non.
+                </p>
+              </div>
+
+              <div className="w-full space-y-2.5">
+                {EMOTION_CHIPS.map((chip) => (
+                  <Chip
+                    key={chip}
+                    label={chip}
+                    selected={emotion2 === chip}
+                    onClick={() => setEmotion2(chip)}
+                  />
+                ))}
+                <Chip
+                  label="rien d'autre"
+                  selected={false}
+                  onClick={() => setPhase("ancrage")}
+                />
+                <Chip
+                  label="je ne sais pas"
+                  selected={false}
+                  onClick={() => setPhase("ancrage")}
+                />
+              </div>
+
+              {emotion2 && (
+                <PrimaryButton onClick={() => setPhase("ancrage")}>
+                  Continuer
+                </PrimaryButton>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setPhase("ancrage")}
+                className="font-inter text-xs t-text-ghost hover:t-text-secondary transition-colors"
+              >
+                Passer
+              </button>
+
+            </div>
+          </div>
+        </ScreenContainer>
+      );
+    }
     return (
       <ScreenContainer overlayOpacity={45}>
         <div className="py-12">
@@ -977,7 +1039,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
               disabled={!emotion || (emotion === "autre" && !emotionOther.trim())}
               onClick={() => {
                 if (userId) trackEvent(userId, "step_complete", { step: "emotion", mode: "approfondi", value: emotionLabel });
-                setPhase("ancrage");
+                setEmotionSecondeCouche(true);
               }}
             >
               Continuer
