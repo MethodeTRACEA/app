@@ -7,10 +7,9 @@ interface TraceCrestProps {
 }
 
 const WIDTH = 800;
-const HEIGHT = 300;
-const MIN_POINTS = 7;
-const MAX_POINTS = 9;
-const ANIMATION_MS = 7000;
+const HEIGHT = 1000;
+const PATH_ANIMATION_MS = 12000;
+const SCENE_FADE_MS = 900;
 
 // FNV-1a 32-bit — hash simple et déterministe d'une chaîne.
 function fnv1a(str: string): number {
@@ -22,7 +21,7 @@ function fnv1a(str: string): number {
   return hash >>> 0;
 }
 
-// mulberry32 — PRNG seedé, rapide et suffisant pour un tracé décoratif.
+// mulberry32 — PRNG seedé, rapide et suffisant pour une scène décorative.
 function mulberry32(seed: number) {
   let a = seed;
   return function () {
@@ -32,35 +31,6 @@ function mulberry32(seed: number) {
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-}
-
-function buildPoints(rand: () => number): [number, number][] {
-  const count = MIN_POINTS + Math.floor(rand() * (MAX_POINTS - MIN_POINTS + 1));
-  const startY = HEIGHT * 0.70;
-  const endY = HEIGHT * 0.45;
-  const peakXRatio = 0.40 + rand() * 0.25; // sommet entre 40 % et 65 % de la largeur
-  const peakIndex = Math.max(1, Math.min(count - 2, Math.round(peakXRatio * (count - 1))));
-  const peakY = HEIGHT * (0.12 + rand() * 0.06);
-
-  const points: [number, number][] = [];
-  for (let i = 0; i < count; i++) {
-    const x = (WIDTH * i) / (count - 1);
-    let y: number;
-    if (i === 0) {
-      y = startY;
-    } else if (i === count - 1) {
-      y = endY;
-    } else if (i === peakIndex) {
-      y = peakY;
-    } else {
-      const t = i / (count - 1);
-      y = startY + (endY - startY) * t;
-      const rippleRange = HEIGHT * (0.08 + rand() * 0.04); // micro-relief ±8-12 %
-      y += (rand() * 2 - 1) * rippleRange;
-    }
-    points.push([x, y]);
-  }
-  return points;
 }
 
 // Catmull-Rom → cubic bezier, pour un tracé lissé passant par tous les points.
@@ -83,13 +53,102 @@ function pointsToPath(points: [number, number][]): string {
   return d.join(" ");
 }
 
+interface HillSpec {
+  count: number;
+  peakXRatio: number;
+  peakYRatio: number;
+  baseYRatio: number;
+  rippleRatio: number;
+}
+
+// Ligne de crête d'une colline (réutilise le principe du générateur de crête d'origine).
+function buildHillLine(rand: () => number, spec: HillSpec): [number, number][] {
+  const { count, peakXRatio, peakYRatio, baseYRatio, rippleRatio } = spec;
+  const baseY = HEIGHT * baseYRatio;
+  const peakY = HEIGHT * peakYRatio;
+  const peakIndex = Math.max(1, Math.min(count - 2, Math.round(peakXRatio * (count - 1))));
+
+  const points: [number, number][] = [];
+  for (let i = 0; i < count; i++) {
+    const x = (WIDTH * i) / (count - 1);
+    let y: number;
+    if (i === 0 || i === count - 1) {
+      y = baseY;
+    } else if (i === peakIndex) {
+      y = peakY;
+    } else {
+      const spread = Math.max(peakIndex, count - 1 - peakIndex) || 1;
+      const t = Math.abs(i - peakIndex) / spread;
+      y = peakY + (baseY - peakY) * t;
+      y += (rand() * 2 - 1) * (HEIGHT * rippleRatio);
+    }
+    points.push([x, y]);
+  }
+  return points;
+}
+
+// Forme pleine fermée jusqu'au bas du viewBox, à partir d'une ligne de crête.
+function hillFillPath(points: [number, number][]): string {
+  return `${pointsToPath(points)} L ${WIDTH} ${HEIGHT} L 0 ${HEIGHT} Z`;
+}
+
+// Le chemin en lacets, du bas du viewBox jusqu'à la lueur sur la crête.
+function buildTrailPoints(
+  rand: () => number,
+  startXRatio: number,
+  targetXRatio: number,
+  targetYRatio: number
+): [number, number][] {
+  const bendCount = 4 + Math.floor(rand() * 3); // 4 à 6 lacets
+  const startX = WIDTH * startXRatio;
+  const startY = HEIGHT;
+  const targetX = WIDTH * targetXRatio;
+  const targetY = HEIGHT * targetYRatio;
+
+  const points: [number, number][] = [[startX, startY]];
+  for (let i = 1; i <= bendCount; i++) {
+    const t = i / (bendCount + 1);
+    const y = startY + (targetY - startY) * t;
+    const baseX = startX + (targetX - startX) * t;
+    // Lacets plus amples en bas (t petit), plus resserrés en haut (t grand) — perspective.
+    const amplitude = WIDTH * (0.05 + 0.16 * (1 - t));
+    const dir = i % 2 === 0 ? 1 : -1;
+    const wiggle = dir * amplitude * (0.55 + rand() * 0.45);
+    points.push([baseX + wiggle, y]);
+  }
+  points.push([targetX, targetY]);
+  return points;
+}
+
 export function TraceCrest({ seed }: TraceCrestProps) {
-  const pathRef = useRef<SVGPathElement>(null);
+  const mainPathRef = useRef<SVGPathElement>(null);
   const [pathLength, setPathLength] = useState<number | null>(null);
-  const [animate, setAnimate] = useState(false);
+  const [animatePath, setAnimatePath] = useState(false);
+  const [sceneVisible, setSceneVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
-  const pathD = pointsToPath(buildPoints(mulberry32(fnv1a(seed))));
+  const rand = mulberry32(fnv1a(seed));
+
+  const glowXRatio = 0.35 + rand() * 0.30; // lueur entre 35 % et 65 % de largeur
+  const glowYRatio = 0.30;
+
+  const backHill = buildHillLine(rand, {
+    count: 6 + Math.floor(rand() * 3),
+    peakXRatio: glowXRatio,
+    peakYRatio: glowYRatio,
+    baseYRatio: 0.55,
+    rippleRatio: 0.02,
+  });
+  const frontHill = buildHillLine(rand, {
+    count: 6 + Math.floor(rand() * 3),
+    peakXRatio: 0.20 + rand() * 0.6,
+    peakYRatio: 0.55 + rand() * 0.10,
+    baseYRatio: 0.78,
+    rippleRatio: 0.03,
+  });
+
+  const pathStartXRatio = 0.35 + rand() * 0.30; // zone centrale
+  const trailD = pointsToPath(buildTrailPoints(rand, pathStartXRatio, glowXRatio, glowYRatio + 0.02));
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -97,42 +156,90 @@ export function TraceCrest({ seed }: TraceCrestProps) {
   }, []);
 
   useEffect(() => {
-    if (pathRef.current) {
-      setPathLength(pathRef.current.getTotalLength());
+    if (mainPathRef.current) {
+      setPathLength(mainPathRef.current.getTotalLength());
     }
-  }, [pathD]);
+  }, [trailD]);
 
   useEffect(() => {
-    if (pathLength === null) return;
     if (reducedMotion) {
-      setAnimate(true);
+      setSceneVisible(true);
+      setAnimatePath(true);
       return;
     }
-    const raf = requestAnimationFrame(() => setAnimate(true));
+    const raf = requestAnimationFrame(() => setSceneVisible(true));
+    return () => cancelAnimationFrame(raf);
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    if (pathLength === null || reducedMotion) return;
+    const raf = requestAnimationFrame(() => setAnimatePath(true));
     return () => cancelAnimationFrame(raf);
   }, [pathLength, reducedMotion]);
+
+  const glowCx = WIDTH * glowXRatio;
+  const glowCy = HEIGHT * glowYRatio;
 
   return (
     <svg
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
       width="100%"
-      style={{ maxWidth: 480, overflow: "visible" }}
+      style={{ maxWidth: 340, height: "auto" }}
       fill="none"
       aria-hidden="true"
-      className="text-terra"
     >
+      <defs>
+        <linearGradient id="trace-crest-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F0D5C4" />
+          <stop offset="45%" stopColor="#B87A4E" />
+          <stop offset="100%" stopColor="#231916" />
+        </linearGradient>
+        <radialGradient id="trace-crest-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#D6A56A" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#D6A56A" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      <rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#trace-crest-sky)" />
+
+      <g
+        style={{
+          opacity: sceneVisible ? 1 : 0,
+          transition: reducedMotion ? "none" : `opacity ${SCENE_FADE_MS}ms ease-out`,
+        }}
+      >
+        <circle cx={glowCx} cy={glowCy} r={WIDTH * 0.22} fill="url(#trace-crest-glow)" />
+        <path d={hillFillPath(backHill)} fill="#6E4332" />
+        <path d={hillFillPath(frontHill)} fill="#231916" />
+      </g>
+
+      {/* Halo du chemin */}
       <path
-        ref={pathRef}
-        d={pathD}
-        stroke="currentColor"
-        strokeWidth={1.75}
+        d={trailD}
+        stroke="#D6A56A"
+        strokeWidth={14}
+        strokeLinecap="round"
+        fill="none"
+        style={{
+          opacity: 0.22,
+          strokeDasharray: pathLength ?? 1,
+          strokeDashoffset: animatePath ? 0 : pathLength ?? 1,
+          transition: reducedMotion ? "none" : `stroke-dashoffset ${PATH_ANIMATION_MS}ms ease-in-out`,
+        }}
+      />
+
+      {/* Trait principal du chemin */}
+      <path
+        ref={mainPathRef}
+        d={trailD}
+        stroke="#F0D5C4"
+        strokeWidth={5.5}
         strokeLinecap="round"
         fill="none"
         style={{
           strokeDasharray: pathLength ?? 1,
-          strokeDashoffset: animate ? 0 : pathLength ?? 1,
-          transition: reducedMotion ? "none" : `stroke-dashoffset ${ANIMATION_MS}ms ease-out`,
-          filter: "drop-shadow(0 0 6px rgba(196,112,74,0.18))",
+          strokeDashoffset: animatePath ? 0 : pathLength ?? 1,
+          transition: reducedMotion ? "none" : `stroke-dashoffset ${PATH_ANIMATION_MS}ms ease-in-out`,
         }}
       />
     </svg>
