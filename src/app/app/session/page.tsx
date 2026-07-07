@@ -20,6 +20,7 @@ import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { SafetyResources } from "@/components/SafetyResources";
 import { StepIndicator } from "@/components/StepIndicator";
+import { GroundingGuide } from "@/components/GroundingGuide";
 
 // ════════════════════════════════════════════════════════════
 // TRACÉA — Traversée approfondie V2
@@ -551,6 +552,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   const [paywallDismissed, setPaywallDismissed] = useState(false);
   const [ancrageUnlocked, setAncrageUnlocked] = useState(false);
   const [ancrageProgress, setAncrageProgress] = useState(false);
+  const [ancrageExercice, setAncrageExercice] = useState(false);
 
   // Données collectées
   const [situation, setSituation] = useState("");
@@ -1012,6 +1014,14 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
   // ANCRAGE — 3 / 6 (A - Ancrer) — Pause corporelle
   // ════════════════════════════════════════════════════════
   if (phase === "ancrage") {
+    if (ancrageExercice) {
+      return (
+        <GroundingGuide
+          onComplete={() => setPhase("besoin")}
+          onCancel={() => setAncrageExercice(false)}
+        />
+      );
+    }
     return (
       <ScreenContainer overlayOpacity={45}>
         <div className="py-12">
@@ -1050,11 +1060,17 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
             </div>
 
             <PrimaryButton
+              onClick={() => setAncrageExercice(true)}
+            >
+              Prendre une minute pour ça
+            </PrimaryButton>
+
+            <SecondaryButton
               disabled={!ancrageUnlocked}
               onClick={() => setPhase("besoin")}
             >
-              J&apos;ai posé mes appuis
-            </PrimaryButton>
+              Continuer
+            </SecondaryButton>
 
             <BackButton onClick={() => setPhase("emotion")} />
 
