@@ -6,8 +6,10 @@ import {
   getCompletedSessionsDb,
   getPremiumMemory,
   getShortTraces,
+  getRecentGestesDb,
   type PremiumMemory,
   type ShortTrace,
+  type RecentGeste,
 } from "@/lib/supabase-store";
 import { getTraceLabel } from "@/lib/trace-labels";
 import {
@@ -149,6 +151,7 @@ export default function CeQuiChangePage() {
   const [recurringNeed, setRecurringNeed] = useState<{ need: string; count: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [shortTraces, setShortTraces] = useState<ShortTrace[]>([]);
+  const [gestes, setGestes] = useState<RecentGeste[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -159,13 +162,15 @@ export default function CeQuiChangePage() {
       getRecurringEmotions(supabase, user.id),
       getRecurringNeeds(supabase, user.id),
       getShortTraces(),
-    ]).then(([s, profile, pm, emo, need, traces]) => {
+      getRecentGestesDb(user.id),
+    ]).then(([s, profile, pm, emo, need, traces, recentGestes]) => {
       setSessions(s);
       setMemoryProfile(profile);
       setPremiumMemory(pm);
       setRecurringEmotion(emo);
       setRecurringNeed(need);
       setShortTraces(traces);
+      setGestes(recentGestes);
       setLoading(false);
     });
   }, [user]);
@@ -422,8 +427,56 @@ export default function CeQuiChangePage() {
           </div>
         )}
 
+        {/* ── Tes gestes (35-B / B-3) — lecture seule, curés uniquement ──
+            Déclaratif : mention seulement si positive/neutre (fait / autrement).
+            pas_encore / passe / non répondu → aucune mention, le geste est juste
+            posé (règle Option A). Section masquée si aucun geste curé récent. */}
+        {gestes.length > 0 && (
+          <div style={blockStyle}>
+            <p className="font-sans" style={kickerStyle}>
+              Tes gestes
+            </p>
+            <p className="font-body" style={blockTextStyle}>
+              Les gestes que tu as choisis récemment.
+            </p>
+            <ul style={listStyle}>
+              {gestes.map((g) => {
+                const mention =
+                  g.statut === "fait"
+                    ? "fait"
+                    : g.statut === "autre_forme"
+                      ? "autrement"
+                      : null;
+                return (
+                  <li key={g.sessionId} style={listItemStyle}>
+                    <span style={bulletStyle} aria-hidden="true">
+                      •
+                    </span>
+                    <span>
+                      {g.label}
+                      {mention && (
+                        <span
+                          className="font-sans"
+                          style={{
+                            marginLeft: 10,
+                            fontSize: 12,
+                            color: "#C97B6A",
+                            letterSpacing: "0.04em",
+                          }}
+                        >
+                          {mention}
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
         {/* ── Cas 0 — aucune session ── */}
-        {n === 0 && !hasAnyContent && shortTraces.length === 0 && (
+        {n === 0 && !hasAnyContent && shortTraces.length === 0 && gestes.length === 0 && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Cet espace se remplira au fil de tes traversées.
@@ -432,7 +485,7 @@ export default function CeQuiChangePage() {
         )}
 
         {/* ── Cas 1 — une seule session ── */}
-        {n === 1 && !hasAnyContent && shortTraces.length === 0 && (
+        {n === 1 && !hasAnyContent && shortTraces.length === 0 && gestes.length === 0 && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Une première trace existe.
@@ -445,7 +498,7 @@ export default function CeQuiChangePage() {
         )}
 
         {/* ── Cas 2 — sessions présentes mais mémoire pas encore prête ── */}
-        {n >= 2 && !hasAnyContent && shortTraces.length === 0 && (
+        {n >= 2 && !hasAnyContent && shortTraces.length === 0 && gestes.length === 0 && (
           <div style={blockStyle}>
             <p className="font-body" style={blockTextStyle}>
               Tes traversées sont bien enregistrées.

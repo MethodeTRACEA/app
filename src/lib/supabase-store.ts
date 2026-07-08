@@ -184,6 +184,55 @@ export async function getEligibleGesteDb(
   return null;
 }
 
+export type RecentGeste = {
+  sessionId: string;
+  label: string;
+  statut: GesteStatut | null;
+};
+
+/**
+ * Liste des gestes curés récents pour la section « Tes gestes » du reflet (B-3),
+ * en LECTURE SEULE. Contrairement à getEligibleGesteDb (qui vise LE geste à
+ * relancer), on renvoie TOUS les statuts : la mention n'est décidée qu'à
+ * l'affichage (fait → « fait », autre_forme → « autrement », sinon rien — le
+ * geste apparaît juste posé). Aucun filtre sur geste_statut ni pass_count.
+ * Réutilise le même filtre « curés uniquement » que getEligibleGesteDb
+ * (CURATED_ACTION_TEXTS) : un geste en texte libre n'est jamais ré-affiché.
+ * Fenêtre par défaut 30 j : plus large que la carte (14 j) car c'est une
+ * section de relecture passive, pas une sollicitation. Ajustable via windowDays.
+ */
+export async function getRecentGestesDb(
+  userId: string,
+  windowDays = 30
+): Promise<RecentGeste[]> {
+  const cutoff = new Date(
+    Date.now() - windowDays * 24 * 3600 * 1000
+  ).toISOString();
+  const { data, error } = await supabase
+    .from("sessions")
+    .select("id, action_alignee, geste_statut, created_at")
+    .eq("user_id", userId)
+    .not("action_alignee", "is", null)
+    .gte("created_at", cutoff)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error || !data) return [];
+
+  const out: RecentGeste[] = [];
+  for (const row of data) {
+    const label = ((row.action_alignee as string) ?? "").trim();
+    if (label && CURATED_ACTION_TEXTS.has(label)) {
+      out.push({
+        sessionId: row.id as string,
+        label,
+        statut: (row.geste_statut as GesteStatut | null) ?? null,
+      });
+    }
+  }
+  return out;
+}
+
 // --- Profile ---
 
 export async function getProfileDb(userId: string) {
