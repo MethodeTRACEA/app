@@ -3,6 +3,7 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { AuthProvider } from "@/lib/auth-context";
 import { OnboardingRedirect } from "@/components/OnboardingRedirect";
 import { ForceNightMode } from "@/components/ForceNightMode";
+import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 import Link from "next/link";
 
 export default function AppLayout({
@@ -11,6 +12,7 @@ export default function AppLayout({
   return (
     <AuthProvider>
       <ForceNightMode />
+      <RegisterServiceWorker />
       <Navigation />
       <OnboardingRedirect />
       <main className="flex-1">{children}</main>
