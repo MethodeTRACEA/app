@@ -43,6 +43,9 @@ const TERMINAL_STRIPE_STATUSES = new Set([
 // keep_consent_proof_on_account_delete.sql) — les lignes survivent
 // à la suppression du compte. user_id reste posé comme "orphan UUID"
 // pour rattachabilité en cas de litige (cross-ref via metadata Stripe).
+// reminders + push_subscriptions (chantier 57-1) : tables NEUVES, aucun
+// héritage de cascade suffisant pour la conformité — ajout EXPLICITE ici
+// obligatoire (donnée perso : rappels armés + endpoints push navigateur).
 const CHILD_TABLES = [
   "session_summaries",
   "user_memory_profile",
@@ -51,6 +54,8 @@ const CHILD_TABLES = [
   "ai_usage_logs",
   "rate_limit_logs",
   "sessions",
+  "reminders",
+  "push_subscriptions",
 ] as const;
 
 export async function POST(request: NextRequest) {

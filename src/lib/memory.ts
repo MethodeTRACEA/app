@@ -627,15 +627,19 @@ export async function deleteMemoryData(
   supabaseClient: any,
   userId: string
 ): Promise<{ success: boolean; error?: string }> {
-  // Ordre : résumés → profil mémoire → événements → traces d'action → sessions.
-  // Chaque erreur est capturée : au premier échec on s'arrête et on retourne
-  // un échec honnête (jamais de faux succès).
+  // Ordre : résumés → profil mémoire → événements → traces d'action → sessions
+  // → rappels → abonnements push. Chaque erreur est capturée : au premier échec
+  // on s'arrête et on retourne un échec honnête (jamais de faux succès).
+  // reminders + push_subscriptions (chantier 57-1) : tables NEUVES, aucun
+  // héritage — leur présence ici est obligatoire (donnée perso effaçable).
   const tables = [
     "session_summaries",
     "user_memory_profile",
     "tracea_events",
     "action_traces",
     "sessions",
+    "reminders",
+    "push_subscriptions",
   ];
 
   for (const table of tables) {
