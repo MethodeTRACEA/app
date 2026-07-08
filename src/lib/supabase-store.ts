@@ -257,6 +257,88 @@ export async function getRecentGestesDb(
   return Array.from(byLabel.values());
 }
 
+// --- Rappels (chantier 57, brique 57-3) ---
+
+export type ReminderCategorie = "entrainement" | "moment_sensible";
+export type ReminderCreneau = "matin" | "midi" | "soir";
+
+export type Reminder = {
+  id: string;
+  categorie: ReminderCategorie;
+  creneau: ReminderCreneau;
+  jours: number[]; // ISO 8601 : 1=lundi … 7=dimanche
+  label: string | null;
+};
+
+/**
+ * Rappels ARMÉS de la personne (arme=true uniquement — un rappel retiré
+ * n'est jamais supprimé, juste désarmé en base, et ne doit plus apparaître
+ * ici). Aucun compteur, aucune stat d'usage : uniquement ce qui décrit le
+ * rappel lui-même.
+ */
+export async function getArmedRemindersDb(userId: string): Promise<Reminder[]> {
+  const { data, error } = await supabase
+    .from("reminders")
+    .select("id, categorie, creneau, jours, label")
+    .eq("user_id", userId)
+    .eq("arme", true)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+
+  return data.map((row) => ({
+    id: row.id as string,
+    categorie: row.categorie as ReminderCategorie,
+    creneau: row.creneau as ReminderCreneau,
+    jours: (row.jours as number[]) ?? [],
+    label: (row.label as string | null) ?? null,
+  }));
+}
+
+/**
+ * Pose un rappel (arme=true dès la création). `fuseau` est le fuseau IANA du
+ * navigateur (Intl.DateTimeFormat().resolvedOptions().timeZone), capté sans
+ * UI dédiée — nécessaire au cron 57-4, jamais montré à la personne.
+ */
+export async function createReminderDb(
+  userId: string,
+  input: {
+    categorie: ReminderCategorie;
+    creneau: ReminderCreneau;
+    jours: number[];
+    label: string | null;
+    fuseau: string;
+  }
+): Promise<{ id: string } | null> {
+  const { data, error } = await supabase
+    .from("reminders")
+    .insert({
+      user_id: userId,
+      categorie: input.categorie,
+      creneau: input.creneau,
+      jours: input.jours,
+      label: input.label,
+      fuseau: input.fuseau,
+      arme: true,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data) return null;
+  return { id: data.id as string };
+}
+
+/**
+ * Retire un rappel : toggle arme=false, ne supprime jamais la ligne
+ * (décision actée en 57-1 — la config reste, réarmable plus tard si besoin).
+ */
+export async function disarmReminderDb(reminderId: string): Promise<void> {
+  await supabase
+    .from("reminders")
+    .update({ arme: false, updated_at: new Date().toISOString() })
+    .eq("id", reminderId);
+}
+
 // --- Profile ---
 
 export async function getProfileDb(userId: string) {

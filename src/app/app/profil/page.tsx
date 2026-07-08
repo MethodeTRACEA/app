@@ -755,6 +755,30 @@ export default function ProfilPage() {
           </p>
         </div>
 
+        {/* ── Rappels (chantier 57) ── */}
+        <div style={blockStyle}>
+          <p className="font-sans" style={kickerStyle}>Rappels</p>
+          <p className="font-body" style={blockTextStyle}>
+            Tu peux te poser un rappel, pour un moment que tu connais comme
+            sensible, ou juste pour t&apos;entraîner au calme. C&apos;est toi
+            qui choisis quand.
+          </p>
+          <Link
+            href="/app/rappels"
+            className="font-sans"
+            style={{
+              display: "inline-block",
+              marginTop: 16,
+              fontSize: 13,
+              color: "rgba(240,230,214,0.60)",
+              letterSpacing: "0.04em",
+              textDecoration: "none",
+            }}
+          >
+            Gérer tes rappels ›
+          </Link>
+        </div>
+
         {/* ── Données & confidentialité (accordéon) ── */}
         <div style={{ marginTop: 8 }}>
           {/* Bouton accordéon */}
