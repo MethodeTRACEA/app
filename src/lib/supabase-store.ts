@@ -190,6 +190,19 @@ export type RecentGeste = {
   statut: GesteStatut | null;
 };
 
+// Statut le plus « abouti » entre deux occurrences d'un même geste, pour la
+// dédup de « Tes gestes » : fait > autre_forme > le reste (pas_encore/passe/NULL,
+// qui n'affichent aucune mention). En cas d'égalité de rang, on garde `a`
+// (l'occurrence déjà retenue, la plus récente).
+function moreAccomplishedStatut(
+  a: GesteStatut | null,
+  b: GesteStatut | null
+): GesteStatut | null {
+  const rank = (s: GesteStatut | null) =>
+    s === "fait" ? 2 : s === "autre_forme" ? 1 : 0;
+  return rank(a) >= rank(b) ? a : b;
+}
+
 /**
  * Liste des gestes curés récents pour la section « Tes gestes » du reflet (B-3),
  * en LECTURE SEULE. Contrairement à getEligibleGesteDb (qui vise LE geste à
@@ -200,6 +213,14 @@ export type RecentGeste = {
  * (CURATED_ACTION_TEXTS) : un geste en texte libre n'est jamais ré-affiché.
  * Fenêtre par défaut 30 j : plus large que la carte (14 j) car c'est une
  * section de relecture passive, pas une sollicitation. Ajustable via windowDays.
+ *
+ * DÉDUP PAR LIBELLÉ (P1) : un même libellé n'apparaît qu'une fois. Sinon le même
+ * geste s'afficherait deux fois (ex. une occurrence non répondue + une « fait »),
+ * ce qui recréerait le « pas encore » déguisé que l'Option A doit rendre
+ * impossible. Statut retenu = le plus abouti parmi TOUTES les occurrences.
+ * Ordre = récence : la Map préserve l'ordre d'insertion, et les lignes arrivent
+ * déjà triées du + récent au + ancien, donc la 1re insertion d'un libellé fixe
+ * sa position (occurrence la plus récente en haut).
  */
 export async function getRecentGestesDb(
   userId: string,
@@ -219,18 +240,21 @@ export async function getRecentGestesDb(
 
   if (error || !data) return [];
 
-  const out: RecentGeste[] = [];
+  const byLabel = new Map<string, RecentGeste>();
   for (const row of data) {
     const label = ((row.action_alignee as string) ?? "").trim();
-    if (label && CURATED_ACTION_TEXTS.has(label)) {
-      out.push({
-        sessionId: row.id as string,
-        label,
-        statut: (row.geste_statut as GesteStatut | null) ?? null,
-      });
+    if (!label || !CURATED_ACTION_TEXTS.has(label)) continue;
+    const statut = (row.geste_statut as GesteStatut | null) ?? null;
+    const existing = byLabel.get(label);
+    if (!existing) {
+      byLabel.set(label, { sessionId: row.id as string, label, statut });
+    } else {
+      // Même geste revu : on garde la position (récence) et on remonte au statut
+      // le plus abouti vu sur ce libellé.
+      existing.statut = moreAccomplishedStatut(existing.statut, statut);
     }
   }
-  return out;
+  return Array.from(byLabel.values());
 }
 
 // --- Profile ---
