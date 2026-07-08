@@ -90,6 +90,48 @@ export async function deleteSessionDb(sessionId: string): Promise<void> {
   await supabase.from("sessions").delete().eq("id", sessionId);
 }
 
+// --- Geste déclaratif (Chantier 35-B « Le retour du geste », brique B-1) ---
+// Statut déclaratif rattaché au geste de l'étape Aligner (sessions.action_alignee).
+// Stockage uniquement : ce point d'écriture sera appelé depuis la carte (B-2),
+// il n'est branché sur aucune UI ici.
+
+export type GesteStatut = "fait" | "pas_encore" | "autre_forme" | "passe";
+
+/**
+ * Pose le statut déclaratif d'un geste sur sa ligne `sessions`.
+ * - Statut terminal ('fait' | 'pas_encore' | 'autre_forme') : rattaché tel quel,
+ *   le geste est « répondu » (le pass_count n'est pas touché).
+ * - 'passe' : incrémente le compteur de passes consécutives (règle des 2 passes en B-2).
+ * Écrit toujours l'horodatage de la dernière interaction.
+ * Une seule ligne de statut par geste (la ligne session elle-même) : rien à créer,
+ * les colonnes passent de NULL/0 à leur valeur à la première interaction.
+ */
+export async function setGesteStatutDb(
+  sessionId: string,
+  statut: GesteStatut
+): Promise<void> {
+  const updates: {
+    geste_statut: GesteStatut;
+    geste_statut_at: string;
+    geste_pass_count?: number;
+  } = {
+    geste_statut: statut,
+    geste_statut_at: new Date().toISOString(),
+  };
+
+  if (statut === "passe") {
+    const { data } = await supabase
+      .from("sessions")
+      .select("geste_pass_count")
+      .eq("id", sessionId)
+      .single();
+    const current = (data?.geste_pass_count as number) ?? 0;
+    updates.geste_pass_count = current + 1;
+  }
+
+  await supabase.from("sessions").update(updates).eq("id", sessionId);
+}
+
 // --- Profile ---
 
 export async function getProfileDb(userId: string) {
