@@ -6,41 +6,31 @@ interface TraceCrestProps {
   seed: string;
 }
 
-const WIDTH = 800;
-const HEIGHT = 1000;
-const PATH_ANIMATION_MS = 12000;
+// Espace de coordonnées = pixels natifs de trace-clear.webp (1024×1535).
+// Le SVG utilise ce viewBox + preserveAspectRatio="xMidYMid slice", exactement
+// comme l'object-cover de la photo — les points restent calés sur le sentier
+// réel quel que soit le viewport.
+const IMG_WIDTH = 1024;
+const IMG_HEIGHT = 1535;
 
-// Bande horizontale (ratio de largeur) où peut démarrer le chemin, en bas du cadre.
-const TRAIL_START_X_MIN = 0.35;
-const TRAIL_START_X_MAX = 0.65;
+// Le sentier réellement visible sur trace-clear.webp (nouvelle photo), du bas
+// de l'image jusqu'à la zone où il se perd dans l'ombre de la colline, vers
+// la crête. Recalé au pixel (zoom sur crops) le 2026-07-07 sur la nouvelle
+// photo — À AJUSTER À L'ŒIL avec Alyson en local (/dev-trace), première estimation.
+const TRAIL_POINTS: [number, number][] = [
+  [599, 1518],
+  [635, 1410],
+  [543, 1301],
+  [614, 1201],
+  [522, 1092],
+  [579, 992],
+  [583, 843],
+];
 
-// Bande horizontale (ratio de hauteur) où le chemin doit se terminer, calée sur la
-// ligne de crête visible de la photo de fond. À ajuster visuellement une fois la
-// photo en place.
-const TRAIL_END_Y_MIN = 0.42;
-const TRAIL_END_Y_MAX = 0.50;
-
-// FNV-1a 32-bit — hash simple et déterministe d'une chaîne.
-function fnv1a(str: string): number {
-  let hash = 0x811c9dc5;
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return hash >>> 0;
-}
-
-// mulberry32 — PRNG seedé, rapide et suffisant pour un tracé décoratif.
-function mulberry32(seed: number) {
-  let a = seed;
-  return function () {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+const POINT_BEGIN_S = 6; // la lumière part une fois le fondu bien avancé
+const POINT_DURATION_S = 10; // durée de la remontée du point
+const TRAIL_REVEAL_MS = POINT_DURATION_S * 1000;
+const TRAIL_RESTING_OPACITY = 0.18;
 
 // Catmull-Rom → cubic bezier, pour un tracé lissé passant par tous les points.
 function pointsToPath(points: [number, number][]): string {
@@ -62,41 +52,17 @@ function pointsToPath(points: [number, number][]): string {
   return d.join(" ");
 }
 
-// Le chemin en lacets, du bas du cadre jusqu'à la crête de la photo.
-function buildTrailPoints(rand: () => number): [number, number][] {
-  const startXRatio = TRAIL_START_X_MIN + rand() * (TRAIL_START_X_MAX - TRAIL_START_X_MIN);
-  const targetXRatio = 0.35 + rand() * 0.30;
-  const targetYRatio = TRAIL_END_Y_MIN + rand() * (TRAIL_END_Y_MAX - TRAIL_END_Y_MIN);
+const trailD = pointsToPath(TRAIL_POINTS);
 
-  const bendCount = 4 + Math.floor(rand() * 3); // 4 à 6 lacets
-  const startX = WIDTH * startXRatio;
-  const startY = HEIGHT;
-  const targetX = WIDTH * targetXRatio;
-  const targetY = HEIGHT * targetYRatio;
-
-  const points: [number, number][] = [[startX, startY]];
-  for (let i = 1; i <= bendCount; i++) {
-    const t = i / (bendCount + 1);
-    const y = startY + (targetY - startY) * t;
-    const baseX = startX + (targetX - startX) * t;
-    // Lacets plus amples en bas (t petit), plus resserrés en haut (t grand) — perspective.
-    const amplitude = WIDTH * (0.05 + 0.16 * (1 - t));
-    const dir = i % 2 === 0 ? 1 : -1;
-    const wiggle = dir * amplitude * (0.55 + rand() * 0.45);
-    points.push([baseX + wiggle, y]);
-  }
-  points.push([targetX, targetY]);
-  return points;
-}
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function TraceCrest({ seed }: TraceCrestProps) {
-  const mainPathRef = useRef<SVGPathElement>(null);
-  const [pathLength, setPathLength] = useState<number | null>(null);
-  const [animatePath, setAnimatePath] = useState(false);
+  // `seed` n'est plus utilisé : on a abandonné le tracé génératif au profit
+  // d'un sentier calé à la main sur la photo réelle. Conservé dans la
+  // signature pour ne pas toucher l'appel dans session/page.tsx.
+  const trailPathRef = useRef<SVGPathElement>(null);
+  const [trailLength, setTrailLength] = useState<number | null>(null);
+  const [revealTrail, setRevealTrail] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-
-  const rand = mulberry32(fnv1a(seed));
-  const trailD = pointsToPath(buildTrailPoints(rand));
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -104,24 +70,24 @@ export function TraceCrest({ seed }: TraceCrestProps) {
   }, []);
 
   useEffect(() => {
-    if (mainPathRef.current) {
-      setPathLength(mainPathRef.current.getTotalLength());
+    if (trailPathRef.current) {
+      setTrailLength(trailPathRef.current.getTotalLength());
     }
-  }, [trailD]);
+  }, []);
 
   useEffect(() => {
     if (reducedMotion) {
-      setAnimatePath(true);
+      setRevealTrail(true);
       return;
     }
-    if (pathLength === null) return;
-    const raf = requestAnimationFrame(() => setAnimatePath(true));
-    return () => cancelAnimationFrame(raf);
-  }, [pathLength, reducedMotion]);
+    if (trailLength === null) return;
+    const timer = setTimeout(() => setRevealTrail(true), POINT_BEGIN_S * 1000);
+    return () => clearTimeout(timer);
+  }, [trailLength, reducedMotion]);
 
   return (
     <svg
-      viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+      viewBox={`0 0 ${IMG_WIDTH} ${IMG_HEIGHT}`}
       width="100%"
       height="100%"
       preserveAspectRatio="xMidYMid slice"
@@ -129,37 +95,53 @@ export function TraceCrest({ seed }: TraceCrestProps) {
       aria-hidden="true"
       style={{ position: "absolute", inset: 0 }}
     >
-      {/* Halo — le fil de lumière élargi */}
+      <defs>
+        <filter id="trace-crest-point-blur" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur stdDeviation="2.4" />
+        </filter>
+      </defs>
+
+      {/* Traînée — révélée progressivement, laissée très légère ensuite */}
       <path
+        id="trace-crest-trail"
+        ref={trailPathRef}
         d={trailD}
-        stroke="#F5DCC8"
-        strokeWidth={17}
+        stroke="#FFE8C9"
+        strokeWidth={2}
         strokeLinecap="round"
         fill="none"
         style={{
           mixBlendMode: "screen",
-          opacity: 0.3,
-          strokeDasharray: pathLength ?? 1,
-          strokeDashoffset: animatePath ? 0 : pathLength ?? 1,
-          transition: reducedMotion ? "none" : `stroke-dashoffset ${PATH_ANIMATION_MS}ms ease-in-out`,
+          opacity: TRAIL_RESTING_OPACITY,
+          strokeDasharray: trailLength ?? 1,
+          strokeDashoffset: revealTrail ? 0 : trailLength ?? 1,
+          transition: reducedMotion ? "none" : `stroke-dashoffset ${TRAIL_REVEAL_MS}ms ease-in-out`,
         }}
       />
 
-      {/* Trait principal — le fil de lumière net */}
-      <path
-        ref={mainPathRef}
-        d={trailD}
-        stroke="#F5DCC8"
-        strokeWidth={4.5}
-        strokeLinecap="round"
-        fill="none"
-        style={{
-          mixBlendMode: "screen",
-          strokeDasharray: pathLength ?? 1,
-          strokeDashoffset: animatePath ? 0 : pathLength ?? 1,
-          transition: reducedMotion ? "none" : `stroke-dashoffset ${PATH_ANIMATION_MS}ms ease-in-out`,
-        }}
-      />
+      {/* Point de lumière — remonte le sentier, se fond dans la crête à l'arrivée */}
+      {!reducedMotion && (
+        <g opacity={0} style={{ mixBlendMode: "screen" }}>
+          <animateMotion
+            dur={`${POINT_DURATION_S}s`}
+            begin={`${POINT_BEGIN_S}s`}
+            fill="freeze"
+            rotate="auto"
+          >
+            <mpath href="#trace-crest-trail" />
+          </animateMotion>
+          <animate
+            attributeName="opacity"
+            values="0;1;1;0"
+            keyTimes="0;0.06;0.82;1"
+            dur={`${POINT_DURATION_S}s`}
+            begin={`${POINT_BEGIN_S}s`}
+            fill="freeze"
+          />
+          <circle r={16} fill="#FFE8C9" opacity={0.3} filter="url(#trace-crest-point-blur)" />
+          <circle r={6} fill="#FFE8C9" />
+        </g>
+      )}
     </svg>
   );
 }

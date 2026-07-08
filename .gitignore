@@ -34,3 +34,10 @@ next-env.d.ts
 
 # Claude local skills checkout (non-versionnable, propre à chaque dev)
 .claude/skills/skills-main/
+
+# Scaffolding de dev temporaire — chantier 56-3 (à ne jamais committer)
+src/app/dev-trace/
+
+# Sources d'images brutes (on ne versionne que les .webp optimisés utilisés)
+public/images/Paysage.png
+public/images/ChatGPT Image 7 juil. 2026, 21_17_53.png

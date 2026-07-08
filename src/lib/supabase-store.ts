@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 import type { SessionData, StepId } from "./types";
 import { hasValidConsent } from "./consent";
+import { CURATED_ACTION_TEXTS } from "./action-suggestions";
 
 // --- Sessions ---
 
@@ -109,7 +110,7 @@ export type GesteStatut = "fait" | "pas_encore" | "autre_forme" | "passe";
 export async function setGesteStatutDb(
   sessionId: string,
   statut: GesteStatut
-): Promise<void> {
+): Promise<{ error: string | null }> {
   const updates: {
     geste_statut: GesteStatut;
     geste_statut_at: string;
@@ -129,7 +130,58 @@ export async function setGesteStatutDb(
     updates.geste_pass_count = current + 1;
   }
 
-  await supabase.from("sessions").update(updates).eq("id", sessionId);
+  const { error } = await supabase
+    .from("sessions")
+    .update(updates)
+    .eq("id", sessionId);
+  return { error: error ? error.message : null };
+}
+
+export type EligibleGeste = { sessionId: string; label: string };
+
+/**
+ * Retourne le geste éligible pour la carte « Le retour du geste » (B-2), ou null.
+ * Éligibilité (§2 du brief 35-B / B-2), toutes conditions en ET :
+ *   1. action_alignee non nul.
+ *   2. geste_statut ∉ { fait, pas_encore, autre_forme } — un statut terminal ferme
+ *      la boucle. NULL et 'passe' restent éligibles (piège B-1 : 'passe' n'est PAS
+ *      terminal). Exprimé « is null OR not in (terminaux) » : un simple not.in
+ *      exclurait les lignes NULL (NOT (NULL in (...)) vaut NULL en SQL).
+ *   3. geste_pass_count < 2 — règle des 2 passes (colonne NOT NULL DEFAULT 0).
+ *   4. session ≤ 14 jours (created_at).
+ *   5. le plus récent geste satisfaisant 1-4.
+ *   + Condition supplémentaire « curés uniquement » (décision 2026-07-08) :
+ *     action_alignee doit être un libellé curé (∈ CURATED_ACTION_TEXTS). Un geste
+ *     en texte libre n'est jamais ré-affiché sans le softening chantier 39. On
+ *     ramène une fenêtre récente puis on retient le plus récent geste curé.
+ * Le gating premium/essai (§2.5) est fait côté composant (useAuth.hasPremiumAccess).
+ */
+export async function getEligibleGesteDb(
+  userId: string
+): Promise<EligibleGeste | null> {
+  const cutoff = new Date(Date.now() - 14 * 24 * 3600 * 1000).toISOString();
+  const { data, error } = await supabase
+    .from("sessions")
+    .select("id, action_alignee, geste_statut, geste_pass_count, created_at")
+    .eq("user_id", userId)
+    .not("action_alignee", "is", null)
+    .or("geste_statut.is.null,geste_statut.not.in.(fait,pas_encore,autre_forme)")
+    .lt("geste_pass_count", 2)
+    .gte("created_at", cutoff)
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  if (error || !data) return null;
+
+  // Filtre « curés uniquement » côté client : retient le plus récent geste dont
+  // le libellé appartient au set curé (la fenêtre est déjà triée du + récent au + ancien).
+  for (const row of data) {
+    const label = ((row.action_alignee as string) ?? "").trim();
+    if (label && CURATED_ACTION_TEXTS.has(label)) {
+      return { sessionId: row.id as string, label };
+    }
+  }
+  return null;
 }
 
 // --- Profile ---

@@ -9,6 +9,7 @@ import { InstallPrompt } from "@/components/InstallPrompt";
 import { ReminderPrompt } from "@/components/ReminderPrompt";
 import { ReportProblem } from "@/components/ReportProblem";
 import { RefletCompact } from "@/components/RefletCompact";
+import { GesteRetourCard } from "@/components/GesteRetourCard";
 import type { SessionData } from "@/lib/types";
 
 export default function Accueil() {
@@ -195,6 +196,10 @@ export default function Accueil() {
 
         {/* Reflet compact — n'affiche rien tant qu'il n'y a pas assez de données */}
         <RefletCompact />
+
+        {/* Retour du geste (35-B / B-2) — carte non bloquante, s'affiche seulement
+            si un geste curé est éligible + essai/premium ; sinon rien. */}
+        <GesteRetourCard />
 
         {/* Stats compactes (si sessions existantes) */}
         {stats.total > 0 && (
