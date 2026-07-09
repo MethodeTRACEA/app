@@ -67,7 +67,7 @@ const options: Option[] = [
 export default function StartPage() {
   return (
     <div
-      className="relative overflow-hidden"
+      className="relative"
       style={{ minHeight: "100dvh", background: "#1A120D" }}
     >
       {/* Couche 1 — gradients fond identiques à la landing */}
@@ -94,7 +94,7 @@ export default function StartPage() {
 
       {/* ── Container principal — h-[100dvh] justify-between ── */}
       <div
-        className="relative h-[100dvh] flex flex-col justify-between px-5 pt-6 pb-4"
+        className="relative min-h-[100dvh] flex flex-col justify-between px-5 pt-6 pb-4"
         style={{ zIndex: 1 }}
       >
 
