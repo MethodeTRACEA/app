@@ -223,9 +223,6 @@ export default function StartPage() {
           ))}
         </div>
 
-        {/* Bloc sécurité (composant unifié) */}
-        <SafetyResources />
-
         {/* MENTION GRATUIT / ABONNEMENT */}
         <p
           className="font-sans text-[11px] text-center leading-[16px] px-2"
@@ -250,6 +247,9 @@ export default function StartPage() {
             ← Revenir à l&apos;accueil
           </Link>
         </div>
+
+        {/* Bloc sécurité (composant unifié) — en toute dernière position */}
+        <SafetyResources />
 
       </div>
     </div>
