@@ -21,6 +21,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import type { SessionData } from "@/lib/types";
 import Link from "next/link";
+import { ReflectRecurrent } from "@/components/ReflectRecurrent";
 
 // ── APPUIS — fallback si effective_actions absentes ──────────────
 
@@ -512,35 +513,9 @@ export default function CeQuiChangePage() {
         {/* ── Cas 3 — mémoire disponible : blocs ── */}
         {hasAnyContent && (
           <>
-            {/* Bloc 1 — Ce qui revient souvent */}
-            {block1Items.length > 0 && (
-              <div style={blockStyle}>
-                <p className="font-sans" style={kickerStyle}>
-                  Ce qui revient souvent
-                </p>
-                <p className="font-body" style={blockTextStyle}>
-                  Dans tes dernières traversées, certaines choses apparaissent
-                  plusieurs fois.
-                </p>
-                <ul style={listStyle}>
-                  {block1Items.map((item, i) => (
-                    <li key={`b1-${i}`} style={listItemStyle}>
-                      <span style={bulletStyle} aria-hidden="true">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Bloc — émotion récurrente (issue des résumés long flow) */}
-            {recurringEmotion && (
-              <div style={blockStyle}>
-                <p className="font-body" style={blockTextStyle}>
-                  {recurringEmotion.emotion.charAt(0).toUpperCase() + recurringEmotion.emotion.slice(1)} revient dans plusieurs traversées.
-                </p>
-              </div>
-            )}
+            {/* Bloc 1 — Ce qui revient souvent + émotion récurrente
+                (composant partagé avec RefletCompact, Chantier 58 P1) */}
+            <ReflectRecurrent mode="complet" items={block1Items} recurringEmotion={recurringEmotion} />
 
             {/* Bloc autonome « Ce besoin revient » retiré : le besoin récurrent
                 est désormais relocalisé dans « Ce qui se construit ». */}
