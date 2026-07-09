@@ -2,18 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
-import { SecondaryButton } from "@/components/ui/SecondaryButton";
 
-type Screen = "micro-check" | "closure" | "bridge" | "paywall";
+type Screen = "micro-check" | "closure" | "bridge";
 
 const LS_KEY = "tracea_post_session_seen";
 
 export default function PostSessionPage() {
   const router = useRouter();
-  const { hasPremiumAccess } = useAuth();
   const [screen, setScreen] = useState<Screen>("micro-check");
 
   // Mark as seen on first load — subsequent completions skip this page
@@ -87,62 +84,9 @@ export default function PostSessionPage() {
                 ou devenir un repère dans le temps.
               </p>
             </div>
-            <PrimaryButton onClick={() => hasPremiumAccess ? router.push("/app/ce-qui-change") : setScreen("paywall")}>
+            <PrimaryButton onClick={() => router.push("/app/ce-qui-change")}>
               Voir comment
             </PrimaryButton>
-          </div>
-        )}
-
-        {/* ── Écran 3 — Paywall ── */}
-        {screen === "paywall" && (
-          <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8">
-            {/* Copy émotionnelle — rythme serré, lecture fluide */}
-            <div className="text-center space-y-4">
-              <p className="font-serif text-2xl text-t-beige leading-relaxed">
-                Tu viens de poser quelque chose.
-              </p>
-              <p className="font-body text-lg t-text-secondary leading-relaxed">
-                La prochaine fois que ça monte,<br />
-                tu pourras revenir plus vite.
-              </p>
-              <div className="space-y-1">
-                <p className="font-body text-base t-text-secondary leading-relaxed">
-                  Sans chercher.<br />
-                  Sans réfléchir.
-                </p>
-                <p className="font-body text-base t-text-secondary leading-relaxed">
-                  Juste reprendre là où tu en étais.
-                </p>
-              </div>
-            </div>
-
-            {/* Prix */}
-            <div className="w-full flex flex-col gap-3">
-              <div className="t-card p-5 text-center space-y-1">
-                <p className="font-inter text-xs t-text-secondary uppercase tracking-wider">
-                  Mensuel
-                </p>
-                <p className="font-serif text-2xl text-t-beige">5,99€</p>
-                <p className="font-inter text-xs t-text-secondary">par mois</p>
-              </div>
-              <div className="t-card p-5 text-center space-y-1 border-[rgba(232,216,199,0.30)]">
-                <p className="font-inter text-xs t-text-secondary uppercase tracking-wider">
-                  Annuel
-                </p>
-                <p className="font-serif text-2xl text-t-beige">49,99€</p>
-                <p className="font-inter text-xs t-text-secondary">par an · soit 4,17€/mois</p>
-              </div>
-            </div>
-
-            {/* Zone de décision — visuellement séparée */}
-            <div className="w-full flex flex-col gap-4 pt-2">
-              <PrimaryButton onClick={() => router.push("/app/subscribe")}>
-                Continuer avec TRACÉA
-              </PrimaryButton>
-              <SecondaryButton onClick={exit}>
-                Continuer librement
-              </SecondaryButton>
-            </div>
           </div>
         )}
 
