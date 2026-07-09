@@ -734,11 +734,12 @@ export type ShortTrace = {
   partielle: boolean;    // art.9 refusé : ancrer présent, ressenti/corps/geste absents
 };
 
-export async function getShortTraces(): Promise<ShortTrace[]> {
+export async function getShortTraces(userId: string): Promise<ShortTrace[]> {
   try {
     const { data, error } = await supabase
       .from("tracea_events")
       .select("event, data, created_at")
+      .eq("user_id", userId)
       .eq("data->>mode", "court")
       .not("data->>session_id", "is", null)
       .order("created_at", { ascending: true });

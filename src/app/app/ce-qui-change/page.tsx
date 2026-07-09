@@ -161,7 +161,7 @@ export default function CeQuiChangePage() {
       getPremiumMemory(user.id),
       getRecurringEmotions(supabase, user.id),
       getRecurringNeeds(supabase, user.id),
-      getShortTraces(),
+      getShortTraces(user.id),
       getRecentGestesDb(user.id),
     ]).then(([s, profile, pm, emo, need, traces, recentGestes]) => {
       setSessions(s);
