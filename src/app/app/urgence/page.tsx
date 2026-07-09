@@ -173,6 +173,8 @@ function UrgenceInner() {
           </button>
 
           <ExitLink label="Retour" href="/app" />
+
+          <SafetyResources />
         </div>
       </ScreenContainer>
     );
@@ -216,6 +218,7 @@ function UrgenceInner() {
               )}
 
             </div>
+            <SafetyResources />
           </div>
         </ScreenContainer>
       );
@@ -240,6 +243,7 @@ function UrgenceInner() {
             }
 
           </div>
+          <SafetyResources />
         </div>
       </ScreenContainer>
     );
