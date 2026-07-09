@@ -779,6 +779,29 @@ export default function ProfilPage() {
           </Link>
         </div>
 
+        {/* ── Ressources (relocalisée depuis la nav, Chantier 58 D4) ── */}
+        <div style={blockStyle}>
+          <p className="font-sans" style={kickerStyle}>Ressources</p>
+          <p className="font-body" style={blockTextStyle}>
+            Le protocole TRACÉA expliqué pas à pas, si tu veux comprendre ce
+            qu&apos;il y a derrière chaque étape.
+          </p>
+          <Link
+            href="/app/ressources"
+            className="font-sans"
+            style={{
+              display: "inline-block",
+              marginTop: 16,
+              fontSize: 13,
+              color: "rgba(240,230,214,0.60)",
+              letterSpacing: "0.04em",
+              textDecoration: "none",
+            }}
+          >
+            Comprendre la méthode ›
+          </Link>
+        </div>
+
         {/* ── Données & confidentialité (accordéon) ── */}
         <div style={{ marginTop: 8 }}>
           {/* Bouton accordéon */}

@@ -316,6 +316,22 @@ export default function Accueil() {
         {stats.total >= 1 && <InstallPrompt />}
         {stats.total >= 1 && <ReminderPrompt />}
 
+        {/* Lien discret vers les ressources — relocalisé depuis la nav (Chantier 58, D4) */}
+        <div className="text-center">
+          <Link
+            href="/app/ressources"
+            className="font-sans"
+            style={{
+              fontSize: 13,
+              color: "rgba(240,230,214,0.60)",
+              letterSpacing: "0.04em",
+              textDecoration: "none",
+            }}
+          >
+            Comprendre la méthode ›
+          </Link>
+        </div>
+
         <div className="pt-0">
           <SafetyResources />
         </div>

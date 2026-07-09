@@ -13,9 +13,7 @@ const publicLinks = [
 const authLinks = [
   { href: "/app", label: "Accueil" },
   { href: "/app/entrainement", label: "S'entraîner" },
-  { href: "/app/historique", label: "Tes traces" },
-  { href: "/app/ce-qui-change", label: "Ton reflet" },
-  { href: "/app/ressources", label: "Ressources" },
+  { href: "/app/espace", label: "Ton espace" },
   { href: "/app/profil", label: "Profil" },
 ];
 
