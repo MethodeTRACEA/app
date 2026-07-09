@@ -4,7 +4,7 @@ import Link from "next/link";
 
 // Rendu partagé du bloc "Ce qui revient souvent" + émotion récurrente,
 // utilisé par RefletCompact (accueil, historique) en mode "compact" et par
-// /app/ce-qui-change en mode "complet". Composant de présentation pur :
+// /app/espace en mode "complet". Composant de présentation pur :
 // la lecture des données (recurring_patterns, common_triggers, émotion
 // récurrente) reste dans chaque appelant, propre à son propre chargement
 // de page. Aucun wording n'est modifié par rapport aux deux implémentations
@@ -77,7 +77,7 @@ export function ReflectRecurrent({ mode, items, recurringEmotion }: ReflectRecur
         )}
 
         <Link
-          href="/app/ce-qui-change"
+          href="/app/espace"
           className="font-sans"
           style={{
             display: "inline-block",

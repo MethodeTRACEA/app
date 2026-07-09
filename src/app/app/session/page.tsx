@@ -1455,7 +1455,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
 
               <button
                 type="button"
-                onClick={() => router.push("/app/historique")}
+                onClick={() => router.push("/app/espace")}
                 className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors"
               >
                 Voir mes traces →

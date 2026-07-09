@@ -84,7 +84,7 @@ export default function PostSessionPage() {
                 ou devenir un repère dans le temps.
               </p>
             </div>
-            <PrimaryButton onClick={() => router.push("/app/ce-qui-change")}>
+            <PrimaryButton onClick={() => router.push("/app/espace")}>
               Voir comment
             </PrimaryButton>
           </div>
