@@ -6,7 +6,9 @@ import { useAuth } from "@/lib/auth-context";
 import {
   getCompletedSessionsDb,
   getShortTraces,
+  getRecentGestesDb,
   type ShortTrace,
+  type RecentGeste,
 } from "@/lib/supabase-store";
 import { getSessionSummariesByIds } from "@/lib/memory";
 import { getTraceLabel } from "@/lib/trace-labels";
@@ -45,12 +47,154 @@ type FocalTrace =
   | { kind: "courte"; trace: ShortTrace }
   | { kind: "approfondie"; session: SessionData; summary: SummaryLite | undefined };
 
+type UnifiedItem =
+  | { kind: "courte"; date: string; trace: ShortTrace }
+  | { kind: "approfondie"; date: string; session: SessionData };
+
+const LIST_PAGE_SIZE = 5;
+
+// ── Styles partagés (focale + liste) ────────────────────────────────
+const blockStyle: React.CSSProperties = {
+  background: "rgba(111,106,100,0.18)",
+  border: "1px solid rgba(240,230,214,0.10)",
+  borderRadius: 24,
+  padding: "28px 26px",
+  boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+};
+// Carte focale : plus grande, plus contrastée (point focal de la page, §3).
+const focalStyle: React.CSSProperties = {
+  ...blockStyle,
+  padding: "32px 28px",
+  border: "1px solid rgba(201,123,106,0.30)",
+  boxShadow: "0 26px 56px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05)",
+};
+// Carte d'item de liste : même langage visuel, plus discrète que la focale.
+const listCardStyle: React.CSSProperties = {
+  background: "rgba(111,106,100,0.14)",
+  border: "1px solid rgba(240,230,214,0.085)",
+  borderRadius: 22,
+  padding: "22px 24px",
+  boxShadow: "0 12px 28px rgba(0,0,0,0.22)",
+};
+const kickerStyle: React.CSSProperties = {
+  fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+  fontSize: 12,
+  fontWeight: 400,
+  color: "#C97B6A",
+  letterSpacing: "0.20em",
+  textTransform: "uppercase" as const,
+  marginBottom: 18,
+};
+const blockTextStyle: React.CSSProperties = {
+  fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+  fontSize: "1.05rem",
+  fontWeight: 300,
+  color: "#F0E6D6",
+  lineHeight: 1.6,
+};
+const lineStyle: React.CSSProperties = { ...blockTextStyle, fontSize: "1rem", margin: 0 };
+const listStyle: React.CSSProperties = {
+  listStyle: "none",
+  padding: 0,
+  margin: "16px 0 0 0",
+  display: "flex",
+  flexDirection: "column",
+  gap: 8,
+};
+const listItemStyle: React.CSSProperties = {
+  fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
+  fontSize: "1.05rem",
+  fontWeight: 300,
+  color: "rgba(240,230,214,0.88)",
+  lineHeight: 1.5,
+  display: "flex",
+  gap: 10,
+};
+const bulletStyle: React.CSSProperties = { color: "#C97B6A", flexShrink: 0, lineHeight: 1.5 };
+
+// Les 4 lignes verrouillées d'une trace courte — partagées entre la carte
+// focale et son entrée dans la liste unifiée (Chantier 58, D1).
+function CourteTraceLines({ trace }: { trace: ShortTrace }) {
+  return (
+    <>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {getTraceLabel("ressenti", trace.ressenti) && (
+          <p className="font-body" style={lineStyle}>
+            Ce qui était là : {getTraceLabel("ressenti", trace.ressenti)}
+          </p>
+        )}
+        {getTraceLabel("corps", trace.corps) && (
+          <p className="font-body" style={lineStyle}>
+            Situé plutôt dans : {getTraceLabel("corps", trace.corps)}
+          </p>
+        )}
+        {getTraceLabel("ancrage", trace.ancrer) && (
+          <p className="font-body" style={lineStyle}>
+            L&apos;appui que tu as choisi : {getTraceLabel("ancrage", trace.ancrer)}
+          </p>
+        )}
+        {trace.geste && (
+          <p className="font-body" style={lineStyle}>
+            Le pas que tu t&apos;étais proposé : {trace.geste}
+          </p>
+        )}
+      </div>
+      {trace.partielle && (
+        <p className="font-body" style={{ ...lineStyle, fontStyle: "italic", opacity: 0.6, marginTop: 8 }}>
+          Une traversée que tu as gardée pour toi.
+        </p>
+      )}
+    </>
+  );
+}
+
+// Aperçu replié d'une trace approfondie (repris d'/app/historique) — date +
+// citation courte + émotions dominantes. L'accordéon complet arrive en P2c.
+function ApprofondiePreview({ session, summary }: { session: SessionData; summary: SummaryLite | undefined }) {
+  const pivotText = summary?.inner_truth || session.veriteInterieure || session.emotionPrimaire || "";
+  const pivotIsQuote = !!(summary?.inner_truth || session.veriteInterieure);
+  const previewEmotions = (summary?.dominant_emotions ?? [])
+    .filter((e) => e && e.trim() !== "")
+    .slice(0, 2);
+  return (
+    <div>
+      <p className="font-body" style={{ fontSize: "1rem", fontWeight: 400, color: "#F0E6D6", lineHeight: 1 }}>
+        {new Date(session.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+      </p>
+      {pivotText && (
+        <p
+          className="font-body"
+          style={{
+            fontSize: "0.9rem",
+            fontStyle: "italic",
+            fontWeight: 300,
+            color: "rgba(240,230,214,0.64)",
+            marginTop: 6,
+          }}
+        >
+          {pivotIsQuote ? `"${pivotText}"` : pivotText}
+        </p>
+      )}
+      {previewEmotions.length > 0 && (
+        <p
+          className="font-sans"
+          style={{ fontSize: 11, fontWeight: 400, color: "rgba(240,230,214,0.48)", marginTop: 4, letterSpacing: "0.04em" }}
+        >
+          {previewEmotions.join(" · ")}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function EspacePage() {
   const { user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<SessionData[]>([]);
   const [shortTraces, setShortTraces] = useState<ShortTrace[]>([]);
+  const [gestes, setGestes] = useState<RecentGeste[]>([]);
   const [summariesById, setSummariesById] = useState<Record<string, SummaryLite>>({});
   const [loading, setLoading] = useState(true);
+  const [showAllTraces, setShowAllTraces] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -60,23 +204,26 @@ export default function EspacePage() {
     const userId = user.id;
     let cancelled = false;
 
-    Promise.all([getCompletedSessionsDb(userId), getShortTraces(userId)]).then(
-      ([s, traces]) => {
-        if (cancelled) return;
-        setSessions(s);
-        setShortTraces(traces);
-        setLoading(false);
+    Promise.all([
+      getCompletedSessionsDb(userId),
+      getShortTraces(userId),
+      getRecentGestesDb(userId),
+    ]).then(([s, traces, recentGestes]) => {
+      if (cancelled) return;
+      setSessions(s);
+      setShortTraces(traces);
+      setGestes(recentGestes);
+      setLoading(false);
 
-        const ids = s.map((x) => x.id);
-        if (ids.length > 0) {
-          getSessionSummariesByIds(supabase, userId, ids)
-            .then((sums) => {
-              if (!cancelled) setSummariesById(sums);
-            })
-            .catch(() => {});
-        }
+      const ids = s.map((x) => x.id);
+      if (ids.length > 0) {
+        getSessionSummariesByIds(supabase, userId, ids)
+          .then((sums) => {
+            if (!cancelled) setSummariesById(sums);
+          })
+          .catch(() => {});
       }
-    );
+    });
 
     return () => {
       cancelled = true;
@@ -125,38 +272,21 @@ export default function EspacePage() {
     focal = { kind: "courte", trace: latestCourte };
   }
 
-  // ── Styles ───────────────────────────────────────────────────────
-  const blockStyle: React.CSSProperties = {
-    background: "rgba(111,106,100,0.18)",
-    border: "1px solid rgba(240,230,214,0.10)",
-    borderRadius: 24,
-    padding: "28px 26px",
-    boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
-  };
-  // Carte focale : plus grande, plus contrastée (point focal de la page, §3).
-  const focalStyle: React.CSSProperties = {
-    ...blockStyle,
-    padding: "32px 28px",
-    border: "1px solid rgba(201,123,106,0.30)",
-    boxShadow: "0 26px 56px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05)",
-  };
-  const kickerStyle: React.CSSProperties = {
-    fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
-    fontSize: 12,
-    fontWeight: 400,
-    color: "#C97B6A",
-    letterSpacing: "0.20em",
-    textTransform: "uppercase" as const,
-    marginBottom: 18,
-  };
-  const blockTextStyle: React.CSSProperties = {
-    fontFamily: "var(--font-body, 'Cormorant Garamond', serif)",
-    fontSize: "1.05rem",
-    fontWeight: 300,
-    color: "#F0E6D6",
-    lineHeight: 1.6,
-  };
-  const lineStyle: React.CSSProperties = { ...blockTextStyle, fontSize: "1rem", margin: 0 };
+  // Liste unifiée "Tes traversées" — courtes + approfondies, par date (D1).
+  // La trace déjà montrée en carte focale n'est pas répétée dans la liste.
+  const itemKey = (item: UnifiedItem) =>
+    item.kind === "courte" ? `courte-${item.trace.sessionId}` : `approfondie-${item.session.id}`;
+  const focalKey =
+    focal && (focal.kind === "courte"
+      ? `courte-${focal.trace.sessionId}`
+      : `approfondie-${focal.session.id}`);
+  const merged: UnifiedItem[] = [
+    ...sessions.map((session): UnifiedItem => ({ kind: "approfondie", date: session.date, session })),
+    ...shortTraces.map((trace): UnifiedItem => ({ kind: "courte", date: trace.date, trace })),
+  ]
+    .filter((item) => itemKey(item) !== focalKey)
+    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  const visibleTraces = showAllTraces ? merged : merged.slice(0, LIST_PAGE_SIZE);
 
   return (
     <div
@@ -236,33 +366,7 @@ export default function EspacePage() {
             <p className="font-sans" style={kickerStyle}>
               Ta dernière traversée · {formatTraceDate(focal.trace.date)}
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {getTraceLabel("ressenti", focal.trace.ressenti) && (
-                <p className="font-body" style={lineStyle}>
-                  Ce qui était là : {getTraceLabel("ressenti", focal.trace.ressenti)}
-                </p>
-              )}
-              {getTraceLabel("corps", focal.trace.corps) && (
-                <p className="font-body" style={lineStyle}>
-                  Situé plutôt dans : {getTraceLabel("corps", focal.trace.corps)}
-                </p>
-              )}
-              {getTraceLabel("ancrage", focal.trace.ancrer) && (
-                <p className="font-body" style={lineStyle}>
-                  L&apos;appui que tu as choisi : {getTraceLabel("ancrage", focal.trace.ancrer)}
-                </p>
-              )}
-              {focal.trace.geste && (
-                <p className="font-body" style={lineStyle}>
-                  Le pas que tu t&apos;étais proposé : {focal.trace.geste}
-                </p>
-              )}
-            </div>
-            {focal.trace.partielle && (
-              <p className="font-body" style={{ ...lineStyle, fontStyle: "italic", opacity: 0.6, marginTop: 8 }}>
-                Une traversée que tu as gardée pour toi.
-              </p>
-            )}
+            <CourteTraceLines trace={focal.trace} />
           </div>
         )}
 
@@ -290,6 +394,91 @@ export default function EspacePage() {
                 </p>
               </>
             ) : null}
+          </div>
+        )}
+
+        {/* ── Tes gestes (reprise verbatim de /app/ce-qui-change) ── */}
+        {gestes.length > 0 && (
+          <div style={blockStyle}>
+            <p className="font-sans" style={kickerStyle}>
+              Tes gestes
+            </p>
+            <p className="font-body" style={blockTextStyle}>
+              Les gestes que tu as choisis récemment.
+            </p>
+            <ul style={listStyle}>
+              {gestes.map((g) => {
+                const mention =
+                  g.statut === "fait" ? "fait" : g.statut === "autre_forme" ? "autrement" : null;
+                return (
+                  <li key={g.sessionId} style={listItemStyle}>
+                    <span style={bulletStyle} aria-hidden="true">•</span>
+                    <span>
+                      {g.label}
+                      {mention && (
+                        <span
+                          className="font-sans"
+                          style={{ marginLeft: 10, fontSize: 12, color: "#C97B6A", letterSpacing: "0.04em" }}
+                        >
+                          {mention}
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
+        {/* ── Liste unifiée — Tes traversées, telles que tu les as posées (D1) ── */}
+        {merged.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <p
+              className="font-body"
+              style={{ fontSize: "1rem", fontWeight: 300, color: "rgba(240,230,214,0.75)", lineHeight: 1.5 }}
+            >
+              Tes traversées, telles que tu les as posées.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {visibleTraces.map((item) =>
+                item.kind === "courte" ? (
+                  <div
+                    key={itemKey(item)}
+                    style={item.trace.partielle ? { ...listCardStyle, border: "1px dashed rgba(240,230,214,0.20)" } : listCardStyle}
+                  >
+                    <p className="font-sans" style={{ ...kickerStyle, marginBottom: 10 }}>
+                      {formatTraceDate(item.trace.date)}
+                    </p>
+                    <CourteTraceLines trace={item.trace} />
+                  </div>
+                ) : (
+                  <div key={itemKey(item)} style={listCardStyle}>
+                    <ApprofondiePreview session={item.session} summary={summariesById[item.session.id]} />
+                  </div>
+                )
+              )}
+            </div>
+            {!showAllTraces && merged.length > LIST_PAGE_SIZE && (
+              <button
+                type="button"
+                onClick={() => setShowAllTraces(true)}
+                className="font-sans"
+                style={{
+                  alignSelf: "center",
+                  fontSize: 13,
+                  color: "rgba(240,230,214,0.60)",
+                  letterSpacing: "0.04em",
+                  textDecoration: "none",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "8px 0",
+                }}
+              >
+                Voir plus
+              </button>
+            )}
           </div>
         )}
       </div>
