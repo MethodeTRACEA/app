@@ -7,6 +7,8 @@ import {
   getCompletedSessionsDb,
   getShortTraces,
   getRecentGestesDb,
+  updateSessionDb,
+  deleteSessionDb,
   type ShortTrace,
   type RecentGeste,
 } from "@/lib/supabase-store";
@@ -187,6 +189,204 @@ function ApprofondiePreview({ session, summary }: { session: SessionData; summar
   );
 }
 
+// Item de liste d'une trace approfondie — aperçu replié + accordéon complet
+// (Ce qui s'est passé, Trace à retenir, miroir, note, Supprimer). Migré tel
+// quel depuis /app/historique (Chantier 58, P2c).
+function ApprofondieListItem({
+  session,
+  summary,
+  isExpanded,
+  onToggle,
+  mirrorOpen,
+  onToggleMirror,
+  editingNote,
+  noteText,
+  onNoteTextChange,
+  onStartEditNote,
+  onSaveNote,
+  onCancelNote,
+  onDelete,
+}: {
+  session: SessionData;
+  summary: SummaryLite | undefined;
+  isExpanded: boolean;
+  onToggle: () => void;
+  mirrorOpen: boolean;
+  onToggleMirror: () => void;
+  editingNote: boolean;
+  noteText: string;
+  onNoteTextChange: (v: string) => void;
+  onStartEditNote: () => void;
+  onSaveNote: () => void;
+  onCancelNote: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div style={listCardStyle}>
+      <button type="button" onClick={onToggle} className="w-full text-left">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <ApprofondiePreview session={session} summary={summary} />
+          </div>
+          <span
+            style={{
+              color: "rgba(240,230,214,0.25)",
+              fontSize: 20,
+              transition: "transform 0.2s",
+              transform: isExpanded ? "rotate(90deg)" : "none",
+              lineHeight: 1,
+              flexShrink: 0,
+              marginLeft: 12,
+            }}
+          >
+            ›
+          </span>
+        </div>
+      </button>
+
+      {isExpanded && (
+        <div className="animate-fade-up" style={{ paddingTop: 20, borderTop: "1px solid rgba(240,230,214,0.07)", marginTop: 16 }}>
+          {session.steps.traverser && (
+            <div style={{ marginBottom: 16 }}>
+              <p className="font-sans" style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 6, letterSpacing: "0.10em" }}>
+                Ce qui s&apos;est passé :
+              </p>
+              <p className="font-body" style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.60)", lineHeight: 1.55 }}>
+                {session.steps.traverser}
+              </p>
+            </div>
+          )}
+
+          {summary?.narrative_summary && summary.narrative_summary.trim() !== "" && (
+            <div
+              style={{
+                marginBottom: 16,
+                background: "rgba(70,55,45,0.20)",
+                border: "1px solid rgba(240,230,214,0.05)",
+                borderRadius: 14,
+                padding: "16px 18px",
+              }}
+            >
+              <p className="font-sans" style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 8, letterSpacing: "0.10em" }}>
+                Trace à retenir
+              </p>
+              <p className="font-body" style={{ fontSize: "0.95rem", color: "rgba(240,230,214,0.78)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
+                {summary.narrative_summary}
+              </p>
+            </div>
+          )}
+
+          {session.analysis && (
+            <>
+              <button
+                type="button"
+                onClick={onToggleMirror}
+                className="font-sans"
+                style={{
+                  fontSize: "0.78rem",
+                  color: "rgba(240,230,214,0.58)",
+                  letterSpacing: "0.04em",
+                  marginBottom: 16,
+                  marginTop: 4,
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  textAlign: "left",
+                }}
+              >
+                {mirrorOpen ? "Masquer le miroir reçu à chaud" : "Voir le miroir reçu à chaud"}
+              </button>
+              {mirrorOpen && (
+                <div
+                  style={{
+                    marginBottom: 20,
+                    background: "rgba(70,55,45,0.42)",
+                    border: "1px solid rgba(240,230,214,0.07)",
+                    borderRadius: 16,
+                    padding: "18px 20px",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.025), 0 8px 20px rgba(0,0,0,0.20)",
+                  }}
+                >
+                  <p className="font-sans" style={{ fontSize: 11, color: "rgba(240,230,214,0.48)", marginBottom: 12, letterSpacing: "0.10em" }}>
+                    Le miroir de cette session
+                  </p>
+                  <p className="font-body" style={{ fontSize: "1rem", color: "#F0E6D6", lineHeight: 1.65, whiteSpace: "pre-line" }}>
+                    {session.analysis}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+
+          <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(240,230,214,0.07)" }}>
+            <p className="font-sans" style={{ ...kickerStyle, marginBottom: 10 }}>
+              Une note pour plus tard
+            </p>
+            {editingNote ? (
+              <div>
+                <textarea
+                  value={noteText}
+                  onChange={(e) => onNoteTextChange(e.target.value)}
+                  placeholder="Ce qui est remonté dans les jours suivants..."
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    background: "rgba(111,106,100,0.20)",
+                    border: "1px solid rgba(240,230,214,0.12)",
+                    borderRadius: 12,
+                    color: "#F0E6D6",
+                    fontSize: "0.9rem",
+                    fontFamily: "inherit",
+                    lineHeight: 1.5,
+                    resize: "none",
+                    outline: "none",
+                    marginBottom: 8,
+                  }}
+                  rows={2}
+                  autoFocus
+                />
+                <div style={{ display: "flex", gap: 12 }}>
+                  <button onClick={onSaveNote} style={{ fontSize: 12, color: "#C97B6A", fontWeight: 500, cursor: "pointer" }}>
+                    Enregistrer
+                  </button>
+                  <button onClick={onCancelNote} style={{ fontSize: 12, color: "rgba(240,230,214,0.40)", cursor: "pointer" }}>
+                    Annuler
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div onClick={onStartEditNote} style={{ cursor: "pointer" }}>
+                {session.noteEntreSession ? (
+                  <p className="font-body" style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.70)", lineHeight: 1.55 }}>
+                    {session.noteEntreSession}
+                  </p>
+                ) : (
+                  <p style={{ fontSize: "0.9rem", fontStyle: "italic", color: "rgba(240,230,214,0.45)" }}>
+                    Ajouter une note...
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(240,230,214,0.07)", display: "flex", justifyContent: "flex-end" }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (confirm("Supprimer cette trace ?")) onDelete();
+              }}
+              style={{ fontSize: 12, color: "rgba(240,230,214,0.45)", cursor: "pointer" }}
+            >
+              Supprimer
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function EspacePage() {
   const { user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<SessionData[]>([]);
@@ -195,6 +395,10 @@ export default function EspacePage() {
   const [summariesById, setSummariesById] = useState<Record<string, SummaryLite>>({});
   const [loading, setLoading] = useState(true);
   const [showAllTraces, setShowAllTraces] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [openMirrorIds, setOpenMirrorIds] = useState<Record<string, boolean>>({});
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [noteText, setNoteText] = useState("");
 
   useEffect(() => {
     if (!user) {
@@ -229,6 +433,21 @@ export default function EspacePage() {
       cancelled = true;
     };
   }, [user]);
+
+  async function handleDelete(id: string) {
+    if (!user) return;
+    await deleteSessionDb(id, user.id);
+    setSessions((prev) => prev.filter((s) => s.id !== id));
+    if (expandedId === id) setExpandedId(null);
+  }
+
+  async function handleSaveNote(sessionId: string) {
+    await updateSessionDb(sessionId, { note_entre_sessions: noteText });
+    setSessions((prev) =>
+      prev.map((s) => (s.id === sessionId ? { ...s, noteEntreSession: noteText } : s))
+    );
+    setEditingNoteId(null);
+  }
 
   if (authLoading || loading) {
     return (
@@ -453,9 +672,30 @@ export default function EspacePage() {
                     <CourteTraceLines trace={item.trace} />
                   </div>
                 ) : (
-                  <div key={itemKey(item)} style={listCardStyle}>
-                    <ApprofondiePreview session={item.session} summary={summariesById[item.session.id]} />
-                  </div>
+                  <ApprofondieListItem
+                    key={itemKey(item)}
+                    session={item.session}
+                    summary={summariesById[item.session.id]}
+                    isExpanded={expandedId === item.session.id}
+                    onToggle={() => setExpandedId(expandedId === item.session.id ? null : item.session.id)}
+                    mirrorOpen={!!openMirrorIds[item.session.id]}
+                    onToggleMirror={() =>
+                      setOpenMirrorIds((prev) => ({ ...prev, [item.session.id]: !prev[item.session.id] }))
+                    }
+                    editingNote={editingNoteId === item.session.id}
+                    noteText={noteText}
+                    onNoteTextChange={setNoteText}
+                    onStartEditNote={() => {
+                      setEditingNoteId(item.session.id);
+                      setNoteText(item.session.noteEntreSession || "");
+                    }}
+                    onSaveNote={() => handleSaveNote(item.session.id)}
+                    onCancelNote={() => {
+                      setEditingNoteId(null);
+                      setNoteText("");
+                    }}
+                    onDelete={() => handleDelete(item.session.id)}
+                  />
                 )
               )}
             </div>
