@@ -92,7 +92,8 @@ export default function HistoriquePage() {
   }
 
   async function handleDelete(id: string) {
-    await deleteSessionDb(id);
+    if (!user) return;
+    await deleteSessionDb(id, user.id);
     setSessions((prev) => prev.filter((s) => s.id !== id));
     if (expandedId === id) setExpandedId(null);
   }

@@ -87,8 +87,36 @@ export async function updateSessionDb(
   await supabase.from("sessions").update(updates).eq("id", sessionId);
 }
 
-export async function deleteSessionDb(sessionId: string): Promise<void> {
-  await supabase.from("sessions").delete().eq("id", sessionId);
+// Suppression cohérente d'une trace individuelle (chantier « Ton espace »,
+// préalable C1). Une session touche 3 tables scopées par session : ses
+// résumés (session_summaries), ses événements bruts (tracea_events, via
+// data->>session_id, colonne JSON sans FK) et la ligne sessions elle-même.
+// action_traces porte un session_id en FK ON DELETE CASCADE vers sessions
+// (cf. sql/action_traces.sql) : elle est effacée automatiquement par la
+// suppression de la ligne sessions, aucun appel explicite nécessaire ici.
+// user_memory_profile (profil agrégé global, pas lié à une session) reste
+// hors périmètre — seul "Effacer ma mémoire" (deleteMemoryData) le vide.
+export async function deleteSessionDb(
+  sessionId: string,
+  userId: string
+): Promise<void> {
+  await supabase
+    .from("session_summaries")
+    .delete()
+    .eq("session_id", sessionId)
+    .eq("user_id", userId);
+
+  await supabase
+    .from("tracea_events")
+    .delete()
+    .eq("data->>session_id", sessionId)
+    .eq("user_id", userId);
+
+  await supabase
+    .from("sessions")
+    .delete()
+    .eq("id", sessionId)
+    .eq("user_id", userId);
 }
 
 // --- Geste déclaratif (Chantier 35-B « Le retour du geste », brique B-1) ---
