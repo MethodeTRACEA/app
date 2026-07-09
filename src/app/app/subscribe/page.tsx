@@ -437,10 +437,6 @@ function SubscribePageInner() {
           </button>
         </div>
 
-        <p className="font-inter text-xs t-text-secondary text-center mt-3">
-          Prix de lancement, garanti tant que ton abonnement reste actif, pour tout abonnement pris avant le 23 juillet 2026.
-        </p>
-
         {/* Bloc Trial */}
         {stripeUiEnabled && stripeSubscriptionStatus === "past_due" ? (
           // Past_due (top-level, indépendant de isSubscribed) — orientation

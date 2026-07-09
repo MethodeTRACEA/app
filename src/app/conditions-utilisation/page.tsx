@@ -428,13 +428,6 @@ export default function ConditionsUtilisation() {
             </li>
           </ul>
           <p className="mt-3">
-            Ces tarifs constituent le tarif de lancement, applicable à tout
-            abonnement souscrit avant le 23 juillet 2026 et maintenu tant que
-            l&apos;abonnement reste actif, sans interruption. Toute souscription
-            postérieure à cette date, ou consécutive à une résiliation, se fait
-            au tarif en vigueur affiché dans l&apos;application.
-          </p>
-          <p className="mt-3">
             Les prix sont indiqués en euros. La TVA est non applicable, art.
             293 B du Code général des impôts.
           </p>

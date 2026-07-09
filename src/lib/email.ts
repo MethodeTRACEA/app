@@ -45,7 +45,7 @@ Tu as 14 jours et jusqu'à 5 traversées approfondies pour explorer TRACÉA quan
 
 Il se termine le ${formatted}.
 
-Si tu veux continuer après ça, un abonnement est disponible à 5,99 €/mois — prix de lancement, sans engagement, résiliable à tout moment.
+Si tu veux continuer après ça, un abonnement est disponible à 5,99 €/mois, sans engagement, résiliable à tout moment.
 
 À bientôt,
 Tracéa`;

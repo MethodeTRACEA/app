@@ -105,7 +105,7 @@ export function Paywall({ onContinue }: PaywallProps) {
           className="font-sans text-[11px]"
           style={{ color: "rgba(240,230,214,0.38)" }}
         >
-          Puis 5,99€/mois · prix de lancement · sans engagement, résiliable à tout moment
+          Puis 5,99€/mois · sans engagement, résiliable à tout moment
         </p>
       </div>
 

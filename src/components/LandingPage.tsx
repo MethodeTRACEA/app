@@ -60,7 +60,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
     },
     {
       q: "Combien ça coûte ?",
-      a: "L'abonnement comprend les traversées approfondies accompagnées, et ton reflet dans le temps : ce qui revient, ce que tu nommes souvent. L'urgence et la traversée courte restent gratuites, sans abonnement. L'essai est gratuit pendant 14 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACÉA est à 5,99€/mois ou 49,99€/an, c'est le prix de lancement, garanti tant que ton abonnement reste actif, pour toute souscription avant le 23 juillet 2026. Sans engagement, résiliable à tout moment.",
+      a: "L'abonnement comprend les traversées approfondies accompagnées, et ton reflet dans le temps : ce qui revient, ce que tu nommes souvent. L'urgence et la traversée courte restent gratuites, sans abonnement. L'essai est gratuit pendant 14 jours, sans carte bancaire. Tu peux faire jusqu'à 5 traversées approfondies pendant cette période. Ensuite, TRACÉA est à 5,99€/mois ou 49,99€/an, sans engagement, résiliable à tout moment.",
     },
     {
       q: "Est-ce que ça marche quand je suis vraiment submergée ?",
@@ -494,7 +494,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
               Le cœur de TRACÉA est gratuit : l&apos;urgence et la traversée courte, sans compte, autant de fois que tu veux.
             </p>
             <p style={{ color: "rgba(240,230,214,0.62)", fontWeight: 300, fontSize: "0.95rem", lineHeight: 1.6, margin: 0 }}>
-              Pour aller plus loin : la traversée approfondie, accompagnée, et ton reflet, qui rassemble ce qui revient chez toi au fil du temps. Essai gratuit 14 jours (5 traversées approfondies incluses), sans carte bancaire, puis 5,99€/mois, prix de lancement, sans engagement.
+              Pour aller plus loin : la traversée approfondie, accompagnée, et ton reflet, qui rassemble ce qui revient chez toi au fil du temps. Essai gratuit 14 jours (5 traversées approfondies incluses), sans carte bancaire, puis 5,99€/mois, sans engagement.
             </p>
           </div>
 
