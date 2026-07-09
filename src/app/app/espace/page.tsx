@@ -857,6 +857,22 @@ export default function EspacePage() {
           </div>
         )}
 
+        {/* Lien "Voir tes écrits" — repris tel quel d'/app/historique, visible
+            indépendamment du contenu de la liste (§3 de la spec). */}
+        <Link
+          href="/app/ecrits"
+          className="font-sans"
+          style={{
+            alignSelf: "center",
+            fontSize: 13,
+            color: "rgba(240,230,214,0.60)",
+            letterSpacing: "0.04em",
+            textDecoration: "none",
+          }}
+        >
+          Voir tes écrits ›
+        </Link>
+
         {/* ── Cascade de seuils du reflet — cas 1/2 (repris de /app/ce-qui-change).
             Le cas 0 (compte totalement vide) est couvert plus haut par l'état
             "Aucune traversée pour le moment.", migré d'historique (§3). ── */}
