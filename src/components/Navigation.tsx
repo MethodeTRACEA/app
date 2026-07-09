@@ -27,7 +27,7 @@ export function Navigation() {
   const links = user ? authLinks : publicLinks;
 
   const linkClass = (href: string) => {
-    const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+    const isActive = href === "/" || href === "/app" ? pathname === href : pathname.startsWith(href);
     return `flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-200 ${
       isActive ? "bg-terra text-cream" : "text-warm-gray hover:text-terra hover:bg-beige"
     }`;
