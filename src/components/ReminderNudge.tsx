@@ -51,8 +51,11 @@ export function ReminderNudge({
         (r) =>
           isReminderDueNow({
             fuseau: r.fuseau,
-            creneau: r.creneau,
+            creneau: r.creneau ?? undefined,
             jours: r.jours,
+            date: r.date ?? undefined,
+            heure: r.heure ?? undefined,
+            recurrent: r.recurrent ?? undefined,
             lastSentAt: r.lastSentAt,
             now,
           }) && !isSameLocalDay(r.nudgeShownAt, now, r.fuseau)

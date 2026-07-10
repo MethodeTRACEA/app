@@ -285,7 +285,7 @@ export async function getRecentGestesDb(
   return Array.from(byLabel.values());
 }
 
-// --- Rappels (chantier 57, brique 57-3) ---
+// --- Rappels (chantier 57, briques 57-3, 57-7, 57-8) ---
 
 export type ReminderCategorie = "entrainement" | "moment_sensible";
 export type ReminderCreneau = "matin" | "midi" | "soir";
@@ -293,9 +293,19 @@ export type ReminderCreneau = "matin" | "midi" | "soir";
 export type Reminder = {
   id: string;
   categorie: ReminderCategorie;
-  creneau: ReminderCreneau;
-  jours: number[]; // ISO 8601 : 1=lundi … 7=dimanche
   label: string | null;
+  // Ancien schéma (57-1 à 57-6) — NULL pour tout rappel créé depuis 57-8.
+  // Conservé uniquement pour l'affichage de repli des rappels de test
+  // existants (voir joursAffiches/résumé dans /app/rappels).
+  creneau: ReminderCreneau | null;
+  // Jours de semaine (ISO 1=lundi…7=dimanche) — colonne partagée par
+  // l'ancien schéma ET le nouveau récurrent (57-8), même sens, multi-jours.
+  jours: number[];
+  // Nouveau schéma (57-7/57-8) — voir reminder-schedule.ts pour la logique
+  // de discrimination sur `recurrent`.
+  date: string | null;
+  heure: string | null;
+  recurrent: boolean | null;
 };
 
 /**
@@ -307,7 +317,7 @@ export type Reminder = {
 export async function getArmedRemindersDb(userId: string): Promise<Reminder[]> {
   const { data, error } = await supabase
     .from("reminders")
-    .select("id, categorie, creneau, jours, label")
+    .select("id, categorie, creneau, jours, label, date, heure, recurrent")
     .eq("user_id", userId)
     .eq("arme", true)
     .order("created_at", { ascending: false });
@@ -317,9 +327,12 @@ export async function getArmedRemindersDb(userId: string): Promise<Reminder[]> {
   return data.map((row) => ({
     id: row.id as string,
     categorie: row.categorie as ReminderCategorie,
-    creneau: row.creneau as ReminderCreneau,
+    creneau: (row.creneau as ReminderCreneau | null) ?? null,
     jours: (row.jours as number[]) ?? [],
     label: (row.label as string | null) ?? null,
+    date: (row.date as string | null) ?? null,
+    heure: (row.heure as string | null) ?? null,
+    recurrent: (row.recurrent as boolean | null) ?? null,
   }));
 }
 
@@ -327,26 +340,35 @@ export async function getArmedRemindersDb(userId: string): Promise<Reminder[]> {
  * Pose un rappel (arme=true dès la création). `fuseau` est le fuseau IANA du
  * navigateur (Intl.DateTimeFormat().resolvedOptions().timeZone), capté sans
  * UI dédiée — nécessaire au cron 57-4, jamais montré à la personne.
+ *
+ * 57-8 : `creneau` n'est plus écrit par cet écran (reste NULL) — remplacé
+ * par `heure` libre. Le mode (récurrent/ponctuel) détermine si `jours` ou
+ * `date` est renseigné, jamais les deux (voir reminder-schedule.ts).
  */
 export async function createReminderDb(
   userId: string,
   input: {
     categorie: ReminderCategorie;
-    creneau: ReminderCreneau;
-    jours: number[];
     label: string | null;
     fuseau: string;
-  }
+    heure: string;
+  } & (
+    | { recurrent: true; jours: number[] }
+    | { recurrent: false; date: string }
+  )
 ): Promise<{ id: string } | null> {
   const { data, error } = await supabase
     .from("reminders")
     .insert({
       user_id: userId,
       categorie: input.categorie,
-      creneau: input.creneau,
-      jours: input.jours,
       label: input.label,
       fuseau: input.fuseau,
+      heure: input.heure,
+      recurrent: input.recurrent,
+      jours: input.recurrent ? input.jours : null,
+      date: input.recurrent ? null : input.date,
+      creneau: null,
       arme: true,
     })
     .select("id")
@@ -371,11 +393,18 @@ export async function disarmReminderDb(reminderId: string): Promise<void> {
 
 export type ReminderForNudge = {
   id: string;
-  creneau: ReminderCreneau;
+  creneau: ReminderCreneau | null;
   jours: number[];
   fuseau: string;
   lastSentAt: string | null;
   nudgeShownAt: string | null;
+  // 57-8 : nécessaires pour que le nudge évalue correctement les rappels
+  // créés par le nouveau schéma (sans ces champs, isReminderDueNow retombe
+  // sur l'ancien schéma et un rappel récurrent/ponctuel neuf n'est jamais
+  // considéré comme dû côté nudge — même besoin que le cron, cf. 57-7).
+  date: string | null;
+  heure: string | null;
+  recurrent: boolean | null;
 };
 
 /**
@@ -390,7 +419,7 @@ export async function getRemindersForNudgeDb(
 ): Promise<ReminderForNudge[]> {
   const { data, error } = await supabase
     .from("reminders")
-    .select("id, creneau, jours, fuseau, last_sent_at, nudge_shown_at")
+    .select("id, creneau, jours, fuseau, last_sent_at, nudge_shown_at, date, heure, recurrent")
     .eq("user_id", userId)
     .eq("arme", true);
 
@@ -398,11 +427,14 @@ export async function getRemindersForNudgeDb(
 
   return data.map((row) => ({
     id: row.id as string,
-    creneau: row.creneau as ReminderCreneau,
+    creneau: (row.creneau as ReminderCreneau | null) ?? null,
     jours: (row.jours as number[]) ?? [],
     fuseau: row.fuseau as string,
     lastSentAt: (row.last_sent_at as string | null) ?? null,
     nudgeShownAt: (row.nudge_shown_at as string | null) ?? null,
+    date: (row.date as string | null) ?? null,
+    heure: (row.heure as string | null) ?? null,
+    recurrent: (row.recurrent as boolean | null) ?? null,
   }));
 }
 

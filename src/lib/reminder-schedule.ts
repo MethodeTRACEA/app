@@ -1,4 +1,4 @@
-// TRACÉA — Chantier 57 « Ancrage contextuel » — Briques 57-4 et 57-7
+// TRACÉA — Chantier 57 « Ancrage contextuel » — Briques 57-4, 57-7, 57-8
 // Logique pure de calcul « ce rappel est-il dû maintenant ? », extraite de
 // la route cron pour être testable indépendamment (aucun accès réseau/DB ici).
 //
@@ -10,16 +10,20 @@
 // Vercel (jusqu'à ±59 min sur certains plans) sans jamais rater un rappel
 // à cause d'un déclenchement légèrement décalé.
 //
-// 57-7 — DEUX SCHÉMAS COEXISTENT tant que 57-8 n'a pas remplacé l'écran
-// d'armement actuel (/app/rappels) :
-//   - ancien (57-1 à 57-6) : `creneau` (matin/midi/soir fixes) + `jours`
-//     (jours de semaine cochés, répétition implicite).
-//   - nouveau (57-7+) : `date` + `heure` (libre) + `recurrent` (true = se
-//     répète chaque semaine au jour de semaine de `date` ; false = ponctuel,
-//     dû une seule fois à `date`).
-// isReminderDueNow détecte lui-même quel schéma une ligne utilise (présence
-// de `date`+`heure`) — un rappel créé par l'écran actuel (date/heure/recurrent
-// tous NULL) continue d'être évalué exactement comme avant, sans régression.
+// TROIS SCHÉMAS COEXISTENT tant que les 3 rappels de test créés avant 57-7
+// (ancien schéma pur) ne sont pas retirés à la main :
+//   - ancien (57-1 à 57-6, `recurrent` NULL en base) : `creneau` (matin/midi/
+//     soir fixes) + `jours` (jours de semaine cochés, répétition implicite).
+//   - nouveau récurrent (57-8+, `recurrent = true`) : `jours` (multi-jours,
+//     même colonne et même sens que l'ancien schéma) + `heure` libre (rem-
+//     place `creneau`). `date` n'est jamais lue dans ce mode.
+//   - nouveau ponctuel (57-7+, `recurrent = false`) : `date` exacte + `heure`
+//     libre, dû une seule fois. `jours` n'est jamais lu dans ce mode.
+// Correction 57-8 (décision du 2026-07-11) : 57-7 avait fait déduire le jour
+// de semaine du récurrent depuis `date` — ce n'était PAS le modèle voulu,
+// Alyson tenait à garder le multi-jours de l'ancien système. isReminderDueNow
+// discrimine désormais sur `recurrent` (true/false/undefined) plutôt que sur
+// la présence de `date`.
 
 import type { ReminderCreneau } from "./supabase-store";
 
@@ -92,18 +96,6 @@ export function isSameLocalDay(
   return a.localDateKey === b.localDateKey;
 }
 
-// Jour de semaine ISO (1=lundi…7=dimanche) d'une date calendaire pure
-// "YYYY-MM-DD". Volontairement PAS de fuseau ici : une date calendaire seule
-// (colonne Postgres `date`, sans heure) tombe le même jour de semaine peu
-// importe le fuseau depuis lequel on la regarde — interprétation UTC pure
-// pour ne jamais introduire un décalage de fuseau qui n'a pas de sens ici.
-function isoWeekdayOfDateString(dateStr: string): number {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  const utcDate = new Date(Date.UTC(y, m - 1, d));
-  const jsDay = utcDate.getUTCDay(); // 0=dimanche..6=samedi
-  return jsDay === 0 ? 7 : jsDay; // ISO : 1=lundi..7=dimanche
-}
-
 // Un rappel PONCTUEL (recurrent=false) dont `date` est strictement avant la
 // date locale actuelle (dans le fuseau de la personne) est passé — il ne
 // sera plus jamais dû. Utilisé par le cron (57-7 §4) pour le désarmement
@@ -121,19 +113,26 @@ export type DueCheckInput = {
   lastSentAt: string | null;
   now: Date;
   toleranceMinutes?: number;
-  // Ancien schéma (57-1 à 57-6, écran /app/rappels actuel — créneau fixe +
-  // jours de semaine cochés). Laisser `date`/`heure` absents pour ce chemin.
+  // Ancien schéma (57-1 à 57-6, `recurrent` NULL en base — laisser `recurrent`
+  // absent pour ce chemin) : créneau fixe + jours de semaine cochés.
   creneau?: ReminderCreneau;
+  // Jours de semaine (ISO 1=lundi…7=dimanche) — colonne partagée par l'ancien
+  // schéma ET le nouveau récurrent (57-8) : même sens, même multi-jours.
   jours?: number[];
-  // Nouveau schéma (57-7+, futur écran 57-8) — heure libre "HH:MM" ou
-  // "HH:MM:SS" (format renvoyé par Postgres `time` via PostgREST), date
-  // calendaire "YYYY-MM-DD" (colonne Postgres `date`). `recurrent=true` :
-  // se répète chaque semaine au jour de semaine de `date`. `recurrent=false`
-  // (ponctuel) : dû une seule fois, exactement à `date`.
+  // Nouveau schéma (57-7+) — heure libre "HH:MM" ou "HH:MM:SS" (format
+  // renvoyé par Postgres `time` via PostgREST). `recurrent=true` (57-8) :
+  // se répète chaque semaine sur les jours de `jours`, `date` non lue.
+  // `recurrent=false` (57-7) : ponctuel, dû une seule fois exactement à
+  // `date`, `jours` non lue.
   date?: string;
   heure?: string;
   recurrent?: boolean;
 };
+
+function parseHeure(heure: string): number {
+  const [h, m] = heure.split(":").map(Number);
+  return h * 60 + (m || 0);
+}
 
 /**
  * Un rappel est dû si : (1) le jour concerné (calculé différemment selon le
@@ -144,9 +143,13 @@ export type DueCheckInput = {
  * par défaut 45 : couvre l'imprécision cumulée de deux passages horaires
  * consécutifs du cron sans jamais doublonner grâce à la garde `lastSentAt`.
  *
- * Détection du schéma : `date`+`heure` renseignés → nouveau schéma (57-7).
- * Sinon `creneau`+`jours` → ancien schéma, comportement strictement
- * identique à avant 57-7 (aucune régression pour l'écran actuel).
+ * Détection du schéma : sur `recurrent` (discriminant explicite posé par
+ * l'écran qui crée le rappel), pas sur la présence de `date` (erreur de
+ * modélisation 57-7, corrigée en 57-8 — voir en-tête de fichier).
+ * `recurrent === true` → nouveau récurrent (jours+heure). `recurrent ===
+ * false` → ponctuel (date+heure). `recurrent` absent (NULL en base) →
+ * ancien schéma (creneau+jours), comportement strictement identique à avant
+ * 57-7 (aucune régression pour les 3 rappels de test existants).
  */
 export function isReminderDueNow(input: DueCheckInput): boolean {
   const { fuseau, lastSentAt, now, toleranceMinutes = 45 } = input;
@@ -155,19 +158,22 @@ export function isReminderDueNow(input: DueCheckInput): boolean {
   let isDayMatch: boolean;
   let targetMinutes: number;
 
-  if (input.date !== undefined && input.heure !== undefined) {
-    // Nouveau schéma (57-7) : heure libre + date, récurrent ou ponctuel.
-    const [h, m] = input.heure.split(":").map(Number);
-    targetMinutes = h * 60 + (m || 0);
-    isDayMatch = input.recurrent
-      ? isoWeekdayOfDateString(input.date) === nowLocal.isoWeekday
-      : input.date === nowLocal.localDateKey;
+  if (input.recurrent === true) {
+    // Nouveau récurrent (57-8) : jours multi-sélection + heure libre.
+    if (input.jours === undefined || input.heure === undefined) return false;
+    targetMinutes = parseHeure(input.heure);
+    isDayMatch = input.jours.includes(nowLocal.isoWeekday);
+  } else if (input.recurrent === false) {
+    // Ponctuel (57-7) : date exacte + heure libre.
+    if (input.date === undefined || input.heure === undefined) return false;
+    targetMinutes = parseHeure(input.heure);
+    isDayMatch = input.date === nowLocal.localDateKey;
   } else if (input.creneau !== undefined && input.jours !== undefined) {
     // Ancien schéma (57-1 à 57-6) : comportement inchangé.
     targetMinutes = CRENEAU_TARGET_HOUR[input.creneau] * 60;
     isDayMatch = input.jours.includes(nowLocal.isoWeekday);
   } else {
-    // Rappel mal formé (ni l'un ni l'autre schéma peuplé) : jamais dû.
+    // Rappel mal formé (aucun des 3 schémas peuplé) : jamais dû.
     return false;
   }
 

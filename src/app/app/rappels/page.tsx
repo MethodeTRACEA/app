@@ -1,11 +1,17 @@
 "use client";
 
 // ════════════════════════════════════════════════════════════
-// TRACÉA — Chantier 57 « Ancrage contextuel » — Brique 57-3
+// TRACÉA — Chantier 57 « Ancrage contextuel » — Briques 57-3, 57-8
 // Écran d'armement / désarmement des rappels.
-// Wordings figés (spec chantier57_0b) : NE RIEN reformuler ci-dessous.
+// Wordings figés (spec chantier57_0b + spec calendrier/heure libre) : NE
+// RIEN reformuler ci-dessous.
 // Aucun gate premium. Aucune écriture hors reminders (table déjà couverte
 // par les 2 chemins d'effacement RGPD — 57-1).
+//
+// 57-8 : remplace le choix créneau+jours unique par un choix de mode
+// (ponctuel « Une date précise » / récurrent « Chaque semaine »), chacun
+// avec sa propre saisie (calendrier ou jours multi-sélection) + une heure
+// libre commune. `creneau` n'est plus jamais écrit par cet écran.
 // ════════════════════════════════════════════════════════════
 
 import { useEffect, useState } from "react";
@@ -20,6 +26,7 @@ import {
   type ReminderCreneau,
 } from "@/lib/supabase-store";
 import { subscribeToPush } from "@/lib/push";
+import { ReminderCalendarPicker } from "@/components/ReminderCalendarPicker";
 import {
   PrimaryButton,
   SecondaryButton,
@@ -28,7 +35,8 @@ import {
   ExitLink,
 } from "@/components/ui";
 
-type Phase = "liste" | "genre" | "moment" | "confirmation" | "confirme";
+type Phase = "liste" | "genre" | "mode" | "moment" | "confirmation" | "confirme";
+type ReminderMode = "ponctuel" | "recurrent";
 
 const GENRES: {
   value: ReminderCategorie;
@@ -64,6 +72,25 @@ const JOURS: { iso: number; label: string }[] = [
   { iso: 7, label: "Dim" },
 ];
 
+// Noms longs (résumé de liste 57-8, ex. « lundi, mercredi ») — distincts des
+// libellés courts ci-dessus (utilisés pour les chips de sélection).
+const JOURS_LONGS: Record<number, string> = {
+  1: "lundi", 2: "mardi", 3: "mercredi", 4: "jeudi", 5: "vendredi", 6: "samedi", 7: "dimanche",
+};
+
+const MODES: { value: ReminderMode; titre: string; description: string }[] = [
+  {
+    value: "ponctuel",
+    titre: "Une date précise",
+    description: "un jour donné, à l'heure que tu choisis.",
+  },
+  {
+    value: "recurrent",
+    titre: "Chaque semaine",
+    description: "un ou plusieurs jours qui reviennent, à l'heure que tu choisis.",
+  },
+];
+
 const blockStyle: React.CSSProperties = {
   background: "rgba(111,106,100,0.18)",
   border: "1px solid rgba(240,230,214,0.10)",
@@ -94,13 +121,50 @@ const textStyle: React.CSSProperties = {
 function genreTitre(c: ReminderCategorie) {
   return GENRES.find((g) => g.value === c)?.titre ?? c;
 }
-function creneauLabel(c: ReminderCreneau) {
-  return CRENEAUX.find((x) => x.value === c)?.label ?? c;
+function creneauLabel(c: ReminderCreneau | null) {
+  return CRENEAUX.find((x) => x.value === c)?.label ?? "";
 }
 function joursAffiches(jours: number[]) {
   return JOURS.filter((j) => jours.includes(j.iso))
     .map((j) => j.label)
     .join(", ");
+}
+function joursAffichesLongs(jours: number[]) {
+  return jours
+    .slice()
+    .sort((a, b) => a - b)
+    .map((j) => JOURS_LONGS[j])
+    .filter(Boolean)
+    .join(", ");
+}
+function heureAffichee(heure: string | null) {
+  return heure ? heure.slice(0, 5) : "";
+}
+function dateAffichee(date: string | null) {
+  if (!date) return "";
+  return new Date(`${date}T00:00:00`).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+  });
+}
+
+/**
+ * Résumé lisible d'un rappel pour la liste (57-8 §3), selon son mode :
+ * - récurrent (recurrent=true, nouveau schéma) : catégorie · jours · heure.
+ * - ponctuel (recurrent=false, nouveau schéma) : catégorie · date · heure.
+ * - ancien schéma (recurrent NULL — les rappels de test créés avant 57-7) :
+ *   catégorie · créneau · jours, comme avant 57-8, sans jamais planter sur
+ *   les champs absents (date/heure toujours NULL pour ces lignes).
+ */
+function resumeRappel(r: Reminder): string {
+  const cat = genreTitre(r.categorie);
+  if (r.recurrent === true) {
+    return `${cat} · ${joursAffichesLongs(r.jours)} · ${heureAffichee(r.heure)}`;
+  }
+  if (r.recurrent === false) {
+    return `${cat} · ${dateAffichee(r.date)} · ${heureAffichee(r.heure)}`;
+  }
+  return `${cat} · ${creneauLabel(r.creneau)} · ${joursAffiches(r.jours)}`;
 }
 
 export default function RappelsPage() {
@@ -113,8 +177,10 @@ export default function RappelsPage() {
 
   // Formulaire en cours de composition
   const [categorie, setCategorie] = useState<ReminderCategorie | null>(null);
-  const [creneau, setCreneau] = useState<ReminderCreneau | null>(null);
+  const [mode, setMode] = useState<ReminderMode | null>(null);
   const [jours, setJours] = useState<number[]>([]);
+  const [date, setDate] = useState<string | null>(null);
+  const [heure, setHeure] = useState("");
   const [label, setLabel] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
@@ -158,8 +224,10 @@ export default function RappelsPage() {
 
   function resetForm() {
     setCategorie(null);
-    setCreneau(null);
+    setMode(null);
     setJours([]);
+    setDate(null);
+    setHeure("");
     setLabel("");
     setSaveError(false);
   }
@@ -171,20 +239,34 @@ export default function RappelsPage() {
   }
 
   async function confirmerRappel() {
-    if (!user || !categorie || !creneau || jours.length === 0 || saving) {
-      return;
-    }
+    if (!user || !categorie || !mode || !heure || saving) return;
+    if (mode === "recurrent" && jours.length === 0) return;
+    if (mode === "ponctuel" && !date) return;
+
     setSaving(true);
     setSaveError(false);
 
     const fuseau = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const created = await createReminderDb(user.id, {
-      categorie,
-      creneau,
-      jours,
-      label: label.trim() || null,
-      fuseau,
-    });
+    const created = await createReminderDb(
+      user.id,
+      mode === "recurrent"
+        ? {
+            categorie,
+            label: label.trim() || null,
+            fuseau,
+            heure,
+            recurrent: true,
+            jours,
+          }
+        : {
+            categorie,
+            label: label.trim() || null,
+            fuseau,
+            heure,
+            recurrent: false,
+            date: date as string,
+          }
+    );
 
     if (!created) {
       setSaving(false);
@@ -272,8 +354,7 @@ export default function RappelsPage() {
                 ) : (
                   <>
                     <p className="font-body" style={textStyle}>
-                      {genreTitre(r.categorie)} · {creneauLabel(r.creneau)} ·{" "}
-                      {joursAffiches(r.jours)}
+                      {resumeRappel(r)}
                     </p>
                     {r.label && (
                       <p
@@ -325,7 +406,7 @@ export default function RappelsPage() {
                     type="button"
                     onClick={() => {
                       setCategorie(g.value);
-                      setPhase("moment");
+                      setPhase("mode");
                     }}
                     className="w-full text-left rounded-[18px] px-5 py-4 font-body text-base transition-all duration-200 border bg-t-brume/15 border-[rgba(232,216,199,0.18)] t-text-secondary hover:bg-t-brume/30 hover:border-[rgba(232,216,199,0.30)]"
                   >
@@ -350,46 +431,96 @@ export default function RappelsPage() {
           </>
         )}
 
-        {/* ══════════════ Écran 2 : le moment ══════════════ */}
-        {phase === "moment" && (
+        {/* ══════════════ Écran 1bis : le mode (57-8) ══════════════ */}
+        {phase === "mode" && (
           <>
             <div style={blockStyle}>
               <p className="font-body" style={{ ...textStyle, marginBottom: 20 }}>
-                Quel moment veux-tu marquer ?
+                Quel genre de moment veux-tu marquer ?
               </p>
-
-              <p
-                className="font-sans"
-                style={{ ...kickerStyle, fontSize: 11, marginBottom: 10 }}
-              >
-                Créneau
-              </p>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
-                {CRENEAUX.map((c) => (
-                  <ChoiceChip
-                    key={c.value}
-                    label={c.label}
-                    selected={creneau === c.value}
-                    onClick={() => setCreneau(c.value)}
-                  />
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {MODES.map((m) => (
+                  <button
+                    key={m.value}
+                    type="button"
+                    onClick={() => {
+                      setMode(m.value);
+                      setPhase("moment");
+                    }}
+                    className="w-full text-left rounded-[18px] px-5 py-4 font-body text-base transition-all duration-200 border bg-t-brume/15 border-[rgba(232,216,199,0.18)] t-text-secondary hover:bg-t-brume/30 hover:border-[rgba(232,216,199,0.30)]"
+                  >
+                    <span style={{ display: "block", fontWeight: 500 }}>
+                      {m.titre}
+                    </span>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: "0.85rem",
+                        opacity: 0.75,
+                        marginTop: 4,
+                      }}
+                    >
+                      {m.description}
+                    </span>
+                  </button>
                 ))}
               </div>
+            </div>
+            <ExitLink label="Retour" onClick={() => setPhase("genre")} />
+          </>
+        )}
+
+        {/* ══════════════ Écran 2 : le moment (57-8) ══════════════ */}
+        {phase === "moment" && mode && (
+          <>
+            <div style={blockStyle}>
+              {mode === "recurrent" ? (
+                <>
+                  <p
+                    className="font-sans"
+                    style={{ ...kickerStyle, fontSize: 11, marginBottom: 10 }}
+                  >
+                    Jours
+                  </p>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
+                    {JOURS.map((j) => (
+                      <ChoiceChip
+                        key={j.iso}
+                        label={j.label}
+                        selected={jours.includes(j.iso)}
+                        onClick={() => toggleJour(j.iso)}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p
+                    className="font-sans"
+                    style={{ ...kickerStyle, fontSize: 11, marginBottom: 10 }}
+                  >
+                    Date
+                  </p>
+                  <div style={{ marginBottom: 24 }}>
+                    <ReminderCalendarPicker value={date} onChange={setDate} />
+                  </div>
+                </>
+              )}
 
               <p
                 className="font-sans"
                 style={{ ...kickerStyle, fontSize: 11, marginBottom: 10 }}
               >
-                Jours
+                Heure
               </p>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
-                {JOURS.map((j) => (
-                  <ChoiceChip
-                    key={j.iso}
-                    label={j.label}
-                    selected={jours.includes(j.iso)}
-                    onClick={() => toggleJour(j.iso)}
-                  />
-                ))}
+              <div style={{ marginBottom: 24 }}>
+                <input
+                  type="time"
+                  value={heure}
+                  onChange={(e) => setHeure(e.target.value)}
+                  className="t-input"
+                  style={{ maxWidth: 160 }}
+                />
               </div>
 
               <TextCapsuleField
@@ -400,12 +531,14 @@ export default function RappelsPage() {
             </div>
 
             <PrimaryButton
-              disabled={!creneau || jours.length === 0}
+              disabled={
+                !heure || (mode === "recurrent" ? jours.length === 0 : !date)
+              }
               onClick={() => setPhase("confirmation")}
             >
               Continuer
             </PrimaryButton>
-            <ExitLink label="Retour" onClick={() => setPhase("genre")} />
+            <ExitLink label="Retour" onClick={() => setPhase("mode")} />
           </>
         )}
 
