@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import * as Sentry from "@sentry/nextjs";
 import { sendNotification, setVapidDetails, WebPushError } from "web-push";
-import { isReminderDueNow } from "@/lib/reminder-schedule";
+import { isReminderDueNow, isPastOneTimeReminder } from "@/lib/reminder-schedule";
 import type { ReminderCreneau } from "@/lib/supabase-store";
 
 // force-dynamic : cf. trial-expiry, empêche l'évaluation statique au build.
@@ -38,6 +38,11 @@ type ReminderRow = {
   jours: number[];
   fuseau: string;
   last_sent_at: string | null;
+  // Nouveau schéma (57-7), coexiste avec creneau/jours — NULL pour tout
+  // rappel créé par l'écran actuel (avant 57-8).
+  date: string | null;
+  heure: string | null;
+  recurrent: boolean | null;
 };
 
 type SubscriptionRow = {
@@ -102,7 +107,7 @@ export async function GET(request: NextRequest) {
   //    mémoire (par fuseau individuel), pas en SQL.
   const { data: reminders, error: queryError } = await supabaseService
     .from("reminders")
-    .select("id, user_id, creneau, jours, fuseau, last_sent_at")
+    .select("id, user_id, creneau, jours, fuseau, last_sent_at, date, heure, recurrent")
     .eq("arme", true)
     .returns<ReminderRow[]>();
 
@@ -112,11 +117,41 @@ export async function GET(request: NextRequest) {
   }
 
   const now = new Date();
-  const due = reminders.filter((r) =>
+
+  // 3bis. Désarmement automatique des rappels PONCTUELS (recurrent=false)
+  // dont la date est strictement passée dans le fuseau de la personne
+  // (57-7 §4) — intégré ici plutôt qu'un job séparé : ce cron tourne déjà
+  // toutes les heures, pas besoin d'un mécanisme supplémentaire. Exclus de
+  // `reminders` avant le calcul "dû" (un rappel passé n'est de toute façon
+  // jamais dû, mais autant ne pas le réévaluer inutilement).
+  let disarmed = 0;
+  const stillArmed: ReminderRow[] = [];
+  for (const r of reminders) {
+    if (
+      r.recurrent === false &&
+      r.date !== null &&
+      isPastOneTimeReminder(r.date, r.fuseau, now)
+    ) {
+      await supabaseService
+        .from("reminders")
+        .update({ arme: false, updated_at: now.toISOString() })
+        .eq("id", r.id);
+      disarmed++;
+    } else {
+      stillArmed.push(r);
+    }
+  }
+
+  const due = stillArmed.filter((r) =>
     isReminderDueNow({
       fuseau: r.fuseau,
       creneau: r.creneau,
       jours: r.jours,
+      // null -> undefined : le nouveau schéma (57-7) n'est détecté par
+      // isReminderDueNow que si date/heure sont réellement fournis.
+      date: r.date ?? undefined,
+      heure: r.heure ?? undefined,
+      recurrent: r.recurrent ?? undefined,
       lastSentAt: r.last_sent_at,
       now,
     })
@@ -209,6 +244,8 @@ export async function GET(request: NextRequest) {
   console.log(
     "[CRON REMINDERS] Done — rappels armés:",
     reminders.length,
+    "| désarmés (ponctuels passés):",
+    disarmed,
     "| dus:",
     due.length,
     "| envoyés:",
@@ -221,6 +258,7 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({
     checked: reminders.length,
+    disarmed,
     due: due.length,
     sent,
     cleaned,
