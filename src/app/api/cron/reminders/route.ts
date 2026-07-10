@@ -133,6 +133,14 @@ export async function GET(request: NextRequest) {
   let errors = 0;
 
   for (const reminder of due) {
+    // Vrai si au moins un abonnement existait pour tenter un envoi (succès,
+    // nettoyage 404/410, ou autre échec — peu importe l'issue individuelle).
+    // Distinct de "0 abonnement du tout" : dans ce cas last_sent_at ne doit
+    // PAS bouger plus bas, sinon le nudge (57-5) croit le push géré alors
+    // que rien n'a jamais été tenté et ne prend jamais le relais. Bug trouvé
+    // et corrigé en 57-6 (confirmé par test croisé cron+nudge).
+    let attempted = false;
+
     try {
       const { data: subscriptions, error: subError } = await supabaseService
         .from("push_subscriptions")
@@ -146,6 +154,7 @@ export async function GET(request: NextRequest) {
         });
         errors++;
       } else {
+        attempted = (subscriptions?.length ?? 0) > 0;
         for (const sub of subscriptions ?? []) {
           try {
             await sendNotification(
@@ -183,13 +192,18 @@ export async function GET(request: NextRequest) {
       errors++;
     }
 
-    // Marqué comme traité pour aujourd'hui dans TOUS les cas (aucun
-    // abonnement, échec d'envoi, ou succès) : le prochain créneau du même
-    // rappel réessaiera naturellement — jamais de conséquence visible.
-    await supabaseService
-      .from("reminders")
-      .update({ last_sent_at: now.toISOString() })
-      .eq("id", reminder.id);
+    // Marqué comme traité pour aujourd'hui UNIQUEMENT s'il y a eu au moins
+    // une tentative d'envoi réelle (succès, nettoyage 404/410, ou autre
+    // échec). Sans abonnement du tout, on ne touche pas last_sent_at : le
+    // nudge (57-5) doit pouvoir prendre le relais. Le prochain créneau du
+    // même rappel réessaiera naturellement dans tous les cas — jamais de
+    // conséquence visible côté utilisatrice.
+    if (attempted) {
+      await supabaseService
+        .from("reminders")
+        .update({ last_sent_at: now.toISOString() })
+        .eq("id", reminder.id);
+    }
   }
 
   console.log(
