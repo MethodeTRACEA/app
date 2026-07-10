@@ -25,6 +25,7 @@ import { getTraceLabel } from "@/lib/trace-labels";
 import { supabase } from "@/lib/supabase";
 import type { SessionData } from "@/lib/types";
 import { ReflectRecurrent } from "@/components/ReflectRecurrent";
+import { CURATED_ACTION_TEXTS } from "@/lib/action-suggestions";
 
 // ═══════════════════════════════════════════════════════════════════
 // TRACÉA — Chantier 58 — /app/espace ("Ton espace")
@@ -60,7 +61,14 @@ function computeAppuisBlock(sessions: SessionData[]): string[] {
   const counts: Record<string, number> = {};
   for (const s of sessions) {
     if (!s.actionAlignee) continue;
-    const key = s.actionAlignee.toLowerCase().trim();
+    // Backlog P2 (2026-07-11) : même garde que getRecentGestesDb ("Tes
+    // gestes") — un geste en texte libre n'est jamais ré-affiché sans le
+    // softening chantier 39. Filtre sur le texte brut trimé (comme
+    // CURATED_ACTION_TEXTS, qui est déjà tout en minuscules), avant la
+    // clé lowercase utilisée pour le comptage.
+    const raw = s.actionAlignee.trim();
+    if (!CURATED_ACTION_TEXTS.has(raw)) continue;
+    const key = raw.toLowerCase();
     counts[key] = (counts[key] ?? 0) + 1;
   }
   return Object.entries(counts)
