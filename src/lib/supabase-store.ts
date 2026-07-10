@@ -1,7 +1,7 @@
 import { supabase } from "./supabase";
 import type { SessionData, StepId } from "./types";
 import { hasValidConsent } from "./consent";
-import { CURATED_ACTION_TEXTS } from "./action-suggestions";
+import { CURATED_ACTION_TEXTS, ACTION_TEXTS_TU } from "./action-suggestions";
 
 // --- Sessions ---
 
@@ -249,6 +249,12 @@ function moreAccomplishedStatut(
  * Ordre = récence : la Map préserve l'ordre d'insertion, et les lignes arrivent
  * déjà triées du + récent au + ancien, donc la 1re insertion d'un libellé fixe
  * sa position (occurrence la plus récente en haut).
+ *
+ * VOIX (P2 backlog, 2026-07-11) : la clé de dédup reste le libellé "je" brut
+ * (action_alignee, identique à CURATED_ACTION_TEXTS) — seul le champ `label`
+ * renvoyé est basculé en "tu" via ACTION_TEXTS_TU, pour harmoniser avec « Ce
+ * qui t'aide déjà ». getEligibleGesteDb (carte « Le retour du geste »,
+ * wordings figés B-0) n'est PAS touchée par ce changement.
  */
 export async function getRecentGestesDb(
   userId: string,
@@ -275,7 +281,8 @@ export async function getRecentGestesDb(
     const statut = (row.geste_statut as GesteStatut | null) ?? null;
     const existing = byLabel.get(label);
     if (!existing) {
-      byLabel.set(label, { sessionId: row.id as string, label, statut });
+      const displayLabel = ACTION_TEXTS_TU.get(label) ?? label;
+      byLabel.set(label, { sessionId: row.id as string, label: displayLabel, statut });
     } else {
       // Même geste revu : on garde la position (récence) et on remonte au statut
       // le plus abouti vu sur ce libellé.

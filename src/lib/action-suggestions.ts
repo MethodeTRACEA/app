@@ -174,3 +174,61 @@ export const CURATED_ACTION_TEXTS: ReadonlySet<string> = new Set<string>([
   ),
   ...ACTION_FALLBACK.map((i) => i.text),
 ]);
+
+// ════════════════════════════════════════════════════════════
+// P2 backlog — harmonisation voix « Tes gestes » (chantier 35-B, noté
+// cosmétique, jamais traité). Les libellés ci-dessus sont volontairement en
+// "je" (choix fait par la personne, verbatim pendant la session). Dans
+// "Tes gestes" (relecture, espace/page.tsx), on relit à la 2e personne pour
+// la même raison que le reflet ("tu") — jamais dans l'écran de session
+// lui-même, jamais dans la carte "Le retour du geste" (GesteRetourCard,
+// wordings figés B-0, hors périmètre).
+//
+// Table STATIQUE écrite et relue à la main (Alyson, 2026-07-11), pas dérivée
+// par transformation automatique : un simple remplacement de pronom casse la
+// conjugaison sur les verbes en -er ("j'accepte" → "tu acceptes", pas "tu
+// accepte") et sur avoir/aller ("j'ai" → "tu as", "je vais" → "tu vas",
+// "j'aurai" → "tu auras"). N'inclut QUE les 37 libellés dont la voix change
+// réellement — les 30 autres (aucun pronom je/moi/me/ma/mes) sont absents
+// exprès : le repli `ACTION_TEXTS_TU.get(x) ?? x` au point d'appel renvoie
+// alors le texte tel quel, déjà neutre en personne. Vérifié : union des deux
+// ensembles = CURATED_ACTION_TEXTS (67 libellés) à 100 %.
+export const ACTION_TEXTS_TU: ReadonlyMap<string, string> = new Map<string, string>([
+  ["écrire la première phrase que je pourrais dire", "écrire la première phrase que tu pourrais dire"],
+  ["écrire ce que j'aurais voulu dire", "écrire ce que tu aurais voulu dire"],
+  ["écrire ce que j'aurais besoin qu'on entende", "écrire ce que tu aurais besoin qu'on entende"],
+  ["écrire ce que j'aurais aimé entendre", "écrire ce que tu aurais aimé entendre"],
+  ["dire ce que je n'accepte plus", "dire ce que tu n'acceptes plus"],
+  ["écrire ma limite avant de la dire", "écrire ta limite avant de la dire"],
+  ["décider ce que je vais dire et quand", "décider ce que tu vas dire et quand"],
+  ["dire ce que je ne veux plus", "dire ce que tu ne veux plus"],
+  ["écrire ma limite avant de la poser", "écrire ta limite avant de la poser"],
+  ["écrire ce que je peux dire sans me justifier", "écrire ce que tu peux dire sans te justifier"],
+  ["me demander ce que je dirais à un proche dans la même situation", "te demander ce que tu dirais à un proche dans la même situation"],
+  ["mettre au clair ce que je veux vraiment", "mettre au clair ce que tu veux vraiment"],
+  ["me demander ce que je dirais à quelqu'un d'autre dans cette situation", "te demander ce que tu dirais à quelqu'un d'autre dans cette situation"],
+  ["noter ce que je sais et ce que j'ignore encore", "noter ce que tu sais et ce que tu ignores encore"],
+  ["écrire ce qui dépend de moi", "écrire ce qui dépend de toi"],
+  ["trouver le mot le plus juste pour ce que je ressens", "trouver le mot le plus juste pour ce que tu ressens"],
+  ["écrire les premiers mots qui me viennent", "écrire les premiers mots qui te viennent"],
+  ["dire ce que j'ai gardé pour moi", "dire ce que tu as gardé pour toi"],
+  ["mettre un mot juste sur ce que je ressens", "mettre un mot juste sur ce que tu ressens"],
+  ["écrire ce qui m'a touché avant d'en parler", "écrire ce qui t'a touché avant d'en parler"],
+  ["écrire ça juste pour moi", "écrire ça juste pour toi"],
+  ["noter ce que je ressens, simplement", "noter ce que tu ressens, simplement"],
+  ["garder ça pour moi le temps d'y voir clair", "garder ça pour toi le temps d'y voir clair"],
+  ["écrire ce que j'ai envie de partager", "écrire ce que tu as envie de partager"],
+  ["dire que j'aimerais ne pas être seul avec ça", "dire que tu aimerais ne pas être seul avec ça"],
+  ["me reposer un moment", "te reposer un moment"],
+  ["y revenir quand j'aurai un peu d'énergie", "y revenir quand tu auras un peu d'énergie"],
+  ["dire de quel soutien j'ai besoin : qu'on m'écoute, qu'on m'aide, ou juste qu'on soit là", "dire de quel soutien tu as besoin : qu'on t'écoute, qu'on t'aide, ou juste qu'on soit là"],
+  ["choisir une personne à qui je peux demander", "choisir une personne à qui tu peux demander"],
+  ["dire à quelqu'un que j'aurais besoin d'un coup de main", "dire à quelqu'un que tu aurais besoin d'un coup de main"],
+  ["accepter qu'on m'aide, même un peu", "accepter qu'on t'aide, même un peu"],
+  ["nommer 5 choses que je vois autour de moi", "nommer 5 choses que tu vois autour de toi"],
+  ["sentir mes pieds au sol, le contact du siège", "sentir tes pieds au sol, le contact du siège"],
+  ["nommer 3 choses que j'entends maintenant", "nommer 3 choses que tu entends maintenant"],
+  ["sentir mes appuis : pieds, dos, mains", "sentir tes appuis : pieds, dos, mains"],
+  ["écrire ce qui compte pour moi", "écrire ce qui compte pour toi"],
+  ["écrire ce que je veux garder en tête", "écrire ce que tu veux garder en tête"],
+]);
