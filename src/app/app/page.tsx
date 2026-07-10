@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getStats, getLastSession } from "@/lib/store";
-import { shouldShowNudge, markNudgeShownToday } from "@/lib/reminder";
 import { SafetyResources } from "@/components/SafetyResources";
 import { InstallPrompt } from "@/components/InstallPrompt";
-import { ReminderPrompt } from "@/components/ReminderPrompt";
+import { ReminderNudge } from "@/components/ReminderNudge";
 import { ReportProblem } from "@/components/ReportProblem";
 import { RefletCompact } from "@/components/RefletCompact";
 import { GesteRetourCard } from "@/components/GesteRetourCard";
@@ -21,16 +20,12 @@ export default function Accueil() {
   });
   const [lastSession, setLastSession] = useState<SessionData | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [showNudge, setShowNudge] = useState(false);
+  const [nudgeVisible, setNudgeVisible] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     setStats(getStats());
     setLastSession(getLastSession());
-    if (shouldShowNudge()) {
-      setShowNudge(true);
-      markNudgeShownToday();
-    }
   }, []);
 
   if (!mounted) {
@@ -286,35 +281,13 @@ export default function Accueil() {
           </div>
         )}
 
-        {showNudge && (
-          <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.15)] bg-white/5 px-5 py-4 space-y-3">
-            <p className="font-body text-sm t-text-secondary leading-relaxed text-center">
-              Tu as quelques minutes&nbsp;?
-              <br />
-              <span className="t-text-ghost text-xs">
-                Tu avais pr&eacute;vu un moment ici. L&apos;app est l&agrave; si tu en as envie.
-              </span>
-            </p>
-            <div className="space-y-2">
-              <Link
-                href="/app/traversee-courte"
-                className="w-full block text-center rounded-xl bg-t-beige/10 border border-t-beige/20 py-2.5 font-inter text-sm t-text-secondary hover:bg-t-beige/15 transition-colors"
-              >
-                Lancer une travers&eacute;e courte
-              </Link>
-              <button
-                type="button"
-                onClick={() => setShowNudge(false)}
-                className="w-full text-center font-inter text-xs t-text-ghost py-1.5 opacity-60 hover:opacity-100 transition-opacity"
-              >
-                Pas maintenant
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Repli in-app (57-5) — filet pour qui n'a pas de push actif.
+            Non bloquant, une fois par jour max par rappel dû (voir
+            ReminderNudge). Coordonné avec InstallPrompt ci-dessous : pas
+            deux demandes différentes en même temps. */}
+        <ReminderNudge onVisibilityChange={setNudgeVisible} />
 
-        {stats.total >= 1 && <InstallPrompt />}
-        {stats.total >= 1 && <ReminderPrompt />}
+        {stats.total >= 1 && !nudgeVisible && <InstallPrompt />}
 
         {/* Lien discret vers les ressources — relocalisé depuis la nav (Chantier 58, D4) */}
         <div className="text-center">

@@ -367,6 +367,57 @@ export async function disarmReminderDb(reminderId: string): Promise<void> {
     .eq("id", reminderId);
 }
 
+// --- Repli in-app (chantier 57, brique 57-5) ---
+
+export type ReminderForNudge = {
+  id: string;
+  creneau: ReminderCreneau;
+  jours: number[];
+  fuseau: string;
+  lastSentAt: string | null;
+  nudgeShownAt: string | null;
+};
+
+/**
+ * Rappels armés de la personne, avec les champs nécessaires au calcul
+ * "dû maintenant" (isReminderDueNow) + les deux marqueurs de dédup
+ * (last_sent_at côté push, nudge_shown_at côté nudge in-app). Distincte de
+ * getArmedRemindersDb (qui sert l'écran /app/rappels et n'a pas besoin de
+ * ces champs techniques, jamais affichés).
+ */
+export async function getRemindersForNudgeDb(
+  userId: string
+): Promise<ReminderForNudge[]> {
+  const { data, error } = await supabase
+    .from("reminders")
+    .select("id, creneau, jours, fuseau, last_sent_at, nudge_shown_at")
+    .eq("user_id", userId)
+    .eq("arme", true);
+
+  if (error || !data) return [];
+
+  return data.map((row) => ({
+    id: row.id as string,
+    creneau: row.creneau as ReminderCreneau,
+    jours: (row.jours as number[]) ?? [],
+    fuseau: row.fuseau as string,
+    lastSentAt: (row.last_sent_at as string | null) ?? null,
+    nudgeShownAt: (row.nudge_shown_at as string | null) ?? null,
+  }));
+}
+
+/**
+ * Marque le nudge comme montré aujourd'hui pour ce rappel — écrit au
+ * moment où le nudge est réellement affiché (pas avant). RLS owner déjà en
+ * place (57-1), pas de vérification supplémentaire nécessaire côté client.
+ */
+export async function markReminderNudgeShownDb(reminderId: string): Promise<void> {
+  await supabase
+    .from("reminders")
+    .update({ nudge_shown_at: new Date().toISOString() })
+    .eq("id", reminderId);
+}
+
 // --- Profile ---
 
 export async function getProfileDb(userId: string) {

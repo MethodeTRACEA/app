@@ -62,6 +62,25 @@ function localPartsInZone(
   };
 }
 
+/**
+ * Un timestamp (ISO) tombe-t-il le même jour calendaire local, dans le
+ * fuseau donné, que `now` ? Extrait de isReminderDueNow pour être réutilisé
+ * tel quel par tout autre marqueur "déjà fait aujourd'hui" (ex. le nudge
+ * in-app de 57-5, qui a son propre marqueur distinct de last_sent_at) —
+ * même comparaison de date locale, jamais un simple delta horaire (robuste
+ * au passage de minuit).
+ */
+export function isSameLocalDay(
+  timestamp: string | null,
+  now: Date,
+  fuseau: string
+): boolean {
+  if (!timestamp) return false;
+  const a = localPartsInZone(new Date(timestamp), fuseau);
+  const b = localPartsInZone(now, fuseau);
+  return a.localDateKey === b.localDateKey;
+}
+
 export type DueCheckInput = {
   fuseau: string;
   creneau: ReminderCreneau;
@@ -95,10 +114,7 @@ export function isReminderDueNow(input: DueCheckInput): boolean {
   // minutes ne traverse jamais le changement de jour.
   if (delta > toleranceMinutes) return false;
 
-  if (lastSentAt) {
-    const lastSentLocal = localPartsInZone(new Date(lastSentAt), fuseau);
-    if (lastSentLocal.localDateKey === nowLocal.localDateKey) return false;
-  }
+  if (isSameLocalDay(lastSentAt, now, fuseau)) return false;
 
   return true;
 }
