@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { trackEvent } from "@/lib/supabase-store";
 import { Paywall } from "@/components/Paywall";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
@@ -49,7 +50,7 @@ export default function EntrainementPage() {
 function EntrainementInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { hasPremiumAccess } = useAuth();
+  const { user, hasPremiumAccess } = useAuth();
   const [screen, setScreen] = useState<Screen>("choose");
   const [exercise, setExercise] = useState<ExerciseKey | null>(null);
   const [phase, setPhase] = useState<Phase>("intro");
@@ -58,6 +59,7 @@ function EntrainementInner() {
 
   function startExercise(key: ExerciseKey) {
     if (!hasPremiumAccess && PREMIUM_EXERCISES.includes(key)) {
+      trackEvent(user?.id ?? null, "paywall_view", { variant: "entrainement_exercise", trigger: key });
       setScreen("paywall");
       return;
     }

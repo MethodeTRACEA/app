@@ -73,6 +73,7 @@ function UrgenceInner() {
 
   function startExercise(key: ExerciseKey) {
     if (!hasPremiumAccess && PREMIUM_EXERCISES.includes(key)) {
+      trackEvent(user?.id ?? null, "paywall_view", { variant: "urgence_exercise", trigger: key });
       setScreen("paywall");
       return;
     }

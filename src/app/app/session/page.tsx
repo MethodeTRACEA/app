@@ -214,6 +214,43 @@ function SessionPageInner() {
     }
   }, [user]);
 
+  // ── paywall_view — impression des écrans qui bloquent l'approfondie ──
+  // Émis une seule fois par affichage réel (ref, pas de dépendance sur un
+  // re-render) : mêmes conditions que les 3 branches paywall ci-dessous.
+  const isTrialCapped =
+    !!user &&
+    isSubscribed !== true &&
+    isBetaTester !== true &&
+    isTrialActive === true &&
+    (trialDeepSessionsUsed ?? 0) >= 5;
+  const isFreeAccountBlocked =
+    !!user && !isTrialCapped && !hasPremiumAccess && sessionCount !== null && sessionCount >= 1;
+
+  const paywallAnonFired = useRef(false);
+  const paywallTrialFired = useRef(false);
+  const paywallFreeFired = useRef(false);
+
+  useEffect(() => {
+    if (!user && anonDone === true && !paywallAnonFired.current) {
+      paywallAnonFired.current = true;
+      trackEvent(null, "paywall_view", { variant: "anonymous", trigger: "anon_second_deep_attempt" });
+    }
+  }, [user, anonDone]);
+
+  useEffect(() => {
+    if (isTrialCapped && user && !paywallTrialFired.current) {
+      paywallTrialFired.current = true;
+      trackEvent(user.id, "paywall_view", { variant: "trial_expired", trigger: "trial_cap_reached" });
+    }
+  }, [isTrialCapped, user]);
+
+  useEffect(() => {
+    if (isFreeAccountBlocked && user && !paywallFreeFired.current) {
+      paywallFreeFired.current = true;
+      trackEvent(user.id, "paywall_view", { variant: "free_account", trigger: "free_session_used" });
+    }
+  }, [isFreeAccountBlocked, user]);
+
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -309,12 +346,7 @@ function SessionPageInner() {
   // bloquer en amont pour éviter d'investir 5-8 min puis tomber sur ai_limited
   // côté serveur. Gate local — n'inclut volontairement pas le cap dans
   // hasPremiumAccess global pour ne pas casser les autres pages premium.
-  if (
-    isSubscribed !== true &&
-    isBetaTester !== true &&
-    isTrialActive === true &&
-    (trialDeepSessionsUsed ?? 0) >= 5
-  ) {
+  if (isTrialCapped) {
     return (
       <ScreenContainer overlayOpacity={45}>
         <div className="py-12">
@@ -357,7 +389,7 @@ function SessionPageInner() {
     );
   }
 
-  if (!hasPremiumAccess && sessionCount !== null && sessionCount >= 1) {
+  if (isFreeAccountBlocked) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <Paywall onContinue={() => router.push("/app")} />
