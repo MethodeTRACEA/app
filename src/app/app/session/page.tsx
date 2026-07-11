@@ -192,6 +192,7 @@ function SessionPageInner() {
     isSubscribed,
     isBetaTester,
     isTrialActive,
+    trialUsed,
     trialDeepSessionsUsed,
   } = useAuth();
   const [sessionCount, setSessionCount] = useState<number | null>(null);
@@ -217,12 +218,21 @@ function SessionPageInner() {
   // ── paywall_view — impression des écrans qui bloquent l'approfondie ──
   // Émis une seule fois par affichage réel (ref, pas de dépendance sur un
   // re-render) : mêmes conditions que les 3 branches paywall ci-dessous.
+  // Fix 2026-07-11 : un essai est "terminé" (→ écran trial_expired) pour DEUX
+  // raisons distinctes, pas une seule — le plafond de 5 traversées atteint
+  // PENDANT que la fenêtre des 14 jours est encore ouverte (isTrialActive
+  // reste true), OU la fenêtre des 14 jours elle-même dépassée (isTrialActive
+  // redevient false, que le plafond ait été atteint ou non — trial_used, lui,
+  // reste true pour toujours). L'ancienne condition ("isTrialActive === true
+  // && cap atteint") ne couvrait que le 1er cas : un essai expiré par la date
+  // retombait à tort sur isFreeAccountBlocked, avec un CTA "Commencer mon
+  // essai gratuit" qui échoue silencieusement (trial_already_used, 403).
   const isTrialCapped =
     !!user &&
     isSubscribed !== true &&
     isBetaTester !== true &&
-    isTrialActive === true &&
-    (trialDeepSessionsUsed ?? 0) >= 5;
+    trialUsed === true &&
+    (isTrialActive !== true || (trialDeepSessionsUsed ?? 0) >= 5);
   const isFreeAccountBlocked =
     !!user && !isTrialCapped && !hasPremiumAccess && sessionCount !== null && sessionCount >= 1;
 
@@ -356,7 +366,7 @@ function SessionPageInner() {
                 Traversée approfondie
               </p>
               <h1 className="font-serif text-2xl text-t-beige leading-relaxed">
-                Ton essai approfondi est complet pour ces 14 jours.
+                Ton essai gratuit est terminé.
               </h1>
               <p className="font-body text-base t-text-secondary leading-relaxed">
                 Tu peux toujours utiliser les traversées courtes et l&apos;urgence.
