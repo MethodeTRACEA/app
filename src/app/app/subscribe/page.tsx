@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { trackEvent } from "@/lib/supabase-store";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { getCurrentWithdrawalWording } from "@/lib/legal/withdrawal-wordings";
@@ -63,6 +64,8 @@ function SubscribePageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const {
+    user,
+    loading: authLoading,
     session,
     refreshProfile,
     isSubscribed,
@@ -122,6 +125,30 @@ function SubscribePageInner() {
       setCheckoutStatus("cancel");
     }
   }, [stripeUiEnabled, searchParams, refreshProfile]);
+
+  // ── paywall_view — impression du contenu paywall de cette page ──
+  // Même schéma que session/entrainement/urgence : une seule émission par
+  // affichage réel (ref). trigger "unknown" pour l'instant — aucun des 3
+  // écrans qui redirigent ici (session, Paywall.tsx) ne transporte
+  // aujourd'hui l'origine (router.push("/app/subscribe") sans query param
+  // ni state) ; à affiner plus tard si le volume le justifie. Attend la fin
+  // du chargement du profil (authLoading) pour ne pas compter un compte déjà
+  // abonné pendant la fenêtre où isSubscribed vaut encore false par défaut.
+  const paywallViewFired = useRef(false);
+  useEffect(() => {
+    if (
+      !authLoading &&
+      !isSubscribed &&
+      !isBetaTester &&
+      !paywallViewFired.current
+    ) {
+      paywallViewFired.current = true;
+      trackEvent(user?.id ?? null, "paywall_view", {
+        variant: "subscribe_page",
+        trigger: "unknown",
+      });
+    }
+  }, [authLoading, isSubscribed, isBetaTester, user]);
 
   async function activateTrial() {
     if (!session?.access_token) {
