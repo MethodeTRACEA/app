@@ -1409,7 +1409,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
           {/* Anonyme : rien n'est persisté → ne pas prétendre l'inverse. */}
           {!isAnon && (
             <p className="font-body text-sm t-text-secondary text-center">
-              Cette traversée est gardée dans tes traces.
+              Cette traversée est gardée dans ton espace.
             </p>
           )}
 
@@ -1458,7 +1458,7 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
                 onClick={() => router.push("/app/espace")}
                 className="font-inter text-sm t-text-secondary hover:t-text-beige transition-colors"
               >
-                Voir mes traces →
+                Voir ton espace →
               </button>
             </>
           )}

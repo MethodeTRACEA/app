@@ -88,7 +88,7 @@ export function ReflectRecurrent({ mode, items, recurringEmotion }: ReflectRecur
             textDecoration: "none",
           }}
         >
-          Voir ton reflet ›
+          Voir ton espace ›
         </Link>
       </div>
     );

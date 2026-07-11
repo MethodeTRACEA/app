@@ -1,5 +1,4 @@
 export { ScreenContainer } from "./ScreenContainer";
-export { StepHeader } from "./StepHeader";
 export { PrimaryButton } from "./PrimaryButton";
 export { SecondaryButton } from "./SecondaryButton";
 export { ChoiceChip } from "./ChoiceChip";
