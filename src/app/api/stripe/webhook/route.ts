@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import * as Sentry from "@sentry/nextjs";
+import { emailSubscriptionCanceled } from "@/lib/email";
 
 // ===================================================================
 // POST /api/stripe/webhook
@@ -290,6 +292,25 @@ export async function POST(request: NextRequest) {
           (typeof subscription.cancel_at === "number" &&
             subscription.cancel_at > 0);
 
+        // Détection de la TRANSITION vers l'annulation programmée : on
+        // n'envoie l'accusé de résiliation qu'au moment où l'utilisatrice
+        // en fait la demande (le flag bascule dans CET event précis), jamais
+        // à chaque customer.subscription.updated. `previous_attributes`
+        // n'existe que sur les events "updated" et ne contient que les
+        // champs réellement modifiés.
+        const previousAttributes = (event.data.previous_attributes ?? {}) as {
+          cancel_at_period_end?: boolean;
+          cancel_at?: number | null;
+        };
+        const justScheduledCancel =
+          event.type === "customer.subscription.updated" &&
+          isCancelScheduled &&
+          (previousAttributes.cancel_at_period_end === false ||
+            Object.prototype.hasOwnProperty.call(
+              previousAttributes,
+              "cancel_at"
+            ));
+
         // Préserver subscribed_at si déjà défini.
         const { data: existing } = await supabase
           .from("profiles")
@@ -346,6 +367,55 @@ export async function POST(request: NextRequest) {
             "event:",
             event.id
           );
+        }
+
+        // Accusé de réception de résiliation (support durable, L215-1-1).
+        // Best-effort strict : un échec d'email ne doit JAMAIS faire échouer
+        // le webhook — la synchro DB ci-dessus reste prioritaire et le
+        // catch avale toute exception (getUserById, envoi Resend…).
+        if (justScheduledCancel) {
+          try {
+            const { data: userData } =
+              await supabase.auth.admin.getUserById(userId);
+            const email = userData?.user?.email;
+            const endUnix =
+              typeof subscription.cancel_at === "number" &&
+              subscription.cancel_at > 0
+                ? subscription.cancel_at
+                : getCurrentPeriodEnd(subscription);
+            const endIso = unixToIso(endUnix);
+            if (email && endIso) {
+              await emailSubscriptionCanceled(email, new Date(endIso));
+              console.log(
+                "[STRIPE WEBHOOK] Accusé de résiliation envoyé, user:",
+                userId.slice(0, 8),
+                "event:",
+                event.id
+              );
+            } else {
+              console.warn(
+                "[STRIPE WEBHOOK] Accusé de résiliation non envoyé (email ou date manquants), user:",
+                userId.slice(0, 8),
+                "event:",
+                event.id
+              );
+            }
+          } catch (mailErr) {
+            const msg =
+              mailErr instanceof Error ? mailErr.message : String(mailErr);
+            console.error(
+              "[STRIPE WEBHOOK] Échec envoi accusé de résiliation user:",
+              userId.slice(0, 8),
+              "event:",
+              event.id,
+              "err:",
+              msg
+            );
+            Sentry.captureException(mailErr, {
+              tags: { feature: "cancellation-email" },
+              extra: { eventId: event.id },
+            });
+          }
         }
         break;
       }

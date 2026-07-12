@@ -77,3 +77,38 @@ Tracéa`;
     text,
   });
 }
+
+// Accusé de réception de résiliation (Code conso L215-1-1 : support
+// durable). Stripe n'envoie pas cet email, il est donc généré ici.
+// `periodEnd` = date de fin d'accès effective (current_period_end /
+// cancel_at côté Stripe).
+export async function emailSubscriptionCanceled(
+  userEmail: string,
+  periodEnd: Date
+): Promise<void> {
+  const formatted = periodEnd.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const text = `Bonjour,
+
+Ta demande de résiliation de l'abonnement TRACÉA Premium a bien été enregistrée.
+
+Ton accès Premium reste actif jusqu'au ${formatted}. À cette date, il prendra fin, sans renouvellement ni nouveau paiement.
+
+Ton compte, lui, reste ouvert : tes traces et tes repères ne sont pas effacés, et tu peux revenir quand tu veux.
+
+Si tu n'es pas à l'origine de cette demande, écris-nous à contact@methodetracea.fr.
+
+À bientôt,
+TRACÉA`;
+
+  await sendEmail({
+    from: FROM,
+    to: userEmail,
+    subject: "Ta résiliation TRACÉA est bien prise en compte",
+    text,
+  });
+}

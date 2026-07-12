@@ -661,6 +661,20 @@ export default function ProfilPage() {
                           : "Gérer mon abonnement"}
                       </button>
                     </p>
+                    <p className="font-sans" style={accessSecondaryTextStyle}>
+                      Tu peux aussi résilier ton abonnement depuis cet espace.
+                    </p>
+                    <p style={{ textAlign: "center", marginTop: 4 }}>
+                      <button
+                        type="button"
+                        onClick={openBillingPortal}
+                        disabled={portalStatus === "loading"}
+                        className="font-sans"
+                        style={portalButtonStyle}
+                      >
+                        Résilier mon abonnement
+                      </button>
+                    </p>
                     {portalStatus === "error" && (
                       <p className="font-sans" style={portalErrorStyle}>
                         Impossible d&apos;ouvrir l&apos;espace abonnement pour le moment. Réessaie dans un instant.
