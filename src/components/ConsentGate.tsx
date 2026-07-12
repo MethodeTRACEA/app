@@ -128,7 +128,8 @@ function AnonConsentForm({ onConsent }: { onConsent: () => void }) {
       <p className="section-label">Consentement</p>
       <h1 className="section-title">Avant de commencer</h1>
       <p className="text-warm-gray mb-6 leading-relaxed">
-        Pour te proposer une traversée, TRACÉA a besoin de traiter ce que tu
+        Pour te proposer une traversée et générer ton reflet via une
+        intelligence artificielle, TRACÉA a besoin de traiter ce que tu
         écris (tes émotions, tes ressentis). Ce sont des données sensibles,
         alors on te demande ton accord.
       </p>
@@ -276,9 +277,10 @@ function ConsentForm({
         Avant de commencer ta première session
       </h1>
       <p className="text-warm-gray mb-6 leading-relaxed">
-        TRACÉA traite des données personnelles et émotionnelles sensibles. Avant
-        d&apos;utiliser le protocole, nous avons besoin de ton consentement
-        explicite, conformément à l&apos;article 9 du RGPD.
+        TRACÉA traite des données personnelles et émotionnelles sensibles, et
+        fait appel à une intelligence artificielle pour générer ton reflet.
+        Avant d&apos;utiliser le protocole, nous avons besoin de ton
+        consentement explicite, conformément à l&apos;article 9 du RGPD.
       </p>
 
       <div className="safety-card mb-6">

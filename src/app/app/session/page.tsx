@@ -1418,6 +1418,12 @@ function SessionContent({ userId, isFirstSession }: { userId: string | null; isF
             Ta traversée
           </h1>
 
+          {/* Mention IA (règlement IA UE art. 50) — sobre, associée au reflet,
+              visible sur les deux parcours (connecté et anonyme partagent cet écran). */}
+          <p className="font-inter text-xs t-text-ghost text-center -mt-4">
+            Ce reflet est généré par une intelligence artificielle.
+          </p>
+
           {/* Miroir IA */}
           {analysis && (
             <div className="w-full rounded-[20px] border border-[rgba(232,216,199,0.12)] bg-white/5 px-5 py-4 space-y-2">

@@ -51,6 +51,9 @@ export default function MentionsLegales() {
                 57 chemin des Marronniers, 81630 Salvagnac, France
               </strong>
             </p>
+            <p>
+              Téléphone : <strong>05 63 53 36 54</strong>
+            </p>
           </div>
           <p className="mt-3">
             TVA non applicable, art. 293 B du Code général des impôts.
@@ -86,6 +89,9 @@ export default function MentionsLegales() {
             <p>440 N Barranca Ave #4133</p>
             <p>Covina, CA 91723</p>
             <p>États-Unis</p>
+            <p>
+              Téléphone : <strong>+1 559-288-7060</strong>
+            </p>
           </div>
           <p className="mt-3">Site : www.vercel.com</p>
           <p className="mt-3">
