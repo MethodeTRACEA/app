@@ -9,7 +9,7 @@ export default function PolitiqueConfidentialite() {
       <h1 className="section-title">Politique de confidentialité — TRACÉA</h1>
       <div className="text-xs text-warm-gray mt-4 mb-8 space-y-1">
         <p>
-          <strong>Dernière mise à jour :</strong> 6 mai 2026
+          <strong>Dernière mise à jour :</strong> 12 juillet 2026
         </p>
         <p>
           <strong>Site :</strong> www.methodetracea.fr
@@ -607,21 +607,54 @@ export default function PolitiqueConfidentialite() {
           </p>
 
           <h3 className="font-serif text-lg text-espresso mt-6 mb-2">
-            8.3 Anthropic
+            8.3 Sous-traitant intelligence artificielle (Anthropic)
           </h3>
           <p>
-            Anthropic est utilisé pour les fonctionnalités d&apos;intelligence
-            artificielle de TRACÉA.
+            Pour générer le reflet qui t&apos;est proposé en fin de
+            traversée, TRACÉA fait appel à un sous-traitant : Anthropic PBC,
+            société américaine qui fournit ses services d&apos;intelligence
+            artificielle via son interface de programmation (API), sur un
+            modèle de la famille Claude.
           </p>
-          <p className="mt-2">Le modèle utilisé actuellement est :</p>
           <p className="mt-2">
-            <strong>claude-sonnet-4-6</strong>
+            Ce qui est transmis à Anthropic : le texte que tu écris ou
+            sélectionnes pendant ta traversée, comme l&apos;émotion nommée,
+            le besoin choisi, les mots que tu poses. Ce qui ne l&apos;est
+            jamais : ton identité. Ni ton nom, ni ton adresse email, ni ton
+            identifiant de compte ne sont envoyés avec ce texte.
           </p>
           <p className="mt-2">
-            Certaines informations saisies pendant une traversée approfondie
-            peuvent être transmises à Anthropic afin de générer une synthèse
-            ou un résumé. Ces données ne sont transmises que lorsque cela est
-            nécessaire au fonctionnement des fonctionnalités IA.
+            Cela vaut pour les deux parcours. Si tu as un compte, ce
+            traitement est couvert par le consentement explicite que tu
+            donnes à l&apos;écran de consentement avant ta première
+            traversée. Si tu découvres l&apos;app sans compte, le traitement
+            est éphémère : ton texte sert uniquement à générer ton reflet, et
+            TRACÉA n&apos;en conserve rien.
+          </p>
+          <p className="mt-2">
+            Anthropic agit uniquement sur instruction de TRACÉA, dans le
+            cadre d&apos;un accord de traitement des données. Conformément à
+            ses conditions commerciales, Anthropic n&apos;utilise pas ces
+            contenus pour entraîner ses modèles, et ne les conserve que pour
+            la durée limitée nécessaire à la fourniture et à la sécurité du
+            service. Anthropic étant établie aux États-Unis, ce transfert de
+            données hors de l&apos;Union européenne est encadré par les
+            garanties prévues par le RGPD, notamment les clauses
+            contractuelles types de la Commission européenne intégrées à cet
+            accord.
+          </p>
+          <p className="mt-2">
+            Pour en savoir plus, tu peux consulter la politique de
+            confidentialité d&apos;Anthropic :{" "}
+            <a
+              href="https://www.anthropic.com/legal/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-terra hover:text-terra-dark underline"
+            >
+              anthropic.com/legal/privacy
+            </a>
+            .
           </p>
 
           <h3 className="font-serif text-lg text-espresso mt-6 mb-2">
