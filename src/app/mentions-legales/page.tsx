@@ -9,7 +9,7 @@ export default function MentionsLegales() {
       <h1 className="section-title">Mentions légales — TRACÉA</h1>
       <div className="text-xs text-warm-gray mt-4 mb-8 space-y-1">
         <p>
-          <strong>Dernière mise à jour :</strong> 6 mai 2026
+          <strong>Dernière mise à jour :</strong> 12 juillet 2026
         </p>
         <p>
           <strong>Site :</strong> www.methodetracea.fr
