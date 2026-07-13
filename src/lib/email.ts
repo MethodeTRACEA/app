@@ -59,11 +59,16 @@ Tracéa`;
 }
 
 export async function emailTrialExpiring(userEmail: string): Promise<void> {
+  // Chantier 60 (billing Option A) : l'app Android Play Store ne vend
+  // rien, l'email devient le canal de conversion. Lien direct vers la
+  // souscription web, verbatim audité doctrine. L'ancienne formulation
+  // « t'abonner depuis l'app » serait fausse pour une utilisatrice TWA.
   const text = `Bonjour,
 
 Ton essai gratuit se termine aujourd'hui.
 
-Si TRACÉA t'a été utile et que tu veux continuer, tu peux t'abonner depuis l'app, 5,99 €/mois, sans engagement.
+Si tu veux continuer avec TRACÉA Premium, tu peux t'abonner ici :
+https://www.methodetracea.fr/app/subscribe
 
 Sinon, tu gardes accès aux traversées courtes et à l'urgence, gratuitement.
 

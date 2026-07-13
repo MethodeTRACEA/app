@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#C4704A" />
+  <title>TRACÉA</title>
+  <!-- Page servie hors-ligne par le service worker (chantier 60, C5).
+       Autonome par construction : aucun asset externe, aucune police
+       distante, styles inline. Pas de 3114 ici : écran technique de
+       perte de réseau, pas un écran de crise (décision brief 13/07). -->
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
+    body {
+      background: #F0E6D6;
+      color: #3B2A22;
+      font-family: Georgia, "Times New Roman", serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    main {
+      max-width: 420px;
+      padding: 32px 24px;
+    }
+    h1 {
+      font-size: 1.45rem;
+      font-weight: normal;
+      color: #A85B38;
+      margin: 0 0 20px;
+      line-height: 1.4;
+    }
+    p {
+      font-size: 1rem;
+      line-height: 1.7;
+      margin: 0 0 16px;
+    }
+    .retry {
+      display: inline-block;
+      margin-top: 12px;
+      color: #A85B38;
+      font-size: 0.95rem;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      padding: 8px 12px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Pas de connexion pour le moment.</h1>
+    <p>TRACÉA a besoin d&rsquo;internet pour t&rsquo;accompagner. Dès que la connexion revient, tu pourras reprendre.</p>
+    <p>Si tu en as besoin là, maintenant : tu peux ralentir un peu, sans forcer. L&rsquo;air entre comme il peut.</p>
+    <button type="button" class="retry" onclick="window.location.reload()">Réessayer</button>
+  </main>
+</body>
+</html>

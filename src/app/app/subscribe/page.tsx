@@ -7,6 +7,7 @@ import { trackEvent } from "@/lib/supabase-store";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { SecondaryButton } from "@/components/ui/SecondaryButton";
 import { getCurrentWithdrawalWording } from "@/lib/legal/withdrawal-wordings";
+import { isRunningInTWA } from "@/lib/twa";
 
 type Plan = "monthly" | "yearly";
 
@@ -93,6 +94,19 @@ function SubscribePageInner() {
   // /api/subscribe n'est émis depuis cette page.
   const stripeUiEnabled =
     process.env.NEXT_PUBLIC_STRIPE_ENABLED === "true";
+
+  // Contexte TWA Play Store (chantier 60, billing Option A) : l'app
+  // Android ne propose aucun achat d'abonnement in-app. Détection en
+  // useEffect (pas au premier rendu) pour éviter un mismatch
+  // d'hydratation ; le web normal n'est jamais concerné.
+  const [inTWA, setInTWA] = useState(false);
+  useEffect(() => {
+    setInTWA(isRunningInTWA());
+  }, []);
+
+  // Achat visible et actif : UI Stripe activée ET hors TWA. La gestion
+  // (portail, résiliation, /app/profil) reste, elle, disponible en TWA.
+  const showPurchaseUi = stripeUiEnabled && !inTWA;
 
   const formattedTrialEndDate = formatLongDate(trialEndsAt);
   const formattedSubscriptionPeriodEnd = formatLongDateWithYear(
@@ -222,7 +236,9 @@ function SubscribePageInner() {
   }
 
   async function startCheckout(plan: Plan) {
-    if (!stripeUiEnabled) return;
+    // Défense en profondeur billing Option A : aucun checkout ne peut
+    // partir du contexte TWA, même si un bouton restait atteignable.
+    if (!stripeUiEnabled || inTWA) return;
 
     if (!session?.access_token) {
       router.push("/app/connexion");
@@ -342,7 +358,7 @@ function SubscribePageInner() {
             (Stripe UI activée, utilisateur non déjà abonné, non bêta).
             La checkbox doit être cochée pour activer les boutons de
             souscription payante. */}
-        {stripeUiEnabled && !isSubscribed && !isBetaTester && (
+        {showPurchaseUi && !isSubscribed && !isBetaTester && (
           <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 space-y-3">
             <p className="font-serif text-xl text-t-beige text-center">
               Avant de continuer
@@ -387,22 +403,39 @@ function SubscribePageInner() {
           </div>
         )}
 
+        {/* Billing Option A (chantier 60) : en contexte TWA Play Store,
+            la zone d'achat (plans + checkout) est remplacée par un
+            message neutre, verbatim audité doctrine. Aucun lien vers le
+            paiement web : l'app se tait sur l'achat, elle ne redirige
+            pas (règle anti-contournement Google). */}
+        {inTWA && (
+          <div className="w-full rounded-2xl border border-[rgba(232,216,199,0.30)] bg-[rgba(214,165,106,0.06)] p-5 text-center space-y-2">
+            <p className="font-body text-sm t-text-secondary leading-relaxed">
+              L&apos;abonnement TRACÉA Premium se gère depuis ton compte sur methodetracea.fr.
+            </p>
+            <p className="font-body text-sm t-text-secondary leading-relaxed">
+              Ici, tu peux continuer à utiliser TRACÉA et ton essai.
+            </p>
+          </div>
+        )}
+
         {/* Plans — décoratifs en mode dormant, cliquables pour checkout
-            quand stripeUiEnabled et que l'utilisateur n'est pas déjà
-            abonné ou bêta */}
+            quand showPurchaseUi et que l'utilisateur n'est pas déjà
+            abonné ou bêta. Masqués entièrement en contexte TWA. */}
+        {!inTWA && (
         <div className="w-full flex flex-col gap-3">
           <button
             type="button"
             onClick={() => {
-              if (stripeUiEnabled && !isSubscribed && !isBetaTester) {
+              if (showPurchaseUi && !isSubscribed && !isBetaTester) {
                 startCheckout("yearly");
               } else {
                 setSelectedPlan("yearly");
               }
             }}
             disabled={
-              (stripeUiEnabled && checkoutStatus === "loading") ||
-              (stripeUiEnabled &&
+              (showPurchaseUi && checkoutStatus === "loading") ||
+              (showPurchaseUi &&
                 !isSubscribed &&
                 !isBetaTester &&
                 !acceptWithdrawalWaiver)
@@ -418,7 +451,7 @@ function SubscribePageInner() {
             </p>
             <p className="font-serif text-2xl text-t-beige">49,99€</p>
             <p className="font-inter text-xs t-text-secondary mt-1">par an · soit 4,17€/mois</p>
-            {stripeUiEnabled && !isSubscribed && !isBetaTester && (
+            {showPurchaseUi && !isSubscribed && !isBetaTester && (
               <p className="font-inter text-xs t-text-secondary mt-2 underline underline-offset-2">
                 {checkoutStatus === "loading" && selectedPlan === "yearly"
                   ? "Préparation…"
@@ -430,15 +463,15 @@ function SubscribePageInner() {
           <button
             type="button"
             onClick={() => {
-              if (stripeUiEnabled && !isSubscribed && !isBetaTester) {
+              if (showPurchaseUi && !isSubscribed && !isBetaTester) {
                 startCheckout("monthly");
               } else {
                 setSelectedPlan("monthly");
               }
             }}
             disabled={
-              (stripeUiEnabled && checkoutStatus === "loading") ||
-              (stripeUiEnabled &&
+              (showPurchaseUi && checkoutStatus === "loading") ||
+              (showPurchaseUi &&
                 !isSubscribed &&
                 !isBetaTester &&
                 !acceptWithdrawalWaiver)
@@ -454,7 +487,7 @@ function SubscribePageInner() {
             </p>
             <p className="font-serif text-2xl text-t-beige">5,99€</p>
             <p className="font-inter text-xs t-text-secondary mt-1">par mois</p>
-            {stripeUiEnabled && !isSubscribed && !isBetaTester && (
+            {showPurchaseUi && !isSubscribed && !isBetaTester && (
               <p className="font-inter text-xs t-text-secondary mt-2 underline underline-offset-2">
                 {checkoutStatus === "loading" && selectedPlan === "monthly"
                   ? "Préparation…"
@@ -463,6 +496,7 @@ function SubscribePageInner() {
             )}
           </button>
         </div>
+        )}
 
         {/* Bloc Trial */}
         {stripeUiEnabled && stripeSubscriptionStatus === "past_due" ? (
@@ -538,9 +572,11 @@ function SubscribePageInner() {
             <p className="font-body text-sm t-text-secondary">
               Tu peux toujours utiliser les traversées courtes et l&apos;urgence.
             </p>
-            <p className="font-body text-sm t-text-secondary">
-              Pour continuer les traversées approfondies, tu peux passer à Premium.
-            </p>
+            {!inTWA && (
+              <p className="font-body text-sm t-text-secondary">
+                Pour continuer les traversées approfondies, tu peux passer à Premium.
+              </p>
+            )}
           </div>
         ) : isTrialActive ? (
           // Trial déjà actif — état d'information sobre, pas de CTA
@@ -565,9 +601,11 @@ function SubscribePageInner() {
                 ? `Ton abonnement Premium a pris fin le ${formattedUnsubscribedAt}.`
                 : "Ton abonnement Premium a pris fin."}
             </p>
-            <p className="font-body text-sm t-text-secondary">
-              Tu peux reprendre Premium avec la formule de ton choix.
-            </p>
+            {!inTWA && (
+              <p className="font-body text-sm t-text-secondary">
+                Tu peux reprendre Premium avec la formule de ton choix.
+              </p>
+            )}
           </div>
         ) : trialUsed ? (
           // Trial déjà consommé (expiré ou clôturé) — wording conditionné par stripeUiEnabled
@@ -577,11 +615,13 @@ function SubscribePageInner() {
                 ? "Ton essai gratuit est terminé."
                 : "Tu as déjà fait ton essai gratuit."}
             </p>
-            <p className="font-body text-sm t-text-secondary">
-              {stripeUiEnabled
-                ? "Pour continuer avec Premium, choisis la formule qui te convient."
-                : "L'abonnement payant arrive bientôt."}
-            </p>
+            {!inTWA && (
+              <p className="font-body text-sm t-text-secondary">
+                {stripeUiEnabled
+                  ? "Pour continuer avec Premium, choisis la formule qui te convient."
+                  : "L'abonnement payant arrive bientôt."}
+              </p>
+            )}
           </div>
         ) : (
           // Pas de trial actif — CTA d'activation
@@ -643,11 +683,13 @@ function SubscribePageInner() {
                     ? "Ton essai gratuit est terminé."
                     : "Tu as déjà fait ton essai gratuit."}
                 </p>
-                <p className="font-body text-sm t-text-secondary">
-                  {stripeUiEnabled
-                    ? "Pour continuer avec Premium, choisis la formule qui te convient."
-                    : "L'abonnement payant arrive bientôt."}
-                </p>
+                {!inTWA && (
+                  <p className="font-body text-sm t-text-secondary">
+                    {stripeUiEnabled
+                      ? "Pour continuer avec Premium, choisis la formule qui te convient."
+                      : "L'abonnement payant arrive bientôt."}
+                  </p>
+                )}
               </div>
             )}
 
