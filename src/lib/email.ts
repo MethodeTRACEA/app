@@ -70,6 +70,8 @@ Ton essai gratuit se termine aujourd'hui.
 Si tu veux continuer avec TRACÉA Premium, tu peux t'abonner ici :
 https://www.methodetracea.fr/app/subscribe
 
+L'abonnement est de 5,99 € par mois ou 49,99 € par an, résiliable en ligne à tout moment.
+
 Sinon, tu gardes accès aux traversées courtes et à l'urgence, gratuitement.
 
 À bientôt,
