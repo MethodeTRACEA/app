@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/comment-ca-marche", label: "Comment ça marche" },
   { href: "/articles", label: "Articles" },
+  { href: "/livres", label: "Livres" },
 ];
 
 // Pages publiques où la barre ne doit PAS apparaître (elles gardent leur

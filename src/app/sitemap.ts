@@ -12,6 +12,7 @@ const BASE_URL = "https://www.methodetracea.fr";
 const PUBLIC_ROUTES = [
   "", // accueil
   "/comment-ca-marche",
+  "/livres",
   "/start",
   "/mentions-legales",
   "/politique-confidentialite",
