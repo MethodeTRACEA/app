@@ -5,7 +5,11 @@ export function SafetyResources() {
     <div className="safety-card animate-fade-up mt-4">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-2.5 h-2.5 rounded-full bg-terra animate-pulse-gentle flex-shrink-0" />
-        <span className="font-medium text-sm text-terra-dark">
+        {/* WCAG AA (chantier 60, Lighthouse) : 20px + gras 700 = "texte
+            large" → seuil 3:1, que le ratio actuel (4,38) dépasse. La
+            couleur terra-dark reste intacte (décision Alyson 13/07).
+            700 minimum : l'audit axe-core ne compte pas 600 comme gras. */}
+        <span className="font-bold text-xl text-terra-dark">
           Si tu te sens en détresse
         </span>
       </div>

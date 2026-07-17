@@ -6,6 +6,7 @@ import { ForceNightMode } from "@/components/ForceNightMode";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 import { TwaContextMarker } from "@/components/TwaContextMarker";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AppLayout({
   children,
@@ -19,7 +20,17 @@ export default function AppLayout({
       <OnboardingRedirect />
       <main className="flex-1">{children}</main>
       <footer className="bg-espresso text-beige-dark text-center py-6 md:py-8 text-sm tracking-wide px-4">
-        <img src="/images/tracea-logo-blanc-transparent.png" alt="TRACÉA" className="h-10 md:h-14 mx-auto mb-2 object-contain" />
+        {/* next/image (chantier 60, Lighthouse) : l'asset 1024x1024 était
+            servi entier (141 Ko) pour 40px affichés. width/height 112 =
+            2x du md:h-14 (56px), rendu net en écran dense, servi
+            redimensionné en WebP via /_next/image comme le logo de la nav. */}
+        <Image
+          src="/images/tracea-logo-blanc-transparent.png"
+          alt="TRACÉA"
+          width={112}
+          height={112}
+          className="h-10 md:h-14 w-auto mx-auto mb-2 object-contain"
+        />
         <p className="mb-4 text-xs md:text-sm">
           Stabilité émotionnelle · Entraînement physiologique
         </p>
