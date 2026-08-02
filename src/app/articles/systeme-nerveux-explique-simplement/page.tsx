@@ -193,10 +193,10 @@ export default function ArticleSystemeNerveux() {
             style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 18 }}
           >
             <h2 className="font-serif" style={h2Style}>
-              Pas un hack, pas un reset
+              Pas une astuce, pas un bouton magique
             </h2>
             <p style={pBody}>{`Tu vas croiser beaucoup de vidéos qui promettent de « réinitialiser » ton système nerveux, de le « calmer en 30 secondes », de te vendre le geste miracle. Méfie-toi de ces promesses.`}</p>
-            <p style={pBody}>{`Ton système nerveux n'est pas un bug à corriger, ni une machine à redémarrer. C'est une partie vivante de toi, avec une histoire, la tienne. On ne le répare pas d'un clic. Ce qui existe, en revanche, c'est des appuis. Des choses concrètes à poser dans le moment, qui n'effacent rien mais qui font que le pic ne t'emporte pas complètement. C'est plus modeste qu'un miracle. C'est aussi beaucoup plus honnête.`}</p>
+            <p style={pBody}>{`Ton système nerveux n'est pas un problème à corriger, ni une machine à redémarrer. C'est une partie vivante de toi, avec une histoire, la tienne. On ne le répare pas d'un clic. Ce qui existe, en revanche, c'est des appuis. Des choses concrètes à poser dans le moment, qui n'effacent rien mais qui font que le pic ne t'emporte pas complètement. C'est plus modeste qu'un miracle. C'est aussi beaucoup plus honnête.`}</p>
           </section>
 
           <section
