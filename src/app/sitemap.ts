@@ -19,6 +19,7 @@ const PUBLIC_ROUTES = [
   "/conditions-utilisation",
   // Articles SEO
   "/articles",
+  "/articles/systeme-nerveux-explique-simplement",
   "/articles/submerge-par-ses-emotions-que-faire",
   "/articles/etre-a-fleur-de-peau-hypersensibilite",
   "/articles/charge-mentale-plus-aucune-marge",

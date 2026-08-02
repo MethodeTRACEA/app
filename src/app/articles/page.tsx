@@ -13,6 +13,12 @@ export const metadata: Metadata = {
 // description). L'ordre d'affichage suit l'ordre de ce tableau.
 const articles = [
   {
+    href: "/articles/systeme-nerveux-explique-simplement",
+    title: "Ton système nerveux, expliqué simplement",
+    description:
+      'On te dit de "réguler ton système nerveux" sans jamais expliquer ce que ça veut dire. Voici, en langage de tous les jours, ce que c\'est et des appuis quand ça déborde.',
+  },
+  {
     href: "/articles/submerge-par-ses-emotions-que-faire",
     title: "Quand une émotion te submerge : que faire dans le moment",
     description:
