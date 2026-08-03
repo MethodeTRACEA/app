@@ -10,6 +10,9 @@ import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 // Contenu repris au mot près du fichier source
 // Articles/article_colere_qui_monte.md
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.methodetracea.fr/articles/colere-qui-monte-que-faire",
+  },
   title: "La colère qui monte : que faire dans l'instant | TRACÉA",
   description:
     "La chaleur qui monte, l'envie de tout envoyer balader ? Comprendre ta colère sans la subir, et un appui concret quand elle déborde. Pas une thérapie.",

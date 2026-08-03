@@ -13,6 +13,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { organizationJsonLd, webSiteJsonLd } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://www.methodetracea.fr" },
   title: "TRACÉA : Gérer ses émotions quand ça déborde",
   description:
     "Poitrine serrée, pensées en boucle ? TRACÉA te donne un geste concret à faire avec ton corps, là, maintenant. Gratuit, en 2 min. Pas une thérapie.",

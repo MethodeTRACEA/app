@@ -12,6 +12,9 @@ import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 // TRACÉA appliquées sur un verbe banni du wording).
 // Article PILIER du cluster "système nerveux".
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.methodetracea.fr/articles/systeme-nerveux-explique-simplement",
+  },
   title: "Ton système nerveux, expliqué simplement (sans jargon) | TRACÉA",
   description:
     "Ton corps réagit avant toi, trop fort, sans prévenir ? Comprendre ton système nerveux en langage de tous les jours, et des appuis quand ça déborde. Pas une thérapie.",

@@ -3,6 +3,7 @@ import { LivresContent } from "./LivresContent";
 
 // Textes issus du brief chantier 63 (audités doctrine) — ne pas reformuler.
 export const metadata: Metadata = {
+  alternates: { canonical: "https://www.methodetracea.fr/livres" },
   title: "Les livres | TRACÉA",
   description:
     "Deux livres pour comprendre ce qui se passe en toi. Quand tout monte trop fort, et quand tout s'éloigne.",

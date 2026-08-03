@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 // /politique-confidentialite (composant client, ne peut pas exporter
 // `metadata`).
 export const metadata: Metadata = {
+  alternates: { canonical: "https://www.methodetracea.fr/politique-confidentialite" },
   title: "Politique de confidentialité | TRACÉA",
 };
 

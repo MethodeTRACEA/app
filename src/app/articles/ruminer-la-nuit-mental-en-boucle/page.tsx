@@ -10,6 +10,9 @@ import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 // Contenu repris au mot près du fichier source
 // Articles/article_ruminer_la_nuit.md
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.methodetracea.fr/articles/ruminer-la-nuit-mental-en-boucle",
+  },
   title: "Ruminer la nuit : quand le mental ne s'arrête pas | TRACÉA",
   description:
     "Il est tard, tout dort, et ton cerveau repasse tout en boucle ? Comprendre la rumination nocturne et des appuis quand le mental ne lâche pas. Pas une thérapie.",

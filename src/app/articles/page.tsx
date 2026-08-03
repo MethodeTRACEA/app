@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://www.methodetracea.fr/articles" },
   title: "Articles TRACÉA : comprendre et traverser ses émotions",
   description:
     "Des articles simples et concrets pour comprendre ce qui se passe quand une émotion déborde, et savoir quoi faire dans le moment. Pas une thérapie.",

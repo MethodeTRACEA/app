@@ -10,6 +10,9 @@ import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 // Contenu repris au mot près du fichier source
 // Articles/article_etre_a_fleur_de_peau.md
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.methodetracea.fr/articles/etre-a-fleur-de-peau-hypersensibilite",
+  },
   title: "Être à fleur de peau : vivre avec l'hypersensibilité | TRACÉA",
   description:
     "Tu ressens tout plus fort, le moindre imprévu te submerge ? Comprendre l'hypersensibilité au quotidien et des appuis concrets quand ça monte. Pas une thérapie.",

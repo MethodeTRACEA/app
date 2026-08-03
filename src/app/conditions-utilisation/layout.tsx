@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 // /conditions-utilisation (composant client, ne peut pas exporter
 // `metadata`).
 export const metadata: Metadata = {
+  alternates: { canonical: "https://www.methodetracea.fr/conditions-utilisation" },
   title: "Conditions d'utilisation | TRACÉA",
 };
 

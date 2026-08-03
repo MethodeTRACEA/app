@@ -10,6 +10,9 @@ import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 // Contenu repris au mot près du fichier source
 // Articles/article_ne_pas_repondre_a_chaud.md
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.methodetracea.fr/articles/ne-pas-repondre-a-chaud",
+  },
   title: "Ne pas répondre à chaud : avant d'envoyer ce message | TRACÉA",
   description:
     "Le pouce au-dessus du bouton envoyer, l'envie de répondre cash ? Comprendre pourquoi on réagit si vite, et un appui pour ne pas envoyer ce qu'on regrettera.",

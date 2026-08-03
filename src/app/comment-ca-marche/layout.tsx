@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 // porter les métadonnées SEO de la page /comment-ca-marche (qui est un
 // composant client et ne peut donc pas exporter `metadata` elle-même).
 export const metadata: Metadata = {
+  alternates: { canonical: "https://www.methodetracea.fr/comment-ca-marche" },
   title: "Gérer ses émotions : la méthode TRACÉA en 6 étapes",
   description:
     "TRACÉA t'accompagne en 6 étapes (T·R·A·C·E·A) pour partir du corps, pas de la tête, quand une émotion déborde. Concret, en quelques minutes.",

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { SafetyResources } from "@/components/SafetyResources";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://www.methodetracea.fr/start" },
   title: "Commencer avec TRACÉA, gratuit en 2 minutes",
   description:
     "Pas besoin de compte pour commencer. En 2 minutes, TRACÉA te donne un appui concret quand ça monte. Gratuit, autant de fois que tu veux.",

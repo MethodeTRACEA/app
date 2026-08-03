@@ -10,6 +10,9 @@ import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 // Contenu repris au mot près du fichier source
 // Articles/article_submerge_par_ses_emotions.md
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.methodetracea.fr/articles/submerge-par-ses-emotions-que-faire",
+  },
   title: "Submergé par ses émotions : que faire dans le moment | TRACÉA",
   description:
     "Quand une émotion déborde et que réfléchir ne suffit plus : comprendre ce qui se passe et un geste concret à poser, tout de suite. Pas une thérapie.",

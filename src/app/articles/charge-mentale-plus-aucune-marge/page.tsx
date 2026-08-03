@@ -10,6 +10,9 @@ import { articleJsonLd, articleBreadcrumbJsonLd } from "@/lib/structured-data";
 // Contenu repris au mot près du fichier source
 // Articles/article_charge_mentale.md
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.methodetracea.fr/articles/charge-mentale-plus-aucune-marge",
+  },
   title: "Charge mentale : quand il n'y a plus aucune marge | TRACÉA",
   description:
     "Tu penses à tout, tout le temps, plus aucune marge ? Comprendre la charge mentale et des appuis concrets pour les moments où ça déborde. Pas une thérapie.",
