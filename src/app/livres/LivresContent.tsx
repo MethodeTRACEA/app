@@ -385,7 +385,7 @@ export function LivresContent({ enPrecommande }: { enPrecommande: boolean }) {
                 {`Quand tout monte. Quand tout s'éloigne. La plupart des gens connaissent les deux, parfois la même semaine.`}
               </p>
               <p style={pBody}>
-                {`Les deux livres en PDF, pour 14 € au lieu de 18 €. Le pack n'existe qu'ici.`}
+                {`Les deux livres en PDF, pour 14 € au lieu de 18 €. Lecture immédiate, sur n'importe quel écran, sans compte ni application.`}
               </p>
             </div>
             <div style={{ marginTop: 26 }}>
