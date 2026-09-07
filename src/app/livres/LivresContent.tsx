@@ -337,7 +337,7 @@ export function LivresContent({ enPrecommande }: { enPrecommande: boolean }) {
                   />
                   <BuyLink
                     href={livre.amazon}
-                    label="Commander en papier — 9,99 €"
+                    label="Commander en papier — 10,54 €"
                     livre={livre.id}
                     format="papier"
                   />
