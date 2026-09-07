@@ -343,7 +343,7 @@ export function LivresContent({ enPrecommande }: { enPrecommande: boolean }) {
                   />
                   <BuyLink
                     href={livre.pdf}
-                    label="Télécharger le PDF — 9 €"
+                    label="Télécharger le PDF — 6,99 €"
                     livre={livre.id}
                     format="pdf"
                   />
@@ -385,7 +385,7 @@ export function LivresContent({ enPrecommande }: { enPrecommande: boolean }) {
                 {`Quand tout monte. Quand tout s'éloigne. La plupart des gens connaissent les deux, parfois la même semaine.`}
               </p>
               <p style={pBody}>
-                {`Les deux livres en PDF, pour 14 € au lieu de 18 €. Lecture immédiate, sur n'importe quel écran, sans compte ni application.`}
+                {`Les deux livres en PDF, pour 12 € au lieu de 13,98 €. Lecture immédiate, sur n'importe quel écran, sans compte ni application.`}
               </p>
             </div>
             <div style={{ marginTop: 26 }}>
@@ -394,7 +394,7 @@ export function LivresContent({ enPrecommande }: { enPrecommande: boolean }) {
               ) : (
                 <BuyLink
                   href={LIEN_PACK}
-                  label="Prendre le pack — 14 €"
+                  label="Prendre le pack — 12 €"
                   livre="pack"
                   format="pdf"
                   primary
