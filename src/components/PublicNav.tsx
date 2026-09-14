@@ -4,13 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import type { CSSProperties } from "react";
+import { LIVRES_ACTIF } from "@/lib/feature-flags";
 
 // Liens de la barre publique.
+// Le lien « Livres » n'apparaît que si la page est active
+// (interrupteur unique dans src/lib/feature-flags.ts).
 const LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/comment-ca-marche", label: "Comment ça marche" },
   { href: "/articles", label: "Articles" },
-  { href: "/livres", label: "Livres" },
+  ...(LIVRES_ACTIF ? [{ href: "/livres", label: "Livres" }] : []),
 ];
 
 // Pages publiques où la barre ne doit PAS apparaître (elles gardent leur

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { LIVRES_ACTIF } from "@/lib/feature-flags";
 
 // Domaine canonique du site (avec www, comme demandé).
 const BASE_URL = "https://www.methodetracea.fr";
@@ -12,7 +13,8 @@ const BASE_URL = "https://www.methodetracea.fr";
 const PUBLIC_ROUTES = [
   "", // accueil
   "/comment-ca-marche",
-  "/livres",
+  // /livres n'est listé que si la page est active (voir feature-flags.ts).
+  ...(LIVRES_ACTIF ? ["/livres"] : []),
   "/start",
   "/mentions-legales",
   "/politique-confidentialite",
