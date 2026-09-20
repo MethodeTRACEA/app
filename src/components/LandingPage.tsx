@@ -168,7 +168,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
                 margin: 0,
               }}
             >
-              Quand l&apos;intensit&eacute; monte, comprendre ce qui se passe n&apos;est pas toujours possible tout de suite. TRAC&Eacute;A propose de commencer autrement : par le corps, avec une travers&eacute;e guid&eacute;e pour retrouver progressivement de l&apos;espace avant de chercher &agrave; tout analyser.
+              Quand l&apos;intensit&eacute; monte, comprendre n&apos;est pas toujours possible tout de suite. TRAC&Eacute;A propose de commencer autrement : par le corps.
             </p>
 
             {/* Sous-ligne promesse */}
