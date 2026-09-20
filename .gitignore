@@ -41,3 +41,6 @@ src/app/dev-trace/
 # Sources d'images brutes (on ne versionne que les .webp optimisés utilisés)
 public/images/Paysage.png
 public/images/ChatGPT Image 7 juil. 2026, 21_17_53.png
+
+# Document de travail reecriture de marque (jamais dans le depot)
+TRACEA_BRAND_SURGERY_V2_REECRITURE_REELLE.md
