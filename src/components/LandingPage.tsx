@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SafetyResources } from "@/components/SafetyResources";
+import { MOUVEMENTS_PUBLICS } from "@/lib/methode-public";
 
 // isPrelaunch est passé en prop par le Server Component page.tsx,
 // qui lit process.env.LAUNCH_MODE au runtime (force-dynamic).
@@ -39,15 +40,6 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
 
     return () => observer.disconnect();
   }, []);
-
-  const traceaSteps: { letter: string; name: string; text: string }[] = [
-    { letter: "T", name: "Traverser",   text: "Tu restes là, sans fuir." },
-    { letter: "R", name: "Reconnaître", text: "Tu nommes ce que tu ressens." },
-    { letter: "A", name: "Ancrer",      text: "Tu reviens au corps." },
-    { letter: "C", name: "Comprendre",  text: "Tu vois ce qui aiderait, là." },
-    { letter: "E", name: "Émerger",     text: "Tu laisses une direction apparaître." },
-    { letter: "A", name: "Aligner",     text: "Tu choisis un geste simple." },
-  ];
 
   const faqs: { q: string; a: string }[] = [
     {
@@ -114,6 +106,20 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
             />
           </div>
 
+          {/* Eyebrow */}
+          <p
+            className="text-[12px] mb-3 md:mb-4"
+            style={{
+              fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+              fontWeight: 500,
+              letterSpacing: "0.18em",
+              color: "#C97B6A",
+              margin: "0 0 12px",
+            }}
+          >
+            TRAC&Eacute;A &middot; QUAND &Ccedil;A D&Eacute;BORDE
+          </p>
+
           {/* Titre */}
           <h1 className="text-[30px] md:text-[40px] leading-[1.25] tracking-tight mb-4 md:mb-6" style={{ fontWeight: 300, color: "#F0E6D6" }}>
             Quand ça te submerge,
@@ -162,7 +168,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
                 margin: 0,
               }}
             >
-              TRACÉA te donne quelque chose à faire avec ton corps. Tout de suite, sans avoir à comprendre pourquoi.
+              Quand l&apos;intensit&eacute; monte, comprendre ce qui se passe n&apos;est pas toujours possible tout de suite. TRAC&Eacute;A propose de commencer autrement : par le corps, avec une travers&eacute;e guid&eacute;e pour retrouver progressivement de l&apos;espace avant de chercher &agrave; tout analyser.
             </p>
 
             {/* Sous-ligne promesse */}
@@ -196,8 +202,13 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
               boxShadow: "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
             }}
           >
-            Commencer gratuitement
+            Commencer une travers&eacute;e
           </Link>
+
+          {/* Micro-texte : remonté juste sous le CTA principal */}
+          <p className="text-[13px] mt-4 md:mt-5 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
+            Gratuit. Sans compte pour commencer.
+          </p>
 
           {/* CTA secondaire */}
           <div className="mt-4 md:mt-5">
@@ -206,14 +217,9 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
               className="text-sm transition-colors underline underline-offset-4"
               style={{ color: "rgba(201,123,106,0.60)", textDecorationColor: "rgba(201,123,106,0.20)" }}
             >
-              Voir comment &ccedil;a marche
+              D&eacute;couvrir TRAC&Eacute;A
             </Link>
           </div>
-
-          {/* Micro-texte */}
-          <p className="text-[13px] mt-5 md:mt-8 tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
-            Gratuit. Sans compte pour commencer.
-          </p>
         </div>
       </section>
 
@@ -272,15 +278,47 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
+          LA DERNIÈRE GOUTTE
+      ════════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-14 md:py-18" style={{ zIndex: 1 }}>
+        <div
+          style={{
+            maxWidth: 640,
+            margin: "0 auto",
+            background: "rgba(111,106,100,0.18)",
+            border: "1px solid rgba(240,230,214,0.10)",
+            borderRadius: 24,
+            padding: "32px 28px",
+            boxShadow: "0 22px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
+        >
+          <h2 className="text-[24px] md:text-[30px] leading-[1.25] tracking-tight mb-6 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
+            Parfois, la derni&egrave;re goutte n&apos;est pas vraiment la derni&egrave;re goutte.
+          </h2>
+
+          <p className="text-base leading-relaxed text-center mb-6" style={{ color: "rgba(240,230,214,0.68)" }}>
+            Une remarque. Un message. Une porte qui claque. Une petite chose qui prend soudain beaucoup trop de place.
+          </p>
+
+          <p className="text-base font-medium text-center" style={{ color: "#D99A84", fontStyle: "italic" }}>
+            Quand le verre est d&eacute;j&agrave; presque plein, une petite goutte peut suffire.
+          </p>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
           BASCULE
       ════════════════════════════════════════════════════════════ */}
       <section className="relative px-6 py-6 md:py-10" style={{ zIndex: 1 }}>
         <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center" }}>
           <p className="text-base md:text-lg leading-relaxed mb-4" style={{ color: "rgba(240,230,214,0.70)", fontWeight: 300 }}>
-            Tu n&apos;as pas besoin de comprendre.
+            Quand la pens&eacute;e est satur&eacute;e, on peut commencer autrement.
           </p>
-          <p className="text-base md:text-lg leading-relaxed" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
-            Quand &ccedil;a d&eacute;borde, r&eacute;fl&eacute;chir ne suffit plus.
+          <p className="text-base md:text-lg leading-relaxed mb-4" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
+            TRAC&Eacute;A commence par le corps : sensations, contact, mouvement, appui.
+          </p>
+          <p className="text-base font-medium" style={{ color: "#D99A84", fontStyle: "italic" }}>
+            Revenir avant de comprendre.
           </p>
         </div>
       </section>
@@ -395,21 +433,21 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
           }}
         >
           <h2 className="text-[24px] md:text-[30px] tracking-tight mb-6 text-center" style={{ fontWeight: 300, color: "#F0E6D6" }}>
-            Sous l&apos;appui, une vraie structure.
+            Une travers&eacute;e, pas une recette.
           </h2>
 
           <p className="text-base text-center mb-8" style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300 }}>
-            Ce n&apos;est pas au hasard : 6 étapes, dans l&apos;ordre, pour ne pas être emportée.
+            La M&eacute;thode TRAC&Eacute;A propose une structure en six mouvements pour traverser ce qui est l&agrave;. Ce n&apos;est pas une recette universelle. Ce sont des rep&egrave;res pour avancer dans un moment o&ugrave; tout prend trop de place.
           </p>
 
           <div className="flex flex-col gap-5 mb-8">
-            {traceaSteps.map((step, i) => (
+            {MOUVEMENTS_PUBLICS.map((mouvement, i) => (
               <div
                 key={i}
                 style={{
-                  paddingBottom: i < traceaSteps.length - 1 ? 18 : 0,
+                  paddingBottom: i < MOUVEMENTS_PUBLICS.length - 1 ? 18 : 0,
                   borderBottom:
-                    i < traceaSteps.length - 1
+                    i < MOUVEMENTS_PUBLICS.length - 1
                       ? "1px solid rgba(240,230,214,0.06)"
                       : "none",
                 }}
@@ -427,7 +465,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
                       lineHeight: 1,
                     }}
                   >
-                    {step.letter}
+                    {mouvement.lettre}
                   </span>
                   <span style={{ color: "rgba(201,123,106,0.55)" }}>·</span>
                   <span
@@ -438,7 +476,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
                       letterSpacing: "0.04em",
                     }}
                   >
-                    {step.name}
+                    {mouvement.nom}
                   </span>
                 </div>
                 <p
@@ -449,21 +487,18 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
                     margin: 0,
                   }}
                 >
-                  {step.text}
+                  {mouvement.texteCourt}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="text-center space-y-1 mt-2">
-            <p style={{ color: "rgba(240,230,214,0.42)", fontWeight: 300, fontSize: "1rem", lineHeight: 1.6 }}>
-              &Agrave; la fin&hellip;
-            </p>
-            <p style={{ color: "rgba(240,230,214,0.56)", fontWeight: 300, fontSize: "1rem", lineHeight: 1.6 }}>
-              quelque chose se pose.
+          <div className="text-center space-y-4 mt-2">
+            <p style={{ color: "rgba(240,230,214,0.50)", fontWeight: 300, fontSize: "1rem", lineHeight: 1.6 }}>
+              Elle donne des rep&egrave;res. Elle ne pr&eacute;tend pas savoir &agrave; ta place ce dont tu as besoin, ni garantir ce que tu vas ressentir.
             </p>
             <p style={{ color: "#D99A84", fontStyle: "italic", fontWeight: 600, fontSize: "1rem", lineHeight: 1.6 }}>
-              C&apos;est suffisant pour maintenant.
+              Un appui propose. Il ne promet pas.
             </p>
           </div>
         </div>
@@ -613,7 +648,7 @@ export default function LandingPage({ isPrelaunch }: { isPrelaunch: boolean }) {
               marginBottom: 20,
             }}
           >
-            Commencer gratuitement
+            Commencer une travers&eacute;e
           </Link>
 
           <p className="text-[13px] tracking-wide" style={{ color: "rgba(240,230,214,0.35)" }}>
