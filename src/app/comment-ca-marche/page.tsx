@@ -256,7 +256,7 @@ export default function CommentCaMarchePage() {
           <p style={{ ...pNormal, marginTop: 14 }}>
             Quand &ccedil;a d&eacute;borde, r&eacute;fl&eacute;chir ne suffit plus.
             <br />
-            Le corps sait quoi faire.
+            Le corps peut offrir un premier point d&apos;appui.
           </p>
         </div>
 
