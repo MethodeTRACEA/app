@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { SafetyResources } from "@/components/SafetyResources";
+import { MOUVEMENTS_PUBLICS } from "@/lib/methode-public";
 
 // ── Styles V3 ────────────────────────────────────────────────────────────────
 
@@ -114,39 +115,9 @@ export default function CommentCaMarchePage() {
     "tes pensées tournent en boucle",
   ];
 
-  const steps: { letter: string; name: string; text: string }[] = [
-    {
-      letter: "T",
-      name: "Traverser",
-      text: "Tu restes face à ce qui est là, sans fuir.\nC'est le point de départ.\nPas une performance.",
-    },
-    {
-      letter: "R",
-      name: "Reconnaître",
-      text: "Tu nommes ce que tu ressens.\nL'émotion, la sensation, l'intensité. Sans te juger.",
-    },
-    {
-      letter: "A",
-      name: "Ancrer",
-      text: "Tu reviens au corps avec un geste court.\nUtilisable partout, même en 30 secondes.",
-    },
-    {
-      letter: "C",
-      name: "Comprendre",
-      text: "Tu vois ce qui aiderait, là.\nPas une analyse.\nJuste ce dont tu aurais besoin, dans ce moment.",
-    },
-    {
-      letter: "E",
-      name: "Émerger",
-      text: "Tu laisses une direction apparaître.\nQuelque chose de concret, pas une solution complète.",
-    },
-    {
-      letter: "A",
-      name: "Aligner",
-      text: "Tu choisis un micro-geste, le plus petit possible,\ncohérent avec ce que tu viens de traverser.",
-    },
-  ];
-
+  // Les six mouvements viennent de src/lib/methode-public.ts (source unique,
+  // partagée avec l'accueil). Cette page affiche la version longue,
+  // champ texteDetail.
   return (
     <div
       style={{
@@ -208,7 +179,7 @@ export default function CommentCaMarchePage() {
             marginTop: -4,
           }}
         >
-          6 &eacute;tapes. Pour ne pas &ecirc;tre emport&eacute;.
+          Six mouvements pour traverser ce qui est l&agrave;.
         </p>
 
         {/* ── Bloc 1 — Sensations ── */}
@@ -279,13 +250,13 @@ export default function CommentCaMarchePage() {
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-            {steps.map((step, i) => (
+            {MOUVEMENTS_PUBLICS.map((mouvement, i) => (
               <div
                 key={i}
                 style={{
-                  paddingBottom: i < steps.length - 1 ? 22 : 0,
+                  paddingBottom: i < MOUVEMENTS_PUBLICS.length - 1 ? 22 : 0,
                   borderBottom:
-                    i < steps.length - 1
+                    i < MOUVEMENTS_PUBLICS.length - 1
                       ? "1px solid rgba(240,230,214,0.06)"
                       : "none",
                   opacity: reducedMotion ? 1 : methodVisible ? 1 : 0,
@@ -309,11 +280,11 @@ export default function CommentCaMarchePage() {
                     marginBottom: 10,
                   }}
                 >
-                  <span style={stepLetterStyle}>{step.letter}</span>
+                  <span style={stepLetterStyle}>{mouvement.lettre}</span>
                   <span style={{ color: "rgba(240,230,214,0.40)" }}>·</span>
-                  <span style={stepNameStyle}>{step.name}</span>
+                  <span style={stepNameStyle}>{mouvement.nom}</span>
                 </div>
-                <p style={stepTextStyle}>{step.text}</p>
+                <p style={stepTextStyle}>{mouvement.texteDetail}</p>
               </div>
             ))}
           </div>
@@ -470,7 +441,7 @@ export default function CommentCaMarchePage() {
                 "0 8px 32px rgba(201,144,124,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 40px rgba(200,120,90,0.35)",
             }}
           >
-            Commencer ma travers&eacute;e
+            Commencer une travers&eacute;e
           </Link>
           <p
             className="font-sans"

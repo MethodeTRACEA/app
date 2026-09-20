@@ -29,7 +29,7 @@ type Option = {
 const options: Option[] = [
   {
     href: "/app/urgence",
-    label: "URGENCE",
+    label: "Ça déborde maintenant",
     title: "Retrouver un appui vite",
     desc: "Quand c'est trop intense. Directement par le corps.",
     tag: "2 min",
@@ -41,7 +41,7 @@ const options: Option[] = [
   },
   {
     href: "/app/traversee-courte",
-    label: "TRAVERSÉE",
+    label: "Je veux traverser",
     title: "Me poser et traverser",
     desc: "Pour déposer, revenir au corps, puis choisir un geste simple.",
     tag: "5 min",
@@ -53,12 +53,12 @@ const options: Option[] = [
   },
   {
     href: "/app/session?from=start",
-    label: "APPROFONDIR",
+    label: "Je veux approfondir",
     title: "Aller plus loin",
-    desc: "Une traversée complète pour mettre des mots et garder une trace.",
+    desc: "Une traversée complète pour mettre des mots, regarder ce qui se passe et, si tu veux, garder une trace.",
     tag: "5 à 8 min",
     badge: "Sans compte pour la première",
-    badgeNote: "Essai 14 jours",
+    badgeNote: "Ensuite, essai 14 jours",
     labelColor: "#C97B6A",
     cardBorder: "rgba(212,169,106,0.35)",
     cardBg: "rgba(255,255,255,0.06)",
@@ -154,7 +154,7 @@ export default function StartPage() {
               {/* TAG — label + durée + recommandé */}
               <div className="flex items-center gap-2 mb-0.5">
                 <span
-                  className="font-sans text-[11px] tracking-[0.18em] leading-none font-semibold"
+                  className="font-sans text-[11px] tracking-[0.02em] leading-none font-semibold"
                   style={{ color: opt.labelColor }}
                 >
                   {opt.label}
@@ -197,7 +197,7 @@ export default function StartPage() {
 
               {/* DESCRIPTION */}
               <p
-                className="font-sans text-[15px] max-[370px]:text-[14px] leading-[1.35] line-clamp-2"
+                className="font-sans text-[15px] max-[370px]:text-[14px] leading-[1.35] line-clamp-3"
                 style={{ color: "rgba(240,230,214,0.50)", margin: 0 }}
               >
                 {opt.desc}
