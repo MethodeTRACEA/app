@@ -31,7 +31,7 @@ const steps: StepResource[] = [
       "Le corps libère alors des hormones de stress, comme l'adrénaline et le cortisol. Le rythme cardiaque augmente, les muscles se préparent à agir, et la respiration devient plus courte.",
       "Ce mécanisme est utile : il sert à protéger.",
       "Mais quand l'alerte se déclenche dans une situation relationnelle, mentale ou émotionnelle, le corps peut réagir comme s'il y avait un danger immédiat.",
-      "TRACÉA commence par Traverser parce qu'on ne peut pas apaiser durablement ce qu'on fuit systématiquement.",
+      "TRACÉA commence par Traverser parce que c'est ce qui reste possible quand l'alerte est déjà déclenchée : nommer ce qui se passe, sans chercher à le résoudre.",
     ],
   },
   {
@@ -72,37 +72,34 @@ const steps: StepResource[] = [
     subtitle: "Ce qui se passe dans ton esprit",
     dotColor: "#A89080",
     content: [],
-    scienceToggleLabel: "Comprendre le fonctionnement du cerveau",
+    scienceToggleLabel: "Pourquoi cette étape vient ici",
     scienceContent: [
-      "Le cortex préfrontal est la partie du cerveau qui permet de comprendre, nuancer et donner du sens.",
-      "Mais il ne fonctionne pleinement que lorsque le système nerveux est régulé.",
-      "C'est pour cela que Comprendre vient après Ancrer.",
+      "À cette étape, TRACÉA ne te demande pas d'analyser ce qui s'est passé. Il te demande ce dont tu aurais besoin, là, maintenant.",
+      "C'est pour cela que Comprendre vient après Ancrer : la méthode propose d'abord un appui corporel, puis seulement le besoin.",
     ],
   },
   {
     number: 5,
-    letter: "É",
+    letter: "E",
     name: "Émerger",
-    subtitle: "Ce qui se transforme en toi",
+    subtitle: "Ce qui peut apparaître",
     dotColor: "#C4998A",
     content: [],
-    scienceToggleLabel: "Pourquoi ça change ?",
+    scienceToggleLabel: "À quoi sert ce temps",
     scienceContent: [
-      "L'intégration émotionnelle est un processus neurologique réel.",
-      "Quand une expérience difficile est traversée, nommée, régulée et mise en sens, le cerveau peut créer de nouvelles connexions.",
-      "C'est ce qu'on appelle la plasticité neuronale.",
-      "Une nouvelle compréhension peut alors émerger.",
-      "Ce n'est pas une conclusion intellectuelle. C'est souvent une sensation physique d'abord : un souffle qui se libère, une légèreté dans les épaules, une évidence qui arrive sans forcer.",
+      "À cette étape, TRACÉA ne te demande rien. Il te remontre ce que tu viens de poser : ce qui s'est passé, ce que tu as ressenti, ce dont tu aurais besoin.",
+      "C'est un temps de transition. Parfois une direction commence à apparaître. Parfois non, et c'est possible aussi.",
+      "Ce n'est pas une décision à prendre. C'est un moment où quelque chose peut se préciser, sans être forcé.",
     ],
   },
   {
     number: 6,
     letter: "A",
     name: "Aligner",
-    subtitle: "Ce qui change dans ta vie",
+    subtitle: "Ce qui vient après",
     dotColor: "#6B3D2E",
     content: [],
-    scienceToggleLabel: "Pourquoi ça transforme ?",
+    scienceToggleLabel: "À quoi sert ce geste",
     scienceContent: [
       "Le cerveau change par répétition.",
       "Chaque fois que tu fais un geste aligné après une émotion, tu renforces une nouvelle voie neuronale.",
@@ -249,7 +246,7 @@ export default function RessourcesPage() {
               { letter: "R", color: "#835E54" },
               { letter: "A", color: "#8A9E7A" },
               { letter: "C", color: "#A89080" },
-              { letter: "É", color: "#C4998A" },
+              { letter: "E", color: "#C4998A" },
               { letter: "A", color: "#6B3D2E" },
             ].map((item, i) => (
               <div
@@ -419,14 +416,10 @@ export default function RessourcesPage() {
                       /* — COMPRENDRE : paragraphes dédiés — */
                       <div className="space-y-5">
                         <p className="font-sans leading-relaxed" style={pNormal}>
-                          Une fois ton corps stabilis&eacute;, tu peux commencer &agrave; comprendre.
+                          &Agrave; cette &eacute;tape, TRAC&Eacute;A ne demande pas pourquoi.
                         </p>
                         <p className="font-sans leading-relaxed" style={pNormal}>
-                          Pourquoi cette &eacute;motion&nbsp;?
-                        </p>
-                        <p className="font-sans leading-relaxed" style={pNormal}>
-                          Qu&apos;est-ce qu&apos;elle vient toucher&nbsp;?<br />
-                          Qu&apos;est-ce qu&apos;elle essaie de dire&nbsp;?
+                          Il demande ce qui aiderait, l&agrave;.
                         </p>
                         <p className="font-sans leading-relaxed" style={pNormal}>
                           Souvent, derri&egrave;re une r&eacute;action, il y a un besoin.
@@ -435,7 +428,7 @@ export default function RessourcesPage() {
                           Un besoin non respect&eacute;, non entendu ou menac&eacute;.
                         </p>
                         <p className="mt-6 italic text-[#D99A84] leading-relaxed" style={{ fontSize: 15 }}>
-                          Souvent, derri&egrave;re une r&eacute;action, il y a un besoin. Un besoin non respect&eacute;, non entendu, ou menac&eacute;. Le voir clairement, sans le juger, c&apos;est d&eacute;j&agrave; autre chose.
+                          Le voir, m&ecirc;me approximativement, sans le juger, c&apos;est d&eacute;j&agrave; autre chose.
                         </p>
                       </div>
 
