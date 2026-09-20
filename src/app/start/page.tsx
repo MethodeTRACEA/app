@@ -154,7 +154,7 @@ export default function StartPage() {
               {/* TAG — label + durée + recommandé */}
               <div className="flex items-center gap-2 mb-0.5">
                 <span
-                  className="font-sans text-[11px] tracking-[0.18em] leading-none font-semibold"
+                  className="font-sans text-[11px] tracking-[0.02em] leading-none font-semibold"
                   style={{ color: opt.labelColor }}
                 >
                   {opt.label}
