@@ -801,7 +801,7 @@ export default function ProfilPage() {
             qu&apos;il y a derrière chaque étape.
           </p>
           <Link
-            href="/app/ressources"
+            href="/comment-ca-marche"
             className="font-sans"
             style={{
               display: "inline-block",

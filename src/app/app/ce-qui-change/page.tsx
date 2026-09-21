@@ -627,28 +627,6 @@ export default function CeQuiChangePage() {
           </>
         )}
 
-        {/* ── Footer discret (inchangé) ── */}
-        <div
-          style={{
-            marginTop: 48,
-            borderTop: "1px solid rgba(240,230,214,0.07)",
-            paddingTop: 24,
-            textAlign: "center",
-            opacity: 0.5,
-          }}
-        >
-          <p
-            className="font-sans"
-            style={{
-              fontSize: 11,
-              color: "rgba(240,230,214,0.55)",
-              letterSpacing: "0.12em",
-            }}
-          >
-            Stabilit&eacute; &eacute;motionnelle &middot; Entra&icirc;nement
-            physiologique
-          </p>
-        </div>
       </div>
     </div>
   );

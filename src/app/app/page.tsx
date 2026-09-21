@@ -292,7 +292,7 @@ export default function Accueil() {
         {/* Lien discret vers les ressources — relocalisé depuis la nav (Chantier 58, D4) */}
         <div className="text-center">
           <Link
-            href="/app/ressources"
+            href="/comment-ca-marche"
             className="font-sans"
             style={{
               fontSize: 13,

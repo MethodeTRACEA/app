@@ -32,7 +32,7 @@ export default function AppLayout({
           className="h-10 md:h-14 w-auto mx-auto mb-2 object-contain"
         />
         <p className="mb-4 text-xs md:text-sm">
-          Stabilité émotionnelle · Entraînement physiologique
+          Méthode TRACÉA
         </p>
         <div className="flex flex-wrap justify-center gap-3 md:gap-4 text-xs text-warm-gray">
           <Link
