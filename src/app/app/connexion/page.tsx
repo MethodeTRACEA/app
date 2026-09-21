@@ -541,9 +541,6 @@ function AuthHeader() {
         alt="TRACÉA"
         style={{ height: 48, margin: "0 auto 14px", objectFit: "contain" }}
       />
-      <p className="font-sans" style={{ fontSize: 13, color: DS.texteMuted, fontStyle: "italic" }}>
-        Stabilité émotionnelle · Entraînement physiologique
-      </p>
     </div>
   );
 }
