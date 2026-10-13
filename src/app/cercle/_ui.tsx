@@ -116,26 +116,11 @@ export function Halo() {
   return <div aria-hidden="true" className="cercle-halo" />;
 }
 
-// Logo TRACÉA (image seule, sans lien : aucune porte vers le site/l'app).
-export function CercleLogo({ size = 64 }: { size?: number }) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/images/tracea-logo-terra-transparent.png"
-      alt="TRACÉA"
-      style={{ height: size, width: "auto", objectFit: "contain", display: "block" }}
-    />
-  );
-}
-
 // En-tête sobre des pages secondaires (conditions, confidentialité…).
 export function SimpleHeader({ title, sub }: { title: string; sub?: string }) {
   return (
-    <header style={{ position: "relative", zIndex: 1 }} className="pt-12 pb-10 md:pt-16 md:pb-12">
+    <header style={{ position: "relative", zIndex: 1 }} className="pt-10 pb-10 md:pt-14 md:pb-12">
       <div style={containerStyle}>
-        <div style={{ marginBottom: 28 }}>
-          <CercleLogo size={52} />
-        </div>
         <h1 style={h1Style}>{title}</h1>
         {sub && (
           <p style={{ ...pStyle, color: colors.muted, marginTop: 14, marginBottom: 0 }}>{sub}</p>

@@ -41,7 +41,9 @@
   --c-photo: linear-gradient(160deg, #F0D5C4, #E8D8C6 55%, #D6E2CE);
 
   flex: 1;
-  min-height: 100dvh;
+  /* le menu du site (56 px) est au-dessus : on le déduit pour ne pas
+     ajouter de défilement inutile */
+  min-height: calc(100dvh - 56px);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -201,13 +203,14 @@
 /* ── Premier écran ───────────────────────────────────────────────── */
 .cl-hero {
   position: relative;
-  min-height: 100svh;
+  /* premier écran = hauteur de l'écran moins le menu du site (56 px) */
+  min-height: calc(100svh - 56px);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   overflow: hidden;
-  padding: 64px 0 104px;
+  padding: 40px 0 96px;
   box-sizing: border-box;
 }
 .cl-hero::before {
