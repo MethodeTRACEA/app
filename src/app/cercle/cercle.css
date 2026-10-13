@@ -637,9 +637,10 @@
   margin: 28px 0 0 18px;
   padding-left: 20px;
   border-left: 2px solid var(--c-terra);
-  color: var(--c-muted);
+  /* même taille et même contraste que le texte courant */
+  color: var(--c-body);
   font-size: 1.0625rem;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 @media (min-width: 768px) { .cl-retrait { margin-left: 40px; font-size: 1.125rem; } }
 

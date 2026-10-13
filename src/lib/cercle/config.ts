@@ -93,3 +93,31 @@ export function calculerPlaces(c: {
 
 // Clé du brouillon du formulaire dans le navigateur (sessionStorage).
 export const BROUILLON_KEY = "cercle_inscription_brouillon";
+
+// ── Dates des rencontres (heure de Paris, heure d'hiver UTC+1) ──────
+// Sert au calcul du remboursement en cas de rétractation et, plus tard,
+// à l'envoi du lien Zoom la veille.
+export const RENCONTRES_DATES: Record<"vendredi" | "mardi", Date[]> = {
+  vendredi: [
+    new Date("2026-11-20T21:00:00+01:00"),
+    new Date("2026-11-27T21:00:00+01:00"),
+    new Date("2026-12-04T21:00:00+01:00"),
+    new Date("2026-12-11T21:00:00+01:00"),
+  ],
+  mardi: [
+    new Date("2026-11-17T14:00:00+01:00"),
+    new Date("2026-11-24T14:00:00+01:00"),
+    new Date("2026-12-01T14:00:00+01:00"),
+    new Date("2026-12-08T14:00:00+01:00"),
+  ],
+};
+
+export const HEURE_CRENEAU: Record<"vendredi" | "mardi", string> = {
+  vendredi: "21 h",
+  mardi: "14 h",
+};
+
+// Prix et remboursement (conditions d'inscription).
+export const PRIX_CENTIMES = 1200;
+export const PRIX_PAR_RENCONTRE_CENTIMES = 300;
+export const DELAI_RETRACTATION_JOURS = 14;

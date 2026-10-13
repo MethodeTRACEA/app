@@ -10,6 +10,8 @@ import {
   pStyle,
 } from "../_ui";
 import { EffacerBrouillon } from "./EffacerBrouillon";
+import { getCercleStripe } from "@/lib/cercle/stripe";
+import { envoyerEmailsInscription } from "@/lib/cercle/inscriptions";
 
 // Le Cercle TRACÉA en ligne — page après paiement réussi.
 // Texte d'Alyson, mot pour mot.
@@ -17,7 +19,30 @@ export const metadata: Metadata = {
   title: "Ta place est réservée · Le Cercle TRACÉA en ligne",
 };
 
-export default function CercleMerciPage() {
+// Page calculée à chaque visite : elle déclenche l'envoi des emails.
+export const dynamic = "force-dynamic";
+
+// Filet de sécurité : le webhook Stripe (/api/cercle/webhook) envoie les
+// emails ; cette page fait le même envoi si le webhook n'a pas encore
+// répondu (ou n'est pas configuré). Même clé d'idempotence : jamais de
+// doublon. Limité aux paiements des deux dernières heures.
+async function envoyerSiBesoin(sessionId: string | undefined) {
+  if (!sessionId || !/^cs_[A-Za-z0-9_]+$/.test(sessionId)) return;
+  const cs = getCercleStripe({ ignorerOuverture: true });
+  if (!cs.ok) return;
+  try {
+    await envoyerEmailsInscription(cs.stripe, cs.live, sessionId, { ageMaxMs: 2 * 3600 * 1000 });
+  } catch (err) {
+    console.error("[CERCLE] Envoi depuis /merci impossible:", err instanceof Error ? err.message : err);
+  }
+}
+
+export default async function CercleMerciPage({
+  searchParams,
+}: {
+  searchParams: { s?: string };
+}) {
+  await envoyerSiBesoin(searchParams?.s);
   return (
     <div style={{ ...containerStyle, maxWidth: 600 }} className="pt-14 pb-20 md:pt-20 md:pb-28">
       <EffacerBrouillon />

@@ -58,7 +58,7 @@ const LIENS_CASES: Partial<Record<CaseId, { mot: string; href: string }>> = {
 
 const font = FONT_SANS;
 
-const labelStyle: CSSProperties = {
+export const labelStyle: CSSProperties = {
   display: "block",
   fontFamily: font,
   fontSize: "1.0625rem",
@@ -67,7 +67,7 @@ const labelStyle: CSSProperties = {
   marginBottom: 4,
 };
 
-const helpStyle: CSSProperties = {
+export const helpStyle: CSSProperties = {
   fontFamily: font,
   fontSize: "0.9375rem",
   color: colors.muted,
@@ -75,7 +75,7 @@ const helpStyle: CSSProperties = {
   lineHeight: 1.5,
 };
 
-const inputStyle: CSSProperties = {
+export const inputStyle: CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
   fontFamily: font,
@@ -88,7 +88,7 @@ const inputStyle: CSSProperties = {
   minHeight: 48,
 };
 
-const choiceStyle: CSSProperties = {
+export const choiceStyle: CSSProperties = {
   display: "flex",
   alignItems: "flex-start",
   gap: 12,
@@ -100,7 +100,7 @@ const choiceStyle: CSSProperties = {
   cursor: "pointer",
 };
 
-const boxStyle: CSSProperties = {
+export const boxStyle: CSSProperties = {
   width: 20,
   height: 20,
   marginTop: 3,
@@ -109,7 +109,7 @@ const boxStyle: CSSProperties = {
   cursor: "pointer",
 };
 
-const legendStyle: CSSProperties = { ...labelStyle, padding: 0, marginBottom: 6 };
+export const legendStyle: CSSProperties = { ...labelStyle, padding: 0, marginBottom: 6 };
 
 function TexteCase({ id, texte }: { id: CaseId; texte: string }) {
   const lien = LIENS_CASES[id];

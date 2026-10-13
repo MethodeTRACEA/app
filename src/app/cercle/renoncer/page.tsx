@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
-import { SimpleHeader } from "../_ui";
+import { SimpleHeader, containerStyle } from "../_ui";
+import { RenoncerForm } from "./RenoncerForm";
 
 // Le Cercle TRACÉA en ligne — « Renoncer au contrat ici ».
-// Étape 1 : titre provisoire seulement. Le formulaire de rétractation et
-// l'accusé de réception arrivent à l'étape 3.
+// Textes d'Alyson, mot pour mot. Le formulaire envoie la demande à
+// /api/cercle/retractation (notification à Alyson + accusé de réception).
 export const metadata: Metadata = {
   title: "Renoncer au contrat · Le Cercle TRACÉA en ligne",
 };
 
 export default function CercleRenoncerPage() {
   return (
-    <div className="pb-20">
-      <SimpleHeader title="Renoncer au contrat" />
-    </div>
+    <>
+      <SimpleHeader
+        title="Renoncer au contrat"
+        sub="Tu peux changer d'avis pendant quatorze jours après ton inscription, sans avoir à te justifier."
+      />
+      <div style={{ ...containerStyle, paddingBottom: 80 }}>
+        <RenoncerForm />
+      </div>
+    </>
   );
 }

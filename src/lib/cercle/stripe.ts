@@ -28,8 +28,14 @@ export type CercleStripeStatus =
   | { ok: true; stripe: Stripe; live: boolean }
   | { ok: false; reason: "inactive" | "missing_key" | "live_refused" };
 
-export function getCercleStripe(): CercleStripeStatus {
-  if (process.env.CERCLE_INSCRIPTIONS_ACTIVES !== "true") {
+// `ignorerOuverture` : pour la rétractation et les emails, qui doivent
+// continuer à fonctionner même si les inscriptions sont fermées (le
+// droit de se rétracter ne dépend pas de l'interrupteur d'ouverture).
+// Le garde-fou contre les vraies clés reste le même.
+export function getCercleStripe(
+  opts: { ignorerOuverture?: boolean } = {}
+): CercleStripeStatus {
+  if (!opts.ignorerOuverture && process.env.CERCLE_INSCRIPTIONS_ACTIVES !== "true") {
     return { ok: false, reason: "inactive" };
   }
   const key = process.env.CERCLE_STRIPE_SECRET_KEY;

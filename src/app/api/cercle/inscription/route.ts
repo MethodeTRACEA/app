@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
         description: `Cercle TRACÉA en ligne · ${creneau.label}`,
         metadata: paiementMetadata,
       },
-      success_url: `${origin}/cercle/merci`,
+      success_url: `${origin}/cercle/merci?s={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cercle?paiement=annule#inscription`,
     });
 
