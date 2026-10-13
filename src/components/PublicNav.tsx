@@ -14,6 +14,7 @@ const LINKS = [
   { href: "/comment-ca-marche", label: "Comment ça marche" },
   { href: "/articles", label: "Articles" },
   ...(LIVRES_ACTIF ? [{ href: "/livres", label: "Livres" }] : []),
+  { href: "/cercle", label: "Cercle de parole" },
 ];
 
 // Pages publiques où la barre ne doit PAS apparaître (elles gardent leur
@@ -25,12 +26,51 @@ const HIDDEN = new Set([
   "/conditions-utilisation",
 ]);
 
+// Pages du Cercle TRACÉA en ligne : même menu que le reste du site, mais
+// SANS le bouton « Commencer » (aucun lien vers l'application). La page de
+// gestion (/cercle/gestion) garde son écran à part, sans menu.
+function estPageCercle(pathname: string): boolean {
+  return pathname === "/cercle" || pathname.startsWith("/cercle/");
+}
+function estMasquee(pathname: string): boolean {
+  return (
+    pathname.startsWith("/app") ||
+    HIDDEN.has(pathname) ||
+    pathname === "/cercle/gestion" ||
+    pathname.startsWith("/cercle/gestion/")
+  );
+}
+
+// Lien de navigation. Vers le Cercle, ou depuis une page du Cercle
+// (`plein`), on recharge la page (<a>) au lieu de naviguer sans recharger :
+// une page du Cercle démarre ainsi toujours sans mesure d'audience ni
+// Sentry, et le reste du site retrouve son fonctionnement normal en en
+// sortant.
+function NavLien(props: {
+  plein: boolean;
+  href: string;
+  children: React.ReactNode;
+  style?: CSSProperties;
+  className?: string;
+  onClick?: () => void;
+  "aria-label"?: string;
+}) {
+  const { plein, ...lien } = props;
+  return plein || estPageCercle(lien.href) ? <a {...lien} /> : <Link {...lien} />;
+}
+
 export function PublicNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // Repère « Bientôt » à côté de l'onglet du Cercle, tant que l'état de
+  // l'inscription est « bientôt » (même calcul que la page /cercle, via
+  // /api/cercle/etat). Aucun cookie, aucun site extérieur.
+  const [cercleBientot, setCercleBientot] = useState(false);
 
   const isHome = pathname === "/";
+  const masquee = estMasquee(pathname);
+  const dansCercle = estPageCercle(pathname);
 
   // Accueil : barre transparente en haut, qui devient sombre au défilement.
   useEffect(() => {
@@ -46,11 +86,25 @@ export function PublicNav() {
     setMenuOpen(false);
   }, [pathname]);
 
-  // Pas de barre publique sur l'application ni sur les pages exclues.
-  if (pathname.startsWith("/app")) return null;
-  if (HIDDEN.has(pathname)) return null;
-  // Le Cercle TRACÉA en ligne : pages isolées, aucune barre ni lien vers l'app.
-  if (pathname === "/cercle" || pathname.startsWith("/cercle/")) return null;
+  // Lecture de l'état de l'inscription du Cercle, seulement quand la barre
+  // est visible. En cas d'erreur : pas de repère, rien d'autre ne change.
+  useEffect(() => {
+    if (masquee) return;
+    let annule = false;
+    fetch("/api/cercle/etat")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!annule && d && typeof d.bientot === "boolean") setCercleBientot(d.bientot);
+      })
+      .catch(() => {});
+    return () => {
+      annule = true;
+    };
+  }, [masquee]);
+
+  // Pas de barre publique sur l'application, sur les pages exclues, ni sur
+  // la page de gestion du Cercle.
+  if (masquee) return null;
 
   const showLogo = !isHome;
   const solid = !isHome || scrolled || menuOpen;
@@ -94,33 +148,59 @@ export function PublicNav() {
     whiteSpace: "nowrap",
   };
 
+  // Libellé d'un onglet, avec le repère « Bientôt » pour le Cercle.
+  const contenuLien = (link: { href: string; label: string }) => (
+    <>
+      {link.label}
+      {link.href === "/cercle" && cercleBientot && (
+        <span
+          style={{
+            marginLeft: 8,
+            padding: "1px 8px",
+            borderRadius: 999,
+            border: "1px solid rgba(217,154,132,0.7)",
+            color: "#D99A84",
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            verticalAlign: "middle",
+          }}
+        >
+          Bientôt
+        </span>
+      )}
+    </>
+  );
+
   return (
     <nav style={navStyle}>
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-14">
           {/* Gauche : logo (sauf sur l'accueil, qui a déjà son grand logo) */}
           {showLogo ? (
-            <Link href="/" aria-label="Accueil TRACÉA" className="flex items-center">
+            <NavLien plein={dansCercle} href="/" aria-label="Accueil TRACÉA" className="flex items-center">
               <img
                 src="/images/tracea-logo-blanc-transparent.png"
                 alt="TRACÉA"
                 className="h-8 w-auto object-contain"
               />
-            </Link>
+            </NavLien>
           ) : (
             <span aria-hidden="true" />
           )}
 
-          {/* Desktop : liens + bouton Commencer */}
+          {/* Desktop : liens + bouton Commencer (jamais sur les pages du Cercle) */}
           <div className="hidden md:flex items-center gap-6">
             {LINKS.map((link) => (
-              <Link key={link.href} href={link.href} style={linkStyle(link.href)}>
-                {link.label}
-              </Link>
+              <NavLien plein={dansCercle} key={link.href} href={link.href} style={linkStyle(link.href)}>
+                {contenuLien(link)}
+              </NavLien>
             ))}
-            <Link href="/start" style={ctaStyle}>
-              Commencer
-            </Link>
+            {!dansCercle && (
+              <Link href="/start" style={ctaStyle}>
+                Commencer
+              </Link>
+            )}
           </div>
 
           {/* Mobile : bouton hamburger */}
@@ -158,22 +238,25 @@ export function PublicNav() {
         >
           <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col gap-1">
             {LINKS.map((link) => (
-              <Link
+              <NavLien
+                plein={dansCercle}
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 style={{ ...linkStyle(link.href), padding: "10px 4px", fontSize: 15 }}
               >
-                {link.label}
-              </Link>
+                {contenuLien(link)}
+              </NavLien>
             ))}
-            <Link
-              href="/start"
-              onClick={() => setMenuOpen(false)}
-              style={{ ...ctaStyle, textAlign: "center", marginTop: 8, padding: "12px 22px" }}
-            >
-              Commencer
-            </Link>
+            {!dansCercle && (
+              <Link
+                href="/start"
+                onClick={() => setMenuOpen(false)}
+                style={{ ...ctaStyle, textAlign: "center", marginTop: 8, padding: "12px 22px" }}
+              >
+                Commencer
+              </Link>
+            )}
           </div>
         </div>
       )}

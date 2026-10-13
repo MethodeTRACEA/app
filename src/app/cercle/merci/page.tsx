@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import {
-  CercleLogo,
   accentStyle,
   cardStyle,
   colors,
@@ -46,9 +45,6 @@ export default async function CercleMerciPage({
   return (
     <div style={{ ...containerStyle, maxWidth: 600 }} className="pt-14 pb-20 md:pt-20 md:pb-28">
       <EffacerBrouillon />
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: 32 }}>
-        <CercleLogo size={64} />
-      </div>
       <div style={{ ...cardStyle, padding: "36px 26px", textAlign: "center" }}>
         <h1 style={h1Style}>{"Ta place est réservée."}</h1>
         <p style={{ ...accentStyle, fontSize: "1.2rem", margin: "22px 0 24px" }}>
