@@ -10,7 +10,7 @@ import {
   type CaseId,
   type PlacesState,
 } from "@/lib/cercle/config";
-import { colors, h2Style, linkStyle, pStyle } from "./_ui";
+import { FONT_SANS, colors, h2Style, linkStyle, pStyle } from "./_ui";
 
 // ===================================================================
 // Formulaire d'inscription du Cercle (étape 2, paiement Stripe en test).
@@ -56,12 +56,12 @@ const LIENS_CASES: Partial<Record<CaseId, { mot: string; href: string }>> = {
   securite: { mot: "seulement pour ma sécurité", href: "/cercle/confidentialite" },
 };
 
-const font = "'DM Sans', system-ui, sans-serif";
+const font = FONT_SANS;
 
 const labelStyle: CSSProperties = {
   display: "block",
   fontFamily: font,
-  fontSize: "1rem",
+  fontSize: "1.0625rem",
   fontWeight: 600,
   color: colors.heading,
   marginBottom: 4,
@@ -79,10 +79,10 @@ const inputStyle: CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
   fontFamily: font,
-  fontSize: "1rem",
-  color: "#F5EFE6",
-  background: "rgba(26,18,13,0.7)",
-  border: "1px solid rgba(240,230,214,0.28)",
+  fontSize: "1.0625rem",
+  color: colors.inputText,
+  background: colors.inputBg,
+  border: `1px solid ${colors.inputBorder}`,
   borderRadius: 10,
   padding: "12px 14px",
   minHeight: 48,
@@ -93,7 +93,7 @@ const choiceStyle: CSSProperties = {
   alignItems: "flex-start",
   gap: 12,
   fontFamily: font,
-  fontSize: "1rem",
+  fontSize: "1.0625rem",
   lineHeight: 1.55,
   color: colors.body,
   padding: "8px 0",
@@ -105,7 +105,7 @@ const boxStyle: CSSProperties = {
   height: 20,
   marginTop: 3,
   flexShrink: 0,
-  accentColor: "#C97B6A",
+  accentColor: colors.terra,
   cursor: "pointer",
 };
 
@@ -335,7 +335,7 @@ export function CercleForm({ places }: { places: PlacesState }) {
       </div>
 
       {message && (
-        <p role="alert" style={{ ...pStyle, color: "#F2B8A6", fontWeight: 600 }}>
+        <p role="alert" style={{ ...pStyle, color: colors.error, fontWeight: 600 }}>
           {message}
         </p>
       )}
