@@ -2,59 +2,12 @@
    Le Cercle TRACÉA en ligne — styles des pages /cercle/*
    Tout est préfixé (.cercle, .cl-…) : aucun effet sur le reste du site.
 
-   Deux palettes, mêmes noms de variables :
-   - « nuit chaude » (défaut, version A) : couleurs de la page d'accueil ;
-   - « aube » (version B, .theme-aube) : palette claire déjà définie dans
-     tailwind.config.ts (cream, beige, espresso, terra, sage).
+   Palette « aube » (choisie par Alyson le 13/10/2026) : la palette claire
+   déjà définie dans tailwind.config.ts (cream, beige, espresso, terra,
+   sage), avec la terracotta en accent.
    =================================================================== */
 
 .cercle {
-  --c-bg: #1A120D;
-  --c-bg2: #221813;
-  --c-bg3: #120C09;
-  --c-title: #F5EFE6;
-  --c-heading: #F0E6D6;
-  --c-body: rgba(240, 230, 214, 0.84);
-  --c-muted: rgba(240, 230, 214, 0.68);
-  --c-terra: #C97B6A;
-  --c-accent: #D99A84;
-  --c-link: #E0A893;
-  --c-line: rgba(240, 230, 214, 0.12);
-  --c-surface: rgba(111, 106, 100, 0.18);
-  --c-surface-deep: rgba(26, 18, 13, 0.35);
-  --c-surface-border: rgba(240, 230, 214, 0.10);
-  --c-shadow: 0 22px 48px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  --c-input-bg: rgba(26, 18, 13, 0.7);
-  --c-input-border: rgba(240, 230, 214, 0.28);
-  --c-input-text: #F5EFE6;
-  --c-error: #F2B8A6;
-  --c-water: rgba(201, 123, 106, 0.72);
-  --c-glass: rgba(240, 230, 214, 0.62);
-  --c-halo: rgba(201, 123, 106, 0.30);
-  --c-halo2: rgba(111, 106, 100, 0.20);
-  --c-sage-bg: rgba(110, 125, 109, 0.24);
-  --c-sage-border: rgba(138, 158, 122, 0.45);
-  --c-tint: rgba(201, 123, 106, 0.09);
-  --c-chip-bg: rgba(111, 106, 100, 0.22);
-  --c-chip-border: rgba(240, 230, 214, 0.14);
-  --c-glow: 0 0 42px rgba(217, 154, 132, 0.38), 0 0 2px rgba(245, 239, 230, 0.25);
-  --c-glow-soft: 0 0 32px rgba(217, 154, 132, 0.22);
-  --c-photo: linear-gradient(160deg, rgba(201, 123, 106, 0.35), rgba(111, 106, 100, 0.25) 55%, rgba(26, 18, 13, 0.6));
-
-  flex: 1;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  background: var(--c-bg);
-  color: var(--c-body);
-  font-family: var(--font-cercle-sans), "DM Sans", system-ui, sans-serif;
-}
-
-/* Version B « aube ». Les variables sont posées sur le contenu (.theme-aube)
-   et, via :has, sur toute la page (fond, pied de page). */
-.theme-aube,
-.cercle:has(.theme-aube) {
   --c-bg: #FAF7F2;
   --c-bg2: #F5EDE2;
   --c-bg3: #EFE3D3;
@@ -86,7 +39,17 @@
   --c-glow: none;
   --c-glow-soft: none;
   --c-photo: linear-gradient(160deg, #F0D5C4, #E8D8C6 55%, #D6E2CE);
+
+  flex: 1;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--c-bg);
+  color: var(--c-body);
+  font-family: var(--font-cercle-sans), "DM Sans", system-ui, sans-serif;
 }
+
 
 .cercle a:focus-visible,
 .cercle input:focus-visible,
@@ -230,11 +193,10 @@
   padding: 17px 42px;
   text-decoration: none;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(201, 144, 124, 0.18), 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 40px rgba(200, 120, 90, 0.35);
+  box-shadow: 0 10px 28px rgba(165, 80, 62, 0.22);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.cl-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 36px rgba(201, 144, 124, 0.26), 0 0 48px rgba(200, 120, 90, 0.42); }
-.theme-aube .cl-cta { box-shadow: 0 10px 28px rgba(165, 80, 62, 0.22); }
+.cl-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(165, 80, 62, 0.30); }
 
 /* ── Premier écran ───────────────────────────────────────────────── */
 .cl-hero {
@@ -253,12 +215,6 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 70% 55% at 50% 38%, var(--c-halo) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 50% at 12% 0%, var(--c-halo2) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 90% 100%, var(--c-halo2) 0%, transparent 65%);
-}
-.theme-aube .cl-hero::before {
   background:
     radial-gradient(ellipse 80% 60% at 50% 100%, var(--c-halo) 0%, transparent 70%),
     radial-gradient(ellipse 55% 45% at 85% 5%, var(--c-halo2) 0%, transparent 65%);
@@ -469,14 +425,23 @@
 .cl-grid4 {
   list-style: none;
   padding: 0;
-  margin: 40px 0;
+  margin: 36px 0;
+  max-width: 820px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: 12px;
+  align-items: start;
 }
 @media (min-width: 640px) { .cl-grid4 { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1000px) { .cl-grid4 { grid-template-columns: repeat(4, 1fr); } }
-.cl-grid4 .cl-card { padding: 24px 22px; }
+/* cartes compactes : peu de vide, texte plus grand */
+.cl-grid4 .cl-card { padding: 18px 20px; border-radius: 18px; }
+.cl-grid4 .cl-card .cl-etiquette { margin-bottom: 6px; }
+.cl-grid4 .cl-card .cl-p {
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  color: var(--c-heading);
+  margin: 0;
+}
 .cl-etiquette {
   font-size: 0.75rem;
   font-weight: 700;
@@ -555,12 +520,23 @@
 .cl-creneaux {
   list-style: none;
   padding: 0;
-  margin: 36px 0 20px;
+  margin: 36px 0 28px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
 }
 @media (min-width: 768px) { .cl-creneaux { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .cl-creneaux { grid-template-columns: 1fr 1fr 0.8fr; } }
+.cl-carte-prix {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--c-tint);
+  border: 1px solid var(--c-terra);
+}
+@media (min-width: 768px) and (max-width: 999px) { .cl-carte-prix { grid-column: 1 / -1; } }
+.cl-carte-prix .cl-prix { font-size: clamp(3rem, 7vw, 3.75rem); }
+.cl-carte-prix .cl-p { margin: 10px 0 0; color: var(--c-heading); }
 .cl-heures { color: var(--c-accent); font-weight: 600; }
 
 .cl-infos {
@@ -652,3 +628,128 @@
   .cl-motion [data-reveal]:not(.is-in) .gv-flaque,
   .cl-motion [data-reveal]:not(.is-in) .cd-point { opacity: 1; }
 }
+
+/* ═══ Ajouts du 13/10/2026 (version aube retenue) ════════════════ */
+
+/* Le Cercle… : une colonne centrée, et une ligne en retrait plus douce */
+.cl-centre { max-width: 720px; margin: 0 auto; }
+.cl-retrait {
+  margin: 28px 0 0 18px;
+  padding-left: 20px;
+  border-left: 2px solid var(--c-terra);
+  color: var(--c-muted);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+@media (min-width: 768px) { .cl-retrait { margin-left: 40px; font-size: 1.125rem; } }
+
+/* Paroles, avant « D'autres le vivent aussi. » */
+.cl-paroles {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto 64px;
+  max-width: 760px;
+  text-align: center;
+}
+.cl-paroles li {
+  font-family: var(--font-cercle-serif), "DM Serif Display", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.25rem, 3.2vw, 1.75rem);
+  line-height: 1.4;
+  color: var(--c-body);
+  margin: 0 0 18px;
+  text-wrap: balance;
+}
+.cl-motion .cl-paroles li { transition-delay: calc(var(--d, 0) * 450ms); }
+.cl-motion .cl-statement { transition-delay: 1.4s; }
+
+/* Boutons supplémentaires, sur ordinateur seulement (le téléphone a la barre) */
+.cl-cta-ordi { display: none; text-align: center; margin-top: 56px; }
+@media (min-width: 768px) { .cl-cta-ordi { display: block; } }
+
+/* Après ton inscription : frise en quatre temps */
+.cl-apres { margin: 8px 0 48px; }
+.cl-apres ol {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.cl-apres li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding-bottom: 22px;
+}
+.cl-apres li:last-child { padding-bottom: 0; }
+.cl-apres li::before {
+  content: "";
+  position: absolute;
+  left: 19.5px;
+  top: 42px;
+  bottom: 2px;
+  width: 1px;
+  background: var(--c-line);
+}
+.cl-apres li:last-child::before { display: none; }
+.cl-pastille {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-cercle-serif), "DM Serif Display", Georgia, serif;
+  font-size: 1.125rem;
+  color: var(--c-accent);
+  background: var(--c-surface);
+  border: 1px solid var(--c-terra);
+}
+.cl-apres .cl-p { margin: 7px 0 0; }
+@media (min-width: 900px) {
+  .cl-apres ol { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .cl-apres li { grid-template-columns: 1fr; padding-bottom: 0; }
+  .cl-apres li::before {
+    left: 52px;
+    right: -16px;
+    top: 19.5px;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+  }
+}
+
+/* Tes questions : questions dépliables (details/summary, clavier natif) */
+.cl-faq { max-width: 820px; margin: 0 auto; }
+.cl-faq details { border-top: 1px solid var(--c-line); }
+.cl-faq details:last-child { border-bottom: 1px solid var(--c-line); }
+.cl-faq summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 4px;
+  font-family: var(--font-cercle-serif), "DM Serif Display", Georgia, serif;
+  font-size: clamp(1.1875rem, 2.4vw, 1.4375rem);
+  line-height: 1.3;
+  color: var(--c-title);
+}
+.cl-faq summary::-webkit-details-marker { display: none; }
+.cl-faq summary::after {
+  content: "+";
+  flex-shrink: 0;
+  font-family: var(--font-cercle-sans), "DM Sans", system-ui, sans-serif;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--c-accent);
+  transition: transform 0.25s ease;
+}
+.cl-faq details[open] summary::after { transform: rotate(45deg); }
+.cl-faq summary:focus-visible { outline: 2px solid var(--c-link); outline-offset: 2px; border-radius: 6px; }
+.cl-faq .cl-p { padding: 0 4px 24px; margin: 0; max-width: 680px; }

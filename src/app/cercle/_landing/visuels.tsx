@@ -96,9 +96,10 @@ export function CercleDeDouze() {
 }
 
 // ── Photo d'Alyson ──────────────────────────────────────────────────
-// Déposer la photo dans public/images/cercle/ puis renseigner son chemin
-// ici (ex. "/images/cercle/alyson.jpg"). En attendant : emplacement neutre.
-export const PHOTO_ALYSON: string | null = null;
+// Photo fournie par Alyson (13/10/2026), recadrée en 4:5 et optimisée en
+// WebP (880 x 1100, 64 Ko). next/image la redimensionne selon l'écran.
+// Mettre null pour revenir à l'emplacement neutre.
+export const PHOTO_ALYSON: string | null = "/images/cercle/alyson.webp";
 
 export function PhotoAnimatrice() {
   if (!PHOTO_ALYSON) {
@@ -111,7 +112,7 @@ export function PhotoAnimatrice() {
         alt="Alyson, qui anime le Cercle"
         fill
         sizes="(min-width: 900px) 380px, 90vw"
-        style={{ objectFit: "cover" }}
+        style={{ objectFit: "cover", objectPosition: "50% 30%" }}
       />
     </div>
   );

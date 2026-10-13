@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { CercleForm } from "../CercleForm";
 import { h2Style } from "../_ui";
 import type { EtatInscription } from "./etat";
@@ -5,19 +6,30 @@ import { Mouvement } from "./Mouvement";
 import { CercleDeDouze, GrandVerre, PhotoAnimatrice } from "./visuels";
 
 // ===================================================================
-// Le Cercle TRACÉA en ligne — page de présentation (versions A et B).
+// Le Cercle TRACÉA en ligne — page de présentation (/cercle).
 //
-// Contenu identique dans les deux versions ; seul le thème change :
-//   "nuit" (A, /cercle)   : fond sombre de l'accueil, halos terracotta ;
-//   "aube" (B, /cercle/b) : fond clair sable et crème.
-// Textes d'Alyson mot pour mot. Seul changement de texte demandé : le
-// titre devient « LE CERCLE TRACÉA » (petit, au-dessus) + « Quand ça
-// déborde » (grand), sans point médian. Libellés courts validés :
-// repères, « En bref », étiquettes Écouter/Écrire/Parler/Partager,
-// numéros 1 à 4, titres « Le soir » / « En journée ».
+// Version « aube » retenue par Alyson le 13/10/2026 (palette claire,
+// cercle.css). Textes d'Alyson mot pour mot. Libellés courts validés :
+// repères (dont « dès le 17 novembre »), « En bref », étiquettes
+// Écouter/Écrire/Parler/Partager, numéros, titres « Le soir » /
+// « En journée », texte de la carte prix.
+// Volontairement absents : compte à rebours, message d'urgence,
+// compteur de places restantes.
 // ===================================================================
 
-const REPERES = ["4 rencontres", "en direct sur Zoom", "12 €", "12 personnes au plus"];
+const REPERES = [
+  "4 rencontres",
+  "dès le 17 novembre",
+  "en direct sur Zoom",
+  "12 €",
+  "12 personnes au plus",
+];
+
+const PAROLES = [
+  "Je réagis plus fort que je ne voudrais.",
+  "Je sens que ça monte, mais je ne sais pas quoi faire.",
+  "Après, je ne me reconnais plus.",
+];
 
 const RENCONTRES: { titre: string; texte: string }[] = [
   { titre: "Quand ça se remplit", texte: "Ce qui s'accumule sans qu'on le voie." },
@@ -57,19 +69,62 @@ const CRENEAUX_CARTES = [
   },
 ];
 
+const APRES = [
+  "Tu reçois un email de confirmation.",
+  "Le 13 novembre, je te confirme ton créneau.",
+  "La veille de chaque rencontre, tu reçois le lien Zoom.",
+  "Le jour venu, tu arrives comme tu es, caméra allumée ou non.",
+];
+
+const QUESTIONS: { q: string; r: string }[] = [
+  {
+    q: "Je n'ose pas parler devant d'autres.",
+    r: "Tu n'as pas à le faire. Tu peux écouter toute la rencontre, écrire seulement dans le chat, garder ta caméra éteinte. Ta place est la même.",
+  },
+  {
+    q: "Est-ce une thérapie ?",
+    r: "Non. C'est un espace de parole entre pairs. Il ne remplace pas un suivi médical ou psychologique, il se tient à côté.",
+  },
+  {
+    q: "Et si je rate une rencontre ?",
+    r: "Chaque rencontre se suffit à elle-même. La suivante t'accueille comme si c'était la première.",
+  },
+  {
+    q: "Qui saura que j'étais là ?",
+    r: "Tu peux utiliser un pseudonyme. Les rencontres ne sont pas enregistrées, et chaque personne s'engage à garder pour elle ce qu'elle entend.",
+  },
+  {
+    q: "Et si ça me remue trop pendant la rencontre ?",
+    r: "Tu peux couper ta caméra, faire une pause, ou m'écrire en privé : je te proposerai un moment à part. Les numéros d'aide restent épinglés dans le chat.",
+  },
+  {
+    q: "Pourquoi 12 € ?",
+    r: "C'est un tarif pilote, pour ce premier cycle qu'on construit ensemble. Si ton groupe n'a pas lieu, je te rembourse entièrement.",
+  },
+  {
+    q: "Comment savoir si c'est pour moi ?",
+    r: "Si ces moments te parlent, si tu as envie d'en parler, ou juste d'écouter d'autres qui les vivent, ta place est ici. Et si ce n'est pas le bon moment, d'autres cycles suivront.",
+  },
+];
+
 function Trait() {
   return <span aria-hidden="true" className="cl-trait" />;
 }
 
-export function CercleLanding({
-  theme,
-  etat,
-}: {
-  theme: "nuit" | "aube";
-  etat: EtatInscription;
-}) {
+// Bouton supplémentaire vers le formulaire, sur ordinateur seulement.
+function BoutonOrdi() {
   return (
-    <div id="cercle-racine" className={`cl-landing theme-${theme}`}>
+    <div className="cl-cta-ordi">
+      <a href="#inscription" className="cl-cta">
+        {"Je m'inscris au Cercle"}
+      </a>
+    </div>
+  );
+}
+
+export function CercleLanding({ etat }: { etat: EtatInscription }) {
+  return (
+    <div id="cercle-racine" className="cl-landing">
       {/* ═══ Premier écran ═══════════════════════════════════════ */}
       <section id="cercle-hero" className="cl-hero" aria-labelledby="cercle-h1">
         <div className="cl-wrap">
@@ -96,7 +151,11 @@ export function CercleLanding({
       <div className="cl-band cl-band--alt">
         <div className="cl-wrap">
           <div className="cl-split">
-            <p className="cl-lead" data-reveal style={{ margin: 0, fontSize: "clamp(1.3rem, 2.8vw, 1.75rem)", lineHeight: 1.5 }}>
+            <p
+              className="cl-lead"
+              data-reveal
+              style={{ margin: 0, fontSize: "clamp(1.3rem, 2.8vw, 1.75rem)", lineHeight: 1.5 }}
+            >
               {
                 "Tu connais peut-être ces moments. Tout monte d'un coup. La réaction dépasse ce que tu voudrais. Et après, il reste la honte, la fatigue, et cette impression que personne d'autre ne vit ça."
               }
@@ -108,25 +167,32 @@ export function CercleLanding({
         </div>
       </div>
 
-      {/* ═══ Moment fort ═════════════════════════════════════════ */}
+      {/* ═══ Paroles, puis moment fort ═══════════════════════════ */}
       <div className="cl-band cl-band--deep cl-band--statement">
         <div className="cl-wrap">
+          <ul className="cl-paroles">
+            {PAROLES.map((p, i) => (
+              <li key={p} data-reveal style={{ "--d": i } as CSSProperties}>
+                {`« ${p} »`}
+              </li>
+            ))}
+          </ul>
           <p className="cl-statement" data-reveal>
             {"D'autres le vivent aussi."}
           </p>
         </div>
       </div>
 
-      {/* ═══ Le Cercle, en deux colonnes ═════════════════════════ */}
+      {/* ═══ Le Cercle : une colonne centrée ═════════════════════ */}
       <div className="cl-band">
         <div className="cl-wrap">
-          <div className="cl-cols">
-            <p className="cl-lead" data-reveal>
+          <div className="cl-centre">
+            <p className="cl-lead" data-reveal style={{ margin: 0 }}>
               {
                 "Le Cercle, c'est quatre rencontres en direct sur Zoom, pour en parler avec d'autres qui le vivent aussi. On y met des mots sur ce qui s'accumule, ce qui déclenche, ce qui reste après. Et on regarde ensemble ce qui aide, même un peu, à revenir à soi."
               }
             </p>
-            <p className="cl-lead" data-reveal style={{ alignSelf: "end", color: "var(--c-body)" }}>
+            <p className="cl-retrait" data-reveal>
               {
                 "Pour certaines personnes, ce moment s'accompagne d'une envie de fuir, par un verre, un écran, la nourriture… Elles ont aussi toute leur place ici."
               }
@@ -159,11 +225,17 @@ export function CercleLanding({
             ))}
           </ol>
 
-          <p className="cl-accent" data-reveal style={{ textAlign: "center", maxWidth: 640, margin: "0 auto", textWrap: "balance" }}>
+          <p
+            className="cl-accent"
+            data-reveal
+            style={{ textAlign: "center", maxWidth: 640, margin: "0 auto", textWrap: "balance" }}
+          >
             {
               "Chaque rencontre se suffit à elle-même. Si tu en manques une, la suivante t'accueille comme si c'était la première."
             }
           </p>
+
+          <BoutonOrdi />
 
           {/* Un cadre reconnu (texte d'Alyson, mot pour mot) */}
           <section className="cl-aside" aria-labelledby="cadre-reconnu-titre" data-reveal>
@@ -172,12 +244,12 @@ export function CercleLanding({
                 {"Un cadre reconnu"}
               </h2>
               <div>
-                <p className="cl-p">
+                <p className="cl-lead">
                   {
                     "Le Cercle s'inscrit dans ce que Santé publique France appelle les compétences psychosociales. Parmi elles, les compétences émotionnelles : reconnaître ce qu'on ressent, repérer son stress, trouver ce qui aide à le traverser. Elles comptent pour la santé mentale de chacun, et elles se travaillent à tout âge."
                   }
                 </p>
-                <p className="cl-p" style={{ margin: 0 }}>
+                <p className="cl-lead" style={{ margin: 0 }}>
                   {
                     "Chaque rencontre les explore à sa façon, en partant de ce que chacun vit. Sans rien promettre : en s'y exerçant ensemble, simplement."
                   }
@@ -188,10 +260,10 @@ export function CercleLanding({
         </div>
       </section>
 
-      {/* ═══ Comment ça se passe : grille de cartes ══════════════ */}
+      {/* ═══ Comment ça se passe : cartes compactes ══════════════ */}
       <section className="cl-band" aria-labelledby="deroulement-titre">
         <div className="cl-wrap">
-          <div data-reveal style={{ maxWidth: 780 }}>
+          <div data-reveal style={{ maxWidth: 820 }}>
             <Trait />
             <h2 id="deroulement-titre" className="cl-h2">
               {"Comment ça se passe"}
@@ -207,14 +279,12 @@ export function CercleLanding({
             {PARTICIPER.map((p) => (
               <li key={p.etiquette} className="cl-card">
                 <p className="cl-etiquette">{p.etiquette}</p>
-                <p className="cl-p" style={{ margin: 0, color: "var(--c-heading)" }}>
-                  {p.texte}
-                </p>
+                <p className="cl-p">{p.texte}</p>
               </li>
             ))}
           </ul>
 
-          <p className="cl-p" data-reveal style={{ maxWidth: 780, margin: 0 }}>
+          <p className="cl-p" data-reveal style={{ maxWidth: 820, margin: 0 }}>
             {
               "Tu choisis ta place, et tu peux en changer chaque semaine. Ta caméra peut rester éteinte du début à la fin."
             }
@@ -257,11 +327,15 @@ export function CercleLanding({
               </h2>
               <p className="cl-lead" style={{ margin: 0 }}>
                 {
-                  "Je m'appelle Alyson. Je ne suis pas thérapeute. J'anime à partir de ce que j'ai vécu, et de ce que j'ai appris en chemin sur le débordement. Ancienne aide-soignante, j'ai aussi participé pendant plus d'un an à des groupes d'entraide entre pairs, où j'ai co-animé des réunions. Ce Cercle est une phase pilote : on le construit ensemble."
+                  "Je m'appelle Alyson. Je ne suis pas thérapeute. J'anime à partir de ce que j'ai vécu, et de ce que j'ai appris en chemin sur le débordement. Ancienne aide-soignante, j'ai aussi participé pendant plus d'un an à des groupes d'entraide entre pairs, où j'ai "
                 }
+                {/* « co-animé » ne se coupe pas au trait d'union */}
+                <span style={{ whiteSpace: "nowrap" }}>{"co-animé"}</span>
+                {" des réunions. Ce Cercle est une phase pilote : on le construit ensemble."}
               </p>
             </div>
           </div>
+          <BoutonOrdi />
         </div>
       </section>
 
@@ -298,7 +372,7 @@ export function CercleLanding({
         </div>
       </div>
 
-      {/* ═══ Dates et tarif + formulaire ═════════════════════════ */}
+      {/* ═══ Dates et tarif + après l'inscription + formulaire ═══ */}
       <section className="cl-band cl-band--alt" aria-labelledby="dates-titre">
         <div className="cl-wrap">
           <div data-reveal>
@@ -323,25 +397,41 @@ export function CercleLanding({
                 </p>
               </li>
             ))}
+            <li className="cl-card cl-carte-prix">
+              <p className="cl-prix" style={{ margin: 0 }}>
+                {"12 €"}
+              </p>
+              <p className="cl-p">{"les quatre rencontres · tarif pilote"}</p>
+            </li>
           </ul>
 
-          <div className="cl-infos" data-reveal>
-            <p className="cl-p">
-              {"En direct sur Zoom. "}
-              <span className="cl-prix">{"12 €"}</span>
-              {" les quatre rencontres, en tarif pilote pour ce premier cycle."}
+          <div data-reveal style={{ maxWidth: 820, marginBottom: 72 }}>
+            <p className="cl-lead" style={{ fontWeight: 600, color: "var(--c-title)", margin: "0 0 10px" }}>
+              {"Inscriptions ouvertes jusqu'au 13 novembre."}
             </p>
-            <p className="cl-p">
-              <strong style={{ color: "var(--c-title)", fontWeight: 600 }}>
-                {"Inscriptions ouvertes jusqu'au 13 novembre."}
-              </strong>
-            </p>
-            <p className="cl-p">
+            <p className="cl-p" style={{ margin: 0 }}>
               {
                 "Chaque groupe a besoin d'au moins quatre personnes pour exister. Si ton créneau n'en réunit pas assez, je te propose l'autre, ou je te rembourse entièrement."
               }
             </p>
           </div>
+
+          {/* Après ton inscription : frise en quatre temps */}
+          <section className="cl-apres" aria-labelledby="apres-titre" data-reveal>
+            <h3 id="apres-titre" className="cl-h3" style={{ fontSize: "clamp(1.5rem, 3.4vw, 2rem)" }}>
+              {"Après ton inscription"}
+            </h3>
+            <ol>
+              {APRES.map((etape, i) => (
+                <li key={etape}>
+                  <span className="cl-pastille" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  <p className="cl-p">{etape}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
 
           <section
             id="inscription"
@@ -365,10 +455,32 @@ export function CercleLanding({
         </div>
       </section>
 
-      {/* ═══ Numéros d'aide ══════════════════════════════════════ */}
-      <div className="cl-band" style={{ paddingTop: 72, paddingBottom: 72 }}>
+      {/* ═══ Tes questions ═══════════════════════════════════════ */}
+      <section className="cl-band" aria-labelledby="questions-titre">
         <div className="cl-wrap">
-          <div className="cl-narrow" style={{ maxWidth: 760, marginLeft: 0 }}>
+          <div className="cl-faq">
+            <div data-reveal>
+              <Trait />
+              <h2 id="questions-titre" className="cl-h2">
+                {"Tes questions"}
+              </h2>
+            </div>
+            <div data-reveal>
+              {QUESTIONS.map((item) => (
+                <details key={item.q}>
+                  <summary>{item.q}</summary>
+                  <p className="cl-p">{item.r}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ Numéros d'aide ══════════════════════════════════════ */}
+      <div className="cl-band" style={{ paddingTop: 72, paddingBottom: 72, borderTop: "1px solid var(--c-line)" }}>
+        <div className="cl-wrap">
+          <div style={{ maxWidth: 760 }}>
             <p id="aide-titre" className="cl-p" style={{ color: "var(--c-heading)", fontWeight: 600 }}>
               {"Si ça devient trop lourd, aujourd'hui ou plus tard :"}
             </p>

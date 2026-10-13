@@ -3,9 +3,8 @@ import type { CSSProperties, ReactNode } from "react";
 // ===================================================================
 // Le Cercle TRACÉA en ligne — habillage commun des pages /cercle/*
 //
-// Les couleurs sont des variables CSS définies dans cercle.css :
-// palette « nuit chaude » par défaut (celle de l'accueil), palette
-// « aube » sous .theme-aube (version B). Les polices sont chargées par
+// Les couleurs sont des variables CSS définies dans cercle.css (palette
+// « aube », retenue le 13/10/2026). Les polices sont chargées par
 // next/font dans layout.tsx et servies depuis le site (aucun serveur
 // extérieur).
 //
