@@ -146,6 +146,25 @@ export function CercleFooter() {
           ))}
         </ul>
       </nav>
+      <p
+        style={{
+          fontFamily: "'DM Sans', system-ui, sans-serif",
+          fontSize: "0.875rem",
+          color: colors.muted,
+          textAlign: "center",
+          margin: "14px auto 0",
+          maxWidth: 680,
+        }}
+      >
+        {"Si ça devient trop lourd : "}
+        <a
+          href="tel:3114"
+          style={{ color: colors.muted, textDecoration: "underline", textUnderlineOffset: "3px" }}
+        >
+          3114
+        </a>
+        {", jour et nuit."}
+      </p>
     </footer>
   );
 }

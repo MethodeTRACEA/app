@@ -10,11 +10,20 @@ import {
   listStyle,
   pStyle,
 } from "./_ui";
+import { CercleForm } from "./CercleForm";
+import {
+  TOUTES_PLACES_LIBRES,
+  inscriptionsCloses,
+  type PlacesState,
+} from "@/lib/cercle/config";
+import { compterPlaces, getCercleStripe } from "@/lib/cercle/stripe";
 
 // Le Cercle TRACÉA en ligne — page de présentation.
 // Texte repris mot pour mot du document « Page d'inscription · Le Cercle
-// TRACÉA en ligne » (13 oct. 2026). Étape 1 : pas encore d'inscription,
-// le bouton mène à la zone « Inscription bientôt disponible ».
+// TRACÉA en ligne » (13 oct. 2026). Le bouton mène à la zone
+// d'inscription : formulaire (étape 2), « bientôt disponible » tant que
+// CERCLE_INSCRIPTIONS_ACTIVES n'est pas posé, ou « closes » après le
+// 13 novembre 2026 à 23 h 59 (Paris).
 export const metadata: Metadata = {
   title: "Le Cercle TRACÉA · Quand ça déborde",
   description:
@@ -35,7 +44,33 @@ const btnStyle: CSSProperties = {
   textAlign: "center",
 };
 
-export default function CerclePage() {
+// Page calculée à chaque visite : date de clôture et places restantes.
+export const dynamic = "force-dynamic";
+
+type EtatInscription =
+  | { type: "bientot" }
+  | { type: "clos" }
+  | { type: "ouvert"; places: PlacesState };
+
+async function lireEtatInscription(): Promise<EtatInscription> {
+  if (inscriptionsCloses()) return { type: "clos" };
+  const cs = getCercleStripe();
+  if (!cs.ok) return { type: "bientot" };
+  try {
+    return { type: "ouvert", places: await compterPlaces(cs.stripe) };
+  } catch (err) {
+    // Stripe injoignable : on affiche le formulaire, le serveur
+    // revérifiera les places au moment de « Valider et payer ».
+    console.error(
+      "[CERCLE] Comptage des places impossible:",
+      err instanceof Error ? err.message : String(err)
+    );
+    return { type: "ouvert", places: TOUTES_PLACES_LIBRES };
+  }
+}
+
+export default async function CerclePage() {
+  const etatInscription = await lireEtatInscription();
   return (
     <div style={containerStyle}>
       {/* Titre */}
@@ -180,24 +215,34 @@ export default function CerclePage() {
         </a>
       </div>
 
-      {/* Zone d'inscription : provisoire (étape 1) */}
+      {/* Zone d'inscription : formulaire, ou message si fermé */}
       <section
         id="inscription"
         aria-labelledby="inscription-titre"
         tabIndex={-1}
         style={{
           marginTop: 48,
-          padding: "28px 22px",
+          padding: etatInscription.type === "ouvert" ? "28px 20px" : "28px 22px",
           borderRadius: 18,
           border: `1px solid ${colors.line}`,
           background: colors.surface,
-          textAlign: "center",
+          textAlign: etatInscription.type === "ouvert" ? "left" : "center",
           scrollMarginTop: 24,
         }}
       >
-        <h2 id="inscription-titre" style={{ ...h2Style, margin: 0 }}>
-          {"Inscription bientôt disponible"}
-        </h2>
+        {etatInscription.type === "ouvert" ? (
+          <CercleForm places={etatInscription.places} />
+        ) : etatInscription.type === "clos" ? (
+          <h2 id="inscription-titre" style={{ ...h2Style, margin: 0 }}>
+            {
+              "Les inscriptions sont closes. Le prochain cycle sera annoncé ici."
+            }
+          </h2>
+        ) : (
+          <h2 id="inscription-titre" style={{ ...h2Style, margin: 0 }}>
+            {"Inscription bientôt disponible"}
+          </h2>
+        )}
       </section>
 
       {/* Pied de page : numéros d'aide */}

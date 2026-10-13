@@ -17,6 +17,8 @@ export default function CercleLayout({
   return (
     <div className="cercle" style={pageStyle}>
       <style>{`
+        .cercle input:focus-visible,
+        .cercle button:focus-visible,
         .cercle a:focus-visible {
           outline: 2px solid #E0A893;
           outline-offset: 3px;
