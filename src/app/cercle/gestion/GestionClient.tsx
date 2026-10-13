@@ -237,7 +237,7 @@ export function GestionClient() {
   }
 
   // ── Section « Réglages » (affichée même si Stripe n'est pas réglé) ─
-  const LIBELLE_ETAT = { bientot: "Inscription bientôt disponible", ouvert: "Formulaire ouvert", clos: "Inscriptions closes" } as const;
+  const LIBELLE_ETAT = { bientot: "Les inscriptions ouvrent bientôt", ouvert: "Formulaire ouvert", clos: "Inscriptions closes" } as const;
   const detailReglage = (nom: string): string | null => {
     if (!reglages) return null;
     if (nom === "CERCLE_INSCRIPTIONS_ACTIVES") {

@@ -107,6 +107,16 @@ const QUESTIONS: { q: string; r: string }[] = [
   },
 ];
 
+// Ligne sous les cartes de créneaux, selon l'état de l'inscription.
+// « ouvert » : texte d'Alyson d'origine ; « bientôt » : texte provisoire
+// validé par Alyson ; « clos » : « ouvertes jusqu'au 13 novembre » serait
+// faux après la date, on dit donc que c'est fermé.
+const LIGNE_OUVERTURE = {
+  ouvert: "Inscriptions ouvertes jusqu'au 13 novembre.",
+  bientot: "Les inscriptions ouvriront bientôt, et fermeront le 13 novembre.",
+  clos: "Les inscriptions ont fermé le 13 novembre.",
+} as const;
+
 function Trait() {
   return <span aria-hidden="true" className="cl-trait" />;
 }
@@ -407,7 +417,7 @@ export function CercleLanding({ etat }: { etat: EtatInscription }) {
 
           <div data-reveal style={{ maxWidth: 820, marginBottom: 72 }}>
             <p className="cl-lead" style={{ fontWeight: 600, color: "var(--c-title)", margin: "0 0 10px" }}>
-              {"Inscriptions ouvertes jusqu'au 13 novembre."}
+              {LIGNE_OUVERTURE[etat.type]}
             </p>
             <p className="cl-p" style={{ margin: 0 }}>
               {
@@ -448,7 +458,7 @@ export function CercleLanding({ etat }: { etat: EtatInscription }) {
               </h2>
             ) : (
               <h2 id="inscription-titre" style={{ ...h2Style, margin: 0 }}>
-                {"Inscription bientôt disponible"}
+                {"Les inscriptions ouvrent bientôt."}
               </h2>
             )}
           </section>

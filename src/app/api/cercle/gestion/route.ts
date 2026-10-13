@@ -32,6 +32,9 @@ import { lienZoom, toutesLesRencontres } from "@/lib/cercle/rencontres";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// « Annuler le cycle » écrit à toutes les inscrites une par une : 60 s,
+// la durée maximale acceptée par toutes les offres Vercel.
+export const maxDuration = 60;
 
 function reponse(status: number, message: string) {
   return NextResponse.json({ ok: false, message }, { status });

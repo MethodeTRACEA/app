@@ -4,6 +4,9 @@ import { actionEffacer } from "@/lib/cercle/gestion";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+// Une écriture Stripe par paiement : on demande 60 s, la durée maximale
+// acceptée par toutes les offres Vercel.
+export const maxDuration = 60;
 
 // =====================================================================
 // GET /api/cron/cercle-effacement

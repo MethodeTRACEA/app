@@ -1,4 +1,4 @@
-import { writeFileSync } from "fs";
+import { mkdirSync, writeFileSync } from "fs";
 import {
   emailConfirmation, emailAccuse, emailNotifInscription, emailNotifRetractation, envoyer,
   emailGroupeConfirme, emailAutreCreneau, emailCycleAnnule, emailLienZoom,
@@ -9,8 +9,8 @@ import { calculerRemboursement } from "../src/lib/cercle/inscriptions";
 import { pdfConditions, pdfFormulaireRetractation } from "../src/lib/cercle/pdf";
 
 // Outil de test des emails du Cercle. Fabrique chaque email avec des
-// données d'exemple et l'enregistre dans public/_tmp-emails/ (à supprimer
-// avant la mise en production). Avec --envoyer, envoie les tests
+// données d'exemple et l'enregistre dans .cercle-apercu-emails/ (hors du
+// site public, ignoré par git). Avec --envoyer, envoie les tests
 // UNIQUEMENT à cercledeparole@methodetracea.fr (objet précédé de [TEST]).
 //   Aperçu seul : npx tsx --tsconfig tsconfig.scripts.json scripts/cercle-test-emails.ts
 //   Avec envoi  : (idem) --envoyer   (RESEND_API_KEY doit être valide)
@@ -61,15 +61,16 @@ const liste: [string, EmailPret][] = [
 ];
 
 (async () => {
-  for (const [nom, e] of liste) writeFileSync(`public/_tmp-emails/${nom}.html`, e.html, "utf-8");
+  mkdirSync(".cercle-apercu-emails", { recursive: true });
+  for (const [nom, e] of liste) writeFileSync(`.cercle-apercu-emails/${nom}.html`, e.html, "utf-8");
   const items = liste.map(([n, e]) => `<li><a href="${n}.html">${n}</a> : ${e.subject.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</li>`).join("");
   writeFileSync(
-    "public/_tmp-emails/index.html",
+    ".cercle-apercu-emails/index.html",
     `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Aperçu des emails du Cercle</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="font-family:Georgia,serif;max-width:640px;margin:40px auto;padding:0 16px;color:#2C1F14;line-height:1.7"><h1>Aperçu des emails du Cercle (données d'exemple)</h1><ul>${items}<li><a href="conditions.pdf">conditions.pdf</a> : pièce jointe</li><li><a href="formulaire.pdf">formulaire.pdf</a> : pièce jointe</li></ul></body></html>`,
     "utf-8"
   );
-  writeFileSync("public/_tmp-emails/conditions.pdf", await pdfConditions());
-  writeFileSync("public/_tmp-emails/formulaire.pdf", await pdfFormulaireRetractation());
+  writeFileSync(".cercle-apercu-emails/conditions.pdf", await pdfConditions());
+  writeFileSync(".cercle-apercu-emails/formulaire.pdf", await pdfFormulaireRetractation());
   console.log("Rembt normal:", rembNormal.resume, "|", "hors délai:", calculerRemboursement("vendredi", apres).resume);
   console.log("Deux, avant début:", calculerRemboursement("deux", new Date("2026-11-10T10:00:00+01:00")).resume);
   console.log("Deux, 18/11 :", calculerRemboursement("deux", new Date("2026-11-18T10:00:00+01:00")).resume);

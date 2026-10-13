@@ -6,6 +6,9 @@ import { jourParis, rencontresDuJour } from "@/lib/cercle/rencontres";
 // force-dynamic : jamais évaluée au build.
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+// Envois en série (une douzaine d'emails + écritures Stripe) : on demande
+// 60 s, la durée maximale acceptée par toutes les offres Vercel.
+export const maxDuration = 60;
 
 // =====================================================================
 // GET /api/cron/cercle-liens
