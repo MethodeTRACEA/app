@@ -9,7 +9,7 @@ export default function MentionsLegales() {
       <h1 className="section-title">Mentions légales — TRACÉA</h1>
       <div className="text-xs text-warm-gray mt-4 mb-8 space-y-1">
         <p>
-          <strong>Dernière mise à jour :</strong> 12 juillet 2026
+          <strong>Dernière mise à jour :</strong> 13 octobre 2026
         </p>
         <p>
           <strong>Site :</strong> www.methodetracea.fr
@@ -241,7 +241,39 @@ export default function MentionsLegales() {
 
         <section>
           <h2 className="font-serif text-xl text-espresso mb-3">
-            9. Médiation de la consommation
+            9. Le Cercle TRACÉA en ligne
+          </h2>
+          <p>
+            TRACÉA propose aussi le Cercle TRACÉA en ligne : des groupes de
+            parole entre pairs, en direct en visioconférence, sur inscription.
+            Cette activité est animée par l&apos;éditrice du site. Ce n&apos;est
+            ni une thérapie, ni un soin, ni du coaching.
+          </p>
+          <p className="mt-3">
+            Le Cercle a ses propres pages :{" "}
+            <a
+              href="/cercle/conditions"
+              className="text-terra hover:text-terra-dark underline"
+            >
+              conditions d&apos;inscription
+            </a>{" "}
+            et{" "}
+            <a
+              href="/cercle/confidentialite"
+              className="text-terra hover:text-terra-dark underline"
+            >
+              politique de confidentialité
+            </a>
+            .
+          </p>
+          <p className="mt-2">
+            <strong>cercledeparole@methodetracea.fr</strong>
+          </p>
+        </section>
+
+        <section>
+          <h2 className="font-serif text-xl text-espresso mb-3">
+            10. Médiation de la consommation
           </h2>
           <p>
             Conformément aux dispositions du Code de la consommation relatives
@@ -276,7 +308,7 @@ export default function MentionsLegales() {
 
         <section>
           <h2 className="font-serif text-xl text-espresso mb-3">
-            10. Droit applicable
+            11. Droit applicable
           </h2>
           <p>
             Les présentes mentions légales sont soumises au droit français.
@@ -289,7 +321,7 @@ export default function MentionsLegales() {
 
         <section>
           <h2 className="font-serif text-xl text-espresso mb-3">
-            11. Signalement
+            12. Signalement
           </h2>
           <p>
             Pour signaler une erreur, un contenu problématique, un

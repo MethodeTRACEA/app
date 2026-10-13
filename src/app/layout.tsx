@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Analytics } from "@vercel/analytics/react";
+import { SiteAnalytics } from "@/components/SiteAnalytics";
 import { PublicNav } from "@/components/PublicNav";
 import "./globals.css";
 
@@ -29,7 +29,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         <PublicNav />
         {children}
-        <Analytics />
+        <SiteAnalytics />
       </body>
     </html>
   );

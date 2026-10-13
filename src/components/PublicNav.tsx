@@ -49,6 +49,8 @@ export function PublicNav() {
   // Pas de barre publique sur l'application ni sur les pages exclues.
   if (pathname.startsWith("/app")) return null;
   if (HIDDEN.has(pathname)) return null;
+  // Le Cercle TRACÉA en ligne : pages isolées, aucune barre ni lien vers l'app.
+  if (pathname === "/cercle" || pathname.startsWith("/cercle/")) return null;
 
   const showLogo = !isHome;
   const solid = !isHome || scrolled || menuOpen;
