@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CercleFooter, pageStyle } from "./_ui";
+import { CercleFooter, Halo, pageStyle } from "./_ui";
 
 // Le Cercle TRACÉA en ligne — enveloppe commune des pages /cercle/*.
 // Pilote : pages non indexées (noindex) et absentes du sitemap, par
@@ -26,7 +26,8 @@ export default function CercleLayout({
         }
         .cercle-footer-link:hover { color: #F5EFE6 !important; }
       `}</style>
-      <main style={{ flex: 1 }}>{children}</main>
+      <Halo />
+      <main style={{ flex: 1, position: "relative", zIndex: 1 }}>{children}</main>
       <CercleFooter />
     </div>
   );

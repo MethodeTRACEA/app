@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Section, containerStyle, h1Style, linkStyle, pStyle } from "../_ui";
+import { Section, SimpleHeader, containerStyle, linkStyle, pStyle } from "../_ui";
 
 // Le Cercle TRACÉA en ligne — conditions d'inscription.
 // Texte repris mot pour mot du document du 13 oct. 2026 (bloc « Les
@@ -15,8 +15,9 @@ const EMAIL = "cercledeparole@methodetracea.fr";
 
 export default function CercleConditionsPage() {
   return (
-    <div style={containerStyle}>
-      <h1 style={h1Style}>{"Les conditions d'inscription"}</h1>
+    <>
+    <SimpleHeader title="Les conditions d'inscription" />
+    <div style={{ ...containerStyle, paddingBottom: 80 }}>
 
       <Section id="qui" title="Qui peut s'inscrire">
         <p style={pStyle}>
@@ -126,5 +127,6 @@ export default function CercleConditionsPage() {
         </p>
       </Section>
     </div>
+    </>
   );
 }

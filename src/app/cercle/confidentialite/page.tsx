@@ -3,8 +3,8 @@ import type { CSSProperties } from "react";
 import {
   Section,
   colors,
+  SimpleHeader,
   containerStyle,
-  h1Style,
   linkStyle,
   pStyle,
 } from "../_ui";
@@ -90,15 +90,14 @@ export default function CercleConfidentialitePage() {
   );
 
   return (
-    <div style={containerStyle}>
-      <h1 style={h1Style}>
-        {"Politique de confidentialité du Cercle TRACÉA en ligne"}
-      </h1>
-      <p style={{ ...pStyle, color: colors.muted, marginTop: 14 }}>
-        {"Dernière mise à jour : 13 octobre 2026"}
-      </p>
+    <>
+    <SimpleHeader
+      title="Politique de confidentialité du Cercle TRACÉA en ligne"
+      sub="Dernière mise à jour : 13 octobre 2026"
+    />
+    <div style={{ ...containerStyle, paddingBottom: 80 }}>
 
-      <p style={{ ...pStyle, marginTop: 28 }}>
+      <p style={{ ...pStyle, marginTop: 0 }}>
         {
           "Le Cercle repose sur la confiance. Ça commence par ce que je fais de tes informations. Je recueille le moins possible, je le garde le moins longtemps possible, et je te dis exactement à quoi ça sert."
         }
@@ -231,5 +230,6 @@ export default function CercleConfidentialitePage() {
         {"."}
       </Para>
     </div>
+    </>
   );
 }

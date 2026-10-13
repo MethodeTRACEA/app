@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
-import { colors, containerStyle, h1Style, linkStyle, pStyle } from "../_ui";
+import {
+  CercleLogo,
+  accentStyle,
+  cardStyle,
+  colors,
+  containerStyle,
+  h1Style,
+  linkStyle,
+  pStyle,
+} from "../_ui";
 import { EffacerBrouillon } from "./EffacerBrouillon";
 
 // Le Cercle TRACÉA en ligne — page après paiement réussi.
@@ -10,22 +19,27 @@ export const metadata: Metadata = {
 
 export default function CercleMerciPage() {
   return (
-    <div style={containerStyle}>
+    <div style={{ ...containerStyle, maxWidth: 600 }} className="pt-14 pb-20 md:pt-20 md:pb-28">
       <EffacerBrouillon />
-      <h1 style={h1Style}>{"Ta place est réservée."}</h1>
-      <p style={{ ...pStyle, marginTop: 24, color: colors.heading }}>
-        {"Merci d'avoir osé ce premier pas."}
-      </p>
-      <p style={pStyle}>
-        {"Le 13 novembre, je te confirme ton créneau par email."}
-      </p>
-      <p style={pStyle}>
-        {"D'ici là, si quelque chose devient trop lourd, le "}
-        <a href="tel:3114" style={linkStyle}>
-          3114
-        </a>
-        {" répond jour et nuit."}
-      </p>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 32 }}>
+        <CercleLogo size={64} />
+      </div>
+      <div style={{ ...cardStyle, padding: "36px 26px", textAlign: "center" }}>
+        <h1 style={h1Style}>{"Ta place est réservée."}</h1>
+        <p style={{ ...accentStyle, fontSize: "1.2rem", margin: "22px 0 24px" }}>
+          {"Merci d'avoir osé ce premier pas."}
+        </p>
+        <p style={pStyle}>
+          {"Le 13 novembre, je te confirme ton créneau par email."}
+        </p>
+        <p style={{ ...pStyle, margin: 0, color: colors.heading }}>
+          {"D'ici là, si quelque chose devient trop lourd, le "}
+          <a href="tel:3114" style={{ ...linkStyle, fontWeight: 700, color: colors.title }}>
+            3114
+          </a>
+          {" répond jour et nuit."}
+        </p>
+      </div>
     </div>
   );
 }
