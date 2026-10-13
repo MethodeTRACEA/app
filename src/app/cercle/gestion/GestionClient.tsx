@@ -58,6 +58,17 @@ type Vue = {
   effacement: { premiereEcheance: string; aEffacer: number; effaces: number };
 };
 
+// Diagnostic des réglages : jamais une valeur, seulement présent / absent,
+// le type de la clé Stripe (d'après son début) et la forme de la clé Resend.
+type Reglages = {
+  variables: { nom: string; present: boolean }[];
+  inscriptionsActivesExactementTrue: boolean;
+  typeCleStripe: "test" | "live" | "autre" | null;
+  resend: { present: boolean; formatValide: boolean };
+  etat: { etat: "bientot" | "ouvert" | "clos"; raison: string };
+  deploiement: { environnement: string; branche: string | null };
+};
+
 const NOM_CRENEAU: Record<Creneau, string> = { vendredi: "vendredi", mardi: "mardi" };
 
 function jour(iso: string): string {
@@ -77,14 +88,16 @@ export function GestionClient() {
   const [code, setCode] = useState("");
   const [saisie, setSaisie] = useState("");
   const [vue, setVue] = useState<Vue | null>(null);
+  const [connecte, setConnecte] = useState(false);
+  const [reglages, setReglages] = useState<Reglages | null>(null);
   const [chargement, setChargement] = useState(false);
   const [message, setMessage] = useState<{ texte: string; erreur: boolean } | null>(null);
   const [enCours, setEnCours] = useState(false);
   const [choix, setChoix] = useState<Record<string, string>>({});
 
   const appeler = useCallback(
-    async (codeUtilise: string, methode: "GET" | "POST", corps?: Record<string, unknown>) => {
-      const res = await fetch("/api/cercle/gestion", {
+    async (codeUtilise: string, methode: "GET" | "POST", corps?: Record<string, unknown>, chemin = "") => {
+      const res = await fetch(`/api/cercle/gestion${chemin}`, {
         method: methode,
         headers: { "x-cercle-code": codeUtilise, ...(corps ? { "Content-Type": "application/json" } : {}) },
         body: corps ? JSON.stringify(corps) : undefined,
@@ -100,26 +113,39 @@ export function GestionClient() {
     async (codeUtilise: string) => {
       setChargement(true);
       try {
+        // 1. Le code et les réglages : ne dépendent pas de Stripe, donc
+        //    disponibles même quand un réglage manque.
+        const diag = await appeler(codeUtilise, "GET", undefined, "/reglages");
+        if (!(diag.res.ok && diag.data.ok)) {
+          setVue(null);
+          setReglages(null);
+          setConnecte(false);
+          setCode("");
+          try {
+            sessionStorage.removeItem(CLE_CODE);
+          } catch {
+            // rien à faire
+          }
+          setMessage({ texte: diag.data.message ?? "Impossible de charger la page.", erreur: true });
+          return false;
+        }
+        setReglages(diag.data as Reglages);
+        setConnecte(true);
+        setCode(codeUtilise);
+        try {
+          sessionStorage.setItem(CLE_CODE, codeUtilise);
+        } catch {
+          // stockage indisponible : le code sera redemandé au rechargement
+        }
+        // 2. Les inscrites (lues dans Stripe).
         const { res, data } = await appeler(codeUtilise, "GET");
         if (res.ok && data.ok) {
           setVue(data as Vue);
-          setCode(codeUtilise);
-          try {
-            sessionStorage.setItem(CLE_CODE, codeUtilise);
-          } catch {
-            // stockage indisponible : le code sera redemandé au rechargement
-          }
-          return true;
+        } else {
+          setVue(null);
+          setMessage({ texte: data.message ?? "Les inscrites n'ont pas pu être chargées.", erreur: true });
         }
-        setVue(null);
-        setCode("");
-        try {
-          sessionStorage.removeItem(CLE_CODE);
-        } catch {
-          // rien à faire
-        }
-        setMessage({ texte: data.message ?? "Impossible de charger la page.", erreur: true });
-        return false;
+        return true;
       } catch {
         setMessage({ texte: "Impossible de joindre le serveur.", erreur: true });
         return false;
@@ -154,6 +180,8 @@ export function GestionClient() {
     }
     setCode("");
     setVue(null);
+    setReglages(null);
+    setConnecte(false);
     setMessage(null);
   }
 
@@ -173,7 +201,7 @@ export function GestionClient() {
   }
 
   // ── Écran du code ─────────────────────────────────────────────────
-  if (!vue) {
+  if (!connecte) {
     return (
       <div style={{ maxWidth: 520, margin: "0 auto", padding: "64px 20px 96px" }}>
         <h1 className="cl-h2" style={{ marginBottom: 12 }}>
@@ -204,6 +232,82 @@ export function GestionClient() {
             </button>
           </div>
         </form>
+      </div>
+    );
+  }
+
+  // ── Section « Réglages » (affichée même si Stripe n'est pas réglé) ─
+  const LIBELLE_ETAT = { bientot: "Inscription bientôt disponible", ouvert: "Formulaire ouvert", clos: "Inscriptions closes" } as const;
+  const detailReglage = (nom: string): string | null => {
+    if (!reglages) return null;
+    if (nom === "CERCLE_INSCRIPTIONS_ACTIVES") {
+      return reglages.variables.find((v) => v.nom === nom)?.present
+        ? `exactement « true » : ${reglages.inscriptionsActivesExactementTrue ? "oui" : "NON"}`
+        : null;
+    }
+    if (nom === "CERCLE_STRIPE_SECRET_KEY") {
+      return reglages.typeCleStripe ? `type : ${reglages.typeCleStripe}` : null;
+    }
+    if (nom === "RESEND_API_KEY") {
+      return reglages.resend.present ? `format valide : ${reglages.resend.formatValide ? "oui" : "NON"}` : null;
+    }
+    return null;
+  };
+  const reglagesSection = reglages && (
+    <section className="cg-section" aria-labelledby="g-reglages">
+      <h2 id="g-reglages" style={{ ...h2Style, fontSize: "1.5rem" }}>{"Réglages"}</h2>
+      <p style={pStyle}>
+        {"Ce que le site voit réellement pour ce déploiement. Aucune valeur n'est jamais affichée : seulement « présent » ou « absent », et quelques contrôles de forme."}
+      </p>
+      <ul className="cg-liste">
+        {reglages.variables.map((v) => {
+          const detail = detailReglage(v.nom);
+          const mauvais = detail !== null && /NON|autre/.test(detail);
+          return (
+            <li key={v.nom} className="cg-ligne">
+              <code style={{ fontSize: "0.9375rem", color: colors.title, overflowWrap: "anywhere" }}>{v.nom}</code>
+              <span>
+                <span className={`cg-puce ${v.present ? "cg-puce--ok" : "cg-puce--fort"}`}>{v.present ? "présent" : "absent"}</span>
+                {detail && <span className={`cg-puce ${mauvais ? "cg-puce--fort" : ""}`}>{detail}</span>}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <p style={{ ...pStyle, marginTop: 18 }}>
+        <strong style={{ color: colors.title }}>{"État de l'inscription sur /cercle : "}</strong>
+        {LIBELLE_ETAT[reglages.etat.etat]}
+        {" · "}
+        {reglages.etat.raison}
+      </p>
+      <p style={{ ...pStyle, fontSize: "0.9375rem", color: colors.muted }}>
+        {`Déploiement : environnement « ${reglages.deploiement.environnement} »${reglages.deploiement.branche ? `, branche « ${reglages.deploiement.branche} »` : ""}. Un réglage posé ou modifié dans Vercel ne concerne que les déploiements créés après.`}
+      </p>
+    </section>
+  );
+
+  // Connectée, mais les inscrites n'ont pas pu être lues (par exemple
+  // Stripe pas encore réglé) : on montre au moins les réglages.
+  if (!vue) {
+    return (
+      <div className="cl-wrap" style={{ padding: "48px 20px 96px", maxWidth: 860 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+          <h1 className="cl-h2" style={{ margin: 0 }}>{"Gestion du Cercle"}</h1>
+          <div style={{ display: "flex", gap: 10 }}>
+            <button type="button" className="cg-bouton cg-bouton--discret" onClick={() => charger(code)} disabled={chargement}>
+              {chargement ? "Chargement…" : "Actualiser"}
+            </button>
+            <button type="button" className="cg-bouton cg-bouton--discret" onClick={deconnexion}>
+              {"Se déconnecter"}
+            </button>
+          </div>
+        </div>
+        {message && (
+          <p role="alert" className="cg-message cg-message--erreur" style={{ marginTop: 20 }}>
+            {message.texte}
+          </p>
+        )}
+        {reglagesSection}
       </div>
     );
   }
@@ -327,6 +431,8 @@ export function GestionClient() {
           {message.texte}
         </p>
       )}
+
+      {reglagesSection}
 
       {/* Résumé */}
       <section className="cg-section" aria-labelledby="g-resume">

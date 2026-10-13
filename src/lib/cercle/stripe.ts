@@ -24,6 +24,17 @@ const CYCLE_START_UNIX = Math.floor(
   new Date("2026-10-13T00:00:00+02:00").getTime() / 1000
 );
 
+// Type de la clé Stripe du Cercle, d'après son DÉBUT seulement (jamais sa
+// valeur) : « test », « live », « autre » (début inattendu : espace,
+// guillemet, mauvais préfixe…), ou null si elle est absente.
+export function typeCleStripe(): "test" | "live" | "autre" | null {
+  const key = process.env.CERCLE_STRIPE_SECRET_KEY;
+  if (!key) return null;
+  if (key.startsWith("sk_test_") || key.startsWith("rk_test_")) return "test";
+  if (key.startsWith("sk_live_") || key.startsWith("rk_live_")) return "live";
+  return "autre";
+}
+
 export type CercleStripeStatus =
   | { ok: true; stripe: Stripe; live: boolean }
   | { ok: false; reason: "inactive" | "missing_key" | "live_refused" };

@@ -42,7 +42,11 @@ function acces(request: NextRequest) {
   const v = verifierAcces(request, ip);
   if (!v.ok) return { erreur: reponse(v.status, v.message) };
   const cs = getCercleStripe({ ignorerOuverture: true });
-  if (!cs.ok) return { erreur: reponse(503, "Stripe n'est pas réglé pour le Cercle (CERCLE_STRIPE_SECRET_KEY).") };
+  if (!cs.ok) {
+    return {
+      erreur: reponse(503, "Stripe n'est pas utilisable pour le Cercle (clé absente ou refusée) : voir la section « Réglages »."),
+    };
+  }
   return { cs };
 }
 
