@@ -5,7 +5,7 @@
 import { CYCLE_ID } from "../src/lib/cercle/config";
 import { _remplacerEnvoyeurPourTests, type EmailPret } from "../src/lib/cercle/emails";
 import {
-  actionAnnulerCycle, actionConfirmer, actionEffacer, actionEnvoyerLiens, actionProposerAutre,
+  actionAnnulerCycle, actionConfirmer, actionEffacer, actionEnvoyerLiens, actionMarquerRemboursement, actionProposerAutre,
   listerPersonnes, resteARembourser,
 } from "../src/lib/cercle/gestion";
 
@@ -24,6 +24,7 @@ const gens: Fake[] = [
   mkP("C", "c@example.com", "deux", { participation: "partager", prochain_cycle: "oui, cochée le x" }),
   mkP("D", "d@example.com", "vendredi", { retractation_recue_le: "2026-10-21T10:00:00Z", retractation_a_rembourser: "1200" }),
   mkP("E", "e@example.com", "mardi", {}, 1200),
+  mkP("F", "f@example.com", "vendredi"),
 ];
 const faux: any = {
   checkout: { sessions: { list: () => ({ async *[Symbol.asyncIterator]() {
@@ -66,6 +67,21 @@ const dernier = () => envoyes[envoyes.length - 1];
   ok("proposer à « les deux » refusé", !r.ok, r.message);
   r = await actionConfirmer(faux, false, "pi_B", "vendredi");
   ok("B accepte : confirmée vendredi", r.ok, r.message);
+
+  // Bouton « À rembourser » (F : autre créneau proposé, puis réponse « remboursement »)
+  r = await actionMarquerRemboursement(faux, false, "pi_F");
+  ok("« À rembourser » sans proposition : refusé", !r.ok, r.message);
+  r = await actionProposerAutre(faux, false, "pi_F");
+  r = await actionMarquerRemboursement(faux, false, "pi_F");
+  ok("« À rembourser » après proposition", r.ok && "remboursement_demande_le" in gens.find((g) => g.id === "pi_F")!.md, r.message);
+  r = await actionMarquerRemboursement(faux, false, "pi_F");
+  ok("« À rembourser » deux fois refusé", !r.ok, r.message);
+  r = await actionConfirmer(faux, false, "pi_F", "mardi");
+  ok("plus d'email à F après remboursement demandé", !r.ok, r.message);
+  r = await actionMarquerRemboursement(faux, false, "pi_B");
+  ok("« À rembourser » pour une personne déjà confirmée : refusé", !r.ok, r.message);
+  const pF = (await listerPersonnes(faux, false)).find((p) => p.reference === "pi_F")!;
+  ok("F : 12 € à rembourser, plus active", resteARembourser(pF) === 1200 && !pF.autreProposeLe === false, String(resteARembourser(pF)));
 
   const avantLiens = envoyes.length;
   r = await actionEnvoyerLiens(faux, false, "vendredi", 1, { manuel: true, rapport: false });
@@ -110,6 +126,6 @@ const dernier = () => envoyes[envoyes.length - 1];
   rr = await actionEffacer(faux, false, { manuel: false, maintenant: new Date("2027-12-20T08:00:00Z") });
   ok("20/12/2027 : adresse « prochain cycle » supprimée", !("email_inscription" in C.md) && rr.emailsSupprimes === 1, rr.message);
   const liste = await listerPersonnes(faux, false);
-  ok("après effacement, les personnes restent listées", liste.length === 5 && liste.every((p) => !!p.effaceLe));
+  ok("après effacement, les personnes restent listées", liste.length === 6&& liste.every((p) => !!p.effaceLe));
   ok("aucun téléphone ni commune dans les emails envoyés", !envoyes.some((e) => /0600000000|Albi/.test(e.text + e.html)));
 })();

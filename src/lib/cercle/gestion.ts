@@ -16,6 +16,7 @@ import {
   emailGroupeConfirme,
   emailLienZoom,
   envoyer,
+  euros,
 } from "./emails";
 import { lienPaiementStripe, noterMetadata } from "./inscriptions";
 import { autreCreneau, jourParis, lienZoom, type CreneauPrecis } from "./rencontres";
@@ -46,6 +47,7 @@ export type Personne = {
   creneauConfirme: CreneauPrecis | null;
   groupeConfirmeLe: string | null;
   autreProposeLe: string | null;
+  remboursementDemandeLe: string | null; // a répondu « remboursement »
   cycleAnnuleLe: string | null;
   retractationLe: string | null;
   retractationHorsDelai: boolean;
@@ -81,6 +83,7 @@ function lirePersonne(s: Stripe.Checkout.Session, live: boolean): Personne | nul
     creneauConfirme: estCreneauPrecis(m.creneau_confirme) ? m.creneau_confirme : null,
     groupeConfirmeLe: m.groupe_confirme_le || null,
     autreProposeLe: m.autre_creneau_propose_le || null,
+    remboursementDemandeLe: m.remboursement_demande_le || null,
     cycleAnnuleLe: m.cycle_annule_le || null,
     retractationLe: m.retractation_recue_le || null,
     retractationHorsDelai: m.retractation_hors_delai === "oui",
@@ -114,12 +117,15 @@ export async function listerPersonnes(stripe: Stripe, live: boolean): Promise<Pe
 // Elle fait toujours partie du cycle : ni cycle annulé, ni rétractation,
 // ni remboursement, ni données effacées.
 export function estActive(p: Personne): boolean {
-  return !p.cycleAnnuleLe && !p.retractationLe && p.rembourseCentimes === 0 && !p.effaceLe;
+  return (
+    !p.cycleAnnuleLe && !p.retractationLe && !p.remboursementDemandeLe && p.rembourseCentimes === 0 && !p.effaceLe
+  );
 }
 
 // Remboursement attendu (en centimes), ou « a_decider ».
 export function remboursementDu(p: Personne): number | "a_decider" | null {
   if (p.retractationLe) return p.retractationRemb ?? "a_decider";
+  if (p.remboursementDemandeLe) return p.montantCentimes;
   if (p.cycleAnnuleLe) return p.montantCentimes;
   return null;
 }
@@ -146,6 +152,7 @@ function refus(p: Personne): string | null {
   if (p.effaceLe) return `Les données de ${p.prenom} ont été effacées.`;
   if (p.rembourseCentimes > 0) return `${p.prenom} a déjà été remboursée (en partie ou en totalité).`;
   if (p.retractationLe) return `${p.prenom} a demandé à renoncer : pas d'envoi.`;
+  if (p.remboursementDemandeLe) return `${p.prenom} a demandé le remboursement : pas d'envoi.`;
   if (p.cycleAnnuleLe) return `Le cycle a été annulé pour ${p.prenom}.`;
   return null;
 }
@@ -198,11 +205,38 @@ export async function actionProposerAutre(stripe: Stripe, live: boolean, referen
   return { ok: true, message: `Proposition du groupe du ${autreCreneau(p.creneau)} envoyée à ${p.prenom}.` };
 }
 
+// Bouton « À rembourser » : la personne a répondu « remboursement » à
+// l'email de l'autre créneau. Elle passe dans les remboursements à faire
+// (12 €) et ne reçoit plus d'emails. Noté dans Stripe.
+export async function actionMarquerRemboursement(stripe: Stripe, live: boolean, reference: string): Promise<Retour> {
+  const p = await trouver(stripe, live, reference);
+  if (!p) return { ok: false, message: "Personne introuvable." };
+  if (p.effaceLe) return { ok: false, message: `Les données de ${p.prenom} ont été effacées.` };
+  if (p.rembourseCentimes > 0) return { ok: false, message: `${p.prenom} a déjà été remboursée (en partie ou en totalité).` };
+  if (p.remboursementDemandeLe) return { ok: false, message: `Le remboursement de ${p.prenom} est déjà noté.` };
+  if (p.retractationLe || p.cycleAnnuleLe) return { ok: false, message: `${p.prenom} figure déjà dans les remboursements à faire.` };
+  if (!p.autreProposeLe) return { ok: false, message: `Aucun autre créneau n'a été proposé à ${p.prenom}.` };
+  if (p.creneauConfirme) return { ok: false, message: `${p.prenom} est déjà confirmée dans un groupe.` };
+  try {
+    await noterMetadata(stripe, p.reference, { remboursement_demande_le: maintenantIso() });
+  } catch (err) {
+    console.error("[CERCLE] Remboursement non noté:", p.reference, err instanceof Error ? err.message : err);
+    return { ok: false, message: "Le remboursement n'a pas pu être noté. Réessaie dans un instant." };
+  }
+  return { ok: true, message: `Noté : ${p.prenom} est à rembourser (${euros(p.montantCentimes)}).` };
+}
+
 // Action 3 : « Annuler le cycle » (aucun groupe n'a lieu), pour toutes.
 export async function actionAnnulerCycle(stripe: Stripe, live: boolean): Promise<Retour & { envoyes: number; echecs: string[] }> {
   const toutes = await listerPersonnes(stripe, live);
   const cibles = toutes.filter(
-    (p) => !p.cycleAnnuleLe && !p.retractationLe && !p.effaceLe && p.rembourseCentimes < p.montantCentimes && p.email
+    (p) =>
+      !p.cycleAnnuleLe &&
+      !p.retractationLe &&
+      !p.remboursementDemandeLe &&
+      !p.effaceLe &&
+      p.rembourseCentimes < p.montantCentimes &&
+      p.email
   );
   const echecs: string[] = [];
   let envoyes = 0;

@@ -31,6 +31,7 @@ type Personne = {
   creneauConfirme: Creneau | null;
   groupeConfirmeLe: string | null;
   autreProposeLe: string | null;
+  remboursementDemandeLe: string | null;
   cycleAnnuleLe: string | null;
   retractationLe: string | null;
   retractationHorsDelai: boolean;
@@ -231,6 +232,9 @@ export function GestionClient() {
           {p.prochainCycle && <span className="cg-puce">{"Prochain cycle : oui"}</span>}
           {p.creneauConfirme && <span className="cg-puce cg-puce--ok">{`Groupe confirmé : ${NOM_CRENEAU[p.creneauConfirme]}`}</span>}
           {p.autreProposeLe && !p.creneauConfirme && <span className="cg-puce">{`Autre créneau proposé le ${jour(p.autreProposeLe)}`}</span>}
+          {p.remboursementDemandeLe && (
+            <span className="cg-puce cg-puce--fort">{`Remboursement demandé le ${jour(p.remboursementDemandeLe)}`}</span>
+          )}
           {p.cycleAnnuleLe && <span className="cg-puce cg-puce--fort">{`Cycle annulé le ${jour(p.cycleAnnuleLe)}`}</span>}
           {p.retractationLe && (
             <span className="cg-puce cg-puce--fort">{`Rétractation le ${jour(p.retractationLe)}${p.retractationHorsDelai ? " (HORS DÉLAI)" : ""}`}</span>
@@ -383,7 +387,13 @@ export function GestionClient() {
               <li key={p.reference} className="cg-ligne">
                 <span style={{ ...pStyle, margin: 0 }}>
                   <strong style={{ color: colors.title }}>{p.prenom}</strong>
-                  {p.cycleAnnuleLe ? " : cycle annulé" : p.retractationHorsDelai ? " : rétractation, HORS DÉLAI" : " : rétractation"}
+                  {p.cycleAnnuleLe
+                    ? " : cycle annulé"
+                    : p.remboursementDemandeLe
+                      ? " : a répondu « remboursement »"
+                      : p.retractationHorsDelai
+                        ? " : rétractation, HORS DÉLAI"
+                        : " : rétractation"}
                 </span>
                 <span style={{ ...pStyle, margin: 0, color: colors.title, fontWeight: 600 }}>
                   {p.reste === "a_decider" ? "montant à décider" : euros(p.reste as number)}
@@ -400,7 +410,7 @@ export function GestionClient() {
           <>
             <h3 className="cl-h3" style={{ margin: "28px 0 10px" }}>{"En attente de réponse"}</h3>
             <p style={pStyle}>
-              {"Autre créneau proposé, pas encore confirmé. Si la personne répond « remboursement », rembourse 12 € dans Stripe."}
+              {"Autre créneau proposé, pas encore confirmé. Si la personne répond « oui », confirme-la dans le groupe plus haut. Si elle répond « remboursement », clique sur « À rembourser » : elle passera dans la liste ci-dessus."}
             </p>
             <ul className="cg-liste">
               {enAttente.map((p) => (
@@ -409,10 +419,25 @@ export function GestionClient() {
                     <strong style={{ color: colors.title }}>{p.prenom}</strong>
                     {` : proposition du ${p.autreProposeLe ? jour(p.autreProposeLe) : ""}`}
                   </span>
-                  <a href={p.paiementUrl} target="_blank" rel="noopener noreferrer" className="cl-link">
-                    {"Ouvrir le paiement"}
-                    <span className="sr-only">{" (s'ouvre dans un nouvel onglet)"}</span>
-                  </a>
+                  <span style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
+                    <button
+                      type="button"
+                      className="cg-bouton"
+                      disabled={enCours}
+                      onClick={() =>
+                        agir(
+                          { action: "marquer_remboursement", reference: p.reference },
+                          `Noter que ${p.prenom} demande le remboursement de ${euros(p.montantCentimes)} ?\n\nElle passera dans « Remboursements à faire ». Aucun email n'est envoyé.`
+                        )
+                      }
+                    >
+                      {"À rembourser"}
+                    </button>
+                    <a href={p.paiementUrl} target="_blank" rel="noopener noreferrer" className="cl-link">
+                      {"Ouvrir le paiement"}
+                      <span className="sr-only">{" (s'ouvre dans un nouvel onglet)"}</span>
+                    </a>
+                  </span>
                 </li>
               ))}
             </ul>

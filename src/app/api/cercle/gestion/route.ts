@@ -8,6 +8,7 @@ import {
   actionConfirmer,
   actionEffacer,
   actionEnvoyerLiens,
+  actionMarquerRemboursement,
   actionProposerAutre,
   destinatairesLiens,
   echeanceEffacement,
@@ -71,6 +72,7 @@ export async function GET(request: NextRequest) {
         creneauConfirme: p.creneauConfirme,
         groupeConfirmeLe: p.groupeConfirmeLe,
         autreProposeLe: p.autreProposeLe,
+        remboursementDemandeLe: p.remboursementDemandeLe,
         cycleAnnuleLe: p.cycleAnnuleLe,
         retractationLe: p.retractationLe,
         retractationHorsDelai: p.retractationHorsDelai,
@@ -126,6 +128,10 @@ export async function POST(request: NextRequest) {
       }
       case "proposer_autre": {
         const r = await actionProposerAutre(stripe, live, String(body.reference ?? ""));
+        return NextResponse.json(r, { status: r.ok ? 200 : 409 });
+      }
+      case "marquer_remboursement": {
+        const r = await actionMarquerRemboursement(stripe, live, String(body.reference ?? ""));
         return NextResponse.json(r, { status: r.ok ? 200 : 409 });
       }
       case "annuler_cycle": {
