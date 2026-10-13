@@ -29,6 +29,16 @@ import {
 
 const CYCLE_START_UNIX = Math.floor(new Date("2026-10-13T00:00:00+02:00").getTime() / 1000);
 
+// Écrit des repères dans les métadonnées du paiement Stripe (statut des
+// envois, confirmations…). Une valeur vide efface la clé.
+export async function noterMetadata(
+  stripe: Stripe,
+  paymentIntentId: string,
+  data: Record<string, string>
+): Promise<void> {
+  await stripe.paymentIntents.update(paymentIntentId, { metadata: data });
+}
+
 function estCreneau(v: unknown): v is CreneauId {
   return CRENEAUX.some((c) => c.id === v);
 }
@@ -240,6 +250,18 @@ export async function traiterRetractation(
   await envoyer(emailNotifRetractation(infos), { idempotencyKey: `cercle-retractation-notif-${cle}-${minute}` });
 
   if (principal) {
+    // Repère dans Stripe : la page de gestion s'en sert pour la liste des
+    // remboursements à faire et pour ne plus écrire à cette personne.
+    try {
+      await noterMetadata(stripe, principal.inscription.reference, {
+        retractation_recue_le: maintenant.toISOString(),
+        retractation_a_rembourser:
+          infos.remboursement?.centimes == null ? "a_decider" : String(infos.remboursement.centimes),
+        retractation_hors_delai: infos.horsDelai ? "oui" : "non",
+      });
+    } catch (err) {
+      console.error("[CERCLE] Repère de rétractation non noté:", err instanceof Error ? err.message : err);
+    }
     // Accusé envoyé à l'adresse du paiement (pas à une adresse saisie au
     // hasard) : personne ne peut faire écrire à un tiers.
     await envoyer(emailAccuse(principal.inscription.prenom, principal.inscription.email, maintenant), {

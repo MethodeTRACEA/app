@@ -754,3 +754,78 @@
 .cl-faq details[open] summary::after { transform: rotate(45deg); }
 .cl-faq summary:focus-visible { outline: 2px solid var(--c-link); outline-offset: 2px; border-radius: 6px; }
 .cl-faq .cl-p { padding: 0 4px 24px; margin: 0; max-width: 680px; }
+
+/* ═══ Page de gestion privée (/cercle/gestion) ═══════════════════ */
+.cg-bouton {
+  font-family: var(--font-cercle-sans), "DM Sans", system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #FFFFFF;
+  background: var(--c-accent);
+  border: 2px solid var(--c-accent);
+  border-radius: 999px;
+  padding: 11px 20px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.cg-bouton:hover:not(:disabled) { filter: brightness(1.08); }
+.cg-bouton:disabled { opacity: 0.45; cursor: not-allowed; }
+.cg-bouton--discret { background: transparent; color: var(--c-accent); }
+.cg-puce {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--c-heading);
+  background: var(--c-chip-bg);
+  border: 1px solid var(--c-chip-border);
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin: 0 6px 6px 0;
+}
+.cg-puce--fort { background: #FBE9DF; border-color: var(--c-terra); }
+.cg-puce--ok { background: var(--c-sage-bg); border-color: var(--c-sage-border); }
+.cg-personne {
+  background: var(--c-surface);
+  border: 1px solid var(--c-surface-border);
+  border-radius: 16px;
+  padding: 18px;
+  margin: 0 0 12px;
+}
+.cg-select {
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--c-input-text);
+  background: var(--c-input-bg);
+  border: 1px solid var(--c-input-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-height: 44px;
+}
+.cg-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+.cg-section { margin: 56px 0 0; }
+.cg-section h2 { margin-bottom: 14px; }
+.cg-liste { list-style: none; padding: 0; margin: 0; }
+.cg-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--c-line);
+}
+.cg-ligne:last-child { border-bottom: 1px solid var(--c-line); }
+.cg-message {
+  position: sticky;
+  top: 8px;
+  z-index: 20;
+  margin: 0 0 20px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-weight: 600;
+  background: var(--c-sage-bg);
+  border: 1px solid var(--c-sage-border);
+  color: var(--c-title);
+}
+.cg-message--erreur { background: #FBE9DF; border-color: var(--c-terra); }

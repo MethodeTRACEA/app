@@ -1,6 +1,8 @@
 import { writeFileSync } from "fs";
 import {
   emailConfirmation, emailAccuse, emailNotifInscription, emailNotifRetractation, envoyer,
+  emailGroupeConfirme, emailAutreCreneau, emailCycleAnnule, emailLienZoom,
+  emailCompteRenduEffacement, emailCompteRenduLiens,
   type Inscription, type InfosRetractation, type EmailPret,
 } from "../src/lib/cercle/emails";
 import { calculerRemboursement } from "../src/lib/cercle/inscriptions";
@@ -48,6 +50,14 @@ const liste: [string, EmailPret][] = [
   ["06-notif-retractation-normale", emailNotifRetractation(ret1)],
   ["07-notif-retractation-hors-delai", emailNotifRetractation(ret2)],
   ["08-notif-retractation-introuvable", emailNotifRetractation(ret3)],
+  ["09-groupe-confirme-vendredi", emailGroupeConfirme("Camille", TO, "vendredi")],
+  ["10-groupe-confirme-mardi", emailGroupeConfirme("Camille", TO, "mardi")],
+  ["11-autre-creneau-propose", emailAutreCreneau("Camille", TO, "mardi")],
+  ["12-cycle-annule", emailCycleAnnule("Camille", TO)],
+  ["13-lien-zoom-vendredi", emailLienZoom("Camille", TO, "vendredi", "https://us02web.zoom.us/j/00000000000?pwd=EXEMPLE")],
+  ["14-lien-zoom-mardi", emailLienZoom("Camille", TO, "mardi", "https://us02web.zoom.us/j/11111111111?pwd=EXEMPLE")],
+  ["15-compte-rendu-effacement", emailCompteRenduEffacement({ effaces: 7, emailsConserves: 2, emailsSupprimes: 5, echecs: 0, manuel: false })],
+  ["16-compte-rendu-liens", emailCompteRenduLiens({ creneau: "vendredi", numero: 1, envoyes: 6, dejaEnvoyes: 0, echecs: [], manuel: false })],
 ];
 
 (async () => {

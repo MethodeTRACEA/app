@@ -2,6 +2,7 @@ import { Resend } from "resend";
 import { CRENEAUX, PARTICIPATIONS, type CreneauId, type ParticipationId } from "./config";
 import { CERCLE_EMAIL } from "./textes";
 import { pdfConditions, pdfFormulaireRetractation } from "./pdf";
+import { INFOS_CRENEAU, autreCreneau, type CreneauPrecis } from "./rencontres";
 
 // ===================================================================
 // Le Cercle TRACÉA en ligne — emails (envoi par Resend).
@@ -99,7 +100,7 @@ function rendreHtml(blocs: Bloc[], pied?: string): string {
     .map((b) => {
       if (b.type === "p") {
         const contenu = b.html ?? echapper(b.texte).replace(/\n/g, "<br>");
-        return `<p style="margin:0 0 18px;font-size:17px;line-height:1.65;color:${C.corps};">${contenu}</p>`;
+        return `<p style="margin:0 0 18px;font-size:17px;line-height:1.65;color:${C.corps};overflow-wrap:anywhere;word-break:break-word;">${contenu}</p>`;
       }
       if (b.type === "alerte") {
         return `<div style="margin:0 0 22px;padding:16px 18px;border-radius:12px;background:#FBE9DF;border:1px solid #C4704A;font-size:17px;line-height:1.5;font-weight:700;color:${C.texte};">${echapper(b.texte)}</div>`;
@@ -267,6 +268,7 @@ export type InfosRetractation = {
   montantPayeCentimes?: number;
   horsDelai: boolean;
   remboursement?: {
+    centimes: number | null; // null : à décider
     resume: string; // ex. « 12,00 € (avant la première rencontre) »
     detail: string[];
     aDecider: boolean; // créneau « les deux » non confirmé
@@ -339,7 +341,7 @@ export type OptionsEnvoi = {
 
 // Envoie un email. Lève une erreur si l'envoi échoue (l'appelant décide
 // quoi faire : le webhook Stripe répond 500 pour qu'il soit rejoué).
-export async function envoyer(e: EmailPret, opts: OptionsEnvoi = {}): Promise<void> {
+async function envoyerReel(e: EmailPret, opts: OptionsEnvoi = {}): Promise<void> {
   const attachments = opts.pieceJointes
     ? [
         { filename: "Conditions-inscription-Cercle-TRACEA.pdf", content: Buffer.from(await pdfConditions()) },
@@ -362,4 +364,154 @@ export async function envoyer(e: EmailPret, opts: OptionsEnvoi = {}): Promise<vo
     opts.idempotencyKey ? { idempotencyKey: opts.idempotencyKey } : undefined
   );
   if (error) throw new Error(`[cercle-email] envoi refusé : ${error.name} ${error.message}`);
+}
+
+// Point d'entrée unique des envois. Les tests peuvent le remplacer pour ne
+// rien envoyer (jamais utilisé en production).
+type Envoyeur = (e: EmailPret, opts?: OptionsEnvoi) => Promise<void>;
+let envoyeurActif: Envoyeur = envoyerReel;
+export function _remplacerEnvoyeurPourTests(f: Envoyeur | null): void {
+  envoyeurActif = f ?? envoyerReel;
+}
+export const envoyer: Envoyeur = (e, opts) => envoyeurActif(e, opts);
+
+// ── 5. Gestion du 13 novembre : trois emails à la personne ──────────
+
+// Action 1 : « Confirmer et envoyer » (le groupe a lieu).
+export function emailGroupeConfirme(prenom: string, to: string, creneau: CreneauPrecis): EmailPret {
+  const c = INFOS_CRENEAU[creneau];
+  const blocs: Bloc[] = [
+    { type: "p", texte: `Bonjour ${prenom},` },
+    { type: "p", texte: `Ton groupe aura bien lieu. Tu fais partie du groupe du ${c.groupe}.` },
+    { type: "p", texte: `Les quatre rencontres : ${c.dates}.` },
+    { type: "p", texte: "La veille de chaque rencontre, vers 18 h, tu recevras le lien Zoom par email." },
+    { type: "p", texte: "Si tu as une question d'ici là, tu peux répondre à cet email." },
+    { type: "p", texte: "À très vite,\nAlyson" },
+  ];
+  return email(to, "Ton groupe du Cercle est confirmé", blocs);
+}
+
+// Action 2 : « Proposer l'autre créneau » (le groupe choisi n'a pas lieu).
+export function emailAutreCreneau(prenom: string, to: string, choisi: CreneauPrecis): EmailPret {
+  const autre = autreCreneau(choisi);
+  const a = INFOS_CRENEAU[autre];
+  const blocs: Bloc[] = [
+    { type: "p", texte: `Bonjour ${prenom},` },
+    {
+      type: "p",
+      texte: `Le groupe du ${INFOS_CRENEAU[choisi].nom} n'a pas réuni assez de personnes pour exister cette fois. Je suis désolée.`,
+    },
+    {
+      type: "p",
+      texte: `Je te propose de rejoindre le groupe du ${a.nom}. Les rencontres ont lieu ${a.dates}, ${a.heures}.`,
+    },
+    {
+      type: "p",
+      texte:
+        "Pour l'accepter, il suffit de répondre « oui » à cet email. Si ce créneau ne te convient pas, réponds « remboursement » : je te rembourse entièrement, sans autre démarche de ta part.",
+    },
+    { type: "p", texte: "Ta place reste ouverte pour un prochain cycle." },
+    { type: "p", texte: "Alyson" },
+  ];
+  return email(to, "Ton créneau du Cercle n'aura pas lieu cette fois", blocs);
+}
+
+// Action 3 : « Annuler le cycle » (aucun groupe n'a lieu).
+export function emailCycleAnnule(prenom: string, to: string): EmailPret {
+  const blocs: Bloc[] = [
+    { type: "p", texte: `Bonjour ${prenom},` },
+    {
+      type: "p",
+      texte:
+        "Le Cercle n'a pas réuni assez de personnes pour exister cette fois. Je suis désolée, et je te remercie d'avoir eu envie de venir.",
+    },
+    {
+      type: "p",
+      texte: "Je te rembourse entièrement dans les quatorze jours, par le même moyen de paiement. Tu n'as rien à faire.",
+    },
+    {
+      type: "p",
+      texte: "Si tu as coché « Préviens-moi du prochain cycle », je t'écrirai quand il sera annoncé.",
+    },
+    { type: "p", texte: "Alyson" },
+  ];
+  return email(to, "Le Cercle n'aura pas lieu cette fois", blocs);
+}
+
+// ── 6. Lien Zoom de la veille (à la personne) ───────────────────────
+
+export function emailLienZoom(prenom: string, to: string, creneau: CreneauPrecis, lien: string): EmailPret {
+  const heure = INFOS_CRENEAU[creneau].heureDebut;
+  const blocs: Bloc[] = [
+    { type: "p", texte: `Bonjour ${prenom},` },
+    {
+      type: "p",
+      texte: `On se retrouve demain à ${heure}. Voici ton lien : ${lien}.`,
+      html: `On se retrouve demain à ${echapper(heure)}. Voici ton lien : <a href="${echapper(lien)}" style="color:${C.terra};">${echapper(lien)}</a>.`,
+    },
+    {
+      type: "p",
+      texte:
+        "La salle ouvre cinq minutes avant. Tu peux arriver caméra et micro coupés, et rester comme ça toute la rencontre si tu le souhaites.",
+    },
+    { type: "p", texte: "Alyson" },
+  ];
+  return email(to, `Demain, ${heure}, le Cercle`, blocs);
+}
+
+// ── 7. Comptes rendus à Alyson (aucune donnée personnelle) ──────────
+
+export function emailCompteRenduEffacement(r: {
+  effaces: number;
+  emailsConserves: number;
+  emailsSupprimes: number;
+  echecs: number;
+  manuel: boolean;
+}): EmailPret {
+  const blocs: Bloc[] = [];
+  if (r.echecs > 0) {
+    blocs.push({ type: "alerte", texte: `${r.echecs} paiement(s) n'ont pas pu être nettoyés : relance depuis la page de gestion.` });
+  }
+  blocs.push({
+    type: "recap",
+    titre: "Effacement des données du Cercle",
+    lignes: [
+      ["Déclenché", r.manuel ? "à la main, depuis la page de gestion" : "automatiquement"],
+      ["Paiements nettoyés", String(r.effaces)],
+      ["Téléphones, communes, prénoms effacés", "oui, pour chacun de ces paiements"],
+      ["Adresses email supprimées", String(r.emailsSupprimes)],
+      ["Adresses gardées (« prochain cycle »)", String(r.emailsConserves)],
+    ],
+  });
+  blocs.push({
+    type: "p",
+    texte:
+      "Restent chez Stripe, comme prévu : le paiement lui-même (dix ans), le créneau choisi, et l'adresse email du paiement. Les adresses gardées pour le prochain cycle seront supprimées au plus tard un an plus tard.",
+  });
+  return email(CERCLE_EMAIL, "Effacement des données du Cercle : compte rendu", blocs);
+}
+
+export function emailCompteRenduLiens(r: {
+  creneau: CreneauPrecis;
+  numero: number;
+  envoyes: number;
+  dejaEnvoyes: number;
+  echecs: string[];
+  manuel: boolean;
+}): EmailPret {
+  const blocs: Bloc[] = [];
+  if (r.echecs.length > 0) {
+    blocs.push({ type: "alerte", texte: `Échec pour ${r.echecs.length} personne(s) : ${r.echecs.join(", ")}.` });
+  }
+  blocs.push({
+    type: "recap",
+    titre: "Liens Zoom de la veille",
+    lignes: [
+      ["Rencontre", `${INFOS_CRENEAU[r.creneau].nom}, rencontre ${r.numero}`],
+      ["Déclenché", r.manuel ? "à la main, depuis la page de gestion" : "automatiquement, à 18 h"],
+      ["Liens envoyés", String(r.envoyes)],
+      ["Déjà envoyés avant", String(r.dejaEnvoyes)],
+    ],
+  });
+  return email(CERCLE_EMAIL, `Liens Zoom envoyés : ${INFOS_CRENEAU[r.creneau].nom}, rencontre ${r.numero}`, blocs);
 }
