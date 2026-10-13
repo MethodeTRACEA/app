@@ -298,6 +298,30 @@ export default async function CerclePage() {
             "Chaque rencontre se suffit à elle-même. Si tu en manques une, la suivante t'accueille comme si c'était la première."
           }
         </p>
+
+        {/* Un cadre reconnu : court encadré dans la même bande, pour garder
+            l'alternance des fonds. Texte d'Alyson, mot pour mot. */}
+        <section
+          aria-labelledby="cadre-reconnu-titre"
+          style={{ ...smallCardStyle, marginTop: 40, padding: "26px 22px" }}
+        >
+          <h2
+            id="cadre-reconnu-titre"
+            style={{ ...h2Style, fontSize: "clamp(1.25rem, 4.2vw, 1.45rem)", margin: "0 0 14px" }}
+          >
+            {"Un cadre reconnu"}
+          </h2>
+          <p style={pStyle}>
+            {
+              "Le Cercle s'inscrit dans ce que Santé publique France appelle les compétences psychosociales. Parmi elles, les compétences émotionnelles : reconnaître ce qu'on ressent, repérer son stress, trouver ce qui aide à le traverser. Elles comptent pour la santé mentale de chacun, et elles se travaillent à tout âge."
+            }
+          </p>
+          <p style={{ ...pStyle, margin: 0 }}>
+            {
+              "Chaque rencontre les explore à sa façon, en partant de ce que chacun vit. Sans rien promettre : en s'y exerçant ensemble, simplement."
+            }
+          </p>
+        </section>
       </Band>
 
       {/* ═══ Comment ça se passe ═══════════════════════════════════ */}
@@ -365,7 +389,7 @@ export default async function CerclePage() {
           </h2>
           <p style={{ ...pStyle, fontSize: "1.125rem", margin: 0 }}>
             {
-              "Je m'appelle Alyson. Je ne suis pas thérapeute. J'anime à partir de ce que j'ai vécu, et de ce que j'ai appris en chemin sur le débordement. Ancienne aide-soignante, j'ai aussi participé pendant plus d'un an à des groupes d'entraide entre pairs, où j'ai animé des réunions. Ce Cercle est une phase pilote : on le construit ensemble."
+              "Je m'appelle Alyson. Je ne suis pas thérapeute. J'anime à partir de ce que j'ai vécu, et de ce que j'ai appris en chemin sur le débordement. Ancienne aide-soignante, j'ai aussi participé pendant plus d'un an à des groupes d'entraide entre pairs, où j'ai co-animé des réunions. Ce Cercle est une phase pilote : on le construit ensemble."
             }
           </p>
         </div>
