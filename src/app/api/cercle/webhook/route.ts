@@ -14,6 +14,8 @@ import { envoyerEmailsInscription } from "@/lib/cercle/inscriptions";
 //
 // Réglage : CERCLE_STRIPE_WEBHOOK_SECRET (clé de signature « whsec_… » du
 // point de terminaison créé dans Stripe pour cette adresse).
+// Si le Cercle n'est pas réglé (secret ou clé Stripe absents), la route
+// répond 503 : l'oubli se voit dans le tableau de bord Stripe.
 // Filet de sécurité : la page /cercle/merci déclenche le même envoi (avec
 // la même clé d'idempotence, donc sans doublon).
 // ===================================================================
@@ -24,8 +26,13 @@ export async function POST(request: NextRequest) {
   const secret = process.env.CERCLE_STRIPE_WEBHOOK_SECRET;
   const cs = getCercleStripe({ ignorerOuverture: true });
   if (!secret || !cs.ok) {
-    // Non configuré : on répond 200 pour que Stripe ne s'acharne pas.
-    return NextResponse.json({ received: true, ignored: true }, { status: 200 });
+    // Cercle non réglé : refus net (503), pour qu'un oubli soit VISIBLE dans
+    // Stripe (échecs de livraison du point de terminaison). Aucun traitement.
+    console.warn(
+      "[CERCLE] Webhook refusé, réglage manquant:",
+      !secret ? "CERCLE_STRIPE_WEBHOOK_SECRET" : cs.ok ? "" : cs.reason
+    );
+    return NextResponse.json({ error: "Le Cercle n'est pas réglé." }, { status: 503 });
   }
 
   const signature = request.headers.get("stripe-signature");
